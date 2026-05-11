@@ -23,39 +23,73 @@ Google Maps Scraper (Playwright)
         ↓
 Qualified Leads CSV → Google Sheets
         ↓
-lead-to-brief          ← converts raw CSV row to Build Brief
+[STEP 1] lead-to-brief
+         ← converts raw CSV row to Build Brief
         ↓
-cinematic-website-builder + local-business-seo  ← generates single-file HTML
+[STEP 2] cinematic-website-builder
+         ← generates single-file HTML shell
+[STEP 2b] local-business-seo
+         ← injects schema.org, NAP, GBP
         ↓
-outreach-copywriter    ← cold email + Vapi phone script
+[STEP 3] cinematic-prompt-director
+         ← Build Brief → Higgsfield YAML prompt (150-200 word, ultra-detail)
+[STEP 3b] SA-higgsfield-operator
+         ← fires nano_banana_2 → hero image (4K 16:9)
+         ← fires seedance_2_0 → background video loop (1080p)
+         ← fires brain_activity → virality score (quality gate)
+         ← asset URLs injected into site HTML before deploy
         ↓
-vapi-orchestrator      ← deploys voice agent + queues outbound call
+[STEP 4] outreach-copywriter
+         ← cold email with Higgsfield hero image URL embedded
+         ← Vapi phone script
         ↓
-GitHub → Vercel deploy ← live site at custom URL
+[STEP 5] vapi-orchestrator
+         ← deploys voice agent + queues outbound call
         ↓
-Close: $300–750/site
+[STEP 6] GitHub → Vercel deploy
+         ← live site at custom URL
+        ↓
+Close: $300-750/site
 ```
+
+### Why Higgsfield Sits at Step 3
+
+The site HTML is built first (Step 2) with placeholder `<img>` and `<video>` tags.
+Higgsfield fires after the build and injects the real asset URLs before the repo is pushed to Vercel.
+The hero image URL also feeds directly into the outreach email — one generation, two uses, $0 marginal cost.
+
+### Higgsfield Assets Per Site
+
+| Asset | Model | Spec | Destination |
+|---|---|---|---|
+| Hero image | `nano_banana_2` | 4K 16:9 | Site hero section + email header |
+| BG video loop | `seedance_2_0` | 1080p 5s loop | Site `<video autoplay muted loop>` |
+| Virality check | `brain_activity` | Score + report | Quality gate — re-generate if below threshold |
+
+> **Prompt source:** cinematic-prompt-director auto-generates the YAML prompt from the Build Brief (business name, category, location, tone). Zero manual prompt writing per site.
 
 ---
 
 ## Skill Registry
 
-### Pipeline Skills (Lead Gen)
+### Pipeline Skills — Ordered by Execution
 
-| Skill | File | Role in Pipeline |
-|---|---|---|
-| `lead-to-brief` | `user/lead-to-brief/` | CSV row → Build Brief |
-| `cinematic-website-builder` | `user/cinematic-website-builder/` | Build Brief → single-file HTML |
-| `local-business-seo` | `user/local-business-seo/` | Schema.org, NAP, GBP injection |
-| `outreach-copywriter` | `user/outreach-copywriter/` | Email HTML + Vapi script |
-| `vapi-orchestrator` | `user/vapi-orchestrator/` | Deploy agent + queue call |
-| `n8n-pipeline-architect` | `user/n8n-pipeline-architect/` | Full automation topology |
+| # | Skill | File | Role |
+|---|---|---|---|
+| 1 | `lead-to-brief` | `user/lead-to-brief/` | CSV row → Build Brief |
+| 2 | `cinematic-website-builder` | `user/cinematic-website-builder/` | Build Brief → single-file HTML |
+| 2b | `local-business-seo` | `user/local-business-seo/` | Schema.org, NAP, GBP injection |
+| 3 | `cinematic-prompt-director` | `user/cinematic-prompt-director/` | Build Brief → Higgsfield YAML prompt |
+| 3b | `SA-higgsfield-operator` | `user/SA-higgsfield-operator/` | YAML prompt → hero image + video loop + virality score |
+| 4 | `outreach-copywriter` | `user/outreach-copywriter/` | Email HTML (with asset URL) + Vapi script |
+| 5 | `vapi-orchestrator` | `user/vapi-orchestrator/` | Deploy voice agent + queue call |
+| 6 | `n8n-pipeline-architect` | `user/n8n-pipeline-architect/` | Full automation topology |
 
 ### Production Skills
 
 | Skill | File | Trigger |
 |---|---|---|
-| `SA-higgsfield-operator` | `user/SA-higgsfield-operator/` | All image/video generation — 18 image + 17 video models |
+| `SA-higgsfield-operator` | `user/SA-higgsfield-operator/` | All image/video — 18 image + 17 video models |
 | `cinematic-prompt-director` | `user/cinematic-prompt-director/` | Any prompt engineering request |
 | `ai-content-creator` | `user/ai-content-creator/` | Record Exec artist prompts |
 | `shopify-cinematic-builder` | `user/shopify-cinematic-builder/` | Shopify OS 2.0 store builds |
@@ -88,17 +122,17 @@ Close: $300–750/site
 | Need | Model |
 |---|---|
 | Portrait / character / fashion | `nano_banana_2` (Nano Banana Pro) |
-| Typography / text-in-image / diagrams | `gpt_image_2` (GPT Image 2, --quality high) |
-| Style transfer / image editing | `flux_kontext` (Flux Kontext) |
+| Typography / text / diagrams | `gpt_image_2` (--quality high --resolution 4k) |
+| Style transfer / image editing | `flux_kontext` |
 | Face-faithful (Soul ID) | `text2image_soul_v2` |
 | DTC branded ad | `dtc_ads` (style_id required) |
 
 ### Video
 | Need | Model |
 |---|---|
-| Music video / rhythm / editorial | `seedance_2_0` (Seedance 2.0) — Primary |
-| Narrative / multi-shot | `kling3_0` (Kling v3.0) — Primary |
-| Lipsync / dialogue ONLY | `veo3_1` (Veo 3.1) |
+| Music video / rhythm / editorial | `seedance_2_0` — Primary |
+| Narrative / multi-shot | `kling3_0` — Primary |
+| Lipsync / dialogue ONLY | `veo3_1` |
 | Silent B-roll / cost saving | `minimax_hailuo` |
 | UGC marketing ad | `marketing_studio_video` |
 
