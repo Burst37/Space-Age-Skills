@@ -13,6 +13,20 @@
 | Higgsfield AI | All image + video generation | Subscription ($0 marginal) |
 | n8n | Batch automation, pipeline orchestration | Self-hosted |
 | Vapi | Outbound voice agent calls | Per-minute |
+| Hermes Agent (VPS) | 24/7 orchestrator, lane routing, self-improving | VPS + API |
+
+---
+
+## Image Model Hierarchy
+
+| Rank | Model | Access | Best For |
+|---|---|---|---|
+| 1 | **GPT Image 2** (`gpt_image_2`) | Higgsfield subscription | Hero images, product shots, typography — highest realism |
+| 2 | **Nano Banana Pro** (`nano_banana_2`) | Higgsfield subscription | Cinematic portraits, characters, fashion |
+| 3 | **Flux Kontext** (`flux_kontext`) | Higgsfield subscription | Style transfer, image-to-image editing |
+| 4 | **Nano Banana 2** (`nano_banana_flash`) | Higgsfield subscription | Character reference sheets, multi-angle |
+
+> GPT Image 2 is the default hero image model for all pipeline lanes unless the shot is portrait/character — then Nano Banana Pro.
 
 ---
 
@@ -29,44 +43,177 @@ Qualified Leads CSV → Google Sheets
 [STEP 2] cinematic-website-builder
          ← generates single-file HTML shell
 [STEP 2b] local-business-seo
-         ← injects schema.org, NAP, GBP
+         ← injects schema.org, NAP, GBP, AI/LLM optimization, llms.txt
         ↓
 [STEP 3] cinematic-prompt-director
          ← Build Brief → Higgsfield YAML prompt (150-200 word, ultra-detail)
 [STEP 3b] SA-higgsfield-operator
-         ← fires nano_banana_2 → hero image (4K 16:9)
+         ← fires gpt_image_2 → hero image (4K 16:9) [PRIMARY]
+         ← fires nano_banana_2 → character/portrait hero (if people-focused)
          ← fires seedance_2_0 → background video loop (1080p)
          ← fires brain_activity → virality score (quality gate)
          ← asset URLs injected into site HTML before deploy
         ↓
-[STEP 4] outreach-copywriter
-         ← cold email with Higgsfield hero image URL embedded
+[STEP 4] Hermes Agent routes Build Brief to correct execution lane ↓
+
+┌─────────────────────────────────────────────────────────────────────┐
+│                     PARALLEL EXECUTION LANES                        │
+├──────────────────┬──────────────────┬──────────────┬───────────────┤
+│   LANE A         │   LANE B         │   LANE C     │   LANE D      │
+│   Google Stack   │   DeepSeek Stack │  Claude Stack│  Minimax Stack│
+├──────────────────┼──────────────────┼──────────────┼───────────────┤
+│ GPT Image 2      │ GPT Image 2      │ GPT Image 2  │ GPT Image 2   │
+│ (hero default)   │ (hero default)   │ (hero)       │ (hero)        │
+│        ↓         │        ↓         │      ↓       │       ↓       │
+│ Google Stitch    │ Seedance 2.0     │ Kling 3.0    │ Hailuo 2      │
+│ (UI prototype)   │ (BG video loop)  │ (premium MV) │ (silent loop) │
+│        ↓         │        ↓         │      ↓       │       ↓       │
+│ Gemini Flash 3.1 │ DeepSeek V4 Pro  │ Claude       │ Minimax 2.7   │
+│ or Gemini Pro    │ via OpenRouter   │ Sonnet 4.6   │ via OpenRouter│
+│ (copy/structure) │ (full site code) │ (copy/logic) │ (UI components│
+│        ↓         │        ↓         │      ↓       │       ↓       │
+│ Antigravity IDE  │ Direct file out  │ OpenAI Codex │ Direct file   │
+│ (2M ctx, free)   │ (no IDE needed)  │ + Claude Code│ out           │
+│        ↓         │        ↓         │      ↓       │       ↓       │
+│ Google Voice     │ Vapi Agent       │ Vapi or      │ Vapi Agent    │
+│ Agent (Gemini    │ (outbound +      │ ElevenLabs   │               │
+│ TTS)             │ inbound)         │ Voice Agent  │               │
+│        ↓         │        ↓         │      ↓       │       ↓       │
+│ SEO + AI Layer   │ SEO + AI Layer   │ SEO + AI     │ SEO + AI      │
+│        ↓         │        ↓         │ Layer ↓      │ Layer ↓       │
+│ Vercel Deploy    │ Vercel Deploy    │ Vercel Deploy│ Vercel Deploy │
+├──────────────────┼──────────────────┼──────────────┼───────────────┤
+│ HIGH VOLUME      │ PRIMARY LANE     │ PREMIUM      │ OVERFLOW /    │
+│ Budget sites     │ Standard closes  │ $750+ closes │ BUDGET        │
+│ ~$0/site cost    │ $300-500 closes  │ Multi-file   │ Cost savings  │
+│ 80 sites/day cap │ Main volume lane │ projects     │ Lane D        │
+└──────────────────┴──────────────────┴──────────────┴───────────────┘
+
+        ↓ (all lanes converge here)
+[STEP 5] SEO + AI Optimization Injection (universal — all lanes)
+         ← schema.org JSON-LD (LocalBusiness, Service, FAQ, Review)
+         ← NAP consistency enforcement
+         ← AI/LLM optimization (entity copy, declarative statements)
+         ← llms.txt generated and placed at site root
+         ← Core Web Vitals compliance check
+         ← robots.txt + sitemap.xml auto-generated
+         ← GA4 + Search Console tags injected
+        ↓
+[STEP 6] outreach-copywriter
+         ← cold email with GPT Image 2 hero asset URL embedded
          ← Vapi phone script
         ↓
-[STEP 5] vapi-orchestrator
+[STEP 7] vapi-orchestrator
          ← deploys voice agent + queues outbound call
         ↓
-[STEP 6] GitHub → Vercel deploy
+[STEP 8] GitHub → Vercel deploy
          ← live site at custom URL
         ↓
-Close: $300-750/site
+Close: $300-750/site + SEO retainer upsell
 ```
 
-### Why Higgsfield Sits at Step 3
+---
 
-The site HTML is built first (Step 2) with placeholder `<img>` and `<video>` tags.
-Higgsfield fires after the build and injects the real asset URLs before the repo is pushed to Vercel.
-The hero image URL also feeds directly into the outreach email — one generation, two uses, $0 marginal cost.
+## Hermes Lane Routing Rules
 
-### Higgsfield Assets Per Site
+Hermes reads the Build Brief and scores on two axes: **complexity** and **budget tier**.
+Routes to the appropriate lane automatically.
 
-| Asset | Model | Spec | Destination |
+```
+IF business_quality_score >= 5 AND market_size = large
+    → Lane C (Claude + Codex — premium)
+ELIF volume_mode = true AND cost_priority = max
+    → Lane A (Google/Antigravity — high volume)
+ELIF lanes_saturated = true OR budget_tier = low
+    → Lane D (Minimax — overflow)
+ELSE
+    → Lane B (DeepSeek — primary/default)
+```
+
+---
+
+## SEO + AI Optimization Layer (All Lanes)
+
+### Target 1 — Google Search (Traditional)
+```
+✅ schema.org JSON-LD: LocalBusiness, Service, FAQPage, Review
+✅ NAP consistency (Name, Address, Phone — identical everywhere)
+✅ Google Business Profile embed
+✅ Core Web Vitals: LCP < 2.5s, CLS < 0.1, FID < 100ms
+✅ robots.txt + sitemap.xml
+✅ Canonical tags
+✅ Open Graph + Twitter Card meta
+✅ City + service keyword in H1, title, meta description
+✅ Local keyword density (3-5x per section)
+✅ Google Maps embed
+✅ Review schema
+✅ Mobile-first responsive
+```
+
+### Target 2 — AI/LLM Search (ChatGPT, Perplexity, Claude, Gemini)
+```
+✅ /llms.txt at site root (structured entity file for AI crawlers)
+✅ FAQ section written as direct Q&A (LLMs pull verbatim)
+✅ Entity-first copy ("Green Valley Plumbing is a licensed plumber in Mesquite TX...")
+✅ Declarative service definitions (no passive voice)
+✅ Structured authoritative statements ("We specialize in...", "Our service area covers...")
+✅ Business data in JSON-LD mirroring ChatGPT/Perplexity surface format
+✅ 300-500 word minimum above-fold copy (not just hero + CTA)
+✅ Service specificity ("emergency water heater replacement, same-day, Mesquite TX")
+```
+
+### llms.txt Template (Auto-generated Per Site)
+```
+# [Business Name]
+> [One sentence: what they do, where, why they're the authority]
+
+## Services
+- [Service 1]: [One sentence description with location]
+- [Service 2]: [One sentence description with location]
+
+## Location
+[City, State] — serving [radius or surrounding cities]
+
+## Contact
+Phone: [number]
+Address: [full address]
+Hours: [hours]
+
+## Why Choose Us
+[3 declarative trust statements — years in business, license, guarantee]
+```
+
+---
+
+## Model Quick Reference
+
+### Image (via Higgsfield — $0 marginal)
+| Need | Model | job_set_type |
+|---|---|---|
+| **Hero image — default** | **GPT Image 2** | `gpt_image_2` |
+| Portrait / character / fashion | Nano Banana Pro | `nano_banana_2` |
+| Style transfer / edit | Flux Kontext | `flux_kontext` |
+| Character reference sheet | Nano Banana 2 | `nano_banana_flash` |
+| Face-faithful (Soul ID) | Soul V2 | `text2image_soul_v2` |
+| DTC branded ad | DTC Ads Engine | `dtc_ads` |
+
+### Video (via Higgsfield — $0 marginal)
+| Need | Model | job_set_type |
+|---|---|---|
+| Music video / editorial | Seedance 2.0 | `seedance_2_0` |
+| Narrative / cinematic | Kling v3.0 | `kling3_0` |
+| Lipsync / dialogue ONLY | Veo 3.1 | `veo3_1` |
+| Silent B-roll / budget | Minimax Hailuo | `minimax_hailuo` |
+| UGC ad video | Marketing Studio Video | `marketing_studio_video` |
+| Virality analysis | Virality Predictor | `brain_activity` |
+
+### Code Execution by Lane
+| Lane | Model | Via | IDE/Env |
 |---|---|---|---|
-| Hero image | `nano_banana_2` | 4K 16:9 | Site hero section + email header |
-| BG video loop | `seedance_2_0` | 1080p 5s loop | Site `<video autoplay muted loop>` |
-| Virality check | `brain_activity` | Score + report | Quality gate — re-generate if below threshold |
-
-> **Prompt source:** cinematic-prompt-director auto-generates the YAML prompt from the Build Brief (business name, category, location, tone). Zero manual prompt writing per site.
+| A | Gemini Flash 3.1 / Pro | Google AI | Antigravity IDE (2M ctx, free) |
+| B | DeepSeek V4 Pro | OpenRouter | Direct file output |
+| C | Claude Sonnet 4.6 + OpenAI Codex | Anthropic / OpenAI | Claude Code |
+| D | Minimax 2.7 | OpenRouter | Direct file output |
 
 ---
 
@@ -78,9 +225,9 @@ The hero image URL also feeds directly into the outreach email — one generatio
 |---|---|---|---|
 | 1 | `lead-to-brief` | `user/lead-to-brief/` | CSV row → Build Brief |
 | 2 | `cinematic-website-builder` | `user/cinematic-website-builder/` | Build Brief → single-file HTML |
-| 2b | `local-business-seo` | `user/local-business-seo/` | Schema.org, NAP, GBP injection |
+| 2b | `local-business-seo` | `user/local-business-seo/` | Schema.org, NAP, GBP, AI/LLM optimization, llms.txt |
 | 3 | `cinematic-prompt-director` | `user/cinematic-prompt-director/` | Build Brief → Higgsfield YAML prompt |
-| 3b | `SA-higgsfield-operator` | `user/SA-higgsfield-operator/` | YAML prompt → hero image + video loop + virality score |
+| 3b | `SA-higgsfield-operator` | `user/SA-higgsfield-operator/` | YAML → GPT Image 2 hero + video loop + virality score |
 | 4 | `outreach-copywriter` | `user/outreach-copywriter/` | Email HTML (with asset URL) + Vapi script |
 | 5 | `vapi-orchestrator` | `user/vapi-orchestrator/` | Deploy voice agent + queue call |
 | 6 | `n8n-pipeline-architect` | `user/n8n-pipeline-architect/` | Full automation topology |
@@ -113,28 +260,6 @@ The hero image URL also feeds directly into the outreach email — one generatio
 |---|---|---|
 | `sa-watch` | `user/sa-watch/` | Any video URL — auto-trigger |
 | `sa-video-skill-extractor` | `user/sa-video-skill-extractor/` | Video → SKILL.md extraction |
-
----
-
-## Model Routing (Quick Reference)
-
-### Image
-| Need | Model |
-|---|---|
-| Portrait / character / fashion | `nano_banana_2` (Nano Banana Pro) |
-| Typography / text / diagrams | `gpt_image_2` (--quality high --resolution 4k) |
-| Style transfer / image editing | `flux_kontext` |
-| Face-faithful (Soul ID) | `text2image_soul_v2` |
-| DTC branded ad | `dtc_ads` (style_id required) |
-
-### Video
-| Need | Model |
-|---|---|
-| Music video / rhythm / editorial | `seedance_2_0` — Primary |
-| Narrative / multi-shot | `kling3_0` — Primary |
-| Lipsync / dialogue ONLY | `veo3_1` |
-| Silent B-roll / cost saving | `minimax_hailuo` |
-| UGC marketing ad | `marketing_studio_video` |
 
 ---
 
