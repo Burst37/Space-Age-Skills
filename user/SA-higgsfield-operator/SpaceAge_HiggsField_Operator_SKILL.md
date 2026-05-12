@@ -50,28 +50,66 @@ prompt. Execute. Return URLs.
 
 ## MODEL ROUTING MATRIX
 
+### IMAGE MODEL HIERARCHY — READ BEFORE ROUTING
+
+```
+DEFAULT HERO IMAGE MODEL: GPT Image 2 (gpt_image_2)
+Reasons:
+  1. Best photorealism across all Higgsfield image models
+  2. Superior text consistency — renders business names, taglines,
+     service labels, wordmarks, and overlay text cleanly on first
+     generation. No garbled letters, no broken words, no re-runs.
+  3. 4K output at --quality high
+  4. Handles mixed content (people + text + product) in single frame
+  5. Best choice for any image where text lives inside the frame
+
+USE nano_banana_2 ONLY WHEN:
+  - Shot is portrait/character-only with zero text in frame
+  - Fashion editorial, cinematic headshot, character sheet
+  - Explicit cinematic film-style aesthetic (no commercial overlay)
+
+NEVER route text-containing images to nano_banana_2 or flux_kontext.
+GPT Image 2 owns all text-in-image use cases without exception.
+```
+
+### GPT Image 2 — Text Rendering Use Cases
+```
+✅ Business name / tagline in hero section
+✅ Service labels overlaid on scene imagery
+✅ Logo lockups and wordmarks embedded in image
+✅ Before/after comparison graphics with labels
+✅ Testimonial cards with quoted text
+✅ Price/offer callout graphics
+✅ Social media graphics with copy baked in
+✅ Ad creative with headline + subhead + CTA
+✅ Infographics with data labels
+✅ Any site section where text must live inside the image
+✅ Event flyers, promotional cards
+✅ Menu boards, service boards (restaurants, salons, etc.)
+```
+
 ### IMAGE MODELS (18 total)
 
-| Use Case | Model | job_set_type | Max Res |
-|---|---|---|---|
-| Cinematic portrait, character, fashion | **Nano Banana Pro** | `nano_banana_2` | 4K |
-| Character reference sheet (multi-angle) | **Nano Banana 2** | `nano_banana_flash` | 4K |
-| Budget / speed image | Nano Banana | `nano_banana` | — |
-| Typography, infographics, text-in-image | **GPT Image 2** | `gpt_image_2` | 4K |
-| Style transfer / image editing | **Flux Kontext** | `flux_kontext` | — |
-| FLUX pro/flex/max quality tier | FLUX.2 | `flux_2` | 2K |
-| Cinematic still with film grain | Cinematic Studio 2.5 | `cinematic_studio_2_5` | 4K |
-| Soul character — face-faithful portrait | **Soul V2** | `text2image_soul_v2` | — |
-| Soul character — cinematic staging | Soul Cinematic | `soul_cinematic` | — |
-| Soul character — location scene | Soul Location | `soul_location` | — |
-| DTC ad image / branded product | **Marketing Studio Image** | `marketing_studio_image` | 4K |
-| DTC Ads Engine (style-id required) | DTC Ads Engine | `dtc_ads` | 4K |
-| X/Grok platform aesthetic | Grok Image | `grok_image` | — |
-| OpenAI Hazel quality tiers | OpenAI Hazel | `openai_hazel` | — |
-| Seedream 4.5 quality image | Seedream 4.5 | `seedream_v4_5` | — |
-| Seedream V5 lite speed image | Seedream V5 Lite | `seedream_v5_lite` | — |
-| Auto model selection | Image Auto | `image_auto` | — |
-| Z Image experimental | Z Image | `z_image` | — |
+| Priority | Use Case | Model | job_set_type | Max Res |
+|---|---|---|---|---|
+| **1 — DEFAULT** | Hero images, text-in-image, product shots, commercial | **GPT Image 2** | `gpt_image_2` | 4K |
+| **2** | Cinematic portrait, character, fashion (no text in frame) | **Nano Banana Pro** | `nano_banana_2` | 4K |
+| **3** | Style transfer / image editing / image-to-image | **Flux Kontext** | `flux_kontext` | — |
+| 4 | Character reference sheet (multi-angle) | Nano Banana 2 | `nano_banana_flash` | 4K |
+| 5 | Cinematic still with film grain | Cinematic Studio 2.5 | `cinematic_studio_2_5` | 4K |
+| 6 | Face-faithful portrait (Soul ID) | Soul V2 | `text2image_soul_v2` | — |
+| 7 | Soul character — cinematic staging | Soul Cinematic | `soul_cinematic` | — |
+| 8 | Soul character — location scene | Soul Location | `soul_location` | — |
+| 9 | DTC ad image / branded product | Marketing Studio Image | `marketing_studio_image` | 4K |
+| 10 | DTC Ads Engine (style-id required) | DTC Ads Engine | `dtc_ads` | 4K |
+| 11 | FLUX pro/flex/max quality tier | FLUX.2 | `flux_2` | 2K |
+| 12 | X/Grok platform aesthetic | Grok Image | `grok_image` | — |
+| 13 | OpenAI Hazel quality tiers | OpenAI Hazel | `openai_hazel` | — |
+| 14 | Budget / speed image | Nano Banana | `nano_banana` | — |
+| 15 | Seedream 4.5 quality image | Seedream 4.5 | `seedream_v4_5` | — |
+| 16 | Seedream V5 lite speed image | Seedream V5 Lite | `seedream_v5_lite` | — |
+| 17 | Auto model selection | Image Auto | `image_auto` | — |
+| 18 | Z Image experimental | Z Image | `z_image` | — |
 
 ### VIDEO MODELS (17 total)
 
@@ -566,12 +604,15 @@ quality: "ultra"
 INPUT RECEIVED
      │
      ├─► Image request?
-     │       ├─► Human subject / portrait / fashion  → nano_banana_2
-     │       ├─► Text / typography / diagram         → gpt_image_2 (--quality high --resolution 4k)
+     │       ├─► ANY text in frame (name, tagline, label, wordmark, CTA)
+     │       │                                        → gpt_image_2 (--quality high --resolution 4k)
+     │       ├─► Hero image / commercial / product    → gpt_image_2 (DEFAULT — always)
+     │       ├─► Portrait / fashion / character ONLY (zero text in frame)
+     │       │                                        → nano_banana_2
      │       ├─► Edit existing image / style xfer    → flux_kontext (pass --image)
      │       ├─► Face-faithful (Soul ID exists)      → text2image_soul_v2 (--soul-id)
      │       ├─► Branded product ad                  → dtc_ads (--style_id required)
-     │       └─► Default / unknown                   → nano_banana_2
+     │       └─► Default / unknown                   → gpt_image_2
      │
      ├─► Video request?
      │       ├─► Music video / rhythm / editorial    → seedance_2_0 (genre flag = key)
@@ -772,6 +813,8 @@ npm install -g @higgsfield/cli@0.1.35
 
 ```
 ❌ Never route image/video generation to external APIs when Higgsfield covers the use case
+❌ Never route text-in-image to nano_banana_2 or flux_kontext — gpt_image_2 owns all text rendering
+❌ Never use nano_banana_2 as the default hero model — gpt_image_2 is the default, nano_banana_2 is portrait-only
 ❌ Never generate a prompt under 150 words
 ❌ Never omit character physical details for any human subject
 ❌ Never use generic camera references ("DSLR", "wide lens") — use exact model names
