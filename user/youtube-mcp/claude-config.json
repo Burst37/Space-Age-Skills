@@ -1,0 +1,9 @@
+{
+  "youtube": {
+    "command": "python",
+    "args": ["user/youtube-mcp/server.py"],
+    "env": {
+      "YOUTUBE_API_KEY": "AIzaSy..."
+    }
+  }
+}
