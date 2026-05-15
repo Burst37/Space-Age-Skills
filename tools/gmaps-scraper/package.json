@@ -1,0 +1,14 @@
+{
+  "name": "gmaps-scraper",
+  "version": "1.0.0",
+  "description": "Google Maps lead scraper for Space Age pipeline",
+  "main": "scraper.js",
+  "scripts": {
+    "scrape": "node scraper.js",
+    "install-browsers": "npx playwright install chromium"
+  },
+  "dependencies": {
+    "playwright": "^1.44.0",
+    "csv-writer": "^1.6.0"
+  }
+}
