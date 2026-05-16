@@ -19,6 +19,7 @@ description: >
 | **Obsidian Skills** | https://github.com/kepano/obsidian-skills.git | Obsidian plugin — skill management reference for Hermes self-improvement loop |
 | **Obsidian Releases** | https://github.com/obsidianmd/obsidian-releases.git | Official Obsidian release registry — plugin/theme directory reference |
 | **Everything Claude Code** | https://github.com/affaan-m/everything-claude-code.git | Curated Claude Code tips, hooks, MCP configs, and patterns — reference for Hermes/Claude Code integration |
+| **Ruflo** | https://github.com/ruvnet/ruflo.git | Agentic workflow framework by ruvnet — reference for Hermes orchestration patterns and agent loop design |
 | **Space Age Skills** | https://github.com/Burst37/Space-Age-Skills.git | This repo — all operational skills loaded by Hermes |
 
 ---
@@ -37,6 +38,9 @@ git clone https://github.com/obsidianmd/obsidian-releases.git
 
 # Everything Claude Code (Claude Code patterns + MCP configs)
 git clone https://github.com/affaan-m/everything-claude-code.git
+
+# Ruflo (agentic workflow / orchestration reference)
+git clone https://github.com/ruvnet/ruflo.git
 
 # Space Age Skills (operational skills)
 git clone https://github.com/Burst37/Space-Age-Skills.git /mnt/skills
@@ -69,7 +73,8 @@ ELSE                                                    → Lane B (DeepSeek)
 Hermes uses `sa-video-skill-extractor` to watch operator recordings and extract new SKILL.md files.  
 Use `kepano/obsidian-skills` as a reference architecture for how skills can be stored, tagged, and retrieved in a knowledge base.  
 Use `obsidianmd/obsidian-releases` to cross-reference the official plugin/theme directory when building or validating Obsidian integrations.  
-Use `affaan-m/everything-claude-code` for best-practice Claude Code hooks, MCP server configs, and prompt patterns applicable to Lane C and Hermes orchestration.
+Use `affaan-m/everything-claude-code` for best-practice Claude Code hooks, MCP server configs, and prompt patterns applicable to Lane C and Hermes orchestration.  
+Use `ruvnet/ruflo` as an agentic workflow reference — study its agent loop design and orchestration patterns when extending Hermes capabilities.
 
 ```bash
 # After extracting a new skill, push it to Space Age Skills
