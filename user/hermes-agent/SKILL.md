@@ -22,6 +22,7 @@ description: >
 | **Everything Claude Code** | https://github.com/affaan-m/everything-claude-code.git | Curated Claude Code tips, hooks, MCP configs, and patterns — reference for Hermes/Claude Code integration |
 | **Ruflo** | https://github.com/ruvnet/ruflo.git | Agentic workflow framework by ruvnet — reference for Hermes orchestration patterns and agent loop design |
 | **Open Design** | https://github.com/nexu-io/open-design.git | Open design system by nexu-io — reference for UI/UX components and design token architecture |
+| **Andrej Karpathy Skills** | https://github.com/multica-ai/andrej-karpathy-skills.git | Karpathy-style ML/AI teaching skills — deep learning fundamentals reference for Hermes self-improvement and model reasoning |
 | **Space Age Skills** | https://github.com/Burst37/Space-Age-Skills.git | This repo — all operational skills loaded by Hermes |
 
 ---
@@ -49,6 +50,9 @@ git clone https://github.com/ruvnet/ruflo.git
 
 # Open Design (UI/UX components + design tokens)
 git clone https://github.com/nexu-io/open-design.git
+
+# Andrej Karpathy Skills (ML/AI fundamentals)
+git clone https://github.com/multica-ai/andrej-karpathy-skills.git
 
 # Space Age Skills (operational skills)
 git clone https://github.com/Burst37/Space-Age-Skills.git /mnt/skills
@@ -84,7 +88,8 @@ Use `pablo-mano/Obsidian-CLI-skill` for terminal-driven vault operations and ski
 Use `obsidianmd/obsidian-releases` to cross-reference the official plugin/theme directory when building or validating Obsidian integrations.  
 Use `affaan-m/everything-claude-code` for best-practice Claude Code hooks, MCP server configs, and prompt patterns applicable to Lane C and Hermes orchestration.  
 Use `ruvnet/ruflo` as an agentic workflow reference — study its agent loop design and orchestration patterns when extending Hermes capabilities.  
-Use `nexu-io/open-design` as a UI component and design token reference when Hermes routes to Lane A/C for front-end deliverables.
+Use `nexu-io/open-design` as a UI component and design token reference when Hermes routes to Lane A/C for front-end deliverables.  
+Use `multica-ai/andrej-karpathy-skills` for deep learning fundamentals and Karpathy-style teaching patterns — reference when Hermes needs to reason about model behavior or build ML-adjacent skills.
 
 ```bash
 # After extracting a new skill, push it to Space Age Skills
