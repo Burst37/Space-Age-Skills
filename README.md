@@ -68,9 +68,10 @@ Qualified Leads CSV → Google Sheets
 │ Google Stitch    │ Seedance 2.0     │ Kling 3.0    │ Hailuo 2      │
 │ (UI prototype)   │ (BG video loop)  │ (premium MV) │ (silent loop) │
 │        ↓         │        ↓         │      ↓       │       ↓       │
-│ Gemini Flash 3.1 │ DeepSeek V4 Pro  │ Claude       │ Minimax 2.7   │
-│ or Gemini Pro    │ via OpenRouter   │ Sonnet 4.6   │ via OpenRouter│
-│ (copy/structure) │ (full site code) │ (copy/logic) │ (UI components│
+│ Gemini CLI       │ DeepSeek V4 Pro  │ Claude       │ Minimax 2.7   │
+│ (gemini-2.5-     │ via OpenRouter   │ Sonnet 4.6   │ via OpenRouter│
+│ flash/pro)       │ (full site code) │ (copy/logic) │ (UI components│
+│ copy/structure   │                  │              │               │
 │        ↓         │        ↓         │      ↓       │       ↓       │
 │ Antigravity IDE  │ Direct file out  │ OpenAI Codex │ Direct file   │
 │ (2M ctx, free)   │ (no IDE needed)  │ + Claude Code│ out           │
@@ -208,9 +209,9 @@ Hours: [hours]
 | Virality analysis | Virality Predictor | `brain_activity` |
 
 ### Code Execution by Lane
-| Lane | Model | Via | IDE/Env |
+| Lane | Model | Via | Tool |
 |---|---|---|---|
-| A | Gemini Flash 3.1 / Pro | Google AI | Antigravity IDE (2M ctx, free) |
+| A | Gemini 2.5 Flash / Pro | Google AI (free tier) | **Gemini CLI** (`npx @google/gemini-cli`) |
 | B | DeepSeek V4 Pro | OpenRouter | Direct file output |
 | C | Claude Sonnet 4.6 + OpenAI Codex | Anthropic / OpenAI | Claude Code |
 | D | Minimax 2.7 | OpenRouter | Direct file output |
@@ -260,6 +261,12 @@ Hours: [hours]
 |---|---|---|
 | `sa-watch` | `user/sa-watch/` | Any video URL — auto-trigger |
 | `sa-video-skill-extractor` | `user/sa-video-skill-extractor/` | Video → SKILL.md extraction |
+
+### Platform Tool Skills
+
+| Skill | File | Trigger |
+|---|---|---|
+| `gemini-cli` | `user/gemini-cli/` | Lane A copy/structure, Google Search grounding, free-tier Gemini terminal agent |
 
 ---
 
