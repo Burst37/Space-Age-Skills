@@ -17,6 +17,7 @@ description: >
 |---|---|---|
 | **Hermes Web UI** | https://github.com/EKKOLearnAI/hermes-web-ui.git | Dashboard / UI for the Hermes orchestrator |
 | **Obsidian Skills** | https://github.com/kepano/obsidian-skills.git | Obsidian plugin — skill management reference for Hermes self-improvement loop |
+| **Obsidian Releases** | https://github.com/obsidianmd/obsidian-releases.git | Official Obsidian release registry — plugin/theme directory reference |
 | **Space Age Skills** | https://github.com/Burst37/Space-Age-Skills.git | This repo — all operational skills loaded by Hermes |
 
 ---
@@ -29,6 +30,9 @@ git clone https://github.com/EKKOLearnAI/hermes-web-ui.git
 
 # Obsidian Skills (skill management reference)
 git clone https://github.com/kepano/obsidian-skills.git
+
+# Obsidian Releases (plugin/theme registry)
+git clone https://github.com/obsidianmd/obsidian-releases.git
 
 # Space Age Skills (operational skills)
 git clone https://github.com/Burst37/Space-Age-Skills.git /mnt/skills
@@ -59,7 +63,8 @@ ELSE                                                    → Lane B (DeepSeek)
 ## SELF-IMPROVEMENT LOOP
 
 Hermes uses `sa-video-skill-extractor` to watch operator recordings and extract new SKILL.md files.  
-Use `kepano/obsidian-skills` as a reference architecture for how skills can be stored, tagged, and retrieved in a knowledge base.
+Use `kepano/obsidian-skills` as a reference architecture for how skills can be stored, tagged, and retrieved in a knowledge base.  
+Use `obsidianmd/obsidian-releases` to cross-reference the official plugin/theme directory when building or validating Obsidian integrations.
 
 ```bash
 # After extracting a new skill, push it to Space Age Skills
