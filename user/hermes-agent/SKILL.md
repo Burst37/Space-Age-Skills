@@ -20,6 +20,7 @@ description: >
 | **Obsidian Releases** | https://github.com/obsidianmd/obsidian-releases.git | Official Obsidian release registry — plugin/theme directory reference |
 | **Everything Claude Code** | https://github.com/affaan-m/everything-claude-code.git | Curated Claude Code tips, hooks, MCP configs, and patterns — reference for Hermes/Claude Code integration |
 | **Ruflo** | https://github.com/ruvnet/ruflo.git | Agentic workflow framework by ruvnet — reference for Hermes orchestration patterns and agent loop design |
+| **Open Design** | https://github.com/nexu-io/open-design.git | Open design system by nexu-io — reference for UI/UX components and design token architecture |
 | **Space Age Skills** | https://github.com/Burst37/Space-Age-Skills.git | This repo — all operational skills loaded by Hermes |
 
 ---
@@ -41,6 +42,9 @@ git clone https://github.com/affaan-m/everything-claude-code.git
 
 # Ruflo (agentic workflow / orchestration reference)
 git clone https://github.com/ruvnet/ruflo.git
+
+# Open Design (UI/UX components + design tokens)
+git clone https://github.com/nexu-io/open-design.git
 
 # Space Age Skills (operational skills)
 git clone https://github.com/Burst37/Space-Age-Skills.git /mnt/skills
@@ -74,7 +78,8 @@ Hermes uses `sa-video-skill-extractor` to watch operator recordings and extract 
 Use `kepano/obsidian-skills` as a reference architecture for how skills can be stored, tagged, and retrieved in a knowledge base.  
 Use `obsidianmd/obsidian-releases` to cross-reference the official plugin/theme directory when building or validating Obsidian integrations.  
 Use `affaan-m/everything-claude-code` for best-practice Claude Code hooks, MCP server configs, and prompt patterns applicable to Lane C and Hermes orchestration.  
-Use `ruvnet/ruflo` as an agentic workflow reference — study its agent loop design and orchestration patterns when extending Hermes capabilities.
+Use `ruvnet/ruflo` as an agentic workflow reference — study its agent loop design and orchestration patterns when extending Hermes capabilities.  
+Use `nexu-io/open-design` as a UI component and design token reference when Hermes routes to Lane A/C for front-end deliverables.
 
 ```bash
 # After extracting a new skill, push it to Space Age Skills
