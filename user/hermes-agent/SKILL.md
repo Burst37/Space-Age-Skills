@@ -16,6 +16,7 @@ description: >
 | Repo | URL | Purpose |
 |---|---|---|
 | **Hermes Web UI** | https://github.com/EKKOLearnAI/hermes-web-ui.git | Dashboard / UI for the Hermes orchestrator |
+| **Hermes Desktop** | https://github.com/fathah/hermes-desktop.git | Desktop app for Hermes — native client interface for the orchestrator |
 | **Obsidian Skills** | https://github.com/kepano/obsidian-skills.git | Obsidian plugin — skill management reference for Hermes self-improvement loop |
 | **Obsidian Releases** | https://github.com/obsidianmd/obsidian-releases.git | Official Obsidian release registry — plugin/theme directory reference |
 | **Obsidian CLI Skill** | https://github.com/pablo-mano/Obsidian-CLI-skill.git | CLI skill for Obsidian — terminal-driven vault operations and skill authoring |
@@ -32,6 +33,9 @@ description: >
 ```bash
 # Hermes Web UI
 git clone https://github.com/EKKOLearnAI/hermes-web-ui.git
+
+# Hermes Desktop (native client)
+git clone https://github.com/fathah/hermes-desktop.git
 
 # Obsidian Skills (skill management reference)
 git clone https://github.com/kepano/obsidian-skills.git
@@ -89,7 +93,8 @@ Use `obsidianmd/obsidian-releases` to cross-reference the official plugin/theme 
 Use `affaan-m/everything-claude-code` for best-practice Claude Code hooks, MCP server configs, and prompt patterns applicable to Lane C and Hermes orchestration.  
 Use `ruvnet/ruflo` as an agentic workflow reference — study its agent loop design and orchestration patterns when extending Hermes capabilities.  
 Use `nexu-io/open-design` as a UI component and design token reference when Hermes routes to Lane A/C for front-end deliverables.  
-Use `multica-ai/andrej-karpathy-skills` for deep learning fundamentals and Karpathy-style teaching patterns — reference when Hermes needs to reason about model behavior or build ML-adjacent skills.
+Use `multica-ai/andrej-karpathy-skills` for deep learning fundamentals and Karpathy-style teaching patterns — reference when Hermes needs to reason about model behavior or build ML-adjacent skills.  
+Use `fathah/hermes-desktop` as the native desktop client reference when building or extending the Hermes local interface.
 
 ```bash
 # After extracting a new skill, push it to Space Age Skills
