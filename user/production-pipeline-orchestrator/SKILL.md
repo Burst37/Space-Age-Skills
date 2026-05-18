@@ -1795,37 +1795,55 @@ STANDARD_INTEGRATIONS:
 
 ### 5.1 Coding Agent Routing Matrix
 
-Route to optimal coding agent based on project requirements:
+> **Claude Code = orchestrator only. Never writes site code — too expensive at scale.**
+> **All code generation routes to cheaper models via VS Code on the DigitalOcean VPS.**
 
 ```yaml
 CODING_AGENT_MATRIX:
+
+  # ─── CLAUDE CODE — ORCHESTRATOR ONLY ─────────────────────────────────────
   claude_code:
+    role: "ORCHESTRATOR — not a coder"
+    does: "Writes prompts, manages phase handoffs, makes routing decisions,
+           generates SEO briefs, writes Stitch prompts, reviews output quality"
+    never_does: "Writes site code — cost is too high at production volume"
+    cost: "Minimal — orchestration is low token volume"
+
+  # ─── PRIMARY CODER ────────────────────────────────────────────────────────
+  deepseek_v4:
     priority: 1
-    use_case: "Full-stack React/Next.js landing pages with cinematic hero"
-    strengths: ["Component architecture", "TypeScript", "API integration", "production-ready code"]
-    tasks: ["Landing page core build", "Component implementation", "Responsive layout"]
+    role: "PRIMARY site coder — handles the majority of all builds"
+    ide: "VS Code (DigitalOcean VPS)"
+    cost: "~99% cheaper than Claude Opus"
+    quality: "~95% of Claude Opus quality — production-ready"
+    use_case: "All standard site builds — default unless another agent is specified"
+    tasks: ["Full page build", "Component implementation", "Responsive layout",
+            "API integration", "Supabase wiring", "SEO injection"]
 
-  antigravity:
+  # ─── SECONDARY CODER ──────────────────────────────────────────────────────
+  openai_codex:
     priority: 2
-    use_case: "Creative animations, WebGL, Three.js for immersive effects"
-    strengths: ["Cinematic effects", "Particle systems", "3D interfaces", "video backgrounds"]
-    tasks: ["Hero video integration", "Scroll animations", "Parallax effects", "WebGL experiences"]
+    role: "Secondary coder — parallel builds or OpenAI-stack preference"
+    ide: "VS Code (DigitalOcean VPS)"
+    use_case: "Overflow builds, client specifically on OpenAI stack"
+    tasks: ["Full page build", "Component implementation", "Responsive layout"]
 
-  openclaw:
+  # ─── TERTIARY CODER ───────────────────────────────────────────────────────
+  minimax_v2_7:
     priority: 3
-    use_case: "Automation workflows, bot integrations, webhook systems"
-    strengths: ["Webhook systems", "External API connections", "Scheduled tasks", "form handlers"]
-    tasks: ["Form automation", "Lead capture", "Email integration", "CRM hooks"]
+    role: "Tertiary coder — additional parallel build capacity"
+    ide: "VS Code (DigitalOcean VPS)"
+    use_case: "High-volume days when DeepSeek and Codex are both busy"
+    tasks: ["Full page build", "Component implementation"]
 
-  max_law:
-    priority: 4
-    use_case: "Backend architecture, Supabase schema, complex integrations"
-    strengths: ["Database design", "Auth systems", "Complex queries", "API endpoints"]
-    tasks: ["Supabase backend", "Auth configuration", "Database schema", "RLS policies"]
-
-  default_fallback:
-    agent: "mini-coder-max"
-    use_case: "General coding tasks, quick fixes"
+  # ─── DECISION TREE ────────────────────────────────────────────────────────
+  routing_logic: |
+    Is this a standard site build?
+      YES → DeepSeek V4 (default)
+      NO, DeepSeek busy / client on OpenAI stack → Codex
+      NO, both busy → MiniMax 2.7
+    All run in VS Code on DigitalOcean VPS in parallel
+    Claude Code orchestrates all — writes no site code
 ```
 
 ### 5.2 Development Brief Format
@@ -2092,11 +2110,11 @@ PHASE 4.5: AI + SEO OPTIMIZATION (MANDATORY — EVERY SITE)
 -> Output: SEO brief + full auto-inject spec → feeds directly into code build
 
 PHASE 5: DEVELOPMENT HANDOFF
--> Build comprehensive development brief
--> Route to Claude Code for landing page build
--> Route to Antigravity for cinematic effects and animations
--> Route to OpenClaw for form automation
--> Route to Max Law for Supabase backend
+-> Claude Code writes dev brief (orchestrator only — writes no site code)
+-> Route to DeepSeek V4 (default) / Codex / MiniMax 2.7 in VS Code on VPS
+-> All coders run in parallel across client sites simultaneously
+-> Voice agent (Google AI Studio, Gemini 3.1 Flash + TTS) wired into every build
+-> AI + SEO spec auto-injected into every build (Phase 4.5 checklist enforced)
 
 PHASE 6: SUPABASE BACKEND
 -> Create database schema (users, clients, projects, leads, analytics)
