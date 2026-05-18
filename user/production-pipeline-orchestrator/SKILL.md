@@ -1565,19 +1565,44 @@ Was the raw Higgsfield clip 5-10 seconds?
 
 ## PHASE 4: UI/UX DESIGN (GOOGLE STITCH 2.0)
 
-> **Triggered automatically when Phase 3 video is complete.**
+> **Triggered automatically when Phase 3.5 FFmpeg processing is complete.**
 
-### 4.1 Google Stitch 2.0 Integration
+### 4.1 Claude Writes the Stitch Prompt
+
+Before opening Stitch, Claude generates the full site prompt from onboarding data:
+
+```
+STITCH_PROMPT_TEMPLATE:
+  "Design a [layout_type] landing page for [brand_name], a [industry] brand
+   targeting [target_audience]. The hero section features a full-screen
+   cinematic video background ([duration]s, [mood] tone). Primary CTA is
+   '[cta_text]'. Brand colors: [primary], [secondary], [accent]. Typography
+   feel: [style]. Mobile-first. All tap targets minimum 44×44px. Spacing
+   clean and generous. Images large and edge-to-edge where possible.
+   Sections needed: [Hero / About / Services / Testimonials / CTA / Footer].
+   Overall feel: [mood_descriptor]."
+```
+
+### 4.2 Asset Upload to Stitch
+
+Claude uploads in this order before submitting the prompt:
+
+```yaml
+STITCH_ASSET_UPLOAD_ORDER:
+  1_hero_video:   "output_hero.mp4 (Phase 3.5 FFmpeg output)"
+  2_poster_frame: "poster.jpg (Phase 3.5 fallback frame)"
+  3_brand_images: "All Phase 2 generated images"
+  4_logo:         "Client logo file (from onboarding)"
+  5_brand_kit:    "Colors, fonts, spacing from Phase 1 CLIENT_PROFILE"
+```
+
+### 4.3 Stitch Generates UI/UX + Wireframe
 
 ```
 STITCH_WORKFLOW:
-  # Inputs arrive automatically from Phase 3 output
   input:
-    cinematic_hero_video: [Phase 3 output — MP4, web-optimized]
-    hero_poster_image: [Phase 3 fallback frame — JPG/WebP]
-    project_brief: [Phase 1 onboarding data]
-    brand_assets: [Colors, fonts, logos from Phase 1]
-    competitor_references: [Optional Pinterest URLs from Phase 2]
+    stitch_prompt: [Claude-written prompt from 4.1]
+    uploaded_assets: [All files from 4.2]
 
   design_directives:
     layout: "full-screen hero" | "split-screen" | "grid" | "minimal"
@@ -1587,16 +1612,118 @@ STITCH_WORKFLOW:
     touch_targets: "minimum 44×44px — all buttons and tap targets"
     video_background: true
     responsive_images: true
+    spacing: "clean and generous — no cramped sections"
 
   output:
+    wireframe: "Full page wireframe (desktop + mobile)"
     figma_link: "Generated Stitch design URL"
     component_specs: [Detailed component list]
     interaction_map: [User flow diagram]
-    asset_requirements: [Additional images, icons needed]
     implementation_guide: [CSS/HTML specs for video background + touch targets]
+    asset_requirements: [Any additional images or icons flagged by Stitch]
 ```
 
-### 4.2 Design System Generation
+> **Phase 4 → Phase 4.5 is automatic. Wireframe out = AI + SEO layer in.**
+
+---
+
+## PHASE 4.5: AI + SEO OPTIMIZATION
+
+> **Mandatory on every site. Runs after Stitch wireframe, before code build.**
+> **SEO specs must exist before a single line of code is written — they define the page structure.**
+
+### 4.5.1 AI SEO Layer
+
+Every page Claude builds is optimized for both traditional search engines and AI crawlers (ChatGPT, Perplexity, Gemini, Claude).
+
+```yaml
+AI_SEO_SPEC:
+  # Traditional SEO
+  meta:
+    title: "[Brand] — [Primary Keyword] | [City/Niche if local]"
+    description: "150-160 chars — benefit-led, includes primary keyword"
+    canonical: "[Preferred URL]"
+    robots: "index, follow"
+
+  headings:
+    h1: "One per page — primary keyword, above the fold"
+    h2: "Section headers — secondary keywords, scannable"
+    h3: "Sub-points — long-tail and supporting terms"
+
+  schema_org:
+    - "LocalBusiness or Organization (every site)"
+    - "WebPage or WebSite"
+    - "BreadcrumbList (multi-page)"
+    - "FAQPage (if FAQ section present)"
+    - "Review / AggregateRating (if testimonials present)"
+    - "Product / Service (if applicable)"
+
+  core_web_vitals:
+    LCP: "Hero video poster loads <2.5s (faststart MP4 + preload poster)"
+    CLS: "Reserve space for video/image before load — no layout shift"
+    INP: "All tap targets 44×44px minimum — instant response"
+
+  # AI Crawler Optimization (llms.txt + structured content)
+  ai_optimization:
+    llms_txt: "Generate /llms.txt at site root — plain-language site summary for AI crawlers"
+    llms_full_txt: "Generate /llms-full.txt — complete content dump for deep AI indexing"
+    content_structure: "Clear topic sentences, no jargon walls, scannable sections"
+    entity_clarity: "Brand name + location + service mentioned in first 100 words"
+    faq_section: "Minimum 5 Q&A pairs targeting voice search and AI answer boxes"
+    structured_data: "JSON-LD injected in <head> — not inline"
+
+  # Open Graph + Social
+  open_graph:
+    og_title: "[Page title]"
+    og_description: "[Meta description]"
+    og_image: "poster.jpg from Phase 3.5 (1200×630 crop)"
+    og_type: "website"
+    twitter_card: "summary_large_image"
+```
+
+### 4.5.2 SEO Content Brief
+
+Claude generates this before Phase 5 code build:
+
+```
+SEO_CONTENT_BRIEF:
+  primary_keyword: "[Main target term]"
+  secondary_keywords: ["[Term 2]", "[Term 3]", "[Term 4]"]
+  local_terms: ["[City]", "[Neighborhood]", "[Region]"] (if local business)
+  content_per_section:
+    hero:       "H1 + subheadline — primary keyword in first 8 words"
+    about:      "H2 + 2-3 sentences — brand story, secondary keyword"
+    services:   "H2 + service cards — one H3 per service with keyword"
+    faq:        "H2 + 5+ Q&A pairs — voice search + AI answer box targets"
+    cta:        "Action-oriented — no keyword stuffing, benefit-led"
+    footer:     "NAP (Name, Address, Phone) — schema.org LocalBusiness anchor"
+  word_count_target: "800-1200 words total (enough for indexing, not bloated)"
+```
+
+### 4.5.3 Auto-Inject Checklist (enforced in Phase 5 code build)
+
+```
+Every site Claude builds MUST include:
+  [ ] <title> and <meta description> — keyword-optimized
+  [ ] Canonical URL tag
+  [ ] JSON-LD schema.org block in <head>
+  [ ] Open Graph + Twitter Card meta tags
+  [ ] og:image pointing to poster.jpg (1200×630)
+  [ ] /llms.txt at site root
+  [ ] /llms-full.txt at site root
+  [ ] robots.txt with sitemap reference
+  [ ] /sitemap.xml
+  [ ] FAQ section with minimum 5 Q&A pairs
+  [ ] NAP in footer (local businesses)
+  [ ] Alt text on every image (keyword-aware, descriptive)
+  [ ] Preload hint for hero video poster
+```
+
+> **Phase 4.5 → Phase 5 is automatic. SEO brief out = code build in.**
+
+---
+
+### 4.6 Design System Generation
 
 Create brand-consistent design system:
 
@@ -1631,6 +1758,32 @@ DESIGN_SYSTEM_OUTPUT:
 ---
 
 ## PHASE 5: DEVELOPMENT HANDOFF (CODING AGENTS)
+
+> **Every build receives: Stitch wireframe + SEO brief + AI optimization spec + voice agent integration.**
+
+### 5.0 Standard Integrations (Every Site — No Exceptions)
+
+```yaml
+STANDARD_INTEGRATIONS:
+  ai_seo:
+    status: "MANDATORY"
+    what: "All Phase 4.5 SEO specs auto-injected — schema, llms.txt, meta, sitemap"
+
+  voice_agent:
+    status: "STANDARD — included on every site"
+    provider: "Vapi (via vapi-orchestrator skill)"
+    placement: "Floating button — bottom-right, 56×56px tap target"
+    behavior: "Answers FAQs, captures leads, books appointments via voice"
+    trigger: "Auto-appears after 5s or on exit intent"
+    fallback: "If Vapi unavailable → chat widget fallback"
+    config: |
+      {
+        "assistant": "[Brand]-voice-agent",
+        "greeting": "Hey, I'm [Brand]'s AI assistant — how can I help?",
+        "tasks": ["answer_faq", "capture_lead", "book_appointment"],
+        "end_call_message": "Thanks — someone will follow up shortly."
+      }
+```
 
 ### 5.1 Coding Agent Routing Matrix
 
@@ -1919,10 +2072,16 @@ PHASE 3: IMAGE-TO-VIDEO (FULL-SCREEN HERO)
 -> ★ AUTO-ADVANCE → Phase 4 (processed MP4 + poster → Stitch, no manual step)
 
 PHASE 4: UI/UX DESIGN (GOOGLE STITCH 2.0)
--> Create landing page design with cinematic hero video
--> Generate design system tokens (colors, typography, spacing)
--> Design social media templates
--> Output component specs and interaction map
+-> Claude writes Stitch prompt from onboarding data
+-> Upload assets (video, poster, images, logo, brand kit) to Stitch
+-> Stitch generates wireframe + UI/UX (desktop + mobile)
+-> Output: Figma link, component specs, interaction map
+
+PHASE 4.5: AI + SEO OPTIMIZATION (MANDATORY — EVERY SITE)
+-> Generate SEO content brief (keywords, headings, schema, word count)
+-> Define AI crawler layer (llms.txt, llms-full.txt, FAQ, entity clarity)
+-> Build auto-inject checklist for Phase 5 code build
+-> Output: SEO brief + full auto-inject spec → feeds directly into code build
 
 PHASE 5: DEVELOPMENT HANDOFF
 -> Build comprehensive development brief
