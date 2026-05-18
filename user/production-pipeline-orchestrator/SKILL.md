@@ -1497,41 +1497,46 @@ LANDING_PAGE_HERO_WORKFLOW:
   step_2: "Extract cinematic DNA from image (colors, lighting, mood)"
   step_3: "Select video platform: Seedance 2.0 (default) → Kling 3.0 (camera moves) → Veo 3.1 (rare, long-form) — all via Higgsfield MCP"
   step_4: "Generate cinematic video JSON prompt (cinematic-video-architect)"
-  step_5: "Render video asset at target resolution"
-  step_6: "Optimize for web (compress, add fallback poster image)"
-  step_7: "Hand off to UI/UX design with implementation specs"
+  step_5: "Render video asset at target resolution via Higgsfield MCP"
+  step_6: "Optimize for web (compress to <10MB H.264, generate fallback poster image)"
+  step_7: "→ AUTO-ADVANCE TO PHASE 4: pass video file + poster + brand assets directly to Google Stitch 2.0"
 ```
+
+> **Phase 3 → Phase 4 is automatic. Video out = Stitch in. No manual handoff step.**
 
 ---
 
 ## PHASE 4: UI/UX DESIGN (GOOGLE STITCH 2.0)
 
-### 4.1 Google Stitch 2.0 Integration
+> **Triggered automatically when Phase 3 video is complete.**
 
-**For landing page design, invoke Google Stitch 2.0 skill:**
+### 4.1 Google Stitch 2.0 Integration
 
 ```
 STITCH_WORKFLOW:
+  # Inputs arrive automatically from Phase 3 output
   input:
-    project_brief: [From onboarding Phase 1]
-    brand_assets: [Colors, fonts, logos from onboarding]
-    cinematic_hero_video: [From Phase 3 - full-screen hero]
-    hero_image: [From Phase 2 - for fallback/poster]
-    competitor_references: [Optional Pinterest URLs or sites]
+    cinematic_hero_video: [Phase 3 output — MP4, web-optimized]
+    hero_poster_image: [Phase 3 fallback frame — JPG/WebP]
+    project_brief: [Phase 1 onboarding data]
+    brand_assets: [Colors, fonts, logos from Phase 1]
+    competitor_references: [Optional Pinterest URLs from Phase 2]
 
   design_directives:
     layout: "full-screen hero" | "split-screen" | "grid" | "minimal"
     navigation: "sticky" | "hidden" | "floating" | "none"
     cta_placement: "hero_center" | "hero_bottom" | "after_hero" | "both"
     mobile_first: true
+    touch_targets: "minimum 44×44px — all buttons and tap targets"
     video_background: true
+    responsive_images: true
 
   output:
     figma_link: "Generated Stitch design URL"
     component_specs: [Detailed component list]
     interaction_map: [User flow diagram]
     asset_requirements: [Additional images, icons needed]
-    implementation_guide: [CSS/HTML specs for video background]
+    implementation_guide: [CSS/HTML specs for video background + touch targets]
 ```
 
 ### 4.2 Design System Generation
@@ -1852,7 +1857,8 @@ PHASE 3: IMAGE-TO-VIDEO (FULL-SCREEN HERO)
 -> Invoke cinematic-video-architect skill
 -> Generate JSON prompt for image-to-video conversion
 -> Render cinematic hero video via Higgsfield MCP (Seedance 2.0 default → Kling 3.0 for camera moves → Veo 3.1 rare/long-form)
--> Optimize for web (compress, add fallback poster)
+-> Optimize for web (compress to <10MB H.264, generate fallback poster)
+-> ★ AUTO-ADVANCE → Phase 4 (video out = Stitch in, no manual step)
 
 PHASE 4: UI/UX DESIGN (GOOGLE STITCH 2.0)
 -> Create landing page design with cinematic hero video
