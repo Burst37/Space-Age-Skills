@@ -2,27 +2,266 @@
 name: sa-site-intelligence
 description: >
   Claude's orchestration intelligence layer. Runs at two moments: (1) at session START as the
-  intake questionnaire to determine pipeline mode (batch leads / single build / existing site rebuild),
-  and (2) before coding agent dispatch to generate a site-specific brief with context-aware module
-  selection. TRIGGER IMMEDIATELY when starting any new project, when the pipeline mode is unclear,
-  or when building the per-site coding brief. Prevents over-engineering simple sites and
-  under-building complex ones. Claude acts as project director — it writes the brief, selects
-  modules, and delegates to the right coding agent.
-version: 1.0
+  intake system — first checks for reference inputs (URLs, images, MP4s) and extracts design DNA
+  from them before falling back to the A/B/C/D questionnaire, and (2) before coding agent dispatch
+  to generate a site-specific brief with context-aware module selection. TRIGGER IMMEDIATELY when
+  starting any new project, when references are uploaded, or when building the per-site coding
+  brief. Claude acts as project director — it reads the references, classifies the business,
+  selects modules, writes the brief, and dispatches the right agent.
+version: 1.1
 updated: 2026-05-18
 ---
 
 # SA SITE INTELLIGENCE
-## Claude as Project Director — Intake, Analysis & Coding Brief Generator
+## Claude as Project Director — Reference Intake, Analysis & Coding Brief Generator
 
-Claude is the orchestrator. It does not build the site — it thinks about the site, writes the brief,
-selects the right tools, and dispatches the right agent. This skill governs that reasoning.
+Claude is the orchestrator. It reads what you give it, extracts what it needs, and builds the
+brief. Drop references first. Answer questions only if there's nothing to extract from.
+
+---
+
+## PART 0 — REFERENCE INTAKE MODE
+
+**Run this BEFORE the questionnaire.** Check for any reference inputs in the session.
+If references exist, extract from them. Only fall back to the questionnaire if nothing is provided.
+
+```
+REFERENCE_DETECTION:
+  on session start, check for:
+    □ URL(s) pasted into chat
+    □ Image(s) uploaded (PNG, JPG, WEBP, screenshot)
+    □ MP4 / video file uploaded
+    □ Pinterest link
+    □ Any combination of the above
+  
+  if references found → run Reference Extraction (below)
+  if no references → run Part 1 Questionnaire
+  if partial references → extract what exists, ask only for what's missing
+```
+
+---
+
+### 0A — URL REFERENCE EXTRACTION
+
+When a URL is provided (competitor site, inspiration site, client's existing site):
+
+**Tool:** `browserbase-fetch` or `firecrawl-mcp`
+
+```
+URL_EXTRACTION_PROTOCOL:
+
+  step_1_scrape:
+    action: "Fetch the full page — HTML, CSS, visible text"
+    extract:
+      - Page title + meta description
+      - Color values (background, text, buttons, accents)
+      - Font families in use
+      - Section structure (what sections exist, in what order)
+      - Navigation pattern (sticky / floating / hidden)
+      - CTA text and placement
+      - Animation/motion signals (GSAP classes, scroll triggers, CSS transitions)
+      - 3D elements (Spline embeds, Three.js canvas, WebGL)
+      - Social proof signals (reviews, logos, counters)
+      - Form type (contact / booking / multi-step / chatbot)
+      - Business type inference
+
+  step_2_assess:
+    what_is_working:
+      - Strong visual hierarchy? (yes/no)
+      - Clear CTA? (yes/no)
+      - Premium aesthetic? (yes/no)
+      - Motion present? (yes/no + level)
+      - Mobile-first signals? (yes/no)
+    what_is_missing:
+      - List gaps against the 9-section structure
+      - List missing trust signals
+      - Note aesthetic category mismatch if any
+      - Note performance red flags
+
+  step_3_output:
+    format: |
+      URL ANALYSIS — [domain]
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      Business type detected:  [type]
+      Aesthetic category:      [01–07 from ultimate-design-director]
+      Color palette extracted: [hex values]
+      Fonts detected:          [names]
+      Sections present:        [list]
+      Sections missing:        [list vs. 9-section ideal]
+      Motion level:            [None / Basic / Intermediate / Advanced]
+      3D detected:             [None / Spline / Three.js / other]
+      What's working:          [bullet list]
+      What's missing/weak:     [bullet list]
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      RECOMMENDATION: [rebuild / upgrade / reference only]
+      PIPELINE MODE:  [batch_build / single_build / existing_rebuild]
+```
+
+**Multiple URLs:** Run extraction on each. Synthesize a composite: take the best elements
+from each (strongest color palette, best section structure, highest motion level that fits
+the business type). Note: "From site A I'm taking the dark color system. From site B I'm
+taking the bento grid section structure."
+
+---
+
+### 0B — IMAGE REFERENCE EXTRACTION
+
+When one or more images are uploaded (brand assets, competitor screenshots, mood board,
+Pinterest saves, logo files, hero image inspiration):
+
+**Tool:** Claude native vision — analyze directly, no external tool needed.
+
+```
+IMAGE_EXTRACTION_PROTOCOL:
+
+  for_each_image:
+    extract:
+      color_palette:
+        - Dominant background color → hex estimate
+        - Primary text/element color → hex estimate
+        - Accent color(s) → hex estimate
+        - Overall temperature (warm / cool / neutral)
+      aesthetic_category:
+        - Match to one of 7 aesthetics from ultimate-design-director
+        - Confidence: high / medium / low
+      composition_signals:
+        - Layout type (centered / asymmetric / grid / editorial)
+        - Typography scale (jumbo / editorial / minimal)
+        - Whitespace usage (generous / tight / mixed)
+        - Depth cues (layers / flat / spatial)
+      mood_and_tone:
+        - Energy level (calm / dynamic / bold / minimal)
+        - Industry signals (professional / creative / luxury / local / tech)
+        - Cinema mode match (M1 Narrative / M2 Editorial / M3 Action / M4 Performance / M5 Atmospheric)
+      if_logo_or_brand_asset:
+        - Extract brand colors
+        - Note typography style
+        - Feed directly into sa-design-md token generation
+      if_hero_image:
+        - Note subject, lighting, camera angle
+        - This becomes the first-frame reference for video prompt generation
+        - Route to cinematic-video-architect for hero video prompt
+
+  synthesis_output:
+    format: |
+      IMAGE ANALYSIS — [count] image(s)
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      Aesthetic match:         [name] (confidence: high/medium/low)
+      Palette extracted:
+        Background:  [hex]
+        Primary:     [hex]
+        Accent:      [hex]
+      Mood/tone:               [descriptor]
+      Cinema mode for video:   [M1–M5]
+      Hero image detected:     [yes → will use as first-frame reference / no]
+      Brand assets detected:   [yes → routing to sa-design-md / no]
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      APPLYING TO: design tokens + aesthetic selection + hero video brief
+```
+
+**Multiple images:** Cross-reference for consistency. If palettes conflict, ask:
+"I see two different color directions — [palette A] vs [palette B]. Which feel closer to
+what you want?" This is the ONE clarifying question allowed for image conflicts.
+
+---
+
+### 0C — MP4 / VIDEO REFERENCE EXTRACTION
+
+When a video file is uploaded or a video URL is provided:
+
+**Tool:** Claude vision on key frames + `cinematic-video-architect` for prompt extraction
+
+```
+VIDEO_EXTRACTION_PROTOCOL:
+
+  step_1_analyze_frames:
+    sample: first frame / middle frame / last frame
+    extract_per_frame:
+      - Color grading (warm / cool / desaturated / high contrast / filmic)
+      - Lighting style (natural / studio / dramatic / ambient)
+      - Subject (person / product / environment / abstract)
+      - Composition (wide / close / overhead / POV)
+
+  step_2_motion_analysis:
+    extract:
+      camera_movement:   [static / dolly / orbit / handheld / tracking]
+      pacing:            [slow cinematic / moderate / fast dynamic]
+      cut_frequency:     [long takes / quick cuts / mixed]
+      physics_quality:   [realistic / stylized / abstract]
+    map_to_cinema_mode:
+      - Static + slow + atmospheric → M5 Atmospheric
+      - Handheld + gritty + fast → M3 Action
+      - Locked-off + saturated + editorial → M2 Studio
+      - Mixed + narrative + character-driven → M1 Narrative
+      - Energy + performance + crowd → M4 Performance
+
+  step_3_style_extraction:
+    extract:
+      - Overall aesthetic → match to ultimate-design-director aesthetics
+      - GSAP motion level implied → Basic / Intermediate / Advanced
+      - Whether this is: hero video reference / motion style reference / full site inspiration
+
+  output:
+    format: |
+      VIDEO ANALYSIS — [filename or URL]
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      Cinema mode:             [M1–M5 + name]
+      Camera movement:         [descriptor]
+      Color grading:           [descriptor + temp estimate]
+      Pacing:                  [slow / moderate / fast]
+      Aesthetic match:         [from ultimate-design-director]
+      GSAP motion level:       [Basic / Intermediate / Advanced]
+      Use as:                  [hero video reference / motion style / full inspiration]
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      ROUTING: cinematic-video-architect will use this as style reference for hero video prompt
+```
+
+---
+
+### 0D — COMBINED REFERENCE SYNTHESIS
+
+When multiple reference types are provided together (e.g. a URL + 3 images + an MP4):
+
+```
+SYNTHESIS_PROTOCOL:
+  priority_order:
+    1: Images (direct brand DNA — highest specificity)
+    2: MP4 (motion + cinema direction)
+    3: URL (structural reference + section gaps)
+
+  conflict_resolution:
+    if color conflict:   → images win over URL scrape
+    if motion conflict:  → MP4 wins over URL motion level
+    if structure conflict: → note both options, ask one question max
+
+  synthesis_output:
+    format: |
+      REFERENCE SYNTHESIS — [count] inputs analyzed
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      Sources: [URL: domain] + [N images] + [MP4: filename]
+
+      DESIGN DNA EXTRACTED:
+      Aesthetic:          [selected] — from [source]
+      Color palette:
+        Background:       [hex] — from [source]
+        Primary:          [hex] — from [source]
+        Accent:           [hex] — from [source]
+      Cinema mode:        [M1–M5] — from [source]
+      Motion level:       [Basic / Intermediate / Advanced] — from [source]
+      Section structure:  [what to include] — from [source]
+      What to improve:    [gaps found in URL analysis]
+
+      BUSINESS TYPE:      [inferred from all inputs]
+      PIPELINE MODE:      [batch / single / rebuild]
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      Proceeding to brief generation — confirm or redirect →
+```
 
 ---
 
 ## PART 1 — SESSION START QUESTIONNAIRE
 
-Run this FIRST, before any other phase. Ask only these questions — nothing else yet.
+**Only runs if no references were provided in Part 0.**
 
 ```
 SA INTAKE — PROJECT TYPE
@@ -31,16 +270,9 @@ SA INTAKE — PROJECT TYPE
 What are we building today?
 
   [A] BATCH BUILD — I have leads from the prospecting sheet
-       → I'll need niche, city, and how many sites to run in parallel
-
   [B] SINGLE SITE BUILD — One specific client or business
-       → I'll ask about the business, style, and goals
-
-  [C] EXISTING SITE REBUILD / UPGRADE — I have a URL to work from
-       → I'll scrape and audit the existing site, then rebuild or upgrade
-
-  [D] FRESH CLIENT BRIEF — I have a client intake form or brief to parse
-       → Paste it and I'll extract everything needed
+  [C] EXISTING SITE REBUILD — I have a URL to work from
+  [D] FRESH CLIENT BRIEF — Paste it and I'll extract everything
 
 Reply A, B, C, or D (or just describe what you're doing):
 ```
@@ -50,32 +282,30 @@ Reply A, B, C, or D (or just describe what you're doing):
 ```
 MODE_ROUTING:
   A — batch_build:
-    next: sa-prospecting-agent (if not already run)
-    or:   production-pipeline-orchestrator → parallel_batch mode
-    agent_count: min(lead_count, 7)   # one agent per site, max 7 simultaneous
+    next: sa-prospecting-agent → production-pipeline-orchestrator (parallel batch)
+    agent_count: min(lead_count, 7)
 
   B — single_build:
-    next: brand-extractor → sa-design-md → [this skill: Phase 4.5 brief]
+    next: ultimate-design-director → sa-design-md → coding brief → agent dispatch
     agent_count: 1
 
   C — existing_rebuild:
-    next: page-upgrade (audit) → brand-extractor → sa-design-md → [this skill: Phase 4.5 brief]
+    action: run 0A URL extraction first, then treat as single_build
+    next: page-upgrade (audit) → ultimate-design-director → sa-design-md → brief
     agent_count: 1
-    note: "Scrape existing site for brand DNA before building"
 
   D — client_brief_parse:
-    next: parse brief → brand-extractor → sa-design-md → [this skill: Phase 4.5 brief]
+    action: parse brief → extract business type + goals → treat as single_build
     agent_count: 1
 ```
 
 ---
 
-## PART 2 — BUSINESS INTELLIGENCE ANALYSIS
+## PART 2 — BUSINESS INTELLIGENCE & MODULE SELECTION
 
-Before writing the coding brief, Claude analyzes the business. This determines module selection,
-tone, complexity ceiling, and which coding agent to use.
+After reference extraction or questionnaire, classify the business and apply constraints.
 
-### Business Type Classification
+### Business Type → Complexity Ceiling → Module Cap
 
 ```yaml
 BUSINESS_PROFILES:
@@ -85,17 +315,9 @@ BUSINESS_PROFILES:
     tone: "clean, trustworthy, professional, calm"
     complexity_ceiling: MEDIUM
     modules_max: 5
-    recommended:
-      - text-mask-reveal        # hero headline entrance
-      - sticky-card-stack       # services or pricing cards
-      - odometer-counter        # patient count, years in practice, 5-star reviews
-      - spotlight-border-cards  # team or service highlights
-      - scroll-color-shift      # subtle section transitions
-    avoid:
-      - particle-explosion-button
-      - glitch-effect
-      - image-trail
-      - drag-to-pan-grid
+    recommended: [text-mask-reveal, sticky-card-stack, odometer-counter, spotlight-border-cards, scroll-color-shift]
+    avoid: [particle-explosion-button, glitch-effect, image-trail, drag-to-pan-grid]
+    3d_webgl: false
     hero_video_style: "M1 Narrative — calm, cinematic, people-focused"
 
   trades_home_services:
@@ -103,302 +325,192 @@ BUSINESS_PROFILES:
     tone: "capable, local, reliable, straightforward"
     complexity_ceiling: MEDIUM
     modules_max: 5
-    recommended:
-      - curtain-reveal          # before/after reveal for work portfolio
-      - before-after            # project transformations
-      - scroll-color-shift      # season or service transitions
-      - kinetic-marquee         # services ticker
-      - text-mask-reveal        # hero headline
-    avoid:
-      - horizontal-scroll-hijack
-      - 3d-coverflow-carousel
-      - macos-dock-nav
-      - glitch-effect
-    hero_video_style: "M1 Narrative — outdoor work, natural light, B-roll of results"
-    special_note: "Show the RESULT not the process. Before/After is the single most powerful module."
+    recommended: [curtain-reveal, before-after, scroll-color-shift, kinetic-marquee, text-mask-reveal]
+    avoid: [horizontal-scroll-hijack, 3d-coverflow-carousel, macos-dock-nav, glitch-effect]
+    3d_webgl: false
+    hero_video_style: "M1 Narrative — outdoor work, natural light, results-focused"
+    special: "Before/After is the single highest-converting module for this type"
 
   restaurant_hospitality:
     includes: [restaurant, cafe, bar, hotel, bakery, food truck, catering, nightclub]
     tone: "warm, inviting, atmospheric, sensory"
-    complexity_ceiling: MEDIUM-HIGH
+    complexity_ceiling: MEDIUM_HIGH
     modules_max: 6
-    recommended:
-      - layered-zoom-parallax   # food/atmosphere imagery at depth
-      - curtain-reveal          # menu or dish reveals
-      - typewriter-effect       # specials, taglines
-      - circular-text-path      # ambient branding element
-      - mesh-gradient-background # ambient warmth
-      - odometer-counter        # years open, dishes served
-    avoid:
-      - glitch-effect
-      - 3d-flip-cards
-      - drag-to-pan-grid
+    recommended: [layered-zoom-parallax, curtain-reveal, typewriter-effect, circular-text-path, mesh-gradient-background, odometer-counter]
+    avoid: [glitch-effect, 3d-flip-cards, drag-to-pan-grid]
+    3d_webgl: false
     hero_video_style: "M4 Performance — energy, atmosphere, food close-ups"
 
   retail_ecommerce:
-    includes: [boutique, clothing store, jewelry, beauty, furniture, electronics retail]
+    includes: [boutique, clothing store, jewelry, beauty, furniture, electronics]
     tone: "desirable, editorial, product-focused"
     complexity_ceiling: HIGH
     modules_max: 7
-    recommended:
-      - horizontal-scroll-hijack # product gallery scrolling
-      - 3d-flip-cards           # product variants
-      - image-trail             # cursor creates editorial feel
-      - magnetic-repel-grid     # product grid interaction
-      - accordion-slider        # lookbook or collection reveal
-      - kinetic-marquee         # brand or offer ticker
-      - view-transition-morphing # cart / product transitions
-    hero_video_style: "M2 Studio/Editorial — product-forward, locked-off, saturated"
+    recommended: [horizontal-scroll-hijack, 3d-flip-cards, image-trail, magnetic-repel-grid, accordion-slider, kinetic-marquee, view-transition-morphing]
+    3d_webgl: spline_only
+    hero_video_style: "M2 Studio/Editorial — product-forward, saturated"
 
   creative_agency:
-    includes: [design agency, marketing agency, photography studio, video production, ad agency]
+    includes: [design agency, marketing agency, photography studio, video production]
     tone: "bold, expressive, distinctive, confident"
     complexity_ceiling: FULL
     modules_max: 8
-    recommended:
-      - image-trail             # cursor identity — THE signature module
-      - horizontal-scroll-hijack # portfolio flow
-      - mesh-gradient-background # ambient brand color
-      - 3d-coverflow-carousel   # case studies or work showcase
-      - scroll-svg-draw         # process or timeline
-      - glitch-effect           # brand edge (use sparingly)
-      - text-scramble-decode    # hero tagline entrance
-      - sticky-stack-narrative  # story scrolling
-    hero_video_style: "M3 Action or M2 Editorial — depends on agency personality"
+    recommended: [image-trail, horizontal-scroll-hijack, mesh-gradient-background, 3d-coverflow-carousel, scroll-svg-draw, glitch-effect, text-scramble-decode, sticky-stack-narrative]
+    3d_webgl: three_js_or_spline
+    hero_video_style: "M3 Action or M2 Editorial"
 
   tech_saas:
-    includes: [software company, SaaS, app, AI product, startup, fintech]
+    includes: [software, SaaS, app, AI product, startup, fintech]
     tone: "smart, fast, innovative, credible"
     complexity_ceiling: HIGH
     modules_max: 7
-    recommended:
-      - text-mask-reveal        # hero value prop
-      - scroll-svg-draw         # product flow or architecture diagram
-      - sticky-stack-narrative  # feature-by-feature scroll story
-      - odometer-counter        # users, uptime, savings stats
-      - spotlight-border-cards  # feature cards
-      - typewriter-effect       # rotating value propositions
-      - dynamic-island-nav      # modern nav pattern
-    hero_video_style: "M2 Studio/Editorial — product UI in motion, or M5 Atmospheric"
+    recommended: [text-mask-reveal, scroll-svg-draw, sticky-stack-narrative, odometer-counter, spotlight-border-cards, typewriter-effect, dynamic-island-nav]
+    3d_webgl: spline_preferred
+    hero_video_style: "M2 Studio/Editorial or M5 Atmospheric"
 
   fitness_wellness:
-    includes: [gym, personal trainer, yoga studio, spa, meditation app, nutrition coach]
-    tone: "energetic or calm — depends on brand, ask"
+    includes: [gym, personal trainer, yoga studio, spa, meditation, nutrition coach]
+    tone: "energetic or calm — ask if unclear"
     complexity_ceiling: MEDIUM
     modules_max: 5
-    recommended:
-      - layered-zoom-parallax   # body/movement imagery
-      - text-mask-reveal        # hero statement
-      - kinetic-marquee         # class schedule or testimonial ticker
-      - scroll-color-shift      # energy shift between sections
-      - odometer-counter        # members, classes, transformations
+    recommended: [layered-zoom-parallax, text-mask-reveal, kinetic-marquee, scroll-color-shift, odometer-counter]
+    3d_webgl: false
     hero_video_style: "M3 Action (gym) or M5 Atmospheric (spa/wellness)"
 
   real_estate:
-    includes: [real estate agent, property developer, rental company, mortgage broker]
+    includes: [real estate agent, property developer, rental, mortgage broker]
     tone: "aspirational, trustworthy, location-specific"
-    complexity_ceiling: MEDIUM-HIGH
+    complexity_ceiling: MEDIUM_HIGH
     modules_max: 6
-    recommended:
-      - layered-zoom-parallax   # property imagery at depth
-      - sticky-card-stack       # listing cards
-      - before-after            # renovation reveals
-      - curtain-reveal          # property section transitions
-      - odometer-counter        # homes sold, years in market, listings
-      - spotlight-border-cards  # agent profiles
-    hero_video_style: "M1 Narrative — neighborhood walk, property tours, golden hour"
+    recommended: [layered-zoom-parallax, sticky-card-stack, before-after, curtain-reveal, odometer-counter, spotlight-border-cards]
+    3d_webgl: false
+    hero_video_style: "M1 Narrative — neighborhood walk, golden hour"
 
   personal_brand:
     includes: [influencer, speaker, coach, consultant, author, musician, athlete]
-    tone: "authentic, personal, aspirational — match their personality"
-    complexity_ceiling: MEDIUM-HIGH
+    tone: "authentic, personal, aspirational — match personality"
+    complexity_ceiling: MEDIUM_HIGH
     modules_max: 6
-    recommended:
-      - text-mask-reveal        # name/tagline hero
-      - image-trail             # personality cursor effect
-      - accordion-slider        # content categories or offerings
-      - circular-text-path      # ambient personal brand mark
-      - sticky-stack-narrative  # story / journey scroll
-      - typewriter-effect       # rotating roles or achievements
-    hero_video_style: "M4 Performance — them in action, on stage, or in their element"
+    recommended: [text-mask-reveal, image-trail, accordion-slider, circular-text-path, sticky-stack-narrative, typewriter-effect]
+    3d_webgl: spline_only
+    hero_video_style: "M4 Performance — them in action or in their element"
 ```
 
 ---
 
-## PART 3 — SITE BRIEF GENERATION
+## PART 3 — MANDATORY PRE-BUILD DECLARATION
 
-After business classification, Claude writes a brief for the coding agent. This is what the agent
-actually receives — it should be complete enough to build without further questions.
-
-### Brief Template
+Claude MUST output this before any coding agent fires. No exceptions.
+The user approves or redirects. Build only starts after confirmation.
 
 ```
-SITE BUILD BRIEF
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Client:         [Business name]
-Business Type:  [Classification]
-Location:       [City, State]
-Pipeline Mode:  [batch_build / single_build / rebuild]
+SITE BUILD BRIEF — [Business Name]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-BRAND
-Primary Color:    [hex]
-Secondary Color:  [hex]
-Accent Color:     [hex]
-Font — Heading:   [font name, Fontsource CDN]
-Font — Body:      [font name, Fontsource CDN]
-Design System:    VL-01 Dark Glassmorphism (default) | [override if brand specifies]
+INPUTS USED
+  References:     [URL: domain / N images / MP4: filename / none — questionnaire]
+  Business type:  [classification]
+  Pipeline mode:  [batch / single / rebuild]
 
-HERO SECTION
-Video:          [URL from Phase 3 — FFmpeg processed]
-Poster Image:   [URL from Phase 2 — fallback frame]
-Overlay:        [gradient spec for text readability]
-Headline:       "[Headline copy]"
-Subheadline:    "[Subheadline copy]"
-CTA Button:     "[CTA text]" → [action: scroll / link / form]
+DESIGN DIRECTION
+  Aesthetic:      [name from ultimate-design-director]
+  Motion level:   [Basic / Intermediate / Advanced / Full WebGL]
+  3D / WebGL:     [None / Spline / Three.js + shaders]
+  Smooth scroll:  Lenis (always included)
+  Stack:          [Single-file HTML / Next.js]
 
-SELECTED MODULES (ordered by page position)
-1. [Module name] — [what it does in this specific context]
-2. [Module name] — [what it does in this specific context]
-3. [Module name] — [what it does in this specific context]
-[max: modules_max for this business type]
+BRAND TOKENS (from references or sa-design-md)
+  Background:     [hex]
+  Primary:        [hex]
+  Accent:         [hex]
+  Heading font:   [name — Fontsource]
+  Body font:      [name — Fontsource]
 
-SECTIONS (in order)
-1. Hero (full-screen video)
-2. [Section name + purpose]
-3. [Section name + purpose]
-4. [Section name + purpose]
-5. [Section name + purpose]
-6. Footer (contact, hours, address, phone)
+HERO
+  Video style:    [cinema mode + description]
+  First frame:    [from uploaded image / generated]
+  Headline:       "[copy]"
+  CTA:            "[button text]" → [action]
 
-CONTENT TO POPULATE
-[Actual copy for each section — pulled from scrape, intake, or generated]
+SELECTED MODULES ([N] of max [N])
+  1. [module] — [what it does in this context]
+  2. [module] — [what it does in this context]
+  3. [module] — [what it does in this context]
+  [...]
 
-CONSTRAINTS
-- Single-file HTML output
-- GSAP + ScrollTrigger via CDN (no build tooling)
-- Mobile-first, Playwright QA on 3 devices after delivery
-- Max [N] modules — do not add more without approval
-- No placeholder text — every section must have real content
+PAGE SECTIONS (in order)
+  ✓ Hero
+  ✓ [section] — [purpose]
+  ✓ [section] — [purpose]
+  ✗ ROI Calculator — [reason skipped, if applicable]
+  ✓ CTA
+  ✓ Footer
 
-ASSIGNED AGENT: [agent name]
-REASON: [one sentence on why this agent was chosen]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+AGENT ASSIGNMENT
+  Coding agent:   [name]
+  Reason:         [one sentence]
+  Hermes after:   [integrations: CRM / booking / email / reviews / chatbot]
+
+WHY I CHOSE THIS
+  [2 sentences explaining the key decisions — aesthetic choice + module rationale]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Confirm to build → or redirect any item above
 ```
 
 ---
 
 ## PART 4 — CODING AGENT DISPATCH MATRIX
 
-Claude selects the agent based on site complexity and type. For batch builds, Claude assigns
-one agent per site and dispatches all simultaneously.
-
 ```yaml
-AGENT_DISPATCH_MATRIX:
-
+AGENT_DISPATCH:
   codex:
-    best_for: [tech_saas, creative_agency, complex_interactions]
-    strengths: ["JavaScript mastery", "GSAP animation precision", "clean component structure"]
-    assign_when: "Site needs heavy custom JS logic or complex state"
+    best_for: [tech_saas, creative_agency, complex_JS]
+    strengths: ["GSAP precision", "complex state", "clean JS architecture"]
 
   claude_code:
-    best_for: [professional_services, personal_brand, any site needing copy generation]
-    strengths: ["Full-stack reasoning", "content + code together", "TypeScript", "API integration"]
-    assign_when: "Site needs intelligent copy written alongside the build, or Supabase backend"
-    note: "Claude Code is also the ORCHESTRATOR — it manages the other agents, not just builds"
+    best_for: [professional_services, personal_brand, sites needing copy + code]
+    strengths: ["full-stack reasoning", "copy generation", "TypeScript", "Supabase"]
+    note: "Also the ORCHESTRATOR — manages all other agents"
 
   gemini_pro:
-    best_for: [retail_ecommerce, restaurant_hospitality]
-    strengths: ["Multi-modal understanding", "SEO copy generation", "Google ecosystem integration"]
-    assign_when: "Site is Google-ecosystem heavy (Maps embed, Analytics, Search Console)"
+    best_for: [retail_ecommerce, restaurant, Google-ecosystem sites]
+    strengths: ["multi-modal", "SEO copy", "Google integrations"]
 
   minimax_27:
-    best_for: [creative_agency, fitness_wellness, personal_brand]
-    strengths: ["Visual layout reasoning", "creative design decisions", "image-text harmony"]
-    assign_when: "Site is highly visual and layout-design-driven"
+    best_for: [creative_agency, fitness, personal_brand]
+    strengths: ["visual layout reasoning", "image-text harmony"]
 
   deepseek_v4:
-    best_for: [tech_saas, complex_logic, data-heavy sites]
-    strengths: ["Code efficiency", "algorithmic precision", "dense technical builds"]
-    assign_when: "Site needs performant, lean code over visual flair"
+    best_for: [tech_saas, data-heavy, performance-critical]
+    strengths: ["code efficiency", "algorithmic precision", "lean builds"]
 
   kimi_k2:
-    best_for: [trades_home_services, real_estate, local_business]
-    strengths: ["Local SEO patterns", "straightforward builds", "fast delivery"]
-    assign_when: "Site is local business, no frills, needs to rank and convert"
+    best_for: [trades, real_estate, local_business]
+    strengths: ["local SEO patterns", "fast delivery", "straightforward builds"]
 
   hermes_agent:
-    best_for: [ANY — Hermes is the cross-platform connector]
-    strengths: ["API orchestration", "multi-service integration", "webhook handling", "CRM hooks"]
-    assign_when: "Site needs backend integrations: CRM, booking system, email automation, payment"
-    role_in_pipeline: |
-      Hermes Agent is NOT a primary builder — it is the INTEGRATION SPECIALIST.
-      After the coding agent delivers the HTML, Hermes connects it to:
-        - CRM (HubSpot, GoHighLevel, Salesforce)
-        - Booking (Calendly, Acuity, Square)
-        - Email (Mailchimp, ConvertKit, Klaviyo)
-        - Payments (Stripe, Square)
-        - Review platforms (Birdeye, Podium)
-        - AI chat widget (custom or third-party)
-      Every site goes through Hermes after the primary build for integration layer.
-```
-
-### Batch Dispatch Example
-
-```
-PARALLEL DISPATCH — 7 leads from Mesquite TX dentist sheet
-
-Lead 1: Sunrise Family Dentistry
-  Agent: Kimi K2 (local professional services, fast delivery)
-  Modules: text-mask-reveal, odometer-counter, spotlight-border-cards, scroll-color-shift, sticky-card-stack
-  Then: Hermes Agent → Calendly booking embed + Birdeye review widget
-
-Lead 2: Mesquite Smiles Dental
-  Agent: Claude Code (needs copy generation alongside build)
-  Modules: text-mask-reveal, sticky-card-stack, odometer-counter, curtain-reveal, spotlight-border-cards
-  Then: Hermes Agent → HubSpot CRM + Mailchimp
-
-Lead 3: Premier Dental of Mesquite
-  Agent: Gemini Pro (strong Google presence, needs Maps + Analytics)
-  Modules: text-mask-reveal, scroll-color-shift, kinetic-marquee, spotlight-border-cards, odometer-counter
-  Then: Hermes Agent → Google Maps embed + Review automation
-
-[All 7 run simultaneously. Hermes runs integration pass after each primary build completes.]
+    role: "Integration specialist — runs AFTER primary build on every site"
+    connects: [CRM, booking, email automation, payments, review platforms, AI chatbot]
+    always_runs: true
 ```
 
 ---
 
 ## PART 5 — COMPLEXITY GUARDRAILS
 
-Claude enforces these before writing any brief:
-
 ```
-GUARDRAILS:
-  never_exceed_8_modules: true
-  minimum_modules: 3
-  never_use_glitch_on_professional_services: true
-  never_use_particle_explosion_on_local_trades: true
-  always_include_real_content: true   # no Lorem ipsum
-  always_include_phone_cta_for_local_business: true
-  hero_video_is_required: true        # every site has a video hero
-  mobile_first: true
-  single_file_html: true              # unless scope explicitly expands to Next.js
-  playwright_qa_is_mandatory: true
-```
-
----
-
-## EXECUTION SUMMARY
-
-```
-SESSION START
-  → Run Part 1 questionnaire → determine mode (A/B/C/D)
-
-PER SITE (for each lead or single client)
-  → Classify business type (Part 2)
-  → Select modules based on profile (Part 2 → BUSINESS_PROFILES)
-  → Write full site brief (Part 3)
-  → Select coding agent (Part 4 → AGENT_DISPATCH_MATRIX)
-  → Dispatch agent with brief
-  → After build: assign Hermes Agent for integration layer
-  → Playwright QA → Vercel deploy
+HARD RULES — non-negotiable:
+  ✗ Never exceed 8 modules per page
+  ✗ Never fewer than 3 modules
+  ✗ Never use glitch-effect on professional_services
+  ✗ Never use particle-explosion on local trades
+  ✗ Never Three.js on MEDIUM complexity ceiling
+  ✗ Never Lorem ipsum — every section needs real content
+  ✗ Never skip the pre-build declaration (Part 3)
+  ✓ Always include Lenis smooth scroll
+  ✓ Always include phone CTA for local businesses
+  ✓ Always include hero video
+  ✓ Always run Hermes Agent after primary build
+  ✓ Always run Playwright QA before Vercel deploy
 ```
