@@ -112,7 +112,8 @@ Output: PNG sequence or video → /project/blender/renders/
 ```
 Load: cinematic-prompt-director
 Task: Generate shot list prompts → execute in Higgsfield
-Platform routing: Seedance 2.0 → Kling 3.0 → Veo 3.1 (lipsync scenes)
+Platform routing: Seedance 2.0 (default) → Kling 3.0 (camera moves) → Veo 3.1 (rare: long-form/audio sync only)
+All via Higgsfield MCP
 Output: MP4 files → /project/higgsfield/
 ```
 

@@ -1448,34 +1448,54 @@ HERO_PLACEMENT:
 
 ### 3.3 Video Platform Selection
 
-Route based on quality requirements:
+> **ALL video generation flows through Higgsfield MCP — no exceptions.**
 
 ```yaml
-VIDEO_PLATFORM_TIER:
-  ultra_premium:
-    platforms: ["Sora 2", "Kling 3.0"]
-    use_case: "hero sections, flagship landing page content"
+VIDEO_PLATFORM_ROUTING:
+  # ─── ROUTING RULE ─────────────────────────────────────────────────────
+  # DEFAULT: Seedance 2.0 — music sync, stylized content, longer clips
+  # CINEMATIC CAMERA: Kling 3.0 — professional camera movement, hero shots
+  # RARE ONLY: Veo 3.1 — long-form (>15s), audio-sync, realistic physics
+  # All other platforms retired from default routing
+  # All execution via Higgsfield MCP
+  # ──────────────────────────────────────────────────────────────────────
 
-  premium:
-    platforms: ["Hailuo 2.3", "Seedance 2.0", "Runway Gen-4"]
-    use_case: "high-end content, cinematic web backgrounds"
+  default:
+    platform: "Seedance 2.0"
+    delivery: "Higgsfield MCP"
+    duration: "6-30s"
+    best_for: "Music videos, social content, stylized hero backgrounds, reference image syncing"
+    when: "Most runs — general cinematic content, social cuts, looping hero video"
 
-  standard:
-    platforms: ["Pika 2.0", "Luma Dream Machine", "Veo 3.1"]
-    use_case: "standard hero videos, quick turnaround"
+  cinematic_camera:
+    platform: "Kling 3.0"
+    delivery: "Higgsfield MCP"
+    duration: "5-15s"
+    best_for: "Professional camera moves (dolly, crane, orbit, steadicam), flagship hero sections"
+    when: "Camera movement is the primary creative element, landing page hero shots"
 
-  fallback:
-    platforms: ["Image-to-Video API"]
-    use_case: "subtle motion, ambient animations"
+  rare_long_form:
+    platform: "Veo 3.1"
+    delivery: "Higgsfield MCP"
+    duration: "8-60s"
+    best_for: "Long-form clips, audio sync, hyper-realistic physics scenes"
+    when: "RARE — clip >15s, or audio sync is mandatory, or physics realism is critical"
+
+  decision_tree: |
+    Does the shot need professional camera movement (dolly/crane/orbit)?
+      YES → Kling 3.0
+      NO  → Is the clip >15s or does it require audio sync / realistic physics?
+              YES (rare) → Veo 3.1
+              NO         → Seedance 2.0 (default)
 ```
 
 ### 3.4 Cinematic Landing Page Hero Workflow
 
 ```
 LANDING_PAGE_HERO_WORKFLOW:
-  step_1: "Generate hero image (NanoBanana Pro, 21:9 for desktop)"
+  step_1: "Generate hero image (ChatGPT Image 2.0 or NanoBanana Pro, 21:9 for desktop) via Higgsfield MCP"
   step_2: "Extract cinematic DNA from image (colors, lighting, mood)"
-  step_3: "Select video platform (Sora 2 preferred for premium, Pika 2.0 for standard)"
+  step_3: "Select video platform: Seedance 2.0 (default) → Kling 3.0 (camera moves) → Veo 3.1 (rare, long-form) — all via Higgsfield MCP"
   step_4: "Generate cinematic video JSON prompt (cinematic-video-architect)"
   step_5: "Render video asset at target resolution"
   step_6: "Optimize for web (compress, add fallback poster image)"
@@ -1831,7 +1851,7 @@ PHASE 2: IMAGE GENERATION
 PHASE 3: IMAGE-TO-VIDEO (FULL-SCREEN HERO)
 -> Invoke cinematic-video-architect skill
 -> Generate JSON prompt for image-to-video conversion
--> Render cinematic hero video (Sora 2, Kling, or Pika based on quality tier)
+-> Render cinematic hero video via Higgsfield MCP (Seedance 2.0 default → Kling 3.0 for camera moves → Veo 3.1 rare/long-form)
 -> Optimize for web (compress, add fallback poster)
 
 PHASE 4: UI/UX DESIGN (GOOGLE STITCH 2.0)

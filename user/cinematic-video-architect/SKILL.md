@@ -133,31 +133,27 @@ For each uploaded image, extract and synthesize:
 
 ## SECTION 3: PLATFORM SELECTION MATRIX
 
-### Platform Comparison Table
+> **ALL video generation flows through Higgsfield MCP — no exceptions.**
+
+### Active Platform Roster
 
 | Platform | Best For | Duration | Strengths | Output Format |
 |----------|----------|----------|-----------|---------------|
-| **Sora 2** | World-building, complex scenes | 10-20s | Photorealism, physics, long durations | JSON narrative |
-| **Hailuo 2.3** | Character consistency, I2V | 5-10s | Character preservation, smooth motion | Short prompts |
-| **Kling 3.0** | Cinematic movement, camera work | 5-15s | Professional camera movements | Scene-direction |
-| **Seedance 2.0** | Music videos, stylized content | 6-30s | Style control, reference syncing | Subject+Action+Camera |
-| **Runway Gen-4** | Controlled motion, B-roll | 4-10s | Motion accuracy, character consistency | Simple sentences |
-| **Veo 3.1** | Natural motion, ambient scenes | 8-60s | Realistic physics, audio sync | JSON preferred |
-| **Pika 2.0** | Creative edits, specific changes | 3-8s | Targeted modifications | Instruction-based |
-| **Luma Dream Machine** | Photorealistic continuity | 5-10s | Image-to-video fidelity | Natural language |
+| **Seedance 2.0** ✅ DEFAULT | Music videos, social content, stylized hero BG | 6-30s | Style control, reference syncing, loops | Subject+Action+Camera |
+| **Kling 3.0** ✅ CINEMATIC | Camera-movement-driven shots, flagship heroes | 5-15s | Dolly, crane, orbit, steadicam | Scene-direction |
+| **Veo 3.1** ⚠️ RARE | Long-form, audio sync, physics-critical scenes | 8-60s | Realistic physics, audio sync, duration | JSON preferred |
 
 ### Auto-Selection Logic
 ```
 IF user specifies platform → Use specified
 IF not specified:
-  - Long duration + complex scene → Sora 2
-  - Character-driven + high consistency → Hailuo 2.3
-  - Professional camera movement → Kling 3.0
-  - Music sync + stylized → Seedance 2.0
-  - Motion accuracy → Runway Gen-4
-  - Realistic + audio → Veo 3.1
-  - Quick edit + targeted change → Pika 2.0
-  - Pure photorealism → Luma Dream Machine
+  Does the shot require professional camera movement (dolly/crane/orbit/steadicam)?
+    YES → Kling 3.0
+    NO  → Is the clip >15s OR does it require audio sync OR hyper-realistic physics?
+            YES (rare) → Veo 3.1
+            NO         → Seedance 2.0  ← default for most runs
+
+ALL execution via Higgsfield MCP.
 ```
 
 ---
