@@ -53,6 +53,8 @@ Skills live in two directories:
 | `sa-orchestrator` | Every message — universal capability routing engine (load_order: 0) |
 | `brand-extractor` | When extracting or applying a client brand identity |
 | `page-upgrade` | When auditing and upgrading an existing client page |
+| `framer-shaders` | When adding WebGL/CSS shader backgrounds — aurora, mesh gradient, liquid noise, grain overlay |
+| `sa-design-md` | When generating or exporting a DESIGN.md / design token file |
 
 ## Usage
 

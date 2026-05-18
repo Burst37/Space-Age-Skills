@@ -48,7 +48,7 @@ Pull: exact hex colors, font families and weights, spacing patterns, button styl
 Impact vs Effort Matrix — Do HIGH IMPACT / LOW EFFORT first.
 
 HIGH IMPACT / LOW EFFORT (Always do these first):
-1. Typography swap — Replace system fonts with premium pair via Bunny Fonts. Time: 30 min. Impact: Instantly looks 3x more professional.
+1. Typography swap — Replace system fonts with premium pair via Fontsource CDN. Time: 30 min. Impact: Instantly looks 3x more professional.
 2. CSS variable injection — Add --color-primary, --color-accent, --color-bg to :root. Time: 1 hour.
 3. Button upgrade — Border radius, font-weight, transition on hover, padding. Time: 30 min.
 4. Hero headline rewrite — Clearer value prop, larger font size, better contrast. Time: 1 hour.
@@ -58,7 +58,7 @@ HIGH IMPACT / LOW EFFORT (Always do these first):
 
 SHOPIFY UPGRADE PATH:
 1. Admin → Themes → Actions → Edit Code
-2. Add Bunny Fonts link in theme.liquid head
+2. Add Fontsource CDN link in theme.liquid head
 3. Add GSAP CDN scripts before closing body tag
 4. Add CSS variables to base.css or theme.css
 5. Add data-animate attributes to section elements
@@ -66,7 +66,7 @@ SHOPIFY UPGRADE PATH:
 
 WORDPRESS UPGRADE:
 Add to header.php before closing head:
-- Bunny Fonts link
+- Fontsource CDN link
 - GSAP CDN scripts
 - CSS variables style block
 
@@ -75,7 +75,7 @@ Add to footer.php before closing body:
 
 STANDALONE HTML UPGRADE:
 Inject at top of head:
-- Bunny Fonts
+- Fontsource CDN
 - GSAP CDN
 - CSS variables
 - Font override styles
@@ -85,6 +85,43 @@ Inject before closing body:
 
 WEBFLOW: Custom Code tab — Head Code and Footer Code
 SQUARESPACE: Settings → Advanced → Code Injection
+
+## SHADER UPGRADE PATH
+
+Add Framer-style shaders to any existing site. Load the framer-shaders skill for
+component code. Choose tier based on site platform and performance budget.
+
+| Tier | Effect | Platform | Time | Impact |
+|------|--------|----------|------|--------|
+| CSS-Tier | Mesh orb gradient + grain overlay | Any | 1 hr | High — zero deps |
+| WebGL-Tier | Aurora GLSL shader + grain | React/Next.js | 2–3 hrs | Premium |
+| Full Premium | Aurora + liquid noise + cursor glow + grain | Next.js only | 4–6 hrs | Cinematic |
+
+**Shopify shader injection (CSS-Tier only):**
+```html
+<!-- Add to theme.liquid <head> -->
+<style>
+  .sa-shader-bg { position: relative; overflow: hidden; background: #050508; }
+  .sa-shader-bg::before {
+    content: ""; position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 30%, rgba(41,121,255,0.25) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 80% 60%, rgba(124,77,255,0.20) 0%, transparent 70%);
+    animation: meshFloat 12s ease-in-out infinite;
+  }
+  @keyframes meshFloat {
+    0%, 100% { transform: translate(0,0); }
+    50%       { transform: translate(2%, -3%); }
+  }
+</style>
+```
+
+**Performance check before adding WebGL:**
+- Confirm site is already passing Core Web Vitals (LCP < 2.5s)
+- Add WebGL shader only if INP headroom exists
+- Always lazy-load Canvas: `dynamic(() => import(...), { ssr: false })`
+
+---
 
 ## UPGRADE PACKAGES
 
@@ -116,6 +153,8 @@ Package 4 — Ongoing Upgrade Retainer ($500-$1,500/month)
 
 ## CROSS-SKILL CONNECTIONS
 After brand extraction → brand-extractor skill
+For shader backgrounds → framer-shaders skill
+For design tokens → sa-design-md skill
 For Shopify stores → shopify-cinematic-builder skill
 For full rebuilds → ui-ux-designer → google-stitch → cinematic-website-builder pipeline
 For social content → social-media-designer skill

@@ -428,6 +428,159 @@ npx @google/design.md export --format dtcg DESIGN.md > tokens.json
 
 ---
 
+## FRAMER SHADER TOKENS
+
+When any SA site includes WebGL/shader backgrounds, add this block to the DESIGN.md
+`components:` section. The framer-shaders skill reads these tokens directly.
+
+```yaml
+components:
+  shader-aurora:
+    color1: "{colors.primary}"
+    color2: "#00E5FF"
+    color3: "#7C4DFF"
+    speed: 0.15
+  shader-mesh:
+    orb1-color: "{colors.primary-glow}"
+    orb2-color: "rgba(124,77,255,0.35)"
+    orb3-color: "rgba(0,229,255,0.25)"
+    blur: 80px
+    opacity: 0.35
+  shader-grain:
+    intensity: 0.06
+  shader-cursor-glow:
+    size: 600px
+    color: "{colors.primary-glow}"
+```
+
+Shader color override by business category (matches VL-01 primary overrides):
+- Healthcare: aurora `color2: "#00BCD4"` / `color3: "#00E5FF"`
+- Legal: aurora `color2: "#7C4DFF"` / `color3: "#B39DDB"`
+- Construction: aurora `color2: "#FF6D00"` / `color3: "#FFB300"`
+- Restaurant: aurora `color2: "#E91E63"` / `color3: "#FF4081"`
+- Fitness: aurora `color2: "#76FF03"` / `color3: "#00E5FF"`
+- Finance: aurora `color2: "#2979FF"` / `color3: "#00B0FF"`
+
+---
+
+## LANDING PAGE SECTION STRUCTURE
+
+Every SA landing page follows this 9-section cinematic template.
+Reference when generating DESIGN.md components — each section maps to a component tier.
+
+| # | Section | Key Components | Animation |
+|---|---------|---------------|-----------|
+| 01 | **Hero** | `shader-aurora` or `shader-mesh` bg · jumbo headline · primary CTA · social proof | Aurora entrance · text mask reveal |
+| 02 | **Trust / Social Proof** | Logo strip · metrics · testimonials | Scroll fade-up |
+| 03 | **Problem → Solution** | Pain point copy · visual explainer · interactive element | Scroll-pinned reveal |
+| 04 | **Services / Features** | Bento grid cards · icon system · hover glow | Stagger reveal |
+| 05 | **Process** | Numbered timeline · connector lines | Scroll-draw |
+| 06 | **Case Studies** | Before/after · metrics badge · animated preview | Card parallax |
+| 07 | **ROI Calculator** | Interactive slider · result display · lead capture | Real-time update |
+| 08 | **Final CTA** | Jumbo type · `shader-mesh` bg · floating button | Magnetic CTA |
+| 09 | **Footer** | Nav · newsletter · socials · brand statement | — |
+
+### DESIGN.md component coverage for all 9 sections
+
+Required additional component tokens for full-page builds:
+
+```yaml
+components:
+  # Section 01 — Hero
+  hero-headline:
+    typography: "{typography.display}"
+    textColor: "{colors.text-primary}"
+  # Section 02 — Trust
+  logo-strip-item:
+    backgroundColor: transparent
+    textColor: "{colors.text-tertiary}"
+    rounded: "{rounded.sm}"
+  metric-card:
+    backgroundColor: "{colors.surface-glass}"
+    textColor: "{colors.text-primary}"
+    rounded: "{rounded.lg}"
+    padding: "{spacing.lg}"
+  # Section 04 — Bento Grid
+  bento-card:
+    backgroundColor: "{colors.surface-glass}"
+    textColor: "{colors.text-primary}"
+    rounded: "{rounded.2xl}"
+    padding: "{spacing.xl}"
+  bento-card-featured:
+    backgroundColor: "rgba(41,121,255,0.12)"
+    textColor: "{colors.text-primary}"
+    rounded: "{rounded.2xl}"
+    padding: "{spacing.xl}"
+  # Section 07 — ROI Calculator
+  calculator-card:
+    backgroundColor: "{colors.surface-elevated}"
+    textColor: "{colors.text-primary}"
+    rounded: "{rounded.2xl}"
+    padding: "{spacing.xl}"
+  slider-track:
+    backgroundColor: "{colors.border-default}"
+    rounded: "{rounded.full}"
+  slider-thumb:
+    backgroundColor: "{colors.primary}"
+    rounded: "{rounded.full}"
+    width: 24px
+    height: 24px
+```
+
+---
+
+## FULL DEV STACK SPECIFICATION
+
+All SA cinematic sites are built on this exact stack. Reference for DESIGN.md handoffs.
+
+```yaml
+frontend:
+  framework: Next.js 15 (App Router)
+  language: TypeScript
+  styling: TailwindCSS v4
+
+animation:
+  primary: Framer Motion 11
+  scroll: GSAP 3 + ScrollTrigger
+  smooth_scroll: Lenis
+  lottie: "@lottiefiles/react-lottie-player"
+
+webgl_shaders:
+  engine: Three.js
+  react_binding: "@react-three/fiber"
+  helpers: "@react-three/drei"
+
+fonts:
+  cdn: Fontsource (cdn.jsdelivr.net/npm/@fontsource/*)
+  never_use: ["Google Fonts", "Bunny Fonts", "Adobe Fonts"]
+
+cms:
+  default: Sanity v3
+  alternative: Payload CMS
+
+seo:
+  package: next-seo
+  schema: schema-dts
+
+analytics:
+  primary: Vercel Analytics
+  heatmap: PostHog
+
+deployment:
+  platform: Vercel
+  cdn: Vercel Edge Network
+```
+
+**Install command for new SA projects:**
+```bash
+npm create next-app@latest --typescript --tailwind --app
+npm install framer-motion gsap @gsap/react lenis three @react-three/fiber @react-three/drei
+npm install @fontsource/orbitron @fontsource/dm-sans @fontsource/jetbrains-mono
+npm install next-seo schema-dts
+```
+
+---
+
 ## FONT SELECTION MATRIX
 
 | Brand Personality | Header Font | Body Font | Data/Label Font |
