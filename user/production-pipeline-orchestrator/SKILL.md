@@ -115,31 +115,42 @@ Preferred Aspect Ratio: [16:9 / 9:16 / 21:9]
 
 ## PHASE 2: IMAGE GENERATION PIPELINE
 
-### 2.1 Image Source Strategy
+> **ALL image generation flows through Higgsfield MCP — no exceptions.**
 
-Choose the optimal image generation method based on available inputs:
+### 2.1 Image Source Strategy
 
 ```yaml
 IMAGE_SOURCE_STRATEGY:
+
+  # ─── ROUTING RULE ────────────────────────────────────────────────────────
+  # DEFAULT (everything except Gemini lane):
+  #   → ChatGPT Image 2.0 via Higgsfield MCP
+  # GEMINI LANE only:
+  #   → NanoBanana Pro via Higgsfield MCP
+  # ALL flows: Higgsfield MCP is the execution layer
+  # ─────────────────────────────────────────────────────────────────────────
+
+  default:
+    model: "ChatGPT Image 2.0"
+    delivery: "Higgsfield MCP"
+    action: "Primary image generation for all non-Gemini pipeline runs"
+    when: "Lane B (DeepSeek), Lane C (Claude), standalone, or model-unspecified"
+
+  gemini_lane:
+    model: "NanoBanana Pro"
+    delivery: "Higgsfield MCP"
+    action: "Generate using brand guidelines and cinematic DNA — Gemini pipeline only"
+    when: "Lane A (Gemini Flash / Gemini Pro) is the active model lane"
+
   inspiration_available:
     method: "scrape_pinterest"
-    action: "Extract visual DNA from Pinterest pins for style reference"
+    action: "Extract visual DNA from Pinterest pins for style reference — then feed into default or gemini_lane above"
     tools: ["pinterest_search", "image_analysis"]
 
-  brand_clear:
-    method: "nanobanana_pro"
-    action: "Generate using brand guidelines and cinematic DNA"
-    tools: ["image-synthesize", "image-craft"]
-
   hybrid_approach:
-    method: "pinterest_nanobanana"
-    action: "Scrape Pinterest for style, then generate with NanoBanana Pro"
-    workflow: "extract_style → generate_with_nanobanana"
-
-  rapid_batch:
-    method: "nanobanana_2"
-    action: "Fast batch generation for social media content"
-    tools: ["image-synthesize"]
+    method: "pinterest_then_generate"
+    action: "Scrape Pinterest for style DNA, then generate via ChatGPT Image 2.0 (or NanoBanana Pro on Gemini lane)"
+    workflow: "extract_style → route_by_active_lane → generate via Higgsfield MCP"
 ```
 
 ### 2.2 Pinterest Scraping Workflow
@@ -151,8 +162,8 @@ PINTEREST_SCRAPING_WORKFLOW:
   step_1: "Extract images from provided Pinterest URLs"
   step_2: "Analyze visual DNA (colors, composition, lighting, mood)"
   step_3: "Generate style guide from extracted patterns"
-  step_4: "Apply extracted style to NanoBanana prompts"
-  step_5: "Output brand-consistent assets"
+  step_4: "Route: active lane Gemini? → NanoBanana Pro. All others? → ChatGPT Image 2.0"
+  step_5: "Execute via Higgsfield MCP → output brand-consistent assets"
 
 VISUAL_DNA_EXTRACTION:
   color_palette: "Primary/secondary colors from pins"
@@ -162,7 +173,14 @@ VISUAL_DNA_EXTRACTION:
   texture: "Material qualities (matte, glossy, grain, smooth)"
 ```
 
-### 2.3 NanoBanana Pro Generation Protocol
+### 2.3 Image Generation Protocol
+
+**Routing summary before any generation call:**
+
+| Active Lane | Model | Delivery |
+|-------------|-------|----------|
+| Any (default) | **ChatGPT Image 2.0** | Higgsfield MCP |
+| Gemini (Lane A) | **NanoBanana Pro** | Higgsfield MCP |
 
 **Primary image generation using brand guidelines:**
 
@@ -171,6 +189,7 @@ VISUAL_DNA_EXTRACTION:
 3. Generate prompt using cinematic DNA framework
 
 ```
+# Used when active lane = Gemini. All other lanes use ChatGPT Image 2.0 via Higgsfield MCP.
 NANOBANANA_PROMPT_TEMPLATE:
   subject: "[Onboarding subject/product]"
   setting: "[Onboarding setting or context]"
