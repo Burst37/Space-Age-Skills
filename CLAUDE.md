@@ -54,6 +54,12 @@ Skills live in two directories:
 | `brand-extractor` | When extracting or applying a client brand identity |
 | `page-upgrade` | When auditing and upgrading an existing client page |
 
+#### Phase 0 — Prospecting
+
+| Skill | Trigger |
+|-------|---------|
+| `sa-prospecting-agent` | "find [niche] in [city]", "scrape leads", "find businesses that need a website", "prospect for clients", "audit these websites", "who doesn't have a website in [area]", "generate leads for [industry]" — scrapes Google Maps, audits each site, sorts leads into Google Sheets (Bucket 1: no site / Bucket 2: needs upgrade / Bucket 3: already optimized), hands off to production pipeline |
+
 #### Video & Storyboard Pipeline
 
 | Skill | Trigger |
@@ -61,40 +67,51 @@ Skills live in two directories:
 | `character-storyboard-stylesheet` | "create a storyboard", "plan a cinematic sequence", "build a fight scene storyboard", "create a character action sequence", "make a shot breakdown", "plan a 15-second sequence" — outputs 5-column storyboard table + Seedance 2.0 prompts per shot |
 | `cinema-worldbuilder` | "write a Seedance prompt", "direct this scene", "create a video prompt for…", "worldbuild this shot", any single-scene or multi-cut video prompt request — applies 5-mode cinema grammar (M1–M5) with canonical camera blocks |
 | `seedance-prompt-engineer` | Fine-grained Seedance 2.0 prompt engineering, multi-shot MVP system, Director's Card framework — use after `cinema-worldbuilder` or `character-storyboard-stylesheet` for per-shot polish |
-| `cinematic-video-architect` | Image-to-video prompt generation across multiple platforms (Sora 2, Kling 3.0, Runway Gen-4, Veo 3.1, Pika 2.0, Luma) — invoke when a reference image is uploaded for video generation |
+| `cinematic-video-architect` | Image-to-video prompt generation across Sora 2, Kling 3.0, Runway Gen-4, Veo 3.1, Pika 2.0, Luma, Seedance 2.0, Hailuo 2.3 — invoke when a reference image is uploaded for video generation |
 
 #### Web Production Pipeline
 
 | Skill | Trigger |
 |-------|---------|
 | `sa-design-md` | After brand extraction, before any web build — generates DESIGN.md with VL-01 Dark Glassmorphism tokens |
-| `cinematic-website-builder` | Final stage of the web pipeline — "build the website", "apply cinematic effects", "add GSAP animations" — 30 GSAP + ScrollTrigger modules, single-file HTML, Playwright QA |
+| `cinematic-website-builder` | Final stage of the web pipeline — "build the website", "apply cinematic effects", "add GSAP animations" — 30 GSAP + ScrollTrigger modules, single-file HTML, Playwright QA 3-device matrix |
 
-## Workflow Chains
+## Full Workflow Chains
+
+### Prospecting → Parallel Build (complete pipeline)
+```
+sa-prospecting-agent
+  └─ Google Maps scrape → website audit → Google Sheets (3 buckets)
+  └─ Handoff: Bucket 1 + 2 leads
+       ↓
+  [For each lead — run in parallel]
+  brand-extractor → sa-design-md
+       ↓
+  NanoBanana Pro → hero image (Phase 2)
+       ↓
+  [Higgsfield MCP | Sora | Veo] → hero video → FFmpeg → frame assets (Phase 3)
+       ↓
+  google-stitch (UI/UX wireframe) (Phase 4)
+       ↓
+  cinematic-website-builder (Phase 5)
+       ↓
+  Parallel agent dispatch — one per website:
+    Codex · Claude Code · Gemini Pro · MiniMax 2.7 ·
+    DeepSeek v4 · Kimi K2 · Hermes Agent
+       ↓
+  Playwright QA → Vercel deploy (Phase 6)
+```
 
 ### Video Production Chain
 ```
-User intent (scene/character/action)
-  → character-storyboard-stylesheet   # plan multi-shot structure + per-shot prompts
-  → cinema-worldbuilder               # apply professional cinema grammar to each shot
-  → seedance-prompt-engineer          # polish final prompts for Seedance 2.0 delivery
+character-storyboard-stylesheet   ← plan shots + per-shot prompts
+  → cinema-worldbuilder           ← apply cinema grammar (M1–M5)
+  → seedance-prompt-engineer      ← final prompt polish for Seedance 2.0
 ```
 
-### Web Production Chain
+### Web Rebuild (no prospecting)
 ```
-User intent (client brief / brand)
-  → brand-extractor                   # extract brand identity
-  → sa-design-md                      # generate DESIGN.md token system
-  → ui-ux-designer (Google Stitch)    # wireframe → component layout
-  → cinematic-website-builder         # 30-module GSAP build + Playwright QA
-```
-
-### Full Client Delivery Chain
-```
-brand-extractor → sa-design-md → production-pipeline-orchestrator
-  ├── NanoBanana Pro (hero images)
-  ├── character-storyboard-stylesheet → cinema-worldbuilder → Seedance 2.0 (hero video)
-  └── ui-ux-designer → cinematic-website-builder (website)
+brand-extractor → sa-design-md → ui-ux-designer → cinematic-website-builder
 ```
 
 ## Usage
