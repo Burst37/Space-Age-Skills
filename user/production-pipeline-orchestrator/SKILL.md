@@ -1771,17 +1771,25 @@ STANDARD_INTEGRATIONS:
 
   voice_agent:
     status: "STANDARD — included on every site"
-    provider: "Vapi (via vapi-orchestrator skill)"
+    built_with: "Google AI Studio"
+    model: "Gemini 3.1 Flash (voice) + Google TTS"
     placement: "Floating button — bottom-right, 56×56px tap target"
     behavior: "Answers FAQs, captures leads, books appointments via voice"
     trigger: "Auto-appears after 5s or on exit intent"
-    fallback: "If Vapi unavailable → chat widget fallback"
-    config: |
+    fallback: "If voice unavailable → text chat fallback"
+    implementation: |
+      // Coded in Google AI Studio — Gemini 3.1 Flash voice model + TTS
+      // Claude writes the agent prompt and config in Phase 5
+      // Embedded as a lightweight JS widget on every page
       {
-        "assistant": "[Brand]-voice-agent",
+        "model": "gemini-3.1-flash",
+        "modality": "voice",
+        "tts": "google-tts",
+        "assistant_name": "[Brand] AI",
         "greeting": "Hey, I'm [Brand]'s AI assistant — how can I help?",
         "tasks": ["answer_faq", "capture_lead", "book_appointment"],
-        "end_call_message": "Thanks — someone will follow up shortly."
+        "end_call_message": "Thanks — someone will follow up shortly.",
+        "api_key": "{env:GOOGLE_AI_STUDIO_API_KEY}"
       }
 ```
 
