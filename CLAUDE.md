@@ -54,6 +54,49 @@ Skills live in two directories:
 | `brand-extractor` | When extracting or applying a client brand identity |
 | `page-upgrade` | When auditing and upgrading an existing client page |
 
+#### Video & Storyboard Pipeline
+
+| Skill | Trigger |
+|-------|---------|
+| `character-storyboard-stylesheet` | "create a storyboard", "plan a cinematic sequence", "build a fight scene storyboard", "create a character action sequence", "make a shot breakdown", "plan a 15-second sequence" — outputs 5-column storyboard table + Seedance 2.0 prompts per shot |
+| `cinema-worldbuilder` | "write a Seedance prompt", "direct this scene", "create a video prompt for…", "worldbuild this shot", any single-scene or multi-cut video prompt request — applies 5-mode cinema grammar (M1–M5) with canonical camera blocks |
+| `seedance-prompt-engineer` | Fine-grained Seedance 2.0 prompt engineering, multi-shot MVP system, Director's Card framework — use after `cinema-worldbuilder` or `character-storyboard-stylesheet` for per-shot polish |
+| `cinematic-video-architect` | Image-to-video prompt generation across multiple platforms (Sora 2, Kling 3.0, Runway Gen-4, Veo 3.1, Pika 2.0, Luma) — invoke when a reference image is uploaded for video generation |
+
+#### Web Production Pipeline
+
+| Skill | Trigger |
+|-------|---------|
+| `sa-design-md` | After brand extraction, before any web build — generates DESIGN.md with VL-01 Dark Glassmorphism tokens |
+| `cinematic-website-builder` | Final stage of the web pipeline — "build the website", "apply cinematic effects", "add GSAP animations" — 30 GSAP + ScrollTrigger modules, single-file HTML, Playwright QA |
+
+## Workflow Chains
+
+### Video Production Chain
+```
+User intent (scene/character/action)
+  → character-storyboard-stylesheet   # plan multi-shot structure + per-shot prompts
+  → cinema-worldbuilder               # apply professional cinema grammar to each shot
+  → seedance-prompt-engineer          # polish final prompts for Seedance 2.0 delivery
+```
+
+### Web Production Chain
+```
+User intent (client brief / brand)
+  → brand-extractor                   # extract brand identity
+  → sa-design-md                      # generate DESIGN.md token system
+  → ui-ux-designer (Google Stitch)    # wireframe → component layout
+  → cinematic-website-builder         # 30-module GSAP build + Playwright QA
+```
+
+### Full Client Delivery Chain
+```
+brand-extractor → sa-design-md → production-pipeline-orchestrator
+  ├── NanoBanana Pro (hero images)
+  ├── character-storyboard-stylesheet → cinema-worldbuilder → Seedance 2.0 (hero video)
+  └── ui-ux-designer → cinematic-website-builder (website)
+```
+
 ## Usage
 
 In Claude Code, invoke skills with the `Skill` tool. Never use the `Read` tool on skill files directly.
