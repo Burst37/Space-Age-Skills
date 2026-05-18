@@ -1497,12 +1497,69 @@ LANDING_PAGE_HERO_WORKFLOW:
   step_2: "Extract cinematic DNA from image (colors, lighting, mood)"
   step_3: "Select video platform: Seedance 2.0 (default) → Kling 3.0 (camera moves) → Veo 3.1 (rare, long-form) — all via Higgsfield MCP"
   step_4: "Generate cinematic video JSON prompt (cinematic-video-architect)"
-  step_5: "Render video asset at target resolution via Higgsfield MCP"
-  step_6: "Optimize for web (compress to <10MB H.264, generate fallback poster image)"
-  step_7: "→ AUTO-ADVANCE TO PHASE 4: pass video file + poster + brand assets directly to Google Stitch 2.0"
+  step_5: "Render video asset via Higgsfield MCP — target duration 5-10 seconds"
+  step_6: "→ FFmpeg post-processing (see Phase 3.5 below)"
+  step_7: "→ AUTO-ADVANCE TO PHASE 4: pass processed MP4 + poster + brand assets to Google Stitch 2.0"
 ```
 
-> **Phase 3 → Phase 4 is automatic. Video out = Stitch in. No manual handoff step.**
+> **Phase 3 → 3.5 → Phase 4 is fully automatic. No manual handoff steps.**
+
+---
+
+## PHASE 3.5: FFMPEG POST-PROCESSING
+
+> **Runs automatically after every Higgsfield render, before Stitch receives the file.**
+
+### FFmpeg Spec
+
+```bash
+# Standard web hero processing pipeline
+ffmpeg \
+  -i input_raw.mp4 \
+  -r 15 \                          # Lock to 15fps
+  -t 10 \                          # Cap at 10 seconds max (trim if over)
+  -vf "scale=1920:1080:force_original_aspect_ratio=decrease,\
+       pad=1920:1080:(ow-iw)/2:(oh-ih)/2,\
+       setsar=1" \
+  -c:v libx264 \
+  -crf 23 \                        # Quality: 18=near-lossless, 23=web-optimized
+  -preset slow \
+  -an \                            # No audio (hero background video)
+  -movflags +faststart \           # Enable instant web playback
+  output_hero.mp4
+```
+
+### FFmpeg Settings Reference
+
+```yaml
+FFMPEG_HERO_SPEC:
+  framerate: 15fps
+  duration:
+    target: "5-10 seconds"
+    minimum: 5s
+    maximum: 10s
+    trim_if_over: true
+  resolution: "1920×1080 (scale + pad to maintain aspect ratio)"
+  codec: "H.264 (libx264)"
+  quality_crf: 23
+  audio: "stripped (hero BG video runs muted)"
+  web_optimized: true   # faststart flag — playback begins before full download
+  output_format: "MP4"
+
+POSTER_FRAME_EXTRACTION:
+  command: "ffmpeg -i output_hero.mp4 -vframes 1 -q:v 2 poster.jpg"
+  purpose: "Fallback image for browsers that block autoplay"
+  frame: "first frame (establishes scene before video loads)"
+```
+
+### Duration Decision
+
+```
+Was the raw Higgsfield clip 5-10 seconds?
+  YES → pass through, no trim needed
+  NO, over 10s → trim to 10s: ffmpeg -t 10
+  NO, under 5s → flag for regeneration (too short for a looping hero)
+```
 
 ---
 
@@ -1858,7 +1915,8 @@ PHASE 3: IMAGE-TO-VIDEO (FULL-SCREEN HERO)
 -> Generate JSON prompt for image-to-video conversion
 -> Render cinematic hero video via Higgsfield MCP (Seedance 2.0 default → Kling 3.0 for camera moves → Veo 3.1 rare/long-form)
 -> Optimize for web (compress to <10MB H.264, generate fallback poster)
--> ★ AUTO-ADVANCE → Phase 4 (video out = Stitch in, no manual step)
+-> ★ AUTO-ADVANCE → Phase 3.5 FFmpeg (15fps, 5-10s, H.264, web-optimized, poster extract)
+-> ★ AUTO-ADVANCE → Phase 4 (processed MP4 + poster → Stitch, no manual step)
 
 PHASE 4: UI/UX DESIGN (GOOGLE STITCH 2.0)
 -> Create landing page design with cinematic hero video
