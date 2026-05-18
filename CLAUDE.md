@@ -53,6 +53,7 @@ Skills live in two directories:
 | `sa-orchestrator` | Every message — universal capability routing engine (load_order: 0) |
 | `brand-extractor` | When extracting or applying a client brand identity |
 | `page-upgrade` | When auditing and upgrading an existing client page |
+| `opencode` | Open-source multi-provider coding agent (DeepSeek, Gemini, Claude, 75+ providers) |
 
 ## Usage
 
