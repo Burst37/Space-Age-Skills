@@ -116,6 +116,7 @@ Preferred Aspect Ratio: [16:9 / 9:16 / 21:9]
 ## PHASE 2: IMAGE GENERATION PIPELINE
 
 > **ALL image generation flows through Higgsfield MCP — no exceptions.**
+> **Both ChatGPT Pro and Gemini Pro subscriptions are active — $0 marginal cost on either. Route by speed and task fit only.**
 
 ### 2.1 Image Source Strategy
 
@@ -123,34 +124,47 @@ Preferred Aspect Ratio: [16:9 / 9:16 / 21:9]
 IMAGE_SOURCE_STRATEGY:
 
   # ─── ROUTING RULE ────────────────────────────────────────────────────────
-  # DEFAULT (everything except Gemini lane):
-  #   → ChatGPT Image 2.0 via Higgsfield MCP
-  # GEMINI LANE only:
-  #   → NanoBanana Pro via Higgsfield MCP
-  # ALL flows: Higgsfield MCP is the execution layer
+  # COST: $0 on both — ChatGPT Pro and Gemini Pro subscriptions cover all usage
+  # DELIVERY: Higgsfield MCP for all generation calls
+  # DECISION FACTOR: speed + task fit only
+  #
+  # DEFAULT → ChatGPT Image 2.0 (faster for photorealistic hero frames,
+  #           product shots, portraits, text-in-image)
+  # GEMINI  → NanoBanana Pro (faster for stylized/abstract, brand-color-
+  #           heavy, or when Gemini is already the active model lane)
+  # FIRE BOTH → for hero/critical shots where speed is paramount;
+  #             use whichever returns first
   # ─────────────────────────────────────────────────────────────────────────
 
   default:
     model: "ChatGPT Image 2.0"
     delivery: "Higgsfield MCP"
-    action: "Primary image generation for all non-Gemini pipeline runs"
-    when: "Lane B (DeepSeek), Lane C (Claude), standalone, or model-unspecified"
+    cost: "$0 (ChatGPT Pro subscription)"
+    best_for: "Photorealistic heroes, product shots, portraits, text rendering, character consistency"
+    when: "All runs unless Gemini lane is active or NanoBanana is faster for the task"
 
   gemini_lane:
     model: "NanoBanana Pro"
     delivery: "Higgsfield MCP"
-    action: "Generate using brand guidelines and cinematic DNA — Gemini pipeline only"
-    when: "Lane A (Gemini Flash / Gemini Pro) is the active model lane"
+    cost: "$0 (Gemini Pro subscription)"
+    best_for: "Stylized/abstract visuals, brand-color-heavy compositions, Gemini-pipeline runs"
+    when: "Lane A (Gemini) is the active model lane, or when NanoBanana renders faster"
+
+  parallel_fire:
+    strategy: "Fire both ChatGPT Image 2.0 AND NanoBanana Pro simultaneously"
+    delivery: "Higgsfield MCP"
+    cost: "$0 on both"
+    when: "Hero/critical asset where quality + speed are both maximum priority"
+    select: "Use whichever output is stronger — discard the other"
 
   inspiration_available:
     method: "scrape_pinterest"
-    action: "Extract visual DNA from Pinterest pins for style reference — then feed into default or gemini_lane above"
+    action: "Extract visual DNA → feed into whichever model is fastest/best-fit for the asset type"
     tools: ["pinterest_search", "image_analysis"]
 
   hybrid_approach:
     method: "pinterest_then_generate"
-    action: "Scrape Pinterest for style DNA, then generate via ChatGPT Image 2.0 (or NanoBanana Pro on Gemini lane)"
-    workflow: "extract_style → route_by_active_lane → generate via Higgsfield MCP"
+    workflow: "extract_style → pick model by task fit → generate via Higgsfield MCP"
 ```
 
 ### 2.2 Pinterest Scraping Workflow
@@ -162,7 +176,7 @@ PINTEREST_SCRAPING_WORKFLOW:
   step_1: "Extract images from provided Pinterest URLs"
   step_2: "Analyze visual DNA (colors, composition, lighting, mood)"
   step_3: "Generate style guide from extracted patterns"
-  step_4: "Route: active lane Gemini? → NanoBanana Pro. All others? → ChatGPT Image 2.0"
+  step_4: "Pick model by task fit (see 2.3 routing table) — cost is $0 on both"
   step_5: "Execute via Higgsfield MCP → output brand-consistent assets"
 
 VISUAL_DNA_EXTRACTION:
@@ -175,21 +189,27 @@ VISUAL_DNA_EXTRACTION:
 
 ### 2.3 Image Generation Protocol
 
-**Routing summary before any generation call:**
+**Routing decision — both are $0, pick by speed and task fit:**
 
-| Active Lane | Model | Delivery |
-|-------------|-------|----------|
-| Any (default) | **ChatGPT Image 2.0** | Higgsfield MCP |
-| Gemini (Lane A) | **NanoBanana Pro** | Higgsfield MCP |
+| Task Type | Model | Why |
+|-----------|-------|-----|
+| Hero frames, product shots | **ChatGPT Image 2.0** | Superior photorealism, text rendering |
+| Portraits, character DNA | **ChatGPT Image 2.0** | Stronger face/body consistency |
+| Stylized, abstract, brand-color-heavy | **NanoBanana Pro** | Gemini's color + style control |
+| Gemini lane active | **NanoBanana Pro** | Same pipeline, no context switch |
+| Critical hero asset (both fire) | **Both → pick winner** | Max speed + max quality |
 
-**Primary image generation using brand guidelines:**
+**All calls route through Higgsfield MCP. Both covered by Pro subscriptions — $0 marginal cost.**
+
+**Generation steps:**
 
 1. Extract brand colors and style from onboarding
 2. Map aspect ratio to platform requirements
 3. Generate prompt using cinematic DNA framework
 
 ```
-# Used when active lane = Gemini. All other lanes use ChatGPT Image 2.0 via Higgsfield MCP.
+# NanoBanana Pro (Gemini lane / stylized tasks). ChatGPT Image 2.0 handles photorealistic/portrait/product.
+# Both are $0 — route by speed and task fit. All via Higgsfield MCP.
 NANOBANANA_PROMPT_TEMPLATE:
   subject: "[Onboarding subject/product]"
   setting: "[Onboarding setting or context]"
