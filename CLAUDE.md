@@ -54,64 +54,70 @@ Skills live in two directories:
 | `brand-extractor` | When extracting or applying a client brand identity |
 | `page-upgrade` | When auditing and upgrading an existing client page |
 
-#### Phase 0 — Prospecting
+#### Orchestration & Intelligence
 
 | Skill | Trigger |
 |-------|---------|
-| `sa-prospecting-agent` | "find [niche] in [city]", "scrape leads", "find businesses that need a website", "prospect for clients", "audit these websites", "who doesn't have a website in [area]", "generate leads for [industry]" — scrapes Google Maps, audits each site, sorts leads into Google Sheets (Bucket 1: no site / Bucket 2: needs upgrade / Bucket 3: already optimized), hands off to production pipeline |
+| `sa-site-intelligence` | **Run first on every new project.** Presents the intake questionnaire (batch leads / single build / existing site rebuild), classifies business type, selects context-appropriate GSAP modules (landscaper gets 5 targeted modules, not 30), writes the coding brief, and dispatches the right coding agent. Claude is the director — this skill is how it thinks. |
+| `sa-prospecting-agent` | "find [niche] in [city]", "scrape leads", "find businesses that need a website", "generate leads for [industry]" — scrapes Google Maps, audits each site, sorts into Google Sheets (Bucket 1: no site / Bucket 2: needs upgrade / Bucket 3: skip), hands off to pipeline |
 
 #### Video & Storyboard Pipeline
 
 | Skill | Trigger |
 |-------|---------|
-| `character-storyboard-stylesheet` | "create a storyboard", "plan a cinematic sequence", "build a fight scene storyboard", "create a character action sequence", "make a shot breakdown", "plan a 15-second sequence" — outputs 5-column storyboard table + Seedance 2.0 prompts per shot |
-| `cinema-worldbuilder` | "write a Seedance prompt", "direct this scene", "create a video prompt for…", "worldbuild this shot", any single-scene or multi-cut video prompt request — applies 5-mode cinema grammar (M1–M5) with canonical camera blocks |
-| `seedance-prompt-engineer` | Fine-grained Seedance 2.0 prompt engineering, multi-shot MVP system, Director's Card framework — use after `cinema-worldbuilder` or `character-storyboard-stylesheet` for per-shot polish |
-| `cinematic-video-architect` | Image-to-video prompt generation across Sora 2, Kling 3.0, Runway Gen-4, Veo 3.1, Pika 2.0, Luma, Seedance 2.0, Hailuo 2.3 — invoke when a reference image is uploaded for video generation |
+| `character-storyboard-stylesheet` | "create a storyboard", "plan a cinematic sequence", "build a fight scene storyboard", "create a character action sequence", "plan a 15-second sequence" — 5-column storyboard table + Seedance 2.0 prompts per shot |
+| `cinema-worldbuilder` | "write a Seedance prompt", "direct this scene", "create a video prompt for…", any single-scene or multi-cut video prompt — applies 5-mode cinema grammar (M1–M5) with canonical camera blocks |
+| `seedance-prompt-engineer` | Fine-grained Seedance 2.0 prompt engineering — use after `cinema-worldbuilder` for per-shot polish |
+| `cinematic-video-architect` | Image-to-video across Sora 2, Kling 3.0, Runway Gen-4, Veo 3.1, Pika 2.0, Luma, Seedance 2.0, Hailuo 2.3 — invoke when a reference image is uploaded for video generation |
 
 #### Web Production Pipeline
 
 | Skill | Trigger |
 |-------|---------|
 | `sa-design-md` | After brand extraction, before any web build — generates DESIGN.md with VL-01 Dark Glassmorphism tokens |
-| `cinematic-website-builder` | Final stage of the web pipeline — "build the website", "apply cinematic effects", "add GSAP animations" — 30 GSAP + ScrollTrigger modules, single-file HTML, Playwright QA 3-device matrix |
+| `cinematic-website-builder` | Final build stage — 30 GSAP + ScrollTrigger modules, single-file HTML, Playwright QA 3-device matrix. Claude selects 3–8 modules via `sa-site-intelligence` before invoking. |
 
 ## Full Workflow Chains
 
-### Prospecting → Parallel Build (complete pipeline)
+### Complete Pipeline — Batch Prospecting to Parallel Deploy
+
 ```
-sa-prospecting-agent
-  └─ Google Maps scrape → website audit → Google Sheets (3 buckets)
-  └─ Handoff: Bucket 1 + 2 leads
-       ↓
-  [For each lead — run in parallel]
+[SESSION START] → sa-site-intelligence (questionnaire: A/B/C/D)
+
+MODE A — Batch Build from Leads
+  sa-prospecting-agent
+    → Google Maps scrape + website audit + Google Sheets (3 buckets)
+    → Handoff: Bucket 1 + 2 leads
+  [Per lead — all in parallel]
+    brand-extractor → sa-design-md
+    NanoBanana Pro → hero image
+    Higgsfield | Sora | Veo → hero video → FFmpeg → frame assets
+    google-stitch → UI/UX wireframe
+    sa-site-intelligence → classify business → select modules → write brief → assign agent
+    [Parallel agent dispatch — one per site]
+      Codex · Claude Code · Gemini Pro · MiniMax 2.7 · DeepSeek v4 · Kimi K2
+    Hermes Agent → integration layer (CRM, booking, email, reviews) per site
+    Playwright QA → Vercel deploy
+
+MODE B — Single Site Build
+  sa-site-intelligence → classify → modules → brief
   brand-extractor → sa-design-md
-       ↓
-  NanoBanana Pro → hero image (Phase 2)
-       ↓
-  [Higgsfield MCP | Sora | Veo] → hero video → FFmpeg → frame assets (Phase 3)
-       ↓
-  google-stitch (UI/UX wireframe) (Phase 4)
-       ↓
-  cinematic-website-builder (Phase 5)
-       ↓
-  Parallel agent dispatch — one per website:
-    Codex · Claude Code · Gemini Pro · MiniMax 2.7 ·
-    DeepSeek v4 · Kimi K2 · Hermes Agent
-       ↓
-  Playwright QA → Vercel deploy (Phase 6)
+  NanoBanana Pro + hero video → FFmpeg
+  google-stitch → cinematic-website-builder → Hermes Agent → Playwright → Vercel
+
+MODE C — Existing Site Rebuild
+  page-upgrade (audit existing) → brand-extractor → sa-design-md
+  → [same as Mode B from here]
 ```
 
-### Video Production Chain
-```
-character-storyboard-stylesheet   ← plan shots + per-shot prompts
-  → cinema-worldbuilder           ← apply cinema grammar (M1–M5)
-  → seedance-prompt-engineer      ← final prompt polish for Seedance 2.0
-```
+### Hermes Agent Role
+Hermes is the **integration specialist**, not the primary builder. It runs AFTER the coding agent
+delivers the HTML, connecting every site to: CRM · booking · email automation · payments ·
+review platforms · AI chat widget. Every site gets a Hermes integration pass before QA.
 
-### Web Rebuild (no prospecting)
+### Video-Only Chain
 ```
-brand-extractor → sa-design-md → ui-ux-designer → cinematic-website-builder
+character-storyboard-stylesheet → cinema-worldbuilder → seedance-prompt-engineer
 ```
 
 ## Usage
