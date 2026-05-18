@@ -54,6 +54,7 @@ Skills live in two directories:
 | `brand-extractor` | When extracting or applying a client brand identity |
 | `page-upgrade` | When auditing and upgrading an existing client page |
 | `opencode` | Open-source multi-provider coding agent (DeepSeek, Gemini, Claude, 75+ providers) |
+| `sa-character-sheet` | Consistent character reference sheets — 8-page system, storyboard-to-video handoff |
 
 ## Usage
 
