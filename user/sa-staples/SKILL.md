@@ -4,8 +4,8 @@ description: >
   The three non-negotiables present on every Space Age AI Solutions client website without
   exception. Reference this skill before finalizing any site brief. TRIGGER whenever building
   or reviewing a site brief to confirm all three staples are included.
-version: 1.0
-updated: 2026-05-18
+version: 1.1
+updated: 2026-05-19
 ---
 
 # SA STAPLES
@@ -20,53 +20,101 @@ They are not optional. They are not swapped out. They define the Space Age AI So
 
 Every site opens with a cinematic full-screen video hero. No static image heroes. Ever.
 
-### Video Mode Selection
-
-**Does this business have a visible before/after transformation?**
+### Video Mode Decision Tree
 
 ```
-YES → TRANSFORMATION MODE (first frame + last frame)
-  Business types:
-    Landscaping       overgrown yard → perfect lawn
-    HVAC              broken unit → cool comfortable home
-    Dental            problem smile → perfect smile
-    Home renovation   beat up room → stunning remodel
-    Cleaning          dirty space → spotless result
-    Pest control      infestation → clean home
-    Auto detailing    dirty car → showroom finish
-    Any trade where the RESULT is the product
+STEP 1: Does this business have a visible before/after transformation?
+  YES → TRANSFORMATION MODE
 
-  Execution:
-    Frame 1: NanoBanana Pro generates the BEFORE image
-    Frame 2: NanoBanana Pro generates the AFTER image
-    Same angle · Same lighting direction · Same time of day
-    Feed both into Seedance / Kling / Veo as first + last frame
-    AI animates the transformation between them
-    Duration: 8–12 seconds
-    Pacing: M3 Action — dynamic, satisfying, fast-forward feel
+STEP 2: Does this business sell multiple products across different categories?
+  YES → MONTAGE MODE
+
+STEP 3: Does this business sell a feeling, atmosphere, or authority?
+  YES → ATMOSPHERE MODE
 ```
 
-```
-NO → ATMOSPHERE MODE (single cinematic prompt, up to 10 seconds)
-  Business types:
-    Restaurant        cinematic food, atmosphere, plating
-    Law office        confident attorney, modern office, authority
-    Spa / wellness    calm, steam, candles, serenity
-    Retail            product beauty shots, editorial
-    Personal brand    person in their element, lifestyle
-    Real estate       golden hour property walk
-    Medical / dental  (non-transformation — trust and calm)
-    Any business where the FEELING is the product
+---
 
-  Execution:
-    Single NanoBanana prompt → reference image
-    Route through cinema-worldbuilder for video prompt
-    cinema mode matched to business personality
-    Duration: up to 10 seconds
-    Pacing: M1 Narrative or M5 Atmospheric
+### MODE A — TRANSFORMATION (first frame + last frame)
+
+```
+WHEN:
+  Landscaping       overgrown yard → perfect lawn
+  HVAC              broken unit → cool comfortable home
+  Dental            problem smile → perfect smile
+  Home renovation   beat up room → stunning remodel
+  Cleaning          dirty space → spotless result
+  Pest control      infestation → clean home
+  Auto detailing    dirty car → showroom finish
+  Any trade where the RESULT is the product
+
+EXECUTION:
+  Frame 1: NanoBanana Pro generates the BEFORE image
+  Frame 2: NanoBanana Pro generates the AFTER image
+  Same angle · Same lighting direction · Same time of day
+  Feed both into Seedance / Kling / Veo as first + last frame
+  AI animates the transformation between them
+  Duration: 8–12 seconds
+  Cinema mode: M3 Action — dynamic, satisfying, fast-forward feel
 ```
 
-### Hero Overlay (both modes)
+---
+
+### MODE B — MONTAGE (multi-scene, single continuous video)
+
+```
+WHEN:
+  Ecommerce / dropshipping    multiple products, multiple use cases
+  Retail with varied inventory
+  Any site where the product LINE is the story —
+  not a single before/after, not a single mood
+
+EXAMPLE — Video game accessories store:
+  Scene 1 (0–3s):   Kid on couch, PS5 controller, intense gaming face
+  Scene 2 (3–6s):   Same kid, remote control car racing on driveway
+  Scene 3 (6–9s):   Drone launching, aerial pull-back shot
+  Scene 4 (9–11s):  Scooter riding fast and smooth
+  Scene 5 (11–15s): Back to couch — accessories laid out, money shot
+
+EXECUTION:
+  Platform: Kling or Veo — best for multi-scene continuity
+  Each scene: 2–3 seconds
+  Total duration: 10–15 seconds
+  Cuts: hard cuts between scenes — fast, energetic
+  Color grade: unified across all scenes
+  Character rule: ONE consistent character ties all scenes together
+    → Viewer follows the person, not just the products
+    → Products are what the character is using — never floating objects
+  Cinema mode: M3 Action — fast, dynamic, high energy
+  NanoBanana: generate key scene reference frames (one per scene)
+    → Feed as style references into Kling scene-by-scene
+```
+
+---
+
+### MODE C — ATMOSPHERE (single cinematic prompt, up to 10 seconds)
+
+```
+WHEN:
+  Restaurant        cinematic food, atmosphere, plating
+  Law office        confident attorney, modern office, authority
+  Spa / wellness    calm, steam, candles, serenity
+  Retail (single)   product beauty shots, editorial
+  Personal brand    person in their element, lifestyle
+  Real estate       golden hour property walk
+  Any business where the FEELING is the product
+
+EXECUTION:
+  Single NanoBanana prompt → reference image
+  Route through cinema-worldbuilder for video prompt
+  Cinema mode matched to business personality
+  Duration: up to 10 seconds
+  Pacing: M1 Narrative or M5 Atmospheric
+```
+
+---
+
+### Hero Overlay (all modes)
 ```
   Video: autoplay, muted, looped, full viewport
   Overlay: subtle gradient for text readability
@@ -88,7 +136,6 @@ WIDGET APPEARANCE:
   Shape:        circular bubble
   Content:      static image — NO animation required
   Style:        Pixar/CGI quality OR illustrated OR photorealistic
-                — whichever fits the brand best
   Label:        "Talk to [Name]" below the bubble
   Size:         small — reads clearly at 60–80px diameter
 
@@ -98,15 +145,17 @@ CHARACTER GENERATION:
   Background: transparent PNG, circular crop ready
   One prompt per client — generate once, done
 
-CHARACTER EXAMPLES BY BUSINESS TYPE:
-  Landscaper      → Pixar guy pushing lawnmower / riding mower
-  HVAC            → cartoon tech in uniform with wrench
-  Dentist         → friendly cartoon dentist with mirror tool
-  Law office      → illustrated attorney in suit
-  Restaurant      → cartoon chef, arms crossed, proud
-  Spa             → calm illustrated practitioner
-  Real estate     → smiling agent with sold sign
-  Personal brand  → stylized version of the actual person
+CHARACTER BY BUSINESS TYPE:
+  Landscaper        Pixar guy pushing lawnmower / riding mower
+  HVAC              cartoon tech in uniform with wrench
+  Dentist           friendly cartoon dentist with mirror tool
+  Law office        illustrated attorney in suit
+  Restaurant        cartoon chef, arms crossed, proud
+  Spa               calm illustrated practitioner
+  Real estate       smiling agent with sold sign
+  Ecommerce/gaming  character matching the store vibe
+                    (e.g. Pixar kid with controller for gaming store)
+  Personal brand    stylized version of the actual person
 
 INTERACTION:
   Visitor clicks bubble or "Talk to [Name]" label
@@ -127,26 +176,26 @@ ACTIVATION: Click on character widget
 
 WHAT IT KNOWS (configured per client by Hermes Agent):
   → Business name, owner name
-  → All services offered
-  → Service area / zip codes
-  → Pricing range or "free estimate" policy
+  → All services or products offered
+  → Service area / shipping info (for ecommerce)
+  → Pricing range or free estimate policy
   → Business hours
-  → Booking link or direct scheduling
+  → Booking link or cart / checkout flow
   → Top 5 FAQs for that business type
-  → Tone: friendly, local, knowledgeable
+  → Tone: friendly, knowledgeable, on-brand
 
 WHAT IT DOES:
   → Answers questions in real time via voice
-  → Books appointments directly
-  → Qualifies leads ("What's your address? We service that area.")
-  → Handles after-hours ("We're closed but I can schedule you for tomorrow")
-  → Never says "I don't know" — routes to contact form if truly stuck
+  → Books appointments OR guides to checkout
+  → Qualifies leads
+  → Handles after-hours coverage 24/7
+  → Never says "I don't know" — routes to contact if stuck
 
-HERMES AGENT CONFIGURES:
+HERMES AGENT CONFIGURES POST-BUILD:
   → Embeds Gemini agent on the page
-  → Builds the knowledge base from client intake
-  → Connects to booking system
-  → Sets the voice tone and persona
+  → Builds knowledge base from client intake
+  → Connects to booking or ecommerce system
+  → Sets voice tone and persona
   → Tests all FAQ responses before launch
 ```
 
@@ -158,46 +207,56 @@ Before any site goes to the coding agent, confirm:
 
 ```
 STAPLES CHECKLIST:
-  ✓ Video hero mode selected    [transformation / atmosphere]
-  ✓ NanoBanana prompts written  [1 or 2 frames depending on mode]
-  ✓ Video platform selected     [Seedance / Kling / Veo / Sora]
+  ✓ Video mode selected         [transformation / montage / atmosphere]
+  ✓ NanoBanana prompts written  [1, 2, or per-scene depending on mode]
+  ✓ Video platform selected     [Kling / Veo / Seedance / Sora]
   ✓ Character widget prompt written  [Pixar/CGI + business type]
   ✓ Character name confirmed    ["Talk to [Name]"]
-  ✓ Gemini agent knowledge base drafted  [services / area / FAQs]
+  ✓ Gemini agent knowledge base drafted
   ✓ Hermes Agent assigned for post-build integration
 
-  If any of these are unchecked → do not proceed to coding agent.
+  If any unchecked → do not proceed to coding agent.
 ```
 
 ---
 
 ## NANOBANANA PROMPT TEMPLATES
 
-### Transformation Mode — Before Frame
+### Mode A — Before Frame (transformation)
 ```
 [Neglected/broken/problem state] [location/setting],
-[specific visual problems listed], [time of day] light,
+[specific visual problems], [time of day] light,
 wide establishing shot, same angle as after frame,
 cinematic realism, ARRI Alexa Mini LF, Cooke 50mm anamorphic,
 Phase_One_IQ4_150MP.IIQ, HDR10+, commercial_hero_frame --ar 16:9 --q 4
 ```
 
-### Transformation Mode — After Frame
+### Mode A — After Frame (transformation)
 ```
 Same [location/setting] perfectly [transformed state],
-[specific visual improvements listed], [same time of day] light,
+[specific visual improvements], [same time of day] light,
 same angle same lighting direction as before frame,
 cinematic realism, ARRI Alexa Mini LF, Cooke 50mm anamorphic,
 Phase_One_IQ4_150MP.IIQ, HDR10+, commercial_hero_frame --ar 16:9 --q 4
 ```
 
-### Atmosphere Mode — Single Frame
+### Mode B — Scene Reference Frame (montage, one per scene)
+```
+[Character description] [action in this scene],
+[environment/setting], [energy level — intense / fast / excited],
+[time of day / lighting], cinematic action shot,
+ARRI Alexa Mini LF, Cooke 50mm anamorphic,
+Phase_One_IQ4_150MP.IIQ, HDR10+, Nike campaign aesthetic,
+commercial_hero_frame --ar 16:9 --q 4
+```
+
+### Mode C — Single Frame (atmosphere)
 ```
 [Subject/environment] [mood descriptor], [location],
 [specific atmospheric details], [time of day] light,
-[camera angle — wide / close / establishing],
-cinematic realism, ARRI Alexa Mini LF, [lens],
-Phase_One_IQ4_150MP.IIQ, HDR10+, [aesthetic reference] --ar 16:9 --q 4
+[camera angle], cinematic realism, ARRI Alexa Mini LF,
+Phase_One_IQ4_150MP.IIQ, HDR10+,
+[aesthetic reference] --ar 16:9 --q 4
 ```
 
 ### Character Widget
