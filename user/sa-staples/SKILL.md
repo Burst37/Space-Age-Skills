@@ -4,7 +4,7 @@ description: >
   The three non-negotiables present on every Space Age AI Solutions client website without
   exception. Reference this skill before finalizing any site brief. TRIGGER whenever building
   or reviewing a site brief to confirm all three staples are included.
-version: 1.1
+version: 1.2
 updated: 2026-05-19
 ---
 
@@ -16,6 +16,26 @@ They are not optional. They are not swapped out. They define the Space Age AI So
 
 ---
 
+## VIDEO PLATFORM RULE
+
+```
+CURRENT DEFAULT:  Seedance 2.0
+  Use for ALL three video modes — transformation, montage, atmosphere
+  Seedance 2.0 is the house platform until further notice
+
+PENDING:          Veo 4
+  Reassess default platform when Veo 4 releases
+  Until then — Seedance 2.0 on everything
+
+FALLBACK ONLY (do not default to these):
+  Kling 3.0       only if Seedance 2.0 cannot handle the specific shot
+  Veo 3.1         only if Seedance 2.0 cannot handle the specific shot
+  Sora 2          only if Seedance 2.0 cannot handle the specific shot
+  Always note the reason in the brief if routing away from Seedance 2.0
+```
+
+---
+
 ## STAPLE 1 — FULL-SCREEN VIDEO HERO
 
 Every site opens with a cinematic full-screen video hero. No static image heroes. Ever.
@@ -24,13 +44,13 @@ Every site opens with a cinematic full-screen video hero. No static image heroes
 
 ```
 STEP 1: Does this business have a visible before/after transformation?
-  YES → TRANSFORMATION MODE
+  YES → MODE A: TRANSFORMATION
 
 STEP 2: Does this business sell multiple products across different categories?
-  YES → MONTAGE MODE
+  YES → MODE B: MONTAGE
 
 STEP 3: Does this business sell a feeling, atmosphere, or authority?
-  YES → ATMOSPHERE MODE
+  YES → MODE C: ATMOSPHERE
 ```
 
 ---
@@ -52,8 +72,7 @@ EXECUTION:
   Frame 1: NanoBanana Pro generates the BEFORE image
   Frame 2: NanoBanana Pro generates the AFTER image
   Same angle · Same lighting direction · Same time of day
-  Feed both into Seedance / Kling / Veo as first + last frame
-  AI animates the transformation between them
+  Feed both into Seedance 2.0 as first + last frame reference
   Duration: 8–12 seconds
   Cinema mode: M3 Action — dynamic, satisfying, fast-forward feel
 ```
@@ -66,8 +85,7 @@ EXECUTION:
 WHEN:
   Ecommerce / dropshipping    multiple products, multiple use cases
   Retail with varied inventory
-  Any site where the product LINE is the story —
-  not a single before/after, not a single mood
+  Any site where the product LINE is the story
 
 EXAMPLE — Video game accessories store:
   Scene 1 (0–3s):   Kid on couch, PS5 controller, intense gaming face
@@ -77,7 +95,7 @@ EXAMPLE — Video game accessories store:
   Scene 5 (11–15s): Back to couch — accessories laid out, money shot
 
 EXECUTION:
-  Platform: Kling or Veo — best for multi-scene continuity
+  Platform: Seedance 2.0
   Each scene: 2–3 seconds
   Total duration: 10–15 seconds
   Cuts: hard cuts between scenes — fast, energetic
@@ -86,8 +104,8 @@ EXECUTION:
     → Viewer follows the person, not just the products
     → Products are what the character is using — never floating objects
   Cinema mode: M3 Action — fast, dynamic, high energy
-  NanoBanana: generate key scene reference frames (one per scene)
-    → Feed as style references into Kling scene-by-scene
+  NanoBanana: generate one reference frame per scene
+    → Feed as style references into Seedance 2.0 scene-by-scene
 ```
 
 ---
@@ -105,6 +123,7 @@ WHEN:
   Any business where the FEELING is the product
 
 EXECUTION:
+  Platform: Seedance 2.0
   Single NanoBanana prompt → reference image
   Route through cinema-worldbuilder for video prompt
   Cinema mode matched to business personality
@@ -154,7 +173,6 @@ CHARACTER BY BUSINESS TYPE:
   Spa               calm illustrated practitioner
   Real estate       smiling agent with sold sign
   Ecommerce/gaming  character matching the store vibe
-                    (e.g. Pixar kid with controller for gaming store)
   Personal brand    stylized version of the actual person
 
 INTERACTION:
@@ -177,7 +195,7 @@ ACTIVATION: Click on character widget
 WHAT IT KNOWS (configured per client by Hermes Agent):
   → Business name, owner name
   → All services or products offered
-  → Service area / shipping info (for ecommerce)
+  → Service area / shipping info (ecommerce)
   → Pricing range or free estimate policy
   → Business hours
   → Booking link or cart / checkout flow
@@ -208,8 +226,8 @@ Before any site goes to the coding agent, confirm:
 ```
 STAPLES CHECKLIST:
   ✓ Video mode selected         [transformation / montage / atmosphere]
+  ✓ Platform confirmed          [Seedance 2.0 — default]
   ✓ NanoBanana prompts written  [1, 2, or per-scene depending on mode]
-  ✓ Video platform selected     [Kling / Veo / Seedance / Sora]
   ✓ Character widget prompt written  [Pixar/CGI + business type]
   ✓ Character name confirmed    ["Talk to [Name]"]
   ✓ Gemini agent knowledge base drafted
@@ -243,7 +261,7 @@ Phase_One_IQ4_150MP.IIQ, HDR10+, commercial_hero_frame --ar 16:9 --q 4
 ### Mode B — Scene Reference Frame (montage, one per scene)
 ```
 [Character description] [action in this scene],
-[environment/setting], [energy level — intense / fast / excited],
+[environment/setting], [energy level],
 [time of day / lighting], cinematic action shot,
 ARRI Alexa Mini LF, Cooke 50mm anamorphic,
 Phase_One_IQ4_150MP.IIQ, HDR10+, Nike campaign aesthetic,
