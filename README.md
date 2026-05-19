@@ -246,6 +246,14 @@ Hours: [hours]
 | `social-media-designer` | `user/social-media-designer/` | Instagram, TikTok, LinkedIn assets |
 | `page-upgrade` | `user/page-upgrade/` | Existing site audit + redesign |
 
+### Animation Skills
+
+| Skill | File | Trigger |
+|---|---|---|
+| `SA-immersive-reveal` | `user/SA-immersive-reveal/` | Scroll reveals, section entrances, hero unveil, parallax, text scramble |
+| `SA-3d-slider` | `user/SA-3d-slider/` | 3D coverflow carousel, portfolio showcase, testimonial slider, card deck |
+| `SA-explode-to-menu` | `user/SA-explode-to-menu/` | Particle explosion → nav/service menu, shatter effect, logo explode |
+
 ### Business System Skills
 
 | Skill | File | Trigger |
