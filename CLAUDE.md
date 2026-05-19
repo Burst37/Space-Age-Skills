@@ -30,7 +30,7 @@ Skills live in two directories:
 ### Core (superpowers/)
 
 | Skill | Trigger |
-|-------|---------|
+|-------|--------|
 | `using-superpowers` | Session start — establishes skill-first workflow |
 | `brainstorming` | Before any new feature, component, or creative work |
 | `writing-plans` | After brainstorming, before implementation |
@@ -49,7 +49,7 @@ Skills live in two directories:
 ### Custom (user/)
 
 | Skill | Trigger |
-|-------|---------|
+|-------|--------|
 | `sa-orchestrator` | Every message — universal capability routing engine (load_order: 0) |
 | `brand-extractor` | When extracting or applying a client brand identity |
 | `page-upgrade` | When auditing and upgrading an existing client page |
@@ -57,14 +57,27 @@ Skills live in two directories:
 #### Orchestration & Intelligence
 
 | Skill | Trigger |
-|-------|---------|
-| `sa-site-intelligence` | **Run first on every new project.** Presents the intake questionnaire (batch leads / single build / existing site rebuild), classifies business type, selects context-appropriate GSAP modules (landscaper gets 5 targeted modules, not 30), writes the coding brief, and dispatches the right coding agent. Claude is the director — this skill is how it thinks. |
+|-------|--------|
+| `sa-site-intelligence` | **Run first on every new project.** Presents the intake questionnaire (batch leads / single build / existing site rebuild), classifies business type, selects context-appropriate modules (landscaper gets 5 targeted modules, not 30), writes the coding brief, and dispatches the right coding agent. Claude is the director — this skill is how it thinks. |
 | `sa-prospecting-agent` | "find [niche] in [city]", "scrape leads", "find businesses that need a website", "generate leads for [industry]" — scrapes Google Maps, audits each site, sorts into Google Sheets (Bucket 1: no site / Bucket 2: needs upgrade / Bucket 3: skip), hands off to pipeline |
+
+#### Design & Visual Direction
+
+| Skill | Trigger |
+|-------|--------|
+| `ultimate-design-director` | **Run after sa-site-intelligence, before any build.** Selects visual aesthetic (7 options), motion techniques (always Lenis + GSAP), 3D/WebGL strategy (Spline / Three.js / shaders), 9-section page structure with required/optional flags, SEO + Core Web Vitals mandates, and dev stack decision. Contains 2026 UI/UX best practices including parallax, interactive GSAP, shaders, and scroll-driven animations. |
+| `sa-design-md` | After brand extraction, before any web build — generates DESIGN.md with VL-01 Dark Glassmorphism tokens |
+
+#### Three Staples (Every Site)
+
+| Skill | Trigger |
+|-------|--------|
+| `sa-staples` | **Run for every site build** — enforces the three non-negotiables: (1) full-screen video hero (Seedance 2.0 default — Mode A Transformation / Mode B Montage / Mode C Atmosphere), (2) custom Pixar/CGI character widget bottom-right with "Talk to [Name]" label, (3) Gemini 3.1 Flash TTS voice agent behind the widget. Contains NanoBanana prompt templates for all modes. Must be checked complete before coding agent fires. |
 
 #### Video & Storyboard Pipeline
 
 | Skill | Trigger |
-|-------|---------|
+|-------|--------|
 | `character-storyboard-stylesheet` | "create a storyboard", "plan a cinematic sequence", "build a fight scene storyboard", "create a character action sequence", "plan a 15-second sequence" — 5-column storyboard table + Seedance 2.0 prompts per shot |
 | `cinema-worldbuilder` | "write a Seedance prompt", "direct this scene", "create a video prompt for…", any single-scene or multi-cut video prompt — applies 5-mode cinema grammar (M1–M5) with canonical camera blocks |
 | `seedance-prompt-engineer` | Fine-grained Seedance 2.0 prompt engineering — use after `cinema-worldbuilder` for per-shot polish |
@@ -73,8 +86,7 @@ Skills live in two directories:
 #### Web Production Pipeline
 
 | Skill | Trigger |
-|-------|---------|
-| `sa-design-md` | After brand extraction, before any web build — generates DESIGN.md with VL-01 Dark Glassmorphism tokens |
+|-------|--------|
 | `cinematic-website-builder` | Final build stage — 30 GSAP + ScrollTrigger modules, single-file HTML, Playwright QA 3-device matrix. Claude selects 3–8 modules via `sa-site-intelligence` before invoking. |
 
 ## Full Workflow Chains
@@ -90,19 +102,21 @@ MODE A — Batch Build from Leads
     → Handoff: Bucket 1 + 2 leads
   [Per lead — all in parallel]
     brand-extractor → sa-design-md
-    NanoBanana Pro → hero image
-    Higgsfield | Sora | Veo → hero video → FFmpeg → frame assets
+    sa-staples → NanoBanana Pro → hero image + character widget
+    Seedance 2.0 → hero video → FFmpeg → frame assets          ← DEFAULT platform
+    ultimate-design-director → aesthetic + motion + 3D strategy
     google-stitch → UI/UX wireframe
     sa-site-intelligence → classify business → select modules → write brief → assign agent
     [Parallel agent dispatch — one per site]
       Codex · Claude Code · Gemini Pro · MiniMax 2.7 · DeepSeek v4 · Kimi K2
-    Hermes Agent → integration layer (CRM, booking, email, reviews) per site
+    Hermes Agent → integration layer (Gemini 3.1 Flash TTS widget, booking, email, reviews) per site
     Playwright QA → Vercel deploy
 
 MODE B — Single Site Build
   sa-site-intelligence → classify → modules → brief
   brand-extractor → sa-design-md
-  NanoBanana Pro + hero video → FFmpeg
+  sa-staples → NanoBanana Pro + Seedance 2.0 hero video → FFmpeg
+  ultimate-design-director → aesthetic + motion + 3D strategy
   google-stitch → cinematic-website-builder → Hermes Agent → Playwright → Vercel
 
 MODE C — Existing Site Rebuild
@@ -112,8 +126,23 @@ MODE C — Existing Site Rebuild
 
 ### Hermes Agent Role
 Hermes is the **integration specialist**, not the primary builder. It runs AFTER the coding agent
-delivers the HTML, connecting every site to: CRM · booking · email automation · payments ·
-review platforms · AI chat widget. Every site gets a Hermes integration pass before QA.
+delivers the HTML, connecting every site to: Gemini 3.1 Flash TTS widget · booking · email
+automation · payments · review platforms. Every site gets a Hermes integration pass before QA.
+
+### Three Staples — Non-Negotiable on Every Site
+1. **Full-screen video hero** — Seedance 2.0 (default). Mode A: Transformation (before/after),
+   Mode B: Montage (multi-scene), Mode C: Atmosphere (single prompt up to 10s)
+2. **Custom character widget** — static Pixar/CGI image (NanoBanana Pro), "Talk to [Name]" label,
+   bottom-right corner. No generic chat bubbles.
+3. **Gemini 3.1 Flash TTS** — multimodal voice AI behind the widget. Configured by Hermes Agent
+   post-build. Knows the business, sees the page, handles real conversations.
+
+### Video Platform Default
+```
+CURRENT DEFAULT:  Seedance 2.0 (ALL modes)
+PENDING:          Veo 4 (reassess on release — may become new default)
+FALLBACK ONLY:    Kling 3.0, Veo 3.1, Sora 2
+```
 
 ### Video-Only Chain
 ```
