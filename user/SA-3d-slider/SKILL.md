@@ -44,11 +44,19 @@ SA-3D-Slider injects a full 3D perspective carousel into any Space Age HTML page
 ### Pipeline Position
 
 ```
-cinematic-website-builder / shopify-cinematic-builder
+brand-extractor → sa-design-md
               ↓
-   SA-Immersive-Reveal (motion base layer)
+       ui-ux-designer  (Design Brief YAML — section architecture, card layout spec)
+              ↓
+     Google Stitch 2.0  (UI prototype → reviewed layout)
+              ↓
+cinematic-website-builder / shopify-cinematic-builder  (HTML shell)
+              ↓
+   SA-Immersive-Reveal (motion base layer — apply first)
               ↓
       SA-3D-Slider  ←── YOU ARE HERE
+              ↓
+     SA-higgsfield-operator (card imagery via GPT Image 2 / Nano Banana Pro)
               ↓
          Vercel Deploy
 ```
@@ -556,9 +564,14 @@ skill_id: SA-3D-SLIDER
 version: 1.0.0
 category: animation
 dependencies:
+  - brand-extractor (upstream brand tokens)
+  - sa-design-md (VL-01 design system + glass tokens)
+  - ui-ux-designer (design brief + card layout + interaction spec)
+  - google-stitch (UI prototype → reviewed layout)
   - cinematic-website-builder (upstream HTML source)
-  - sa-design-md (VL-01 glass tokens)
+  - SA-immersive-reveal (motion base layer — apply before slider)
 downstream:
+  - SA-higgsfield-operator (card imagery via GPT Image 2 / Nano Banana Pro)
   - Vercel Deploy
 outputs:
   - 3D carousel HTML block

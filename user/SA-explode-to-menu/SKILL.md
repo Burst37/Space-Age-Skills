@@ -54,11 +54,19 @@ SA-Explode-To-Menu creates a two-phase cinematic interaction:
 ### Pipeline Position
 
 ```
-cinematic-website-builder / shopify-cinematic-builder
+brand-extractor → sa-design-md
               ↓
-   SA-Immersive-Reveal (motion base layer)
+       ui-ux-designer  (Design Brief YAML — nav architecture, menu structure)
+              ↓
+     Google Stitch 2.0  (UI prototype → reviewed layout)
+              ↓
+cinematic-website-builder / shopify-cinematic-builder  (HTML shell)
+              ↓
+   SA-Immersive-Reveal (motion base layer — apply first)
               ↓
    SA-Explode-To-Menu  ←── YOU ARE HERE
+              ↓
+     SA-higgsfield-operator (logo / trigger element imagery)
               ↓
          Vercel Deploy
 ```
@@ -683,9 +691,14 @@ skill_id: SA-EXPLODE-TO-MENU
 version: 1.0.0
 category: animation
 dependencies:
-  - cinematic-website-builder (upstream HTML source)
+  - brand-extractor (upstream brand tokens)
   - sa-design-md (VL-01 color tokens for glowColor param)
+  - ui-ux-designer (design brief + nav architecture + menu structure spec)
+  - google-stitch (UI prototype → reviewed nav layout)
+  - cinematic-website-builder (upstream HTML source)
+  - SA-immersive-reveal (motion base layer — apply before explode trigger)
 downstream:
+  - SA-higgsfield-operator (logo / trigger element imagery via GPT Image 2)
   - Vercel Deploy
 outputs:
   - Particle physics explosion engine (SAExplodeToMenu class)

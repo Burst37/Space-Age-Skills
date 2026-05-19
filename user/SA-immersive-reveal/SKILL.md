@@ -44,11 +44,19 @@ SA-Immersive-Reveal injects a complete scroll-driven reveal system into any Spac
 ### Pipeline Position
 
 ```
-cinematic-website-builder / shopify-cinematic-builder
+brand-extractor → sa-design-md
+              ↓
+       ui-ux-designer  (Design Brief YAML — section architecture, motion system)
+              ↓
+     Google Stitch 2.0  (UI prototype → reviewed layout)
+              ↓
+cinematic-website-builder / shopify-cinematic-builder  (HTML shell)
               ↓
    SA-Immersive-Reveal  ←── YOU ARE HERE
               ↓
-      SA-3D-Slider / SA-Explode-To-Menu (optional layer)
+      SA-3D-Slider / SA-Explode-To-Menu (optional additional layer)
+              ↓
+     SA-higgsfield-operator (hero image + video assets)
               ↓
          Vercel Deploy
 ```
@@ -437,11 +445,16 @@ skill_id: SA-IMMERSIVE-REVEAL
 version: 1.0.0
 category: animation
 dependencies:
+  - brand-extractor (upstream brand tokens)
+  - sa-design-md (VL-01 design system + motion tokens)
+  - ui-ux-designer (design brief + section architecture + motion system spec)
+  - google-stitch (UI prototype → reviewed HTML structure)
   - cinematic-website-builder (upstream HTML source)
-  - sa-design-md (VL-01 motion tokens)
 downstream:
   - SA-3D-Slider (optional additional layer)
   - SA-Explode-To-Menu (optional additional layer)
+  - SA-higgsfield-operator (hero image + video assets)
+  - Vercel Deploy
 outputs:
   - Animated HTML page (motion layer injected)
   - CSS motion token block
