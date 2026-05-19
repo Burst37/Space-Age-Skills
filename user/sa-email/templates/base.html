@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{{ subject_line }}</title>
+  <!--
+    SA-EMAIL Base Template v1.0
+    Space Age AI Solutions
+
+    PLACEHOLDER REFERENCE:
+    {{ subject_line }}    — email subject (also use as <title>)
+    {{ preview_text }}    — preheader text (40-90 chars)
+    {{ brand_name }}      — company/brand name
+    {{ logo_url }}        — hosted logo image URL
+    {{ primary_color }}   — brand primary hex color
+    {{ bg_color }}        — email background hex
+    {{ text_color }}      — body text hex
+    {{ font_family }}     — CSS font stack
+    {{ headline }}        — hero headline
+    {{ body_opening }}    — first paragraph (personalized)
+    {{ body_core }}       — main value/offer paragraph
+    {{ body_close }}      — closing paragraph leading to CTA
+    {{ cta_text }}        — button label
+    {{ cta_url }}         — button destination URL
+    {{ sign_off }}        — e.g. "Warmly,"
+    {{ sender_name }}     — e.g. "Sarah at Brand"
+    {{ ps_line }}         — P.S. content
+    {{ unsubscribe_url }} — one-click unsubscribe URL
+    {{ view_browser_url }} — hosted version URL
+    {{ physical_address }} — full mailing address (CAN-SPAM)
+
+    KLAVIYO VARIABLE SYNTAX:
+    {{ first_name|default:'Friend' }}
+    {{ person.email }}
+    {{ event.extra.order_id }}
+  -->
+  <style type="text/css">
+    /* Reset */
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+
+    /* Responsive */
+    @media only screen and (max-width: 600px) {
+      .email-container { width: 100% !important; }
+      .email-col       { width: 100% !important; display: block !important; }
+      .hide-mobile     { display: none !important; max-height: 0 !important; overflow: hidden !important; }
+      .show-mobile     { display: block !important; }
+      .btn-wrap td     { width: 100% !important; text-align: center !important; }
+      .btn             { width: 90% !important; }
+      .pad             { padding: 24px 20px !important; }
+      h1               { font-size: 24px !important; line-height: 32px !important; }
+      .logo-img        { max-width: 120px !important; }
+    }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4;">
+
+<!-- Preheader (hidden) -->
+<div style="display: none; max-height: 0; overflow: hidden; mso-hide: all;
+            font-size: 1px; color: #f4f4f4; line-height: 1px;">
+  {{ preview_text }}
+  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
+  &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
+</div>
+
+<!-- Outer wrapper -->
+<table border="0" cellpadding="0" cellspacing="0" width="100%"
+       style="background-color: #f4f4f4;">
+  <tr>
+    <td align="center" valign="top" style="padding: 24px 10px;">
+
+      <!-- Email container -->
+      <table class="email-container" border="0" cellpadding="0" cellspacing="0"
+             width="600" style="background-color: {{ bg_color|default:'#ffffff' }};
+             border-radius: 8px; overflow: hidden;
+             box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+
+        <!-- ═══════════════════════════════ -->
+        <!-- LAYER 2: HEADER (brand bar)    -->
+        <!-- ═══════════════════════════════ -->
+        <tr>
+          <td align="center" class="pad"
+              style="background-color: {{ primary_color|default:'#000000' }};
+                     padding: 24px 40px;">
+            <img class="logo-img"
+                 src="{{ logo_url|default:'[LOGO_URL]' }}"
+                 alt="{{ brand_name }}"
+                 width="150" height="auto"
+                 style="display: block; max-width: 150px; height: auto;">
+          </td>
+        </tr>
+
+        <!-- ═══════════════════════════════ -->
+        <!-- LAYER 3: HERO                  -->
+        <!-- ═══════════════════════════════ -->
+        <tr>
+          <td class="pad" style="padding: 40px 40px 20px 40px;">
+            <h1 style="margin: 0 0 12px 0;
+                       font-family: {{ font_family|default:'Arial, Helvetica, sans-serif' }};
+                       font-size: 28px; font-weight: 700;
+                       line-height: 36px;
+                       color: {{ text_color|default:'#1a1a1a' }};
+                       letter-spacing: -0.5px;">
+              {{ headline }}
+            </h1>
+          </td>
+        </tr>
+
+        <!-- ═══════════════════════════════ -->
+        <!-- LAYER 4: BODY                  -->
+        <!-- ═══════════════════════════════ -->
+        <tr>
+          <td class="pad" style="padding: 0 40px 32px 40px;">
+
+            <!-- Greeting -->
+            <p style="margin: 0 0 16px 0;
+                      font-family: {{ font_family|default:'Arial, Helvetica, sans-serif' }};
+                      font-size: 16px; line-height: 26px;
+                      color: {{ text_color|default:'#333333' }};">
+              {{ greeting|default:'Hi {{ first_name|default:"Friend" }},' }}
+            </p>
+
+            <!-- Opening -->
+            <p style="margin: 0 0 16px 0;
+                      font-family: {{ font_family|default:'Arial, Helvetica, sans-serif' }};
+                      font-size: 16px; line-height: 26px;
+                      color: {{ text_color|default:'#333333' }};">
+              {{ body_opening }}
+            </p>
+
+            <!-- Core -->
+            <p style="margin: 0 0 16px 0;
+                      font-family: {{ font_family|default:'Arial, Helvetica, sans-serif' }};
+                      font-size: 16px; line-height: 26px;
+                      color: {{ text_color|default:'#333333' }};">
+              {{ body_core }}
+            </p>
+
+            <!-- Close -->
+            <p style="margin: 0 0 32px 0;
+                      font-family: {{ font_family|default:'Arial, Helvetica, sans-serif' }};
+                      font-size: 16px; line-height: 26px;
+                      color: {{ text_color|default:'#333333' }};">
+              {{ body_close }}
+            </p>
+
+            <!-- ═══════════════════════════════ -->
+            <!-- LAYER 5: CTA BUTTON            -->
+            <!-- ═══════════════════════════════ -->
+            <table class="btn-wrap" border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="border-radius: 6px;
+                           background-color: {{ primary_color|default:'#000000' }};
+                           text-align: center;">
+                  <!--[if mso]>
+                  <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"
+                    href="{{ cta_url }}"
+                    style="height:52px;v-text-anchor:middle;width:200px;"
+                    arcsize="12%" stroke="f" fillcolor="{{ primary_color|default:'#000000' }}">
+                    <w:anchorlock/>
+                    <center style="color:#ffffff;font-family:Arial,sans-serif;font-size:16px;font-weight:bold;">{{ cta_text }}</center>
+                  </v:roundrect>
+                  <![endif]-->
+                  <!--[if !mso]><!-->
+                  <a class="btn" href="{{ cta_url }}"
+                     style="display: inline-block; padding: 16px 32px;
+                            font-family: {{ font_family|default:'Arial, Helvetica, sans-serif' }};
+                            font-size: 16px; font-weight: 700;
+                            color: #ffffff; text-decoration: none;
+                            border-radius: 6px; mso-padding-alt: 0;
+                            text-align: center; letter-spacing: 0.3px;">
+                    {{ cta_text }}
+                  </a>
+                  <!--<![endif]-->
+                </td>
+              </tr>
+            </table>
+
+          </td>
+        </tr>
+
+        <!-- ═══════════════════════════════ -->
+        <!-- LAYER 6: SIGN-OFF + PS         -->
+        <!-- ═══════════════════════════════ -->
+        <tr>
+          <td class="pad"
+              style="padding: 0 40px 32px 40px;
+                     border-top: 1px solid #eeeeee;">
+            <p style="margin: 24px 0 4px 0;
+                      font-family: {{ font_family|default:'Arial, Helvetica, sans-serif' }};
+                      font-size: 15px; line-height: 24px;
+                      color: {{ text_color|default:'#333333' }};">
+              {{ sign_off|default:'Warmly,' }}<br>
+              {{ sender_name|default:'The Team' }}
+            </p>
+            {% if ps_line %}
+            <p style="margin: 20px 0 0 0;
+                      font-family: {{ font_family|default:'Arial, Helvetica, sans-serif' }};
+                      font-size: 14px; line-height: 22px;
+                      color: #666666; font-style: italic;">
+              <strong>P.S.</strong> {{ ps_line }}
+            </p>
+            {% endif %}
+          </td>
+        </tr>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- LAYER 7: LEGAL FOOTER (CAN-SPAM required)  -->
+        <!-- ═══════════════════════════════════════════ -->
+        <tr>
+          <td style="background-color: #f9f9f9;
+                     padding: 24px 40px;
+                     border-top: 1px solid #eeeeee;">
+            <p style="margin: 0 0 8px 0;
+                      font-family: Arial, Helvetica, sans-serif;
+                      font-size: 12px; line-height: 18px;
+                      color: #999999; text-align: center;">
+              You're receiving this because you subscribed to {{ brand_name }} emails.
+            </p>
+            <p style="margin: 0;
+                      font-family: Arial, Helvetica, sans-serif;
+                      font-size: 12px; line-height: 18px;
+                      color: #999999; text-align: center;">
+              <a href="{{ unsubscribe_url }}" style="color: #999999; text-decoration: underline;">Unsubscribe</a>
+              &nbsp;&bull;&nbsp;
+              <a href="{{ view_browser_url }}" style="color: #999999; text-decoration: underline;">View in browser</a>
+              <br><br>
+              {{ brand_name }} &bull; {{ physical_address }}
+            </p>
+          </td>
+        </tr>
+
+      </table>
+      <!-- End email container -->
+
+    </td>
+  </tr>
+</table>
+<!-- End outer wrapper -->
+
+</body>
+</html>
