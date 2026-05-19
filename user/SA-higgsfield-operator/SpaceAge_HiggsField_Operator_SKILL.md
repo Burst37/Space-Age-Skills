@@ -1,7 +1,7 @@
 ---
 name: SA-higgsfield-operator
 display_name: "SPACE AGE — Higgsfield AI Operator"
-version: "3.1"
+version: "3.2"
 last_updated: "2026-05"
 source: "upgraded from higgsfield-ai/skills via @higgsfield/cli v0.1.35 + MCP surface"
 description: >
@@ -13,16 +13,19 @@ description: >
   layered output for all images, equipment tokens, ultra-detail enforcement).
   PRIMARY platform for all AI image and video generation. Subscription credits — zero
   marginal cost per generation. Route ALL image/video work here before any other platform.
+  IMAGE MODELS IN USE: GPT Image 2 (default hero/commercial/text-in-image) and
+  Nano Banana Pro (portrait/character only, zero text in frame).
+  VIDEO MODELS IN USE: Seedance 2.0 (music video/editorial), Kling 3.0 (narrative/multi-shot),
+  Veo 3.1 (lipsync/dialogue ONLY).
   VIDEO PROMPTING: Always multi-shot JSON. Consume cinematic-video-architect adapters.
-  IMAGE PROMPTING: Always JSON — GPT Image 2 uses layered Scene/Subject/Detail/Lighting/
-  Constraint format; FLUX 2 uses HEX color codes + explicit camera/lens/lighting keys.
+  IMAGE PROMPTING: Always JSON — GPT Image 2 uses layered Scene/Subject/Detail/Lighting/Constraint.
   TRIGGER on: any model name (Seedance, Kling, Veo, NanoBanana, Soul, etc.), any request
   to generate an image, generate a video, run virality predictor, train a Soul ID, build
   a marketing studio asset, create a DTC ad, upload media, or check credits/balance.
 ---
 
 # SA-Higgsfield-Operator
-**Maintained by:** Space Age AI Solutions | **Version:** 3.1 | **Platform:** Higgsfield AI
+**Maintained by:** Space Age AI Solutions | **Version:** 3.2 | **Platform:** Higgsfield AI
 
 ---
 
@@ -57,6 +60,8 @@ JSON prompt. Execute. Return URLs.
 ### IMAGE MODEL HIERARCHY — READ BEFORE ROUTING
 
 ```
+ACTIVE IMAGE MODELS: GPT Image 2 (default) | Nano Banana Pro (portrait only)
+
 DEFAULT HERO IMAGE MODEL: GPT Image 2 (gpt_image_2)
 Reasons:
   1. Best photorealism across all Higgsfield image models
@@ -72,7 +77,7 @@ USE nano_banana_2 ONLY WHEN:
   - Fashion editorial, cinematic headshot, character sheet
   - Explicit cinematic film-style aesthetic (no commercial overlay)
 
-NEVER route text-containing images to nano_banana_2 or flux_kontext.
+NEVER route text-containing images to nano_banana_2.
 GPT Image 2 owns all text-in-image use cases without exception.
 ```
 
@@ -92,30 +97,28 @@ GPT Image 2 owns all text-in-image use cases without exception.
 ✅ Menu boards, service boards (restaurants, salons, etc.)
 ```
 
-### IMAGE MODELS (18 total)
+### IMAGE MODELS (18 total — platform catalog)
 
 | Priority | Use Case | Model | job_set_type | Max Res |
 |---|---|---|---|---|
 | **1 — DEFAULT** | Hero images, text-in-image, product shots, commercial | **GPT Image 2** | `gpt_image_2` | 4K |
 | **2** | Cinematic portrait, character, fashion (no text in frame) | **Nano Banana Pro** | `nano_banana_2` | 4K |
-| **3** | Style transfer / image editing / image-to-image | **Flux Kontext** | `flux_kontext` | — |
-| 4 | Character reference sheet (multi-angle) | Nano Banana 2 | `nano_banana_flash` | 4K |
-| 5 | Cinematic still with film grain | Cinematic Studio 2.5 | `cinematic_studio_2_5` | 4K |
-| 6 | Face-faithful portrait (Soul ID) | Soul V2 | `text2image_soul_v2` | — |
-| 7 | Soul character — cinematic staging | Soul Cinematic | `soul_cinematic` | — |
-| 8 | Soul character — location scene | Soul Location | `soul_location` | — |
-| 9 | DTC ad image / branded product | Marketing Studio Image | `marketing_studio_image` | 4K |
-| 10 | DTC Ads Engine (style-id required) | DTC Ads Engine | `dtc_ads` | 4K |
-| 11 | FLUX pro/flex/max quality tier | FLUX.2 | `flux_2` | 2K |
-| 12 | X/Grok platform aesthetic | Grok Image | `grok_image` | — |
-| 13 | OpenAI Hazel quality tiers | OpenAI Hazel | `openai_hazel` | — |
-| 14 | Budget / speed image | Nano Banana | `nano_banana` | — |
-| 15 | Seedream 4.5 quality image | Seedream 4.5 | `seedream_v4_5` | — |
-| 16 | Seedream V5 lite speed image | Seedream V5 Lite | `seedream_v5_lite` | — |
-| 17 | Auto model selection | Image Auto | `image_auto` | — |
-| 18 | Z Image experimental | Z Image | `z_image` | — |
+| 3 | Character reference sheet (multi-angle) | Nano Banana 2 | `nano_banana_flash` | 4K |
+| 4 | Cinematic still with film grain | Cinematic Studio 2.5 | `cinematic_studio_2_5` | 4K |
+| 5 | Face-faithful portrait (Soul ID) | Soul V2 | `text2image_soul_v2` | — |
+| 6 | Soul character — cinematic staging | Soul Cinematic | `soul_cinematic` | — |
+| 7 | Soul character — location scene | Soul Location | `soul_location` | — |
+| 8 | DTC ad image / branded product | Marketing Studio Image | `marketing_studio_image` | 4K |
+| 9 | DTC Ads Engine (style-id required) | DTC Ads Engine | `dtc_ads` | 4K |
+| 10 | X/Grok platform aesthetic | Grok Image | `grok_image` | — |
+| 11 | OpenAI Hazel quality tiers | OpenAI Hazel | `openai_hazel` | — |
+| 12 | Budget / speed image | Nano Banana | `nano_banana` | — |
+| 13 | Seedream 4.5 quality image | Seedream 4.5 | `seedream_v4_5` | — |
+| 14 | Seedream V5 lite speed image | Seedream V5 Lite | `seedream_v5_lite` | — |
+| 15 | Auto model selection | Image Auto | `image_auto` | — |
+| 16 | Z Image experimental | Z Image | `z_image` | — |
 
-### VIDEO MODELS (17 total)
+### VIDEO MODELS (17 total — platform catalog)
 
 | Use Case | Model | job_set_type | Max Duration |
 |---|---|---|---|
@@ -142,19 +145,14 @@ GPT Image 2 owns all text-in-image use cases without exception.
 ## SPACE AGE MODEL PRIORITY STACK
 
 ```
-IMAGE GENERATION PRIORITY:
-1. Nano Banana Pro (nano_banana_2)     → portraits, characters, fashion, cinematic stills
-2. GPT Image 2 (gpt_image_2)          → typography, diagrams, text-heavy, 4K product
-3. Flux Kontext (flux_kontext)         → style transfer, image-to-image editing
-4. Cinematic Studio 2.5               → film grain, cinematic still
-5. Soul V2 + Soul ID                  → face-faithful reuse across campaigns
+IMAGE GENERATION (models in active use):
+1. GPT Image 2 (gpt_image_2)          → DEFAULT — hero images, text-in-image, product, commercial
+2. Nano Banana Pro (nano_banana_2)     → portrait, character, fashion — zero text in frame only
 
-VIDEO GENERATION PRIORITY:
-1. Seedance 2.0 (seedance_2_0)        → music video, rhythm, motion editorial
+VIDEO GENERATION (models in active use):
+1. Seedance 2.0 (seedance_2_0)        → music video, rhythm, motion editorial, local business
 2. Kling v3.0 (kling3_0)             → narrative, multi-shot, cinematic sequence
 3. Veo 3.1 (veo3_1)                  → lipsync ONLY, dialogue sync
-4. Minimax Hailuo (minimax_hailuo)    → silent clips, cost savings, B-roll
-5. Cinematic Studio 3.0              → narrative alt, genre scenes
 ```
 
 ---
@@ -258,17 +256,9 @@ higgsfield generate get <job_id>         # opens report link in response
 
 ## MODEL FLAG REFERENCE
 
-### IMAGE — Key Model Flags
+### IMAGE — Active Model Flags
 
-#### nano_banana_2 (Nano Banana Pro)
-```bash
---prompt ""                     # REQUIRED
---aspect_ratio 16:9             # auto|1:1|3:2|2:3|4:3|3:4|4:5|5:4|9:16|16:9|21:9
---resolution 2k                 # 1k|2k|4k
---image ./ref.jpg               # optional reference (UUID or path)
-```
-
-#### gpt_image_2 (GPT Image 2)
+#### gpt_image_2 (GPT Image 2) ← DEFAULT
 ```bash
 --prompt ""                     # REQUIRED
 --aspect_ratio 16:9             # 1:1|4:3|3:4|16:9|9:16|3:2|2:3
@@ -277,11 +267,12 @@ higgsfield generate get <job_id>         # opens report link in response
 --batch_size 4                  # integer (batch)
 ```
 
-#### flux_kontext (Flux Kontext — style transfer)
+#### nano_banana_2 (Nano Banana Pro) ← Portrait/character only
 ```bash
 --prompt ""                     # REQUIRED
---aspect_ratio 16:9
---image ./source.jpg            # source image for style/edit
+--aspect_ratio 16:9             # auto|1:1|3:2|2:3|4:3|3:4|4:5|5:4|9:16|16:9|21:9
+--resolution 4k                 # 1k|2k|4k
+--image ./ref.jpg               # optional reference (UUID or path)
 ```
 
 #### text2image_soul_v2 (Soul V2)
@@ -302,9 +293,9 @@ higgsfield generate get <job_id>         # opens report link in response
 --batch_size 4                 # max 20
 ```
 
-### VIDEO — Key Model Flags
+### VIDEO — Active Model Flags
 
-#### seedance_2_0 (Seedance 2.0) ← Primary MV model
+#### seedance_2_0 (Seedance 2.0) ← Primary MV / local business model
 ```bash
 --prompt ""                     # REQUIRED — multi-shot JSON string
 --aspect_ratio 16:9             # auto|16:9|9:16|4:3|3:4|1:1|21:9
@@ -337,15 +328,6 @@ higgsfield generate get <job_id>         # opens report link in response
 --model veo-3-1-preview        # veo-3-1-preview|veo-3-1-fast
 --quality ultra                 # basic|high|ultra
 --image ./subject.jpg           # optional character reference
-```
-
-#### minimax_hailuo (Minimax Hailuo) ← Budget/silent
-```bash
---prompt ""                     # REQUIRED
---duration 6                    # 6|10
---resolution 1080                # 512|768|1080
---model minimax-2.3             # minimax|minimax-fast|minimax-2.3|minimax-2.3-fast
---image ./ref.jpg
 ```
 
 #### marketing_studio_video
@@ -405,12 +387,12 @@ When operating via Claude's Higgsfield MCP connection, use these tools:
 
 ## HIGGSFIELD CLI PIPELINE PATTERNS
 
-### Pattern 1 — Image → Video (Standard MV workflow)
+### Pattern 1 — Image → Video (Standard workflow)
 ```bash
 # Step 1: Generate hero frame
-higgsfield generate create nano_banana_2 \
-  --prompt "[cinematic portrait prompt]" \
-  --aspect_ratio 16:9 --resolution 4k --wait
+higgsfield generate create gpt_image_2 \
+  --prompt "[JSON layered prompt]" \
+  --aspect_ratio 16:9 --quality high --resolution 4k --wait
 
 # Step 2: Use image UUID as start frame for video
 higgsfield generate create seedance_2_0 \
@@ -420,7 +402,21 @@ higgsfield generate create seedance_2_0 \
   --genre drama --duration 15 --wait
 ```
 
-### Pattern 2 — Soul ID Campaign (Face-faithful reuse)
+### Pattern 2 — Portrait → Video (Character-led)
+```bash
+# Step 1: Character portrait (no text in frame)
+higgsfield generate create nano_banana_2 \
+  --prompt "[cinematic portrait prompt]" \
+  --aspect_ratio 16:9 --resolution 4k --wait
+
+# Step 2: Animate character with Kling narrative
+higgsfield generate create kling3_0 \
+  --prompt "[multi-shot JSON prompt]" \
+  --start-image <portrait_job_id> \
+  --duration 15 --mode pro --sound on --wait
+```
+
+### Pattern 3 — Soul ID Campaign (Face-faithful reuse)
 ```bash
 # Train once
 higgsfield soul-id create --name "artist_name" --soul-2 \
@@ -440,7 +436,7 @@ higgsfield generate create soul_cast \
   --wait
 ```
 
-### Pattern 3 — Marketing Studio Product Ad
+### Pattern 4 — Marketing Studio Product Ad
 ```bash
 # Register product (scrape from URL)
 higgsfield marketing-studio products create --url "https://product-url.com"
@@ -457,7 +453,7 @@ higgsfield generate create marketing_studio_video \
   --duration 30 --resolution 1080p --wait
 ```
 
-### Pattern 4 — DTC Ads Engine (Branded image ads)
+### Pattern 5 — DTC Ads Engine (Branded image ads)
 ```bash
 # Get available ad format style IDs
 higgsfield marketing-studio ad-formats list
@@ -472,7 +468,7 @@ higgsfield generate create dtc_ads \
   --batch_size 4 --wait
 ```
 
-### Pattern 5 — Virality Analysis
+### Pattern 6 — Virality Analysis
 ```bash
 higgsfield generate create brain_activity \
   --video ./finished_ad.mp4 --wait
@@ -480,18 +476,16 @@ higgsfield generate create brain_activity \
 # Output: hook strength, attention score, retention risk, viral potential + report URL
 ```
 
-### Pattern 6 — Batch Generation via JSON pipeline
+### Pattern 7 — Batch Generation via JSON pipeline
 ```bash
 # Pull completed job URLs for downstream automation
 higgsfield generate list --json | \
   jq -r '.[] | select(.status=="completed") | "\(.id)\t\(.result_url)"'
 ```
 
-### Pattern 7 — Space Age Pipeline Integration
+### Pattern 8 — Space Age Pipeline Integration
 ```bash
 # cinematic-video-architect outputs multi-shot JSON → pass to generation command
-# Extract flattened prompt from JSON shots array
-
 PROMPT=$(jq -r '[.shots[] | "[\(.timestamp)] \(.subject) \(.action) | \(.camera.movement) | \(.lighting)"] | join(" ")' shot.json)
 
 higgsfield generate create seedance_2_0 \
@@ -535,7 +529,7 @@ All prompts built for Higgsfield must comply with Space Age Ultra Detail Enforce
 > scene, subject, detail, lighting, constraints — with no ambiguity.
 
 #### GPT Image 2 (gpt_image_2) — Layered Instruction JSON
-Use for: hero images, any text-in-image, product shots, commercial creative, service boards, ad creative.
+Use for: ALL image generation — hero images, text-in-image, product shots, commercial creative, service boards, ad creative, local business pages.
 
 ```json
 {
@@ -583,90 +577,43 @@ Use for: hero images, any text-in-image, product shots, commercial creative, ser
 }
 ```
 
-#### FLUX 2 (flux_2) — Technical JSON with HEX Color Palette
-Use for: style-precise images, brand-matched palettes, VL-01 color system, editorial with exact color language.
-
+#### Nano Banana Pro (nano_banana_2) — Portrait / Character (zero text in frame only)
 ```json
 {
-  "platform": "FLUX 2",
-  "model": "flux_2",
-  "prompt_architecture": "technical_json",
-  "scene": {
-    "setting": "[Location type + architectural context — specific]",
-    "time_of_day": "[Golden hour / blue hour / midday / night / overcast]",
-    "weather": "[Clear / overcast / rain / fog / wind]"
-  },
-  "subject": {
-    "description": "[Physical: height, build, skin tone, age range]",
-    "wardrobe": {
-      "top": "[Fabric type + color HEX: #1A1A2E]",
-      "bottom": "[Fabric + color HEX + cut]",
-      "footwear": "[Type + material]",
-      "accessories": "[Watch brand, rings, bag — specific model names add credibility]"
-    },
-    "action": "[Single specific verb + body position]"
-  },
+  "platform": "Nano Banana Pro",
+  "model": "nano_banana_2",
+  "prompt_architecture": "cinematic_portrait",
   "camera": {
-    "body": "ARRI ALEXA 35",
-    "lens": "[ZEISS Supreme Prime 85mm T1.5 / Cooke S7/i 50mm T1.4]",
-    "movement": "[Static / dolly left at 0.5m/s / handheld push / crane up 3m]",
-    "angle": "[Eye level / low 30deg / high 45deg / Dutch 15deg]",
-    "composition": "[Rule of thirds / centered / leading lines / symmetry]",
-    "depth_of_field": "[Shallow f/1.4 at 2m / deep f/8 / rack focus subject to background]"
+    "body": "URSA Cine 17K Full Frame",
+    "lens": "Cooke Anamorphic/i FFplus 85mm T2.0",
+    "format": "BRAW_Q0"
   },
   "lighting": {
-    "key": {
-      "fixture": "ARRI SkyPanel S60-C",
-      "position": "camera-left 45deg elevation",
-      "modifier": "216 diffusion full"
-    },
-    "fill": {
-      "type": "negative fill — black flag",
-      "position": "camera-right"
-    },
-    "practical": "[Neon sign color: HEX #2979FF / window spill / practical lamp: off]",
-    "color_grade": "LogC4 / Kodak 5219 / rec2020"
+    "key": "ARRI SkyPanel S60 softbox — camera-left + 216 diffusion",
+    "fill": "negative fill flag — camera-right",
+    "separation": "[rim light / hair light / practical backlight]"
   },
-  "color_palette": {
-    "primary": "#050508",
-    "secondary": "#2979FF",
-    "accent": "#00E5FF",
-    "surface": "rgba(255,255,255,0.06)"
+  "subject": {
+    "height": "[height: 5'10\" / 6'1\" / etc.]",
+    "build": "[lean / athletic / broad / slight]",
+    "ethnicity": "[specific]",
+    "gender": "[man / woman / person]",
+    "eyes": "[color + shape]",
+    "hair": "[style + color]",
+    "wardrobe": "[specific material, color, cut, accessories]",
+    "action": "[one observable physical behavior — no adjectives]"
   },
-  "style_tokens": [
-    "BRAW_Q0",
-    "editorial_print_ready",
-    "commercial_hero_frame",
-    "IMG_9854.CR2"
-  ],
-  "negative_tokens": [
-    "no plastic skin",
-    "no AI sharpening artifacts",
-    "no oversaturated colors",
-    "no generic stock photography look"
-  ],
+  "environment": "[exact location, time of day, weather, surface texture]",
+  "composition": "[lens plane, depth, focus field]",
+  "influence": "[Roger_Deakins_single_source_naturalism / Denis_Villeneuve_minimalism]",
+  "meta_tokens": ["IMG_9854.CR2", "editorial_print_ready", "commercial_hero_frame", "studio_archive_ref"],
+  "color_grade": "[LogC4 / BRAW_Q0 / rec2020_color_volume]",
+  "constraint": "Zero text in frame. Portrait or character only.",
   "flags": {
-    "aspect_ratio": "16:9"
+    "aspect_ratio": "16:9",
+    "resolution": "4k"
   }
 }
-```
-
-#### Nano Banana Pro (nano_banana_2) — Portrait / Character (zero text in frame)
-```yaml
-prompt: |
-  URSA_Cine_17K_Full_Frame.BRAW, Cooke_Anamorphic_i_FFplus_85mm_T2.0,
-  ARRI_SkyPanel_S60_softbox_camera_left + 216_diffusion + negative_fill_flag_camera_right,
-  [height]-tall [build] [ethnicity] [gender], [eye color] eyes, [hair: style + color],
-  [wardrobe: specific material, color, cut, accessories],
-  [specific action: one observable physical behavior],
-  [environment: exact location, time of day, weather, surface texture],
-  [composition: lens plane, depth, focus field],
-  [Roger_Deakins_single_source_naturalism / Denis_Villeneuve_minimalism],
-  IMG_9854.CR2, editorial_print_ready, commercial_hero_frame, studio_archive_ref,
-  [color grade: LogC4 / BRAW_Q0 / rec2020_color_volume]
-model: nano_banana_2
-aspect_ratio: "16:9"
-resolution: "4k"
 ```
 
 ---
@@ -947,9 +894,7 @@ INPUT RECEIVED
      │       │                                        → gpt_image_2 + JSON layered template
      │       ├─► Hero image / commercial / product    → gpt_image_2 + JSON layered template (DEFAULT)
      │       ├─► Portrait / fashion / character ONLY (zero text in frame)
-     │       │                                        → nano_banana_2
-     │       ├─► Edit existing image / style xfer    → flux_kontext (pass --image)
-     │       ├─► Brand-color-precise image            → flux_2 + JSON HEX palette template
+     │       │                                        → nano_banana_2 + JSON cinematic portrait
      │       ├─► Face-faithful (Soul ID exists)      → text2image_soul_v2 (--soul-id)
      │       ├─► Branded product ad                  → dtc_ads (--style_id required)
      │       └─► Default / unknown                   → gpt_image_2
@@ -996,7 +941,7 @@ higgsfield upload ./ref2.jpg  # → UUID_2
 # 2. Train Soul ID
 higgsfield soul-id create \
   --name "artist_name" --soul-2 \
-  --image UUID_1 --image UUID_2  # use UUIDs or file paths
+  --image UUID_1 --image UUID_2
 
 # 3. Poll until ready
 higgsfield soul-id wait <soul_id>
@@ -1052,7 +997,6 @@ higgsfield generate create brain_activity --video ./ad.mp4 --wait
 **When to run:**
 - Before deploying any Marketing Studio ad
 - After completing a music video clip
-- On competitor content (if available as file)
 - On any Reel / TikTok before scheduling
 
 **MCP equivalent:**
@@ -1067,7 +1011,7 @@ Higgsfield:virality_predictor (action: "create", params: { model: "virality_pred
 ### Skill Pipeline Connections
 ```
 SA-higgsfield-operator ◄──── cinematic-video-architect  (multi-shot JSON video prompt adapters — UPSTREAM)
-SA-higgsfield-operator ◄──── cinematic-prompt-director  (prompt JSON/YAML input)
+SA-higgsfield-operator ◄──── cinematic-prompt-director  (prompt JSON input)
 SA-higgsfield-operator ◄──── ai-content-creator        (Record Exec artist prompts)
 SA-higgsfield-operator ◄──── record-exec-in-a-box       (Feature 5 video / Feature 6 image)
 SA-higgsfield-operator ──►   music-visualizer           (generated video loops)
@@ -1088,7 +1032,6 @@ cinematic-video-architect
 
 ### n8n Automation Hook
 ```javascript
-// n8n HTTP Request node → Higgsfield CLI wrapper script
 const result = await exec(
   `higgsfield generate create ${model} --prompt '${JSON.stringify(multiShotPrompt)}' --aspect_ratio ${ratio} --wait --json`
 );
@@ -1110,25 +1053,19 @@ For 25–80 cinematic sites per day (Space Age pipeline target):
 
 ```bash
 #!/bin/bash
-# Space Age Batch Generation Script
-
 LEADS_CSV="qualified_leads.csv"
 OUTPUT_LOG="generation_log.json"
 
 while IFS=',' read -r business_name category location; do
-  # Build multi-shot JSON prompt from Workers-In-Action framework
   PROMPT=$(node build-workers-prompt.js --business "$business_name" --industry "$category")
 
-  # Generate hero image (text-in-image: business name in frame)
   IMAGE_JOB=$(higgsfield generate create gpt_image_2 \
     --prompt "$PROMPT" \
     --aspect_ratio 16:9 --quality high --resolution 4k \
     --json | jq -r '.id')
 
-  # Log job
   echo "{\"business\": \"$business_name\", \"image_job\": \"$IMAGE_JOB\"}" >> $OUTPUT_LOG
 
-  # Optional: wait and capture URL
   IMAGE_URL=$(higgsfield generate wait $IMAGE_JOB --json | jq -r '.result_url')
   echo "  → $business_name: $IMAGE_URL"
 
@@ -1159,26 +1096,20 @@ brew update && brew upgrade higgsfield   # Homebrew
 curl -fsSL https://raw.githubusercontent.com/higgsfield-ai/cli/main/install.sh | sh  # curl
 ```
 
-Pin to specific version:
-```bash
-npm install -g @higgsfield/cli@0.1.35
-```
-
 ---
 
 ## NEVER DO
 
 ```
 ❌ Never route image/video generation to external APIs when Higgsfield covers the use case
-❌ Never route text-containing images to nano_banana_2 or flux_kontext — gpt_image_2 owns all text rendering
-❌ Never use nano_banana_2 as the default hero model — gpt_image_2 is the default; nano_banana_2 is portrait-only
+❌ Never route text-containing images to nano_banana_2 — gpt_image_2 owns all text rendering
+❌ Never use nano_banana_2 as the default hero model — gpt_image_2 is the default; nano_banana_2 is portrait-only (zero text)
 ❌ Never build single-shot YAML for Seedance 2.0 or Kling 3.0 — always multi-shot JSON with shots array
 ❌ Never build video prompts without consulting cinematic-video-architect adapters first
 ❌ Never omit @image1 / @audio1 reference tags when source media exists
 ❌ Never generate a prompt under 150 words total across all shots
 ❌ Never omit character physical details for any human subject
 ❌ Never use generic camera references ("DSLR", "wide lens") — use exact body + lens model names
-❌ Never omit HEX color codes in FLUX 2 JSON prompts — use exact values from VL-01 palette
 ❌ Never attempt file upload via Claude sandbox PUT requests — use public URL workaround
 ❌ Never mix hook_id/setting_id with ad_reference_id on marketing_studio_video
 ❌ Never start Soul training with fewer than 5 reference images
@@ -1194,20 +1125,20 @@ npm install -g @higgsfield/cli@0.1.35
 # Check credits
 higgsfield account
 
-# List all models
-higgsfield model list
-
 # Hero image with text (default)
-higgsfield generate create gpt_image_2 --prompt "[JSON prompt flattened]" --aspect_ratio 16:9 --quality high --resolution 4k --wait
+higgsfield generate create gpt_image_2 --prompt "[JSON prompt]" --aspect_ratio 16:9 --quality high --resolution 4k --wait
 
 # Portrait only (no text)
-higgsfield generate create nano_banana_2 --prompt "..." --aspect_ratio 16:9 --resolution 4k --wait
+higgsfield generate create nano_banana_2 --prompt "[JSON prompt]" --aspect_ratio 16:9 --resolution 4k --wait
 
 # Multi-shot music video clip
 higgsfield generate create seedance_2_0 --prompt "[multi-shot JSON]" --start-image <uuid> --audio <uuid> --aspect_ratio 16:9 --resolution 1080p --genre drama --duration 15 --wait
 
 # Multi-shot narrative clip
 higgsfield generate create kling3_0 --prompt "[multi-shot JSON]" --start-image <uuid> --end-image <uuid> --duration 15 --mode pro --sound on --wait
+
+# Lipsync / dialogue
+higgsfield generate create veo3_1 --prompt "[JSON prompt]" --aspect_ratio 16:9 --duration 8 --quality ultra --wait
 
 # Virality check
 higgsfield generate create brain_activity --video ./ad.mp4 --wait
