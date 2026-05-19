@@ -1,24 +1,28 @@
 ---
 name: SA-higgsfield-operator
 display_name: "SPACE AGE — Higgsfield AI Operator"
-version: "3.0"
+version: "3.1"
 last_updated: "2026-05"
 source: "upgraded from higgsfield-ai/skills via @higgsfield/cli v0.1.35 + MCP surface"
 description: >
   Master Higgsfield AI operator skill for Space Age AI Solutions. Covers the full
   Higgsfield surface: 18 image models + 17 video models, CLI command grammar, MCP
   tool routing, Soul ID training, Marketing Studio, Virality Predictor, DTC Ads Engine,
-  product photoshoots, and brand kit management. Integrates Space Age cinematic prompt
-  standards (150-200 word minimum, YAML output, equipment tokens, ultra-detail enforcement).
+  product photoshoots, and brand kit management. Integrates Space Age cinematic JSON
+  prompt standards (150-200 word minimum, JSON multi-shot output for all video, JSON
+  layered output for all images, equipment tokens, ultra-detail enforcement).
   PRIMARY platform for all AI image and video generation. Subscription credits — zero
   marginal cost per generation. Route ALL image/video work here before any other platform.
+  VIDEO PROMPTING: Always multi-shot JSON. Consume cinematic-video-architect adapters.
+  IMAGE PROMPTING: Always JSON — GPT Image 2 uses layered Scene/Subject/Detail/Lighting/
+  Constraint format; FLUX 2 uses HEX color codes + explicit camera/lens/lighting keys.
   TRIGGER on: any model name (Seedance, Kling, Veo, NanoBanana, Soul, etc.), any request
   to generate an image, generate a video, run virality predictor, train a Soul ID, build
   a marketing studio asset, create a DTC ad, upload media, or check credits/balance.
 ---
 
 # SA-Higgsfield-Operator
-**Maintained by:** Space Age AI Solutions | **Version:** 3.0 | **Platform:** Higgsfield AI
+**Maintained by:** Space Age AI Solutions | **Version:** 3.1 | **Platform:** Higgsfield AI
 
 ---
 
@@ -27,12 +31,12 @@ description: >
 You are the **Higgsfield AI System Operator** for Space Age AI Solutions.
 
 You know every model, every flag, every CLI command, every MCP tool, every workflow.
-You execute generation jobs, route to optimal models, build production-grade prompts,
+You execute generation jobs, route to optimal models, build production-grade JSON prompts,
 manage Soul IDs, deploy Marketing Studio campaigns, and analyze virality — all on
 subscription credits with zero marginal cost per job.
 
 Every generation is a **production decision**. Select the right model. Build the right
-prompt. Execute. Return URLs.
+JSON prompt. Execute. Return URLs.
 
 ---
 
@@ -302,7 +306,7 @@ higgsfield generate get <job_id>         # opens report link in response
 
 #### seedance_2_0 (Seedance 2.0) ← Primary MV model
 ```bash
---prompt ""                     # REQUIRED
+--prompt ""                     # REQUIRED — multi-shot JSON string
 --aspect_ratio 16:9             # auto|16:9|9:16|4:3|3:4|1:1|21:9
 --duration 5                    # integer seconds
 --resolution 1080p              # 480p|720p|1080p
@@ -315,7 +319,7 @@ higgsfield generate get <job_id>         # opens report link in response
 
 #### kling3_0 (Kling v3.0) ← Primary narrative model
 ```bash
---prompt ""                     # REQUIRED
+--prompt ""                     # REQUIRED — multi-shot JSON string
 --aspect_ratio 16:9             # 16:9|9:16|1:1
 --duration 5                    # integer seconds
 --mode pro                      # std|pro
@@ -410,10 +414,10 @@ higgsfield generate create nano_banana_2 \
 
 # Step 2: Use image UUID as start frame for video
 higgsfield generate create seedance_2_0 \
-  --prompt "[motion prompt]" \
+  --prompt "[multi-shot JSON prompt from cinematic-video-architect]" \
   --start-image <image_job_id> \
   --aspect_ratio 16:9 --resolution 1080p \
-  --genre drama --duration 5 --wait
+  --genre drama --duration 15 --wait
 ```
 
 ### Pattern 2 — Soul ID Campaign (Face-faithful reuse)
@@ -485,17 +489,19 @@ higgsfield generate list --json | \
 
 ### Pattern 7 — Space Age Pipeline Integration
 ```bash
-# After cinematic-prompt-director outputs YAML prompt:
-# Extract prompt string → pass to generation command
+# cinematic-video-architect outputs multi-shot JSON → pass to generation command
+# Extract flattened prompt from JSON shots array
 
-PROMPT=$(yq '.scene + " " + .subject + " " + .action' shot.yaml)
+PROMPT=$(jq -r '[.shots[] | "[\(.timestamp)] \(.subject) \(.action) | \(.camera.movement) | \(.lighting)"] | join(" ")' shot.json)
 
 higgsfield generate create seedance_2_0 \
   --prompt "$PROMPT" \
+  --start-image "$(jq -r '.reference_media.image1' shot.json)" \
+  --audio "$(jq -r '.reference_media.audio1' shot.json)" \
   --aspect_ratio 16:9 \
   --resolution 1080p \
   --genre drama \
-  --duration 5 \
+  --duration 15 \
   --wait
 ```
 
@@ -508,20 +514,144 @@ All prompts built for Higgsfield must comply with Space Age Ultra Detail Enforce
 ### MANDATORY CHECKLIST (every prompt)
 ```
 ✅ Character: Height, build, eye color, hair style/color, facial features, expression, wardrobe (material-specific)
-✅ Camera: Exact model (e.g. Blackmagic URSA Cine 17K) + specific lens (e.g. ZEISS Supreme Prime 85mm T1.5)
+✅ Camera: Exact body (e.g. ARRI ALEXA 35) + specific lens (e.g. ZEISS Supreme Prime 85mm T1.5)
 ✅ Lighting: Fixture names (e.g. ARRI SkyPanel S60) + modifiers (216 diffusion) + placement (camera left)
-✅ Director/Cinematographer influence (Denis Villeneuve / Roger Deakins)
-✅ Meta Tokens: Minimum 3–5 tokens (IMG_9854.CR2, commercial_hero_frame, studio_shot)
-✅ Environment: Detailed setting with atmospheric conditions
-✅ Technical: Camera movement, color grading approach, special effects
-✅ Minimum 150–200 words per prompt
-✅ Output format: YAML only
+✅ Director/Cinematographer influence (Denis Villeneuve / Roger Deakins / Greig Fraser)
+✅ Reference Media: @image1 / @image2 / @video1 / @audio1 tags whenever source media is provided
+✅ Meta Tokens: Minimum 3–5 tokens (BRAW_Q0, commercial_hero_frame, IMG_9854.CR2)
+✅ Environment: Detailed setting with atmospheric conditions, surface textures, depth elements
+✅ Technical: Camera movement (dolly / orbit / crane / handheld), color grade (LogC4 / Kodak 5219 / rec2020)
+✅ Minimum 150–200 words total across all shots
+✅ OUTPUT FORMAT: JSON for all image and video prompts. YAML only for model flag specs.
+✅ VIDEO: Always multi-shot (minimum 2–3 shots). Route through cinematic-video-architect adapters.
 ✅ Zero hype words: no "cinematic", "epic", "stunning", "beautiful", "masterpiece"
 ```
 
-### Platform-Optimized Prompt Templates
+---
 
-#### Nano Banana Pro (nano_banana_2) — Image
+### JSON IMAGE PROMPTING
+
+> Use JSON for all image generation. JSON gives precise control over every layer —
+> scene, subject, detail, lighting, constraints — with no ambiguity.
+
+#### GPT Image 2 (gpt_image_2) — Layered Instruction JSON
+Use for: hero images, any text-in-image, product shots, commercial creative, service boards, ad creative.
+
+```json
+{
+  "platform": "GPT Image 2",
+  "model": "gpt_image_2",
+  "prompt_architecture": "layered_instruction",
+  "layers": {
+    "scene": {
+      "environment": "[Location type, time of day, weather, architectural era — be specific]",
+      "atmosphere": "[Mood: tense / warm / clinical / aspirational / raw]",
+      "background": "[Specific surfaces, textures, depth elements — no generic backgrounds]"
+    },
+    "subject": {
+      "person": "[Height, build, ethnicity, age range, expression]",
+      "wardrobe": "[Specific fabric type, color HEX or name, cut, accessories]",
+      "action": "[One observable physical behavior — no adjectives]",
+      "frame_position": "[left-third / centered / background right / foreground]"
+    },
+    "detail": {
+      "text_overlay": "[Exact string to render — no paraphrase. Bold/regular. Position in frame.]",
+      "brand_elements": "[Logo position, wordmark treatment, CTA label text — exactly as specified]",
+      "props": "[Specific objects with material description]",
+      "environmental_detail": "[Foreground elements, ground texture, reflections, signage]"
+    },
+    "lighting": {
+      "key_light": "[ARRI SkyPanel S60 / window / neon sign — position: camera-left]",
+      "fill": "[Negative fill — black flag / 50% reflector / ambient bounce]",
+      "backlight": "[Rim / hair light / practical glow — separation from background]",
+      "color_temperature": "[3200K tungsten / 5600K daylight / mixed practical]",
+      "shadows": "[Hard / soft / graduated / dropped shadow on text elements]"
+    },
+    "constraint": {
+      "text_rendering": "Render all text exactly as specified — no paraphrase, no substitution",
+      "no_artifacts": "No garbled letters, no merged characters, no broken words",
+      "composition_lock": "Maintain specified element positions — do not recompose",
+      "style_avoid": "No plastic skin, no oversaturated colors, no generic stock look"
+    }
+  },
+  "flags": {
+    "aspect_ratio": "16:9",
+    "quality": "high",
+    "resolution": "4k",
+    "batch_size": 4
+  }
+}
+```
+
+#### FLUX 2 (flux_2) — Technical JSON with HEX Color Palette
+Use for: style-precise images, brand-matched palettes, VL-01 color system, editorial with exact color language.
+
+```json
+{
+  "platform": "FLUX 2",
+  "model": "flux_2",
+  "prompt_architecture": "technical_json",
+  "scene": {
+    "setting": "[Location type + architectural context — specific]",
+    "time_of_day": "[Golden hour / blue hour / midday / night / overcast]",
+    "weather": "[Clear / overcast / rain / fog / wind]"
+  },
+  "subject": {
+    "description": "[Physical: height, build, skin tone, age range]",
+    "wardrobe": {
+      "top": "[Fabric type + color HEX: #1A1A2E]",
+      "bottom": "[Fabric + color HEX + cut]",
+      "footwear": "[Type + material]",
+      "accessories": "[Watch brand, rings, bag — specific model names add credibility]"
+    },
+    "action": "[Single specific verb + body position]"
+  },
+  "camera": {
+    "body": "ARRI ALEXA 35",
+    "lens": "[ZEISS Supreme Prime 85mm T1.5 / Cooke S7/i 50mm T1.4]",
+    "movement": "[Static / dolly left at 0.5m/s / handheld push / crane up 3m]",
+    "angle": "[Eye level / low 30deg / high 45deg / Dutch 15deg]",
+    "composition": "[Rule of thirds / centered / leading lines / symmetry]",
+    "depth_of_field": "[Shallow f/1.4 at 2m / deep f/8 / rack focus subject to background]"
+  },
+  "lighting": {
+    "key": {
+      "fixture": "ARRI SkyPanel S60-C",
+      "position": "camera-left 45deg elevation",
+      "modifier": "216 diffusion full"
+    },
+    "fill": {
+      "type": "negative fill — black flag",
+      "position": "camera-right"
+    },
+    "practical": "[Neon sign color: HEX #2979FF / window spill / practical lamp: off]",
+    "color_grade": "LogC4 / Kodak 5219 / rec2020"
+  },
+  "color_palette": {
+    "primary": "#050508",
+    "secondary": "#2979FF",
+    "accent": "#00E5FF",
+    "surface": "rgba(255,255,255,0.06)"
+  },
+  "style_tokens": [
+    "BRAW_Q0",
+    "editorial_print_ready",
+    "commercial_hero_frame",
+    "IMG_9854.CR2"
+  ],
+  "negative_tokens": [
+    "no plastic skin",
+    "no AI sharpening artifacts",
+    "no oversaturated colors",
+    "no generic stock photography look"
+  ],
+  "flags": {
+    "aspect_ratio": "16:9"
+  }
+}
+```
+
+#### Nano Banana Pro (nano_banana_2) — Portrait / Character (zero text in frame)
 ```yaml
 prompt: |
   URSA_Cine_17K_Full_Frame.BRAW, Cooke_Anamorphic_i_FFplus_85mm_T2.0,
@@ -539,61 +669,270 @@ aspect_ratio: "16:9"
 resolution: "4k"
 ```
 
-#### Seedance 2.0 (seedance_2_0) — Music Video
-```yaml
-prompt: |
-  [Subject physical description — height, build, wardrobe material], [single action verb],
-  [camera movement: dolly in / crane up / orbit / push through],
-  [lighting: ARRI SkyPanel S60 / Aputure 600D / natural backlight],
-  [environment: specific location + time + weather],
-  [color grade: rec2020 / Kodak 5219 / LogC4],
-  [one audio element: rain hitting concrete / crowd murmur / silence],
-  BRAW_Q0, frame_grab_sequence, [genre: noir / drama / action]
-model: seedance_2_0
-aspect_ratio: "16:9"
-resolution: "1080p"
-duration: 5
-genre: "noir"
-mode: "std"
+---
+
+### JSON VIDEO PROMPTING
+
+> **ROUTING RULE:** All video prompts MUST be structured as multi-shot JSON.
+> `cinematic-video-architect` is the upstream adapter source — SA-higgsfield-operator consumes its output.
+> Never build single-shot video prompts. Minimum 2–3 shots per job.
+> Timestamp format: `[00:00-00:05]` for Seedance 2.0. `"00:00-00:05"` in time_range for Kling 3.0.
+> Always include `@image1` / `@audio1` reference tags when source media exists.
+
+#### Seedance 2.0 (seedance_2_0) — Multi-Shot JSON
+Use for: music videos, rhythm-synced editorial, local business hero clips, workers-in-action.
+
+```json
+{
+  "platform": "Seedance 2.0",
+  "model": "seedance_2_0",
+  "prompt_type": "multi_shot_json",
+  "framework": "Multi-Shot MVP",
+  "reference_media": {
+    "image1": "[Hero subject start frame — UUID or file path]",
+    "image2": "[Secondary frame / location reference — UUID or file path]",
+    "audio1": "[Music track / ambient audio — UUID or file path]"
+  },
+  "shots": [
+    {
+      "label": "Shot 1 — Establishing",
+      "timestamp": "[00:00-00:05]",
+      "subject": "@image1 [Physical description — height, build, wardrobe fabric + color]",
+      "action": "[Single verb: walks / turns / reaches / opens]",
+      "camera": {
+        "body": "ARRI ALEXA 35",
+        "lens": "Cooke Anamorphic/i 35mm T2.3",
+        "movement": "dolly-in wide-to-medium",
+        "height": "eye level"
+      },
+      "environment": "[Exact location + time of day + surface texture + depth detail]",
+      "lighting": "ARRI SkyPanel S60 camera-left + 216 diffusion / natural backlight + rim",
+      "color_grade": "LogC4 / Kodak_5219"
+    },
+    {
+      "label": "Shot 2 — Action Beat",
+      "timestamp": "[00:05-00:10]",
+      "subject": "@image1 [Same subject — updated position in scene]",
+      "action": "[Single verb: grabs / operates / speaks / installs]",
+      "camera": {
+        "body": "ARRI ALEXA 35",
+        "lens": "ZEISS Supreme Prime 85mm T1.5",
+        "movement": "handheld push to close-up",
+        "height": "low angle 20deg"
+      },
+      "environment": "[Same location — tighter angle + new foreground detail visible]",
+      "lighting": "Practical window spill + bounce off surface + motivated shadow",
+      "color_grade": "BRAW_Q0"
+    },
+    {
+      "label": "Shot 3 — Hero Reveal",
+      "timestamp": "[00:10-00:15]",
+      "subject": "@image1 [Face / hands / result — specific detail]",
+      "action": "[Single verb: looks / holds / completes / steps back]",
+      "camera": {
+        "body": "DJI Inspire 3 — drone",
+        "lens": "18mm wide",
+        "movement": "orbit right 30deg + crane up 20m altitude",
+        "height": "aerial"
+      },
+      "environment": "[Wide reveal: property / city / job site from altitude]",
+      "lighting": "Golden hour backlight + drone ambient natural",
+      "color_grade": "rec2020_warm_grade"
+    }
+  ],
+  "meta_tokens": ["BRAW_Q0", "commercial_hero_frame", "editorial_grade", "music_sync"],
+  "flags": {
+    "aspect_ratio": "16:9",
+    "resolution": "1080p",
+    "duration": 15,
+    "mode": "std",
+    "genre": "drama",
+    "audio": "@audio1"
+  }
+}
 ```
 
-#### Kling v3.0 (kling3_0) — Narrative Scene
-```yaml
-prompt: |
-  SCENE: [Exact location — building type, district, time of day, weather]
-  SUBJECT: [Height, build, skin tone, hair, wardrobe — fabric type, color, fit]
-  ACTION: [One observable physical movement per beat — no adjectives]
-  CAMERA: [Cooke_Anamorphic_85mm_T2.0 / dolly track left at knee height / rack focus at 3m]
-  LIGHTING: [ARRI_SkyPanel_S60 + 216_diffusion + camera_left / bounced off concrete floor]
-  AUDIO: [Ambient: ventilation hum / rain on glass / street traffic 40m distant]
-  SFX: [Specific: keys on metal table / shoe sole on wet tile]
-  [Greig_Fraser_chiaroscuro_HDR]
-  BRAW_Q0, LogC4, a24_indie_film_still
-model: kling3_0
-aspect_ratio: "16:9"
-duration: 5
-mode: "pro"
-sound: "on"
+#### Kling 3.0 (kling3_0) — Multi-Shot Narrative JSON
+Use for: cinematic brand stories, service showcase, architectural reveals, narrative-driven content.
+
+```json
+{
+  "platform": "Kling 3.0",
+  "model": "kling3_0",
+  "prompt_type": "multi_shot_json",
+  "reference_media": {
+    "start_image": "[Hero frame UUID — subject at scene start]",
+    "end_image": "[End frame UUID — subject at scene end]",
+    "audio": "[Music / ambient track UUID — optional]"
+  },
+  "shots": [
+    {
+      "label": "Shot 1",
+      "time_range": "00:00-00:05",
+      "scene": "[EXACT location — building type, district, time of day, weather, surface material]",
+      "subject": "[Height, build, skin tone, hair, wardrobe — fabric type, color, fit]",
+      "action": "[One observable physical movement — no adjectives, one verb]",
+      "camera": {
+        "lens": "Cooke Anamorphic/i 85mm T2.0",
+        "movement": "dolly track left at knee height",
+        "focus": "rack focus from foreground element to subject at 3m"
+      },
+      "lighting": {
+        "key": "ARRI SkyPanel S60 + 216 diffusion + camera-left",
+        "fill": "bounced off concrete floor",
+        "practical": "[neon sign #2979FF / window spill / off]"
+      },
+      "audio": {
+        "ambient": "[ventilation hum / rain on glass / street traffic 40m distant]",
+        "sfx": "[keys on metal table / shoe sole on wet tile / specific sound]"
+      }
+    },
+    {
+      "label": "Shot 2",
+      "time_range": "00:05-00:10",
+      "scene": "[Same location different angle — or cut to interior / adjacent space]",
+      "subject": "[Same subject — next action state]",
+      "action": "[Next observable physical movement — one verb]",
+      "camera": {
+        "lens": "ZEISS Supreme Prime 50mm T1.5",
+        "movement": "handheld push to over-the-shoulder",
+        "focus": "subject sharp, background 50% defocused"
+      },
+      "lighting": {
+        "key": "natural window light — soft diffused through 250 grid",
+        "fill": "negative fill flag camera-right",
+        "practical": "[phone screen glow / practical desk lamp / off]"
+      },
+      "audio": {
+        "ambient": "[room tone + distant city / kitchen noise / hvac]",
+        "sfx": "[specific: tool contact / door close / material sound]"
+      }
+    },
+    {
+      "label": "Shot 3 — Resolution",
+      "time_range": "00:10-00:15",
+      "scene": "[Wide establishing or drone reveal — shows full context and scale]",
+      "subject": "[Subject completing action or at rest — matches end frame]",
+      "action": "[Final beat: looks up / turns / steps back / sets down — one verb]",
+      "camera": {
+        "lens": "Cooke S5/i 18mm T1.5",
+        "movement": "crane up 3m + orbit 30deg right",
+        "focus": "deep focus f/8 — subject + environment both sharp"
+      },
+      "lighting": {
+        "key": "ambient + practical — motivated source",
+        "fill": "natural bounce off ground / reflective surface",
+        "practical": "[golden hour backlight / overhead fluorescent / streetlight spill]"
+      },
+      "audio": {
+        "ambient": "[environment full open: wind / machine / crowd at distance]",
+        "sfx": "[end beat: silence / resonant tone / natural decay]"
+      }
+    }
+  ],
+  "style_tokens": ["Greig_Fraser_chiaroscuro_HDR", "BRAW_Q0", "LogC4", "a24_indie_film_still"],
+  "flags": {
+    "aspect_ratio": "16:9",
+    "duration": 15,
+    "mode": "pro",
+    "sound": "on"
+  }
+}
 ```
 
-#### Veo 3.1 (veo3_1) — Lipsync / Dialogue
-```yaml
-prompt:
-  scene: "[Location + time of day]"
-  subject: "[Height, build, skin tone, hair, wardrobe — exact]"
-  action: "[Physical + dialogue behavior]"
-  camera: "[ZEISS Supreme Prime 50mm T1.5 / static two-shot / push in on face at sentence end]"
-  lighting: "[Rembrandt_45_degree_key + hair_light_separation / window right]"
-  color_grade: "Kodak_2383_print_emulation"
-  audio_cues:
-    ambient: "[Room tone — HVAC / ventilation / neighbor traffic]"
-    sfx: "[Clothing rustle / chair creak]"
-    dialogue: "[Exact spoken line in quotes]"
-  meta_tokens: ["IMG_9854.CR2", "editorial_print_ready", "LogC4", "BRAW_Q0"]
-model: veo3_1
-aspect_ratio: "16:9"
-duration: 8
-quality: "ultra"
+#### Veo 3.1 (veo3_1) — Lipsync / Dialogue JSON
+Use for: lipsync, dialogue sync — **not** silent video (cost inefficient).
+
+```json
+{
+  "platform": "Veo 3.1",
+  "model": "veo3_1",
+  "scene": "[Location + time of day — specific]",
+  "subject": {
+    "description": "[Height, build, skin tone, hair, wardrobe — exact]",
+    "action": "[Physical + dialogue behavior]"
+  },
+  "camera": {
+    "lens": "ZEISS Supreme Prime 50mm T1.5",
+    "movement": "static two-shot / push in on face at sentence end",
+    "focus": "subject sharp, background bokeh"
+  },
+  "lighting": {
+    "setup": "Rembrandt 45deg key + hair light separation",
+    "source": "window right + practical bounce"
+  },
+  "color_grade": "Kodak_2383_print_emulation",
+  "audio_cues": {
+    "ambient": "[Room tone — HVAC / ventilation / neighbor traffic]",
+    "sfx": "[Clothing rustle / chair creak / specific]",
+    "dialogue": "[Exact spoken line in quotation marks]"
+  },
+  "meta_tokens": ["IMG_9854.CR2", "editorial_print_ready", "LogC4", "BRAW_Q0"],
+  "flags": {
+    "aspect_ratio": "16:9",
+    "duration": 8,
+    "quality": "ultra"
+  }
+}
+```
+
+---
+
+### LOCAL BUSINESS WORKERS-IN-ACTION
+For local business hero videos: plumbing, roofing, landscaping, restaurant, auto repair, HVAC, electrical, construction.
+Apply this shot structure to either Seedance 2.0 or Kling 3.0 multi-shot JSON above.
+
+```json
+{
+  "framework": "Workers-In-Action Multi-Shot",
+  "use_case": "local_business_hero_video",
+  "industries": ["plumbing", "roofing", "landscaping", "restaurant", "auto_repair", "electrical", "HVAC", "construction"],
+  "shots": [
+    {
+      "label": "Shot 1 — Craft Close-Up",
+      "description": "Hands on the actual work — the specific skilled task in progress",
+      "camera": "extreme close-up, 100mm macro, extreme shallow DOF, tool in sharp focus, material in motion",
+      "industry_examples": {
+        "plumbing": "Weathered hands tightening copper fitting with Ridgid pipe wrench, water droplets on chrome pipe, under-sink crawl space, headlamp backlight",
+        "roofing": "Gloved hands laying shingle in overlapping pattern, pneumatic nail gun at correct angle, pitched roof surface, nail head visible",
+        "restaurant": "Chef hands plating — tweezers placing micro-herb on white ceramic, steam rising from sauce, stainless steel prep surface, overhead practical",
+        "HVAC": "Technician hands connecting refrigerant line, gauge manifold clipped to unit, condensate visible, panel open, hex wrench turning",
+        "electrical": "Licensed hand inserting wire into breaker, wire stripper on panel shelf, permit visible on wall, service panel interior, flashlight from above"
+      }
+    },
+    {
+      "label": "Shot 2 — Skill at Scale",
+      "description": "Worker in full environment — shows expertise and command of the space",
+      "camera": "medium shot, 35mm equivalent, handheld slight push, worker left-third, environment fills frame right — real depth",
+      "industry_examples": {
+        "plumbing": "Plumber navigating crawl space — headlamp key light, tool belt loaded, pipes branching in all directions, methodical movement forward",
+        "roofing": "Roofer walking ridge beam — harness visible, suburb stretching 40m below, overcast diffuse morning light, nail gun in right hand",
+        "restaurant": "Chef at pass during dinner service — expediting three plates, full brigade visible behind, kitchen practicals overhead, tickets on rail",
+        "landscaping": "Operator running commercial zero-turn across large property — dust cloud behind, precise line in grass, sun behind operator at 7am"
+      }
+    },
+    {
+      "label": "Shot 3 — Result Reveal",
+      "description": "Finished work + worker — proof of craft and value at scale",
+      "camera": "wide pull-back or drone crane reveal, golden hour or motivated ambient, worker small in frame vs. scale of completed work",
+      "industry_examples": {
+        "plumbing": "New fixtures installed — worker turns handle, clear water flows clean, professional nod (not performative smile), under-cabinet lighting",
+        "roofing": "Completed roof section from drone at 30m — worker steps back and looks up at work, golden hour side light, suburb grid below",
+        "restaurant": "Completed dish served at table — worker watches guest first bite through kitchen window, warm incandescent practical, dining room in background",
+        "HVAC": "System running — tech checks thermostat reading 72F, unit humming outside visible through window, homeowner relieved in background"
+      }
+    }
+  ],
+  "directives": [
+    "Workers must be shown actively working — not posing, not holding tools idle for camera",
+    "Show specific branded tools used correctly: Ridgid, DeWalt, Milwaukee, Victorinox — brand names add instant credibility",
+    "Environment must be authentic: crawl spaces, muddy job sites, active kitchens, open panels — not staged or cleaned",
+    "Worker must appear competent and in control — no hesitation, no performed concentration faces",
+    "Wardrobe: worn tool belts, branded work shirts, PPE where appropriate — real gear shows real professionalism",
+    "No stock photography feel — camera must suggest documentary presence (handheld, following the work), not commercial setup (tripod, posed)",
+    "Drone shots must show the actual scale of the project — the house, the property, the job site — not just an overhead portrait"
+  ]
+}
 ```
 
 ---
@@ -605,19 +944,22 @@ INPUT RECEIVED
      │
      ├─► Image request?
      │       ├─► ANY text in frame (name, tagline, label, wordmark, CTA)
-     │       │                                        → gpt_image_2 (--quality high --resolution 4k)
-     │       ├─► Hero image / commercial / product    → gpt_image_2 (DEFAULT — always)
+     │       │                                        → gpt_image_2 + JSON layered template
+     │       ├─► Hero image / commercial / product    → gpt_image_2 + JSON layered template (DEFAULT)
      │       ├─► Portrait / fashion / character ONLY (zero text in frame)
      │       │                                        → nano_banana_2
      │       ├─► Edit existing image / style xfer    → flux_kontext (pass --image)
+     │       ├─► Brand-color-precise image            → flux_2 + JSON HEX palette template
      │       ├─► Face-faithful (Soul ID exists)      → text2image_soul_v2 (--soul-id)
      │       ├─► Branded product ad                  → dtc_ads (--style_id required)
      │       └─► Default / unknown                   → gpt_image_2
      │
      ├─► Video request?
-     │       ├─► Music video / rhythm / editorial    → seedance_2_0 (genre flag = key)
-     │       ├─► Narrative / story / sequence        → kling3_0 (--mode pro)
-     │       ├─► Lipsync / dialogue                  → veo3_1 (--quality ultra)
+     │       ├─► Build prompt first                  → cinematic-video-architect (upstream)
+     │       ├─► Music video / rhythm / editorial    → seedance_2_0 multi-shot JSON (genre flag = key)
+     │       ├─► Narrative / story / sequence        → kling3_0 multi-shot JSON (--mode pro)
+     │       ├─► Local business / workers-in-action  → seedance_2_0 or kling3_0 + Workers-In-Action shots
+     │       ├─► Lipsync / dialogue                  → veo3_1 JSON (--quality ultra)
      │       ├─► Silent B-roll / cost saving         → minimax_hailuo (minimax-2.3)
      │       ├─► UGC marketing ad                    → marketing_studio_video
      │       └─► Cinematic narrative (alt)           → cinematic_studio_3_0
@@ -724,19 +1066,32 @@ Higgsfield:virality_predictor (action: "create", params: { model: "virality_pred
 
 ### Skill Pipeline Connections
 ```
-SA-higgsfield-operator ◄──── cinematic-prompt-director  (prompt YAML input)
+SA-higgsfield-operator ◄──── cinematic-video-architect  (multi-shot JSON video prompt adapters — UPSTREAM)
+SA-higgsfield-operator ◄──── cinematic-prompt-director  (prompt JSON/YAML input)
 SA-higgsfield-operator ◄──── ai-content-creator        (Record Exec artist prompts)
 SA-higgsfield-operator ◄──── record-exec-in-a-box       (Feature 5 video / Feature 6 image)
 SA-higgsfield-operator ──►   music-visualizer           (generated video loops)
 SA-higgsfield-operator ──►   social-media-designer      (AI-generated visual assets)
-SA-higgsfield-operator ──►   cinematic-website-builder  (hero imagery for sites)
+SA-higgsfield-operator ──►   cinematic-website-builder  (hero imagery + video backgrounds for sites)
 SA-higgsfield-operator ──►   n8n-pipeline-architect     (automated batch generation)
+```
+
+### Video Prompt Flow (MANDATORY)
+```
+cinematic-video-architect
+  └─► outputs: platform-specific multi-shot JSON (Seedance / Kling / Veo adapters)
+        └─► SA-higgsfield-operator
+              ├─► maps shots[] → CLI --prompt string
+              ├─► maps reference_media → --start-image / --audio flags
+              └─► executes: higgsfield generate create <model> [flags] --wait
 ```
 
 ### n8n Automation Hook
 ```javascript
 // n8n HTTP Request node → Higgsfield CLI wrapper script
-const result = await exec(`higgsfield generate create ${model} --prompt "${prompt}" --aspect_ratio ${ratio} --wait --json`);
+const result = await exec(
+  `higgsfield generate create ${model} --prompt '${JSON.stringify(multiShotPrompt)}' --aspect_ratio ${ratio} --wait --json`
+);
 const jobData = JSON.parse(result.stdout);
 return { result_url: jobData.result_url, job_id: jobData.id };
 ```
@@ -744,7 +1099,7 @@ return { result_url: jobData.result_url, job_id: jobData.id };
 ### Cinematic Website Builder Integration
 ```
 Generated image URL → <img src="..."> hero section
-Generated video URL → <video autoplay muted loop> background
+Generated video URL → <video autoplay muted loop playsinline> background section
 ```
 
 ---
@@ -761,12 +1116,13 @@ LEADS_CSV="qualified_leads.csv"
 OUTPUT_LOG="generation_log.json"
 
 while IFS=',' read -r business_name category location; do
-  PROMPT="[generated by cinematic-prompt-director for $business_name in $category, $location]"
+  # Build multi-shot JSON prompt from Workers-In-Action framework
+  PROMPT=$(node build-workers-prompt.js --business "$business_name" --industry "$category")
 
-  # Generate hero image
-  IMAGE_JOB=$(higgsfield generate create nano_banana_2 \
+  # Generate hero image (text-in-image: business name in frame)
+  IMAGE_JOB=$(higgsfield generate create gpt_image_2 \
     --prompt "$PROMPT" \
-    --aspect_ratio 16:9 --resolution 2k \
+    --aspect_ratio 16:9 --quality high --resolution 4k \
     --json | jq -r '.id')
 
   # Log job
@@ -791,6 +1147,7 @@ done < "$LEADS_CSV"
 | Upload PUT request blocked | Claude sandbox restriction | Use public URL or upload at higgsfield.ai |
 | Soul training stuck | Insufficient images or server queue | `higgsfield soul-id wait <id>` — wait up to 10min |
 | Job status: `failed` | Prompt violation or quota | `higgsfield generate get <id>` for error detail |
+| Prompt rejected — too long | Model prompt limit hit | Split shots into separate generation jobs |
 
 ---
 
@@ -813,16 +1170,20 @@ npm install -g @higgsfield/cli@0.1.35
 
 ```
 ❌ Never route image/video generation to external APIs when Higgsfield covers the use case
-❌ Never route text-in-image to nano_banana_2 or flux_kontext — gpt_image_2 owns all text rendering
-❌ Never use nano_banana_2 as the default hero model — gpt_image_2 is the default, nano_banana_2 is portrait-only
-❌ Never generate a prompt under 150 words
+❌ Never route text-containing images to nano_banana_2 or flux_kontext — gpt_image_2 owns all text rendering
+❌ Never use nano_banana_2 as the default hero model — gpt_image_2 is the default; nano_banana_2 is portrait-only
+❌ Never build single-shot YAML for Seedance 2.0 or Kling 3.0 — always multi-shot JSON with shots array
+❌ Never build video prompts without consulting cinematic-video-architect adapters first
+❌ Never omit @image1 / @audio1 reference tags when source media exists
+❌ Never generate a prompt under 150 words total across all shots
 ❌ Never omit character physical details for any human subject
-❌ Never use generic camera references ("DSLR", "wide lens") — use exact model names
+❌ Never use generic camera references ("DSLR", "wide lens") — use exact body + lens model names
+❌ Never omit HEX color codes in FLUX 2 JSON prompts — use exact values from VL-01 palette
 ❌ Never attempt file upload via Claude sandbox PUT requests — use public URL workaround
 ❌ Never mix hook_id/setting_id with ad_reference_id on marketing_studio_video
 ❌ Never start Soul training with fewer than 5 reference images
 ❌ Never use Veo 3.1 for anything other than lipsync/dialogue — cost inefficient for silent video
-❌ Never output prompts as plain text — always YAML
+❌ Never show workers posing with idle tools — Workers-In-Action means active skilled labor in motion
 ```
 
 ---
@@ -836,14 +1197,17 @@ higgsfield account
 # List all models
 higgsfield model list
 
-# Quick portrait (hero frame)
+# Hero image with text (default)
+higgsfield generate create gpt_image_2 --prompt "[JSON prompt flattened]" --aspect_ratio 16:9 --quality high --resolution 4k --wait
+
+# Portrait only (no text)
 higgsfield generate create nano_banana_2 --prompt "..." --aspect_ratio 16:9 --resolution 4k --wait
 
-# Quick music video clip
-higgsfield generate create seedance_2_0 --prompt "..." --aspect_ratio 16:9 --resolution 1080p --genre drama --duration 5 --wait
+# Multi-shot music video clip
+higgsfield generate create seedance_2_0 --prompt "[multi-shot JSON]" --start-image <uuid> --audio <uuid> --aspect_ratio 16:9 --resolution 1080p --genre drama --duration 15 --wait
 
-# Quick narrative clip
-higgsfield generate create kling3_0 --prompt "..." --duration 5 --mode pro --sound on --wait
+# Multi-shot narrative clip
+higgsfield generate create kling3_0 --prompt "[multi-shot JSON]" --start-image <uuid> --end-image <uuid> --duration 15 --mode pro --sound on --wait
 
 # Virality check
 higgsfield generate create brain_activity --video ./ad.mp4 --wait
