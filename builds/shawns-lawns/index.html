@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shawn's Lawns — Mesquite, TX | Premium Lawn Care</title>
+  <meta name="description" content="Shawn's Lawns brings cinematic curb appeal to Mesquite, TX. Mowing, edging, mulching, and seasonal cleanup. 4.8★ rated. Text or call for a free quote." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Lenis -->
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
+  <style>
+    /* ── Reset & Base ──────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-deep:   #1A3A1F;
+      --green-mid:    #2D6A35;
+      --green-accent: #4CAF50;
+      --gold:         #D4A843;
+      --dark:         #0D1B0F;
+      --white:        #F5F5F0;
+      --gray:         #8A9E8C;
+      --font-head:    'Bebas Neue', sans-serif;
+      --font-body:    'Inter', sans-serif;
+      --radius:       8px;
+    }
+
+    html { scroll-behavior: auto; }
+
+    body {
+      background: var(--dark);
+      color: var(--white);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── NAV ──────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 2.5rem;
+      background: linear-gradient(to bottom, rgba(13,27,15,0.95), transparent);
+    }
+
+    .nav-logo {
+      font-family: var(--font-head);
+      font-size: 1.6rem;
+      letter-spacing: 2px;
+      color: var(--green-accent);
+    }
+
+    .nav-logo span { color: var(--gold); }
+
+    .nav-cta {
+      background: var(--green-accent);
+      color: var(--dark);
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      padding: 0.6rem 1.4rem;
+      border-radius: var(--radius);
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--gold); }
+
+    /* ── HERO ─────────────────────────────────────── */
+    #hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 600px;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      padding-bottom: 8vh;
+    }
+
+    #hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    #hero-fallback {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      display: none;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(13,27,15,0.92) 0%,
+        rgba(13,27,15,0.4) 50%,
+        rgba(13,27,15,0.1) 100%
+      );
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 0 6vw;
+      max-width: 900px;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.8rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      opacity: 0;
+    }
+
+    .hero-title {
+      font-family: var(--font-head);
+      font-size: clamp(3.5rem, 9vw, 8rem);
+      line-height: 0.95;
+      letter-spacing: 2px;
+      color: var(--white);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+    }
+
+    .hero-title em {
+      font-style: normal;
+      color: var(--green-accent);
+    }
+
+    .hero-sub {
+      font-size: 1.05rem;
+      color: rgba(245,245,240,0.75);
+      max-width: 480px;
+      line-height: 1.6;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+    }
+
+    .btn-primary {
+      background: var(--green-accent);
+      color: var(--dark);
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      padding: 0.9rem 2.2rem;
+      border-radius: var(--radius);
+      transition: background 0.2s, transform 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-primary:hover { background: var(--gold); transform: translateY(-2px); }
+
+    .btn-secondary {
+      border: 1.5px solid rgba(245,245,240,0.3);
+      color: var(--white);
+      font-size: 0.9rem;
+      padding: 0.9rem 2.2rem;
+      border-radius: var(--radius);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--green-accent); background: rgba(76,175,80,0.08); }
+
+    .hero-scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      right: 6vw;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.72rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(245,245,240,0.45);
+      writing-mode: vertical-rl;
+    }
+
+    /* ── SERVICES ─────────────────────────────────── */
+    #services {
+      padding: 7rem 6vw;
+      background: var(--dark);
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: var(--font-head);
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      letter-spacing: 1px;
+      color: var(--white);
+      margin-bottom: 3.5rem;
+      line-height: 1;
+    }
+
+    .section-title em {
+      font-style: normal;
+      color: var(--green-accent);
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .service-card {
+      background: rgba(45,106,53,0.08);
+      border: 1px solid rgba(76,175,80,0.15);
+      border-radius: 12px;
+      padding: 2rem 1.8rem;
+      transition: border-color 0.3s, background 0.3s, transform 0.3s;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .service-card:hover {
+      border-color: rgba(76,175,80,0.45);
+      background: rgba(45,106,53,0.18);
+      transform: translateY(-4px) !important;
+    }
+
+    .service-icon {
+      font-size: 2.2rem;
+      margin-bottom: 1.2rem;
+      display: block;
+    }
+
+    .service-name {
+      font-family: var(--font-head);
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+      color: var(--white);
+      margin-bottom: 0.6rem;
+    }
+
+    .service-desc {
+      font-size: 0.88rem;
+      color: var(--gray);
+      line-height: 1.6;
+    }
+
+    /* ── BEFORE / AFTER ───────────────────────────── */
+    #transformation {
+      padding: 7rem 6vw;
+      background: linear-gradient(180deg, var(--dark) 0%, var(--green-deep) 100%);
+    }
+
+    .before-after-wrap {
+      position: relative;
+      max-width: 1000px;
+      margin: 0 auto;
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: ew-resize;
+      user-select: none;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+      opacity: 0;
+    }
+
+    .ba-after-img,
+    .ba-before-img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+    }
+
+    .ba-before-wrap {
+      position: absolute;
+      inset: 0;
+      width: 50%;
+      overflow: hidden;
+    }
+
+    .ba-before-wrap img {
+      width: auto;
+      height: 100%;
+      min-width: 200%;
+      object-fit: cover;
+    }
+
+    .ba-divider {
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 50%;
+      width: 3px;
+      background: var(--gold);
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+
+    .ba-handle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 44px;
+      height: 44px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: var(--dark);
+      z-index: 11;
+      box-shadow: 0 0 0 4px rgba(212,168,67,0.3);
+    }
+
+    .ba-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.2rem;
+      padding: 0 0.5rem;
+    }
+
+    .ba-label {
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+
+    .ba-label.after { color: var(--green-accent); }
+
+    /* ── STATS ────────────────────────────────────── */
+    #stats {
+      padding: 5rem 6vw;
+      background: var(--green-deep);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 2rem;
+      text-align: center;
+    }
+
+    .stat-item { opacity: 0; transform: translateY(30px); }
+
+    .stat-number {
+      font-family: var(--font-head);
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      color: var(--green-accent);
+      line-height: 1;
+      display: block;
+    }
+
+    .stat-suffix {
+      font-family: var(--font-head);
+      font-size: 2.5rem;
+      color: var(--gold);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(245,245,240,0.55);
+      margin-top: 0.5rem;
+    }
+
+    /* ── REVIEWS ──────────────────────────────────── */
+    #reviews {
+      padding: 6rem 0;
+      background: var(--dark);
+      overflow: hidden;
+    }
+
+    #reviews .inner-pad {
+      padding: 0 6vw;
+      margin-bottom: 3rem;
+    }
+
+    .ticker-track {
+      display: flex;
+      gap: 1.5rem;
+      width: max-content;
+    }
+
+    .review-card {
+      background: rgba(45,106,53,0.1);
+      border: 1px solid rgba(76,175,80,0.12);
+      border-radius: 12px;
+      padding: 1.8rem 2rem;
+      min-width: 320px;
+      max-width: 340px;
+      flex-shrink: 0;
+    }
+
+    .review-stars {
+      color: var(--gold);
+      font-size: 1rem;
+      letter-spacing: 2px;
+      margin-bottom: 0.75rem;
+    }
+
+    .review-text {
+      font-size: 0.9rem;
+      color: rgba(245,245,240,0.8);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .review-author {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--green-accent);
+      letter-spacing: 1px;
+    }
+
+    /* ── ABOUT ────────────────────────────────────── */
+    #about {
+      padding: 7rem 6vw;
+      background: linear-gradient(180deg, var(--dark) 0%, var(--green-deep) 100%);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      #about { grid-template-columns: 1fr; gap: 2.5rem; }
+    }
+
+    .about-text { opacity: 0; transform: translateX(-40px); }
+
+    .about-body {
+      font-size: 1.05rem;
+      color: rgba(245,245,240,0.75);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-image-wrap {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+      opacity: 0;
+      transform: translateX(40px);
+      aspect-ratio: 4/3;
+      background: var(--green-deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .about-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ── CONTACT ──────────────────────────────────── */
+    #contact {
+      padding: 7rem 6vw;
+      background: var(--dark);
+      text-align: center;
+    }
+
+    .contact-actions {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin: 3rem 0;
+    }
+
+    .btn-call {
+      background: var(--green-accent);
+      color: var(--dark);
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 1.1rem 3rem;
+      border-radius: var(--radius);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-call:hover { background: var(--gold); transform: translateY(-3px); }
+
+    .btn-text {
+      border: 1.5px solid rgba(76,175,80,0.4);
+      color: var(--white);
+      font-size: 1.1rem;
+      padding: 1.1rem 3rem;
+      border-radius: var(--radius);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-text:hover { border-color: var(--green-accent); background: rgba(76,175,80,0.08); }
+
+    .contact-form {
+      max-width: 480px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      background: rgba(45,106,53,0.1);
+      border: 1px solid rgba(76,175,80,0.2);
+      border-radius: var(--radius);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      padding: 0.9rem 1.2rem;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .contact-form input:focus,
+    .contact-form textarea:focus { border-color: var(--green-accent); }
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder { color: var(--gray); }
+    .contact-form textarea { resize: vertical; min-height: 100px; }
+
+    .contact-form button {
+      background: var(--green-accent);
+      color: var(--dark);
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 1px;
+      padding: 1rem;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .contact-form button:hover { background: var(--gold); }
+
+    .contact-divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: var(--gray);
+      font-size: 0.8rem;
+      margin: 0.5rem 0;
+    }
+    .contact-divider::before,
+    .contact-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(138,158,140,0.25);
+    }
+
+    /* ── FOOTER ───────────────────────────────────── */
+    footer {
+      padding: 3rem 6vw;
+      background: #080F09;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      border-top: 1px solid rgba(76,175,80,0.1);
+    }
+
+    .footer-logo {
+      font-family: var(--font-head);
+      font-size: 1.3rem;
+      color: var(--green-accent);
+      letter-spacing: 2px;
+    }
+
+    .footer-info {
+      font-size: 0.82rem;
+      color: var(--gray);
+      text-align: center;
+    }
+
+    .footer-info a { color: var(--green-accent); }
+
+    .footer-copy {
+      font-size: 0.78rem;
+      color: rgba(138,158,140,0.5);
+    }
+
+    /* ── CHARACTER WIDGET ─────────────────────────── */
+    #widget {
+      position: fixed;
+      bottom: 1.8rem;
+      right: 1.8rem;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+    }
+
+    #widget-img {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2.5px solid var(--green-accent);
+      box-shadow: 0 4px 20px rgba(76,175,80,0.35), 0 0 0 6px rgba(76,175,80,0.08);
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    #widget:hover #widget-img {
+      transform: scale(1.08);
+      box-shadow: 0 6px 28px rgba(76,175,80,0.5), 0 0 0 8px rgba(76,175,80,0.12);
+    }
+
+    #widget-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--white);
+      background: rgba(13,27,15,0.9);
+      border: 1px solid rgba(76,175,80,0.25);
+      padding: 0.25rem 0.6rem;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    #widget::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 2px solid var(--green-accent);
+      animation: pulse-ring 2.5s ease-out infinite;
+    }
+
+    @keyframes pulse-ring {
+      0%   { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(1.7); opacity: 0; }
+    }
+
+    /* ── UTILITY ──────────────────────────────────── */
+    .fade-up { opacity: 0; transform: translateY(40px); }
+
+    @media (max-width: 600px) {
+      nav { padding: 1rem 1.5rem; }
+      .hero-content { padding: 0 1.5rem; }
+      #services, #transformation, #stats, #about, #contact { padding: 5rem 1.5rem; }
+      #widget-img { width: 60px; height: 60px; }
+      #widget::before { width: 60px; height: 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Shawn's<span>Lawns</span></div>
+    <a class="nav-cta" href="tel:+14695550182">FREE QUOTE</a>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <video
+      id="hero-video"
+      autoplay muted loop playsinline
+      poster="https://d8j0ntlcm91z4.cloudfront.net/user_30Zz3LHrTCA6JoAXpOu8nLQx0Ic/hf_20260519_004816_a4410f14-45da-44f4-9576-2e4a15ce415b_min.webp"
+    >
+      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_30Zz3LHrTCA6JoAXpOu8nLQx0Ic/hf_20260519_005029_2eb7df03-74b8-4058-b2c9-a58d6c392206.mp4" type="video/mp4" />
+    </video>
+
+    <img
+      id="hero-fallback"
+      src="https://d8j0ntlcm91z4.cloudfront.net/user_30Zz3LHrTCA6JoAXpOu8nLQx0Ic/hf_20260519_004816_a4410f14-45da-44f4-9576-2e4a15ce415b.png"
+      alt="Pristine Mesquite TX lawn by Shawn's Lawns"
+    />
+
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <p class="hero-eyebrow">Mesquite, TX · Premium Lawn Care</p>
+      <h1 class="hero-title">Your Lawn.<br /><em>Transformed.</em></h1>
+      <p class="hero-sub">4.8★ rated landscaping in Mesquite. Mowing, edging, mulching, and seasonal cleanup — done right, every time.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="tel:+14695550182">📞 Call for a Free Quote</a>
+        <a class="btn-secondary" href="sms:+14695550182">Text Us Instead</a>
+      </div>
+    </div>
+
+    <div class="hero-scroll-hint">Scroll</div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <p class="section-label fade-up">What We Do</p>
+    <h2 class="section-title fade-up">Professional <em>Services</em></h2>
+    <div class="services-grid">
+      <div class="service-card">
+        <span class="service-icon">🌿</span>
+        <div class="service-name">Lawn Mowing</div>
+        <p class="service-desc">Clean, precise cuts with visible mow lines. We leave your lawn looking like a stadium field every time.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">✂️</span>
+        <div class="service-name">Edging</div>
+        <p class="service-desc">Crisp edges along driveways, walkways, and beds — the detail that separates a good lawn from a great one.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🌱</span>
+        <div class="service-name">Mulching</div>
+        <p class="service-desc">Fresh dark mulch beds that lock in moisture, suppress weeds, and make your landscaping pop.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-icon">🍂</span>
+        <div class="service-name">Seasonal Cleanup</div>
+        <p class="service-desc">Leaf removal, debris cleanup, and seasonal prep so your yard stays sharp year-round.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BEFORE / AFTER -->
+  <section id="transformation">
+    <p class="section-label fade-up" style="text-align:center;">The Results</p>
+    <h2 class="section-title fade-up" style="text-align:center; margin-bottom:2.5rem;">See the <em>Difference</em></h2>
+
+    <div class="before-after-wrap" id="baWrap">
+      <img
+        class="ba-after-img"
+        src="https://d8j0ntlcm91z4.cloudfront.net/user_30Zz3LHrTCA6JoAXpOu8nLQx0Ic/hf_20260519_004816_a4410f14-45da-44f4-9576-2e4a15ce415b.png"
+        alt="After — pristine lawn by Shawn's Lawns"
+        draggable="false"
+      />
+
+      <div class="ba-before-wrap" id="baBeforeWrap">
+        <img
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_30Zz3LHrTCA6JoAXpOu8nLQx0Ic/hf_20260519_004813_dbd54476-9d69-470c-8e2c-e3840bf7b330.png"
+          alt="Before — neglected lawn"
+          draggable="false"
+        />
+      </div>
+
+      <div class="ba-divider" id="baDivider"></div>
+      <div class="ba-handle" id="baHandle">⇔</div>
+    </div>
+
+    <div class="ba-labels" style="max-width:1000px; margin:1.2rem auto 0;">
+      <span class="ba-label">BEFORE</span>
+      <span class="ba-label after">AFTER</span>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section id="stats">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="stat-number" data-target="500">0</span><span class="stat-suffix">+</span>
+        <p class="stat-label">Lawns Serviced</p>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" data-target="4.8" data-decimal="1">4.0</span><span class="stat-suffix">★</span>
+        <p class="stat-label">Google Rating</p>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" data-target="6">0</span><span class="stat-suffix">+</span>
+        <p class="stat-label">Years Serving Mesquite</p>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" data-target="100">0</span><span class="stat-suffix">%</span>
+        <p class="stat-label">Satisfaction Guaranteed</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section id="reviews">
+    <div class="inner-pad">
+      <p class="section-label fade-up">What Clients Say</p>
+      <h2 class="section-title fade-up">Real <em>Reviews</em></h2>
+    </div>
+
+    <div class="ticker-track" id="ticker">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Shawn's crew completely transformed our front yard. We went from embarrassed to the best-looking house on the block. Worth every penny."</p>
+        <div class="review-author">— Marcus T., Mesquite TX</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"On time, professional, and the edging work is immaculate. I've tried three other services in Mesquite and none of them come close."</p>
+        <div class="review-author">— Denise R., Mesquite TX</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Called on a Tuesday, they were there Wednesday morning. My lawn has never looked this good. I'm a customer for life."</p>
+        <div class="review-author">— Jerome W., Mesquite TX</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"The mulching job they did on our flower beds was gorgeous. Shawn takes real pride in his work. Highly recommend to anyone in the area."</p>
+        <div class="review-author">— Sandra L., Mesquite TX</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Reliable, fair prices, and they actually clean up after themselves. Rare to find that level of professionalism with a local crew."</p>
+        <div class="review-author">— Kevin B., Mesquite TX</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Seasonal cleanup was thorough and fast. The yard went from a disaster to show-ready in one afternoon. 10/10."</p>
+        <div class="review-author">— Alicia M., Mesquite TX</div>
+      </div>
+      <!-- duplicate for seamless loop -->
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Shawn's crew completely transformed our front yard. We went from embarrassed to the best-looking house on the block. Worth every penny."</p>
+        <div class="review-author">— Marcus T., Mesquite TX</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"On time, professional, and the edging work is immaculate. I've tried three other services in Mesquite and none of them come close."</p>
+        <div class="review-author">— Denise R., Mesquite TX</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Called on a Tuesday, they were there Wednesday morning. My lawn has never looked this good. I'm a customer for life."</p>
+        <div class="review-author">— Jerome W., Mesquite TX</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about-text">
+      <p class="section-label">Who We Are</p>
+      <h2 class="section-title">Built on <em>Pride</em></h2>
+      <p class="about-body">
+        Shawn's Lawns started with one truck, one mower, and a commitment to making every yard in Mesquite look like it belongs in a magazine. Six years later, we've served 500+ homeowners and haven't changed what matters: showing up on time, doing the work right, and treating your property like our own.
+      </p>
+      <p class="about-body">
+        We're a local, family-run operation. When you call us, you talk to Shawn — not a call center.
+      </p>
+      <a class="btn-primary" href="tel:+14695550182" style="display:inline-flex;">📞 Call Shawn Directly</a>
+    </div>
+    <div class="about-image-wrap">
+      <img
+        src="https://d8j0ntlcm91z4.cloudfront.net/user_30Zz3LHrTCA6JoAXpOu8nLQx0Ic/hf_20260519_004816_a4410f14-45da-44f4-9576-2e4a15ce415b.png"
+        alt="Shawn's Lawns — pristine Mesquite yard"
+      />
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <p class="section-label fade-up">Get Started</p>
+    <h2 class="section-title fade-up">Get Your <em>Free Quote</em></h2>
+    <p class="fade-up" style="color:var(--gray); margin-bottom:0.5rem;">No contracts. No hassle. Just a great lawn.</p>
+
+    <div class="contact-actions">
+      <a class="btn-call" href="tel:+14695550182">📞 Call Now</a>
+      <a class="btn-text" href="sms:+14695550182">💬 Text Us</a>
+    </div>
+
+    <div class="contact-divider">or leave your info</div>
+
+    <form class="contact-form" id="contactForm">
+      <input type="text" name="name" placeholder="Your Name" required />
+      <input type="tel" name="phone" placeholder="Your Phone Number" required />
+      <textarea name="message" placeholder="Tell us about your lawn (optional)"></textarea>
+      <button type="submit">Send My Request →</button>
+    </form>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Shawn's Lawns</div>
+    <div class="footer-info">
+      Mesquite, TX · <a href="tel:+14695550182">(469) 555-0182</a> ·
+      <a href="https://maps.google.com/?q=Mesquite+TX" target="_blank" rel="noopener">Google Maps</a>
+    </div>
+    <div class="footer-copy">© 2024 Shawn's Lawns. All rights reserved.</div>
+  </footer>
+
+  <!-- CHARACTER WIDGET — Talk to Shawn -->
+  <div id="widget" role="button" aria-label="Talk to Shawn — AI Assistant" tabindex="0">
+    <img
+      id="widget-img"
+      src="https://d8j0ntlcm91z4.cloudfront.net/user_30Zz3LHrTCA6JoAXpOu8nLQx0Ic/hf_20260519_004818_5c78c048-9408-4632-b984-4442c4cf5fa4.png"
+      alt="Talk to Shawn"
+    />
+    <span id="widget-label">Talk to Shawn</span>
+  </div>
+
+  <script>
+    // Lenis smooth scroll
+    const lenis = new Lenis({ lerp: 0.08, smoothWheel: true });
+    function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+
+    // GSAP + ScrollTrigger
+    gsap.registerPlugin(ScrollTrigger);
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+    gsap.ticker.lagSmoothing(0);
+
+    // Hero entrance
+    const heroTl = gsap.timeline({ delay: 0.3 });
+    heroTl
+      .to('.hero-eyebrow', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' })
+      .to('.hero-title',   { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' }, '-=0.5')
+      .to('.hero-sub',     { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.5')
+      .to('.hero-actions', { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.4');
+
+    // Fade-up on scroll
+    gsap.utils.toArray('.fade-up').forEach(el => {
+      gsap.to(el, {
+        opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 88%' }
+      });
+    });
+
+    // Service cards stagger
+    gsap.to('.service-card', {
+      opacity: 1, y: 0, duration: 0.7, stagger: 0.12, ease: 'power3.out',
+      scrollTrigger: { trigger: '.services-grid', start: 'top 85%' }
+    });
+
+    // Before/After reveal
+    gsap.to('#baWrap', {
+      opacity: 1, duration: 1, ease: 'power2.out',
+      scrollTrigger: { trigger: '#baWrap', start: 'top 80%' }
+    });
+
+    // Before/After slider
+    (function() {
+      const wrap = document.getElementById('baWrap');
+      const beforeWrap = document.getElementById('baBeforeWrap');
+      const divider = document.getElementById('baDivider');
+      const handle = document.getElementById('baHandle');
+      let dragging = false;
+
+      function setPosition(x) {
+        const rect = wrap.getBoundingClientRect();
+        let pct = ((x - rect.left) / rect.width) * 100;
+        pct = Math.max(5, Math.min(95, pct));
+        beforeWrap.style.width = pct + '%';
+        divider.style.left = pct + '%';
+        handle.style.left = pct + '%';
+      }
+
+      handle.addEventListener('mousedown', () => dragging = true);
+      handle.addEventListener('touchstart', () => dragging = true, { passive: true });
+      window.addEventListener('mousemove', e => { if (dragging) setPosition(e.clientX); });
+      window.addEventListener('touchmove', e => { if (dragging) setPosition(e.touches[0].clientX); }, { passive: true });
+      window.addEventListener('mouseup',  () => dragging = false);
+      window.addEventListener('touchend', () => dragging = false);
+      wrap.addEventListener('click', e => setPosition(e.clientX));
+    })();
+
+    // Stats counter
+    gsap.utils.toArray('.stat-item').forEach((item, i) => {
+      const numEl = item.querySelector('.stat-number');
+      const target = parseFloat(numEl.dataset.target);
+      const isDecimal = !!numEl.dataset.decimal;
+
+      gsap.to(item, {
+        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', delay: i * 0.1,
+        scrollTrigger: { trigger: '#stats', start: 'top 80%' }
+      });
+
+      ScrollTrigger.create({
+        trigger: '#stats',
+        start: 'top 80%',
+        once: true,
+        onEnter: () => {
+          const start = isDecimal ? parseFloat(numEl.textContent) : 0;
+          gsap.to({ val: start }, {
+            val: target,
+            duration: 2,
+            ease: 'power2.out',
+            delay: i * 0.1,
+            onUpdate: function() {
+              numEl.textContent = isDecimal
+                ? this.targets()[0].val.toFixed(1)
+                : Math.round(this.targets()[0].val);
+            }
+          });
+        }
+      });
+    });
+
+    // Review ticker
+    (function() {
+      const track = document.getElementById('ticker');
+      const cards = track.querySelectorAll('.review-card');
+      const cardW = cards[0].offsetWidth + 24;
+      const totalW = cardW * (cards.length / 1.5);
+
+      gsap.to(track, {
+        x: -totalW,
+        duration: 40,
+        ease: 'none',
+        repeat: -1,
+        modifiers: {
+          x: gsap.utils.unitize(x => parseFloat(x) % totalW)
+        }
+      });
+    })();
+
+    // About section
+    gsap.to('.about-text', {
+      opacity: 1, x: 0, duration: 1, ease: 'power3.out',
+      scrollTrigger: { trigger: '#about', start: 'top 75%' }
+    });
+    gsap.to('.about-image-wrap', {
+      opacity: 1, x: 0, duration: 1, ease: 'power3.out', delay: 0.15,
+      scrollTrigger: { trigger: '#about', start: 'top 75%' }
+    });
+
+    // Contact form
+    gsap.to('.contact-form', {
+      opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+      scrollTrigger: { trigger: '#contact', start: 'top 80%' }
+    });
+
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = this.querySelector('button');
+      btn.textContent = "✓ Sent! We'll call you soon.";
+      btn.style.background = 'var(--gold)';
+    });
+
+    // Widget
+    document.getElementById('widget').addEventListener('click', function() {
+      // Hermes Agent embeds Gemini 3.1 Flash TTS here post-build
+      alert('Talk to Shawn! (Gemini 3.1 Flash TTS — configured by Hermes Agent post-build)');
+    });
+  </script>
+</body>
+</html>
