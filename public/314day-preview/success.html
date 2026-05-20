@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Booking Confirmed — Private Night Club</title>
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/orbitron/index.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/dm-sans/index.css" rel="stylesheet">
+<style>
+:root {
+  --black: #0d0d0d;
+  --gold: #C9A84C;
+  --gold-light: #E8C87A;
+  --gold-dark: #8B6914;
+  --gold-gradient: linear-gradient(135deg, #8B6914 0%, #C9A84C 35%, #E8C87A 55%, #C9A84C 75%, #8B6914 100%);
+  --gold-bar: linear-gradient(90deg, #8B6914, #C9A84C, #E8C87A, #C9A84C, #8B6914);
+  --muted: rgba(255,255,255,0.5);
+  --font-display: 'Orbitron', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: #fff;
+  font-family: var(--font-body);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+/* Ambient background glow */
+body::before {
+  content: '';
+  position: fixed;
+  top: 30%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Gold bar top accent */
+.top-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--gold-bar);
+}
+
+.card {
+  max-width: 500px;
+  width: 100%;
+  background: rgba(201,168,76,0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius: 8px;
+  padding: 3.5rem 2.5rem;
+  position: relative;
+}
+
+/* Check icon */
+.check-wrap {
+  width: 64px; height: 64px;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 2rem;
+  position: relative;
+  animation: pulse-ring 2.5s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(201,168,76,0.4); }
+  70%  { box-shadow: 0 0 0 16px rgba(201,168,76,0); }
+  100% { box-shadow: 0 0 0 0 rgba(201,168,76,0); }
+}
+
+.check-icon {
+  font-size: 1.5rem;
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.55rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.85;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  margin-bottom: 1.25rem;
+}
+
+.title .gold {
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.message {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.65;
+  max-width: 360px;
+  margin: 0 auto 2.5rem;
+}
+
+.divider {
+  width: 60px; height: 1px;
+  background: var(--gold-bar);
+  margin: 0 auto 2.5rem;
+}
+
+.back-link {
+  display: inline-block;
+  background: var(--gold-gradient);
+  color: #000;
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 0.9rem 2rem;
+  text-decoration: none;
+  border-radius: 3px;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.back-link:hover {
+  opacity: 0.85;
+  transform: translateY(-2px);
+}
+
+/* Logo at top */
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+
+.logo-icon {
+  width: 34px; height: 34px;
+  border: 1.5px solid var(--gold);
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.logo-icon::before {
+  content: '';
+  position: absolute;
+  top: -2px; right: -4px;
+  width: 13px; height: 13px;
+  border: 1.5px solid var(--gold);
+  border-radius: 50%;
+  background: var(--black);
+}
+
+.logo-text-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  text-align: left;
+}
+
+.logo-script {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.logo-sub {
+  font-family: var(--font-display);
+  font-size: 0.4rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.8;
+}
+
+.note {
+  font-family: var(--font-display);
+  font-size: 0.48rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.18);
+  margin-top: 2rem;
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar"></div>
+
+<div class="card">
+  <!-- Logo -->
+  <div class="logo-wrap">
+    <div class="logo-icon"></div>
+    <div class="logo-text-wrap">
+      <span class="logo-script">Private</span>
+      <span class="logo-sub">Night Club</span>
+    </div>
+  </div>
+
+  <!-- Check mark -->
+  <div class="check-wrap">
+    <span class="check-icon">&#10003;</span>
+  </div>
+
+  <span class="eyebrow">Payment Confirmed</span>
+
+  <h1 class="title">You're <span class="gold">All Set</span></h1>
+
+  <div class="divider"></div>
+
+  <p class="message">
+    Your booking is confirmed. A receipt has been sent to your email.
+    We'll see you tonight at Private Night Club STL — arrive ready to experience the night.
+  </p>
+
+  <a href="/" class="back-link">Back to Site</a>
+
+  <p class="note">privatenightclubstl.com · STL</p>
+</div>
+
+</body>
+</html>
