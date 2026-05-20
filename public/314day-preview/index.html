@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Private Night Club — Menus</title>
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/orbitron/index.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/dm-sans/index.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><​/script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><​/script>
+<style>
+:root {
+  --black: #0d0d0d;
+  --dark: #141414;
+  --card: #1a1a1a;
+  --gold: #C9A84C;
+  --gold-light: #E8C87A;
+  --gold-dark: #8B6914;
+  --gold-gradient: linear-gradient(135deg, #8B6914 0%, #C9A84C 35%, #E8C87A 55%, #C9A84C 75%, #8B6914 100%);
+  --gold-bar: linear-gradient(90deg, #8B6914, #C9A84C, #E8C87A, #C9A84C, #8B6914);
+  --white: #ffffff;
+  --muted: rgba(255,255,255,0.55);
+  --font-display: 'Orbitron', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.gold {
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.scroll-line {
+  position: fixed; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--gold-bar); z-index: 999;
+  transform-origin: left; transform: scaleX(0);
+}
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem 2.5rem;
+  background: rgba(13,13,13,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(201,168,76,0.2);
+  transition: padding 0.3s;
+}
+
+.logo { display: flex; align-items: center; gap: 0.75rem; }
+
+.logo-icon {
+  width: 38px; height: 38px;
+  border: 1.5px solid var(--gold);
+  border-radius: 50%;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.logo-icon::before {
+  content: '';
+  position: absolute;
+  top: -2px; right: -4px;
+  width: 14px; height: 14px;
+  border: 1.5px solid var(--gold);
+  border-radius: 50%;
+  background: var(--black);
+}
+
+.logo-text { display: flex; flex-direction: column; gap: 1px; }
+
+.logo-text .script {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 1rem;
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.logo-text .sub {
+  font-family: var(--font-display);
+  font-size: 0.45rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.8;
+}
+
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+  font-family: var(--font-display);
+  font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--muted); text-decoration: none; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--gold-light); }
+
+.nav-cta {
+  background: var(--gold-gradient);
+  color: #000;
+  font-family: var(--font-display);
+  font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700;
+  padding: 0.6rem 1.4rem; border: none; cursor: pointer;
+  text-decoration: none; display: inline-block; transition: opacity 0.2s;
+}
+.nav-cta:hover { opacity: 0.85; }
+
+.hero-band {
+  padding: 7rem 2rem 5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 38vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#hero-shader {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-band::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 0%, rgba(13,13,13,0.82) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-content { position: relative; z-index: 2; }
+
+.hero-eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.6rem; letter-spacing: 0.4em; text-transform: uppercase;
+  color: var(--gold); opacity: 0; margin-bottom: 1.5rem; display: block;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 900; letter-spacing: -0.02em; text-transform: uppercase;
+  line-height: 0.95; margin-bottom: 1.5rem;
+}
+
+.kc { display: inline-block; will-change: transform, opacity; }
+.kc-word { display: inline-block; overflow: hidden; vertical-align: bottom; }
+
+.gold-divider {
+  width: 0px; height: 1px;
+  background: var(--gold-bar);
+  margin: 0 auto;
+  transition: none;
+}
+
+.menu-section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+.menu-page-title { text-align: center; margin-bottom: 3.5rem; }
+.menu-page-title h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase;
+  line-height: 1;
+}
+.menu-page-title .kitchen-note {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--gold-light);
+  margin-top: 1rem;
+  display: block;
+}
+.menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+@media (max-width: 700px) { .menu-grid { grid-template-columns: 1fr; } }
+.menu-block { margin-bottom: 2rem; }
+.menu-cat-header {
+  background: var(--gold-bar);
+  padding: 0.7rem 1.25rem;
+  margin-bottom: 1.25rem;
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+.menu-cat-header::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  animation: shimmer 3s 1.5s infinite;
+}
+@keyframes shimmer {
+  0%   { left: -100%; }
+  60%  { left: 150%; }
+  100% { left: 150%; }
+}
+.menu-cat-header span {
+  font-family: var(--font-display);
+  font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;
+  font-weight: 700; color: #000;
+}
+.menu-item {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid rgba(201,168,76,0.08);
+}
+.menu-item:last-child { border-bottom: none; }
+.item-name {
+  font-family: var(--font-display);
+  font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--white); font-weight: 500;
+}
+.item-price {
+  font-family: var(--font-display);
+  font-size: 0.7rem; letter-spacing: 0.1em;
+  color: var(--white); font-weight: 700;
+  white-space: nowrap; margin-left: 1rem;
+}
+.menu-note {
+  font-size: 0.65rem; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--muted); margin-top: 0.75rem; line-height: 1.6;
+}
+.menu-separator {
+  border: none;
+  border-top: 1px solid rgba(201,168,76,0.15);
+  margin: 5rem 2rem;
+  position: relative;
+}
+.menu-separator::before {
+  content: '◈';
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--black);
+  padding: 0 1rem;
+  color: var(--gold);
+  font-size: 0.9rem;
+}
+.bottle-section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+.bottle-title { text-align: center; margin-bottom: 3.5rem; }
+.bottle-title h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.bottle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem 4rem; }
+@media (max-width: 700px) { .bottle-grid { grid-template-columns: 1fr; } }
+.bottle-cat-name {
+  font-family: var(--font-display);
+  font-size: 0.9rem; letter-spacing: 0.3em; text-transform: uppercase;
+  margin-bottom: 1.25rem; text-align: center;
+  background: var(--gold-gradient);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.bottle-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid rgba(201,168,76,0.1);
+}
+.bottle-item:last-child { border-bottom: none; }
+.bottle-name {
+  font-family: var(--font-display);
+  font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--white); font-weight: 600;
+}
+.bottle-price {
+  font-family: var(--font-display);
+  font-size: 0.75rem; letter-spacing: 0.05em;
+  color: var(--gold-light); font-weight: 700;
+  white-space: nowrap; margin-left: 1rem;
+}
+.bottle-footer-note {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); margin-top: 3rem; line-height: 2;
+  border-top: 1px solid rgba(201,168,76,0.12);
+  padding-top: 2rem;
+}
+.bottom-cta { text-align: center; padding: 5rem 2rem 6rem; border-top: 1px solid rgba(201,168,76,0.12); }
+.bottom-cta p {
+  font-family: var(--font-display);
+  font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--gold); opacity: 0.8; margin-bottom: 1rem;
+}
+.bottom-cta h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase;
+  margin-bottom: 2.5rem;
+}
+.btn-gold {
+  display: inline-block;
+  background: var(--gold-gradient);
+  color: #000;
+  font-family: var(--font-display);
+  font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; font-weight: 700;
+  padding: 1rem 2.5rem; text-decoration: none;
+  transition: opacity 0.2s, transform 0.2s;
+  margin: 0 0.5rem;
+}
+.btn-gold:hover { opacity: 0.85; transform: translateY(-2px); }
+.btn-outline {
+  display: inline-block;
+  background: transparent;
+  color: var(--gold);
+  font-family: var(--font-display);
+  font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; font-weight: 700;
+  padding: 1rem 2.5rem; text-decoration: none;
+  border: 1px solid rgba(201,168,76,0.4);
+  transition: border-color 0.2s, color 0.2s;
+  margin: 0 0.5rem;
+}
+.btn-outline:hover { border-color: var(--gold-light); color: var(--gold-light); }
+footer {
+  border-top: 1px solid rgba(201,168,76,0.15);
+  padding: 2rem 2.5rem;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+}
+.footer-copy {
+  font-family: var(--font-display);
+  font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+}
+.reveal { opacity: 0; transform: translateY(24px); }
+#cursor-glow {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  width: 280px; height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s;
+  opacity: 0;
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-line" id="scrollLine"></div>
+<div id="cursor-glow"></div>
+
+<nav id="mainNav">
+  <div class="logo">
+    <div class="logo-icon"></div>
+    <div class="logo-text">
+      <span class="script">Private</span>
+      <span class="sub">Night Club</span>
+    </div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#food">Food Menu</a></li>
+    <li><a href="#bottles">Bottle Service</a></li>
+    <li><a href="https://spaceai-k4l68fmc.manus.space/#tables">Reserve a Table</a></li>
+  </ul>
+  <a href="https://spaceai-k4l68fmc.manus.space/" class="nav-cta">Get Tickets — $25</a>
+</nav>
+
+<div class="hero-band">
+  <canvas id="hero-shader"></canvas>
+  <div class="hero-content">
+    <span class="hero-eyebrow" id="heroEyebrow">Private Night Club</span>
+    <h1 class="hero-title" id="heroTitle">
+      <span class="gold" id="heroLine1">Experience</span><br>
+      <span id="heroLine2">The Menu</span>
+    </h1>
+    <div class="gold-divider" id="heroDivider" style="margin-top:1.5rem"></div>
+  </div>
+</div>
+
+<section id="food" class="menu-section">
+  <div class="menu-page-title reveal">
+    <h2><span class="gold">Late Night</span><br>Food Menu</h2>
+    <span class="kitchen-note">Kitchen Open Until 1:30AM</span>
+  </div>
+  <div class="menu-grid">
+    <div>
+      <div class="menu-block reveal">
+        <div class="menu-cat-header"><span>Appetizers</span></div>
+        <div class="menu-item"><span class="item-name">Mac and Cheese Bites</span><span class="item-price">10.00</span></div>
+        <div class="menu-item"><span class="item-name">Beef Toasted Ravioli</span><span class="item-price">10.00</span></div>
+        <div class="menu-item"><span class="item-name">Fried Pickles</span><span class="item-price">10.00</span></div>
+        <div class="menu-item"><span class="item-name">Buffalo Shrimp</span><span class="item-price">12.00</span></div>
+        <div class="menu-item"><span class="item-name">Buffalo Cauliflower</span><span class="item-price">10.00</span></div>
+      </div>
+      <div class="menu-block reveal">
+        <div class="menu-cat-header"><span>From the Grill</span></div>
+        <div class="menu-item"><span class="item-name">All Beef Hot Dog</span><span class="item-price">7.00</span></div>
+        <div class="menu-item"><span class="item-name">Polish Sausage</span><span class="item-price">7.00</span></div>
+        <div class="menu-item"><span class="item-name">Hamburger</span><span class="item-price">10.00</span></div>
+        <div class="menu-item"><span class="item-name">Cheeseburger</span><span class="item-price">12.00</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="menu-block reveal">
+        <div class="menu-cat-header"><span>Wings</span></div>
+        <div class="menu-item"><span class="item-name">5pc Party Wing</span><span class="item-price">8.00</span></div>
+        <div class="menu-item"><span class="item-name">10pc Party Wing</span><span class="item-price">16.00</span></div>
+        <div class="menu-item"><span class="item-name">20pc Party Wing</span><span class="item-price">24.00</span></div>
+        <div class="menu-item"><span class="item-name">All Flats</span><span class="item-price">+3.00</span></div>
+        <div class="menu-item" style="margin-top:0.75rem"><span class="item-name">5pc Whole Wing</span><span class="item-price">16.00</span></div>
+        <div class="menu-item"><span class="item-name">10pc Whole Wing</span><span class="item-price">24.00</span></div>
+        <div class="menu-item"><span class="item-name">20pc Whole Wing</span><span class="item-price">32.00</span></div>
+        <p class="menu-note">Sauces: Buffalo · Honey Hot · Korean BBQ · Lemon Pepper · Garlic Parmesan<br>Additional wing sauce 50¢ upcharge</p>
+      </div>
+      <div class="menu-block reveal">
+        <div class="menu-cat-header"><span>Pizza</span></div>
+        <div class="menu-item"><span class="item-name">10in Cheese Pizza</span><span class="item-price">12.00</span></div>
+        <div class="menu-item"><span class="item-name">12in Cheese Pizza</span><span class="item-price">14.00</span></div>
+        <div style="margin-top:1rem">
+          <p class="menu-note" style="color:var(--gold);margin-bottom:0.5rem;opacity:0.9">Additional Toppings</p>
+          <div class="menu-item"><span class="item-name">Pepperoni</span><span class="item-price">+2.00</span></div>
+          <div class="menu-item"><span class="item-name">Sausage</span><span class="item-price"></span></div>
+          <div class="menu-item"><span class="item-name">Green Pepper</span><span class="item-price">+1.00</span></div>
+          <div class="menu-item"><span class="item-name">Onion</span><span class="item-price"></span></div>
+          <div class="menu-item"><span class="item-name">Mushroom</span><span class="item-price"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="menu-separator">
+
+<section id="bottles" class="bottle-section">
+  <div class="bottle-title reveal">
+    <h2><span class="gold">Bottle Service</span><br>Menu</h2>
+  </div>
+  <div class="bottle-grid">
+    <div class="reveal">
+      <div class="bottle-cat-name">Tequila</div>
+      <div class="bottle-item"><span class="bottle-name">Teremana Blanco</span><span class="bottle-price">$200</span></div>
+      <div class="bottle-item"><span class="bottle-name">Teremana Reposado</span><span class="bottle-price">$225</span></div>
+      <div class="bottle-item"><span class="bottle-name">La Gritona Reposado</span><span class="bottle-price">$275</span></div>
+      <div class="bottle-item"><span class="bottle-name">Don Julio Blanco</span><span class="bottle-price">$250</span></div>
+      <div class="bottle-item"><span class="bottle-name">Don Julio Reposado</span><span class="bottle-price">$275</span></div>
+      <div class="bottle-item"><span class="bottle-name">Don Fulano Reposado</span><span class="bottle-price">$275</span></div>
+      <div class="bottle-item"><span class="bottle-name">Don Julio 1942</span><span class="bottle-price">$600</span></div>
+      <div class="bottle-item"><span class="bottle-name">Clase Azul Reposado</span><span class="bottle-price">$600</span></div>
+    </div>
+    <div class="reveal">
+      <div class="bottle-cat-name">Sparkling</div>
+      <div class="bottle-item"><span class="bottle-name">Luc Bel Aire Rare Luxe</span><span class="bottle-price">$100</span></div>
+      <div class="bottle-item"><span class="bottle-name">Luc Bel Aire Brut Gold</span><span class="bottle-price">$100</span></div>
+      <div class="bottle-item"><span class="bottle-name">Luc Bel Aire Bleu</span><span class="bottle-price">$100</span></div>
+      <div class="bottle-item"><span class="bottle-name">Luc Bel Aire Luxe Rose</span><span class="bottle-price">$100</span></div>
+      <div class="bottle-cat-name" style="margin-top:2rem">Whiskey</div>
+      <div class="bottle-item"><span class="bottle-name">Jameson</span><span class="bottle-price">$150</span></div>
+      <div class="bottle-item"><span class="bottle-name">Makers Mark</span><span class="bottle-price">$200</span></div>
+      <div class="bottle-item"><span class="bottle-name">Woodford Reserve</span><span class="bottle-price">$250</span></div>
+    </div>
+    <div class="reveal">
+      <div class="bottle-cat-name">Vodka</div>
+      <div class="bottle-item"><span class="bottle-name">Tito's</span><span class="bottle-price">$150</span></div>
+      <div class="bottle-item"><span class="bottle-name">Ketel One</span><span class="bottle-price">$200</span></div>
+      <div class="bottle-item"><span class="bottle-name">Grey Goose</span><span class="bottle-price">$225</span></div>
+      <div class="bottle-item"><span class="bottle-name">Deep Eddy's Lemon</span><span class="bottle-price">$200</span></div>
+      <div class="bottle-item"><span class="bottle-name">Deep Eddy's Lime</span><span class="bottle-price">$200</span></div>
+    </div>
+    <div class="reveal">
+      <div class="bottle-cat-name">Cognac</div>
+      <div class="bottle-item"><span class="bottle-name">Hennessy VS</span><span class="bottle-price">$225</span></div>
+      <div class="bottle-item"><span class="bottle-name">D'Ussé</span><span class="bottle-price">$250</span></div>
+      <div class="bottle-item"><span class="bottle-name">Remy Martin VSOP</span><span class="bottle-price">$275</span></div>
+      <div class="bottle-item"><span class="bottle-name">Remy Martin 1738</span><span class="bottle-price">$300</span></div>
+      <div class="bottle-item"><span class="bottle-name">Yah-Yah</span><span class="bottle-price">$275</span></div>
+    </div>
+  </div>
+  <div class="bottle-footer-note reveal">
+    Bottle service includes 2 juice or soda options or 2 Redbulls<br>
+    20% automatic gratuity will be added for all bottle sales
+  </div>
+</section>
+
+<div class="bottom-cta">
+  <p class="reveal">Private Night Club</p>
+  <h3 class="reveal"><span class="gold">Reserve Your Table</span><br>Tonight</h3>
+  <div class="reveal">
+    <a href="https://spaceai-k4l68fmc.manus.space/#tables" class="btn-gold">Reserve a Table</a>
+    <a href="https://spaceai-k4l68fmc.manus.space/" class="btn-outline">Get Tickets — $25</a>
+  </div>
+</div>
+
+<footer>
+  <div class="logo">
+    <div class="logo-icon"></div>
+    <div class="logo-text">
+      <span class="script" style="font-family:Georgia,serif;font-style:italic;font-size:0.9rem;background:var(--gold-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Private</span>
+      <span style="font-family:var(--font-display);font-size:0.4rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--gold);opacity:0.8">Night Club</span>
+    </div>
+  </div>
+  <div class="footer-copy">© 2026 Private Night Club — Space Age AI Solutions</div>
+</footer>
+
+<script>
+(function() {
+  const canvas = document.getElementById('hero-shader');
+  const gl = canvas.getContext('webgl');
+  if (!gl) return;
+
+  const vert = `
+    attribute vec2 a_pos;
+    void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }
+  `;
+
+  const frag = `
+    precision highp float;
+    uniform float u_t;
+    uniform vec2  u_res;
+
+    float hash(vec2 p) {
+      p = fract(p * vec2(234.34, 435.345));
+      p += dot(p, p + 34.23);
+      return fract(p.x * p.y);
+    }
+
+    float noise(vec2 p) {
+      vec2 i = floor(p);
+      vec2 f = fract(p);
+      f = f * f * (3.0 - 2.0 * f);
+      return mix(
+        mix(hash(i), hash(i + vec2(1,0)), f.x),
+        mix(hash(i + vec2(0,1)), hash(i + vec2(1,1)), f.x),
+        f.y
+      );
+    }
+
+    float fbm(vec2 p) {
+      float v = 0.0, a = 0.5;
+      mat2 rot = mat2(0.8660, 0.5, -0.5, 0.8660);
+      for (int i = 0; i < 6; i++) {
+        v += a * noise(p);
+        p  = rot * p * 2.1 + vec2(100.0);
+        a *= 0.48;
+      }
+      return v;
+    }
+
+    void main() {
+      vec2 uv = gl_FragCoord.xy / u_res;
+      float asp = u_res.x / u_res.y;
+      uv.x *= asp;
+      float t = u_t * 0.04;
+      vec2 q = vec2(fbm(uv + t), fbm(uv + vec2(1.7, 9.2) + t * 0.8));
+      vec2 r = vec2(
+        fbm(uv + q + vec2(1.7, 9.2) + 0.15 * t),
+        fbm(uv + q + vec2(8.3, 2.8) + 0.126 * t)
+      );
+      float f = fbm(uv + r);
+      vec3 dark  = vec3(0.051, 0.043, 0.020);
+      vec3 mid   = vec3(0.302, 0.220, 0.055);
+      vec3 light = vec3(0.788, 0.659, 0.294);
+      vec3 col = mix(dark, mid,   clamp(f * 2.0, 0.0, 1.0));
+      col      = mix(col,  light, clamp(f * f * f * 3.5, 0.0, 1.0));
+      col *= 0.30;
+      gl_FragColor = vec4(col, 1.0);
+    }
+  `;
+
+  function compile(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+
+  const prog = gl.createProgram();
+  gl.attachShader(prog, compile(gl.VERTEX_SHADER, vert));
+  gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, frag));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const aPos = gl.getAttribLocation(prog, 'a_pos');
+  gl.enableVertexAttribArray(aPos);
+  gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+  const uT   = gl.getUniformLocation(prog, 'u_t');
+  const uRes = gl.getUniformLocation(prog, 'u_res');
+
+  function resize() {
+    canvas.width  = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  let start = null;
+  function frame(ts) {
+    if (!start) start = ts;
+    gl.uniform1f(uT,   (ts - start) / 1000);
+    gl.uniform2f(uRes, canvas.width, canvas.height);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+<​/script>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+function splitChars(el) {
+  const raw = el.textContent;
+  el.innerHTML = '';
+  el.style.overflow = 'visible';
+  return [...raw].map(ch => {
+    const s = document.createElement('span');
+    s.className = 'kc';
+    s.textContent = ch === ' ' ? ' ' : ch;
+    el.appendChild(s);
+    return s;
+  });
+}
+
+function splitWords(el) {
+  const words = el.textContent.trim().split(/\s+/);
+  el.innerHTML = '';
+  return words.map((w, i) => {
+    const wrap = document.createElement('span');
+    wrap.className = 'kc-word';
+    wrap.style.overflow = 'hidden';
+    wrap.style.display  = 'inline-block';
+    const inner = document.createElement('span');
+    inner.className = 'kc';
+    inner.textContent = w;
+    wrap.appendChild(inner);
+    if (i < words.length - 1) wrap.appendChild(document.createTextNode(' '));
+    el.appendChild(wrap);
+    return inner;
+  });
+}
+
+const eyebrow = document.getElementById('heroEyebrow');
+const eyebrowChars = splitChars(eyebrow);
+eyebrow.style.opacity = '1';
+gsap.from(eyebrowChars, { opacity:0, y:18, skewX:6, duration:0.5, stagger:0.03, ease:'power3.out', delay:0.15 });
+
+const line1 = document.getElementById('heroLine1');
+const line1chars = splitChars(line1);
+line1chars.forEach(c => {
+  c.style.background = 'var(--gold-gradient)';
+  c.style.webkitBackgroundClip = 'text';
+  c.style.webkitTextFillColor = 'transparent';
+  c.style.backgroundClip = 'text';
+});
+gsap.from(line1chars, {
+  opacity:0, y:70, scaleY:0.2,
+  skewX: (i) => (i % 2 === 0 ? 14 : -14),
+  transformOrigin:'bottom center',
+  duration:0.75, stagger:0.045, ease:'power4.out', delay:0.45
+});
+
+const line2 = document.getElementById('heroLine2');
+const line2words = splitWords(line2);
+gsap.from(line2words, {
+  opacity:0, y:40, rotateX:-55,
+  transformOrigin:'bottom center',
+  duration:0.65, stagger:0.14, ease:'back.out(1.4)', delay:0.90
+});
+
+gsap.to('#heroDivider', { width:80, duration:0.8, ease:'power2.inOut', delay:1.35 });
+
+gsap.utils.toArray('.reveal').forEach(el => {
+  gsap.fromTo(el,
+    { opacity:0, y:28 },
+    { opacity:1, y:0, duration:0.75, ease:'power3.out',
+      scrollTrigger: { trigger:el, start:'top 90%', toggleActions:'play none none none' } }
+  );
+});
+
+document.querySelectorAll('.menu-page-title h2, .bottle-title h2, .bottom-cta h3').forEach(h => {
+  const childEls = [];
+  h.querySelectorAll('span').length
+    ? h.querySelectorAll('span').forEach(span => {
+        const isGold = span.classList.contains('gold');
+        const chars = splitChars(span);
+        if (isGold) chars.forEach(c => {
+          c.style.background = 'var(--gold-gradient)';
+          c.style.webkitBackgroundClip = 'text';
+          c.style.webkitTextFillColor = 'transparent';
+          c.style.backgroundClip = 'text';
+        });
+        childEls.push(...chars);
+      })
+    : childEls.push(...splitChars(h));
+  gsap.from(childEls, {
+    opacity:0, y:35, skewX:5, transformOrigin:'bottom left',
+    duration:0.6, stagger:0.025, ease:'power3.out',
+    scrollTrigger: { trigger:h, start:'top 88%', toggleActions:'play none none none' }
+  });
+});
+
+const scrollLine = document.getElementById('scrollLine');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+  scrollLine.style.transform = 'scaleX(' + pct + ')';
+}, { passive:true });
+
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+  nav.style.padding = window.scrollY > 50 ? '0.85rem 2.5rem' : '1.25rem 2.5rem';
+}, { passive:true });
+
+const glow = document.getElementById('cursor-glow');
+let glowX=0, glowY=0, curX=0, curY=0;
+document.addEventListener('mousemove', e => { curX=e.clientX; curY=e.clientY; glow.style.opacity='1'; });
+document.addEventListener('mouseleave', () => glow.style.opacity='0');
+(function lerpGlow() {
+  glowX += (curX-glowX)*0.1;
+  glowY += (curY-glowY)*0.1;
+  glow.style.left = glowX+'px';
+  glow.style.top  = glowY+'px';
+  requestAnimationFrame(lerpGlow);
+})();
+<​/script>
+</body>
+</html>
