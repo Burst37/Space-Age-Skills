@@ -1,0 +1,275 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   VL-01 DARK GLASSMORPHISM STANDARD — Space Age Agent OS
+   Enforced globally. Every component inherits from these tokens.
+   Background base: #050508 (never pure #000)
+   Font roles: Orbitron → headers only | DM Sans → body | JetBrains Mono → all data
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@theme inline {
+  --color-background: #050508;
+  --color-foreground: #f0f4ff;
+}
+
+:root {
+  /* ── Background layers ─────────────────────────────────────────── */
+  --bg-base:    #050508;
+  --bg-surface: #0a0a0f;
+  --bg-card:    rgba(255, 255, 255, 0.04);
+  --bg-elevated: rgba(255, 255, 255, 0.07);
+  --bg-hover:   rgba(255, 255, 255, 0.06);
+  --bg-active:  rgba(255, 255, 255, 0.10);
+
+  /* ── Glass ─────────────────────────────────────────────────────── */
+  --glass-blur:    blur(40px) saturate(180%);
+  --glass-bg:      rgba(255, 255, 255, 0.04);
+  --glass-border:  rgba(255, 255, 255, 0.08);
+  --glass-border-hot: rgba(255, 255, 255, 0.16);
+
+  /* ── Shadow system ─────────────────────────────────────────────── */
+  --shadow-sm: inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-md: inset 0 1px 0 rgba(255,255,255,0.10), 0 12px 40px rgba(0,0,0,0.5);
+  --shadow-lg: inset 0 1px 0 rgba(255,255,255,0.12), 0 24px 80px rgba(0,0,0,0.6);
+
+  /* ── Brand palette ─────────────────────────────────────────────── */
+  --orange:       #FF6B00;   /* Space Age primary */
+  --orange-dim:   rgba(255,107,0,0.15);
+  --orange-glow:  0 0 20px rgba(255,107,0,0.4);
+  --cyan:         #7DF9FF;   /* electric accent */
+  --cyan-dim:     rgba(125,249,255,0.12);
+  --green:        #00ff88;   /* online / success */
+  --green-dim:    rgba(0,255,136,0.12);
+  --red:          #ff4466;   /* error / offline */
+  --red-dim:      rgba(255,68,102,0.12);
+  --purple:       #bf5af2;
+
+  /* ── Agent colors ──────────────────────────────────────────────── */
+  --agent-claude:    #FF6B00;
+  --agent-hermes:    #f59e0b;
+  --agent-gemini:    #4ade80;
+  --agent-codex:     #7DF9FF;
+  --agent-openclaw:  #bf5af2;
+  --agent-deepseek:  #38bdf8;
+  --agent-minimax:   #a855f7;
+  --agent-gemma:     #00ff88;
+
+  /* ── Text ──────────────────────────────────────────────────────── */
+  --fg:       #f0f4ff;
+  --fg-dim:   rgba(240,244,255,0.65);
+  --fg-muted: rgba(240,244,255,0.35);
+
+  /* ── Borders ───────────────────────────────────────────────────── */
+  --border:     rgba(255,255,255,0.06);
+  --border-hot: rgba(255,255,255,0.14);
+
+  /* ── Sidebar ───────────────────────────────────────────────────── */
+  --sidebar-width: 220px;
+}
+
+/* ── Reset ─────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--bg-base);
+  color: var(--fg);
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* ── Scanline overlay (mission control atmosphere) ─────────────────────── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+  opacity: 0.4;
+}
+
+/* ── Ambient glow ──────────────────────────────────────────────────────── */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 10% 0%, rgba(255,107,0,0.06), transparent 60%),
+    radial-gradient(ellipse 50% 35% at 90% 10%, rgba(125,249,255,0.04), transparent 60%),
+    radial-gradient(ellipse 80% 50% at 50% 100%, rgba(0,255,136,0.03), transparent 60%);
+}
+
+/* ── Typography system ─────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Orbitron', 'DM Sans', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg);
+  line-height: 1.2;
+}
+
+code, pre, .mono, .data {
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+}
+
+/* ── Glass card primitive ──────────────────────────────────────────────── */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-md);
+}
+
+.glass:hover {
+  border-color: var(--glass-border-hot);
+}
+
+/* ── LED dome indicator ────────────────────────────────────────────────── */
+.led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+}
+.led::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  opacity: 0.3;
+}
+.led--online  { background: var(--green); box-shadow: 0 0 6px var(--green), 0 0 12px var(--green); }
+.led--online::before { background: radial-gradient(circle, var(--green) 0%, transparent 70%); }
+.led--offline { background: var(--red); box-shadow: 0 0 4px var(--red); }
+.led--busy    { background: var(--orange); box-shadow: 0 0 6px var(--orange); animation: pulse-led 1.2s ease-in-out infinite; }
+.led--unknown { background: var(--fg-muted); }
+
+@keyframes pulse-led {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* ── Orange CTA button ─────────────────────────────────────────────────── */
+.btn-primary {
+  background: var(--orange);
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--orange-glow);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 0 30px rgba(255,107,0,0.6); }
+.btn-primary:active { transform: translateY(0); }
+
+/* ── Ghost button ──────────────────────────────────────────────────────── */
+.btn-ghost {
+  background: transparent;
+  color: var(--fg-dim);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.btn-ghost:hover { background: var(--bg-hover); border-color: var(--border-hot); color: var(--fg); }
+
+/* ── Agent chat message styles ─────────────────────────────────────────── */
+.msg-user {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--orange-dim);
+  border: 1px solid rgba(255,107,0,0.2);
+  border-radius: 12px 12px 4px 12px;
+  padding: 10px 14px;
+  color: var(--fg);
+  max-width: 80%;
+  align-self: flex-end;
+}
+
+.msg-agent {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px 12px 12px 12px;
+  padding: 12px 16px;
+  color: var(--fg);
+  max-width: 90%;
+  align-self: flex-start;
+  box-shadow: var(--shadow-sm);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* ── Input fields ──────────────────────────────────────────────────────── */
+input[type="text"], input[type="password"], textarea, select {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg-card);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+input:focus, textarea:focus { border-color: var(--orange); box-shadow: 0 0 0 2px rgba(255,107,0,0.15); }
+
+/* ── Xterm terminal override ───────────────────────────────────────────── */
+.xterm { font-family: 'JetBrains Mono', monospace !important; }
+.xterm-viewport::-webkit-scrollbar { width: 6px; }
+.xterm-viewport::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+
+/* ── Section label (Orbitron eyebrow) ─────────────────────────────────── */
+.section-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--orange);
+  opacity: 0.8;
+}
+
+/* ── Data readout ──────────────────────────────────────────────────────── */
+.data-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--fg);
+  letter-spacing: -0.02em;
+}
+
+/* ── Utility ───────────────────────────────────────────────────────────── */
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.z-above { position: relative; z-index: 1; }
