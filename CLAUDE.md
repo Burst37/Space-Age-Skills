@@ -54,6 +54,7 @@ Skills live in two directories:
 | `brand-extractor` | When extracting or applying a client brand identity |
 | `page-upgrade` | When auditing and upgrading an existing client page |
 | `sa-figma-framer-spline` | When Figma/Framer/Spline/Rive are mentioned, design tokens needed, "looks flat", or premium visual quality required — Phase 1.5 between ui-ux-designer and cinematic-website-builder |
+| `impeccable` | Frontend design, redesign, critique, audit, polish, animate, typeset, layout, colorize, and all other UI quality work — 23 commands covering the full design-to-ship lifecycle |
 
 ## Usage
 
