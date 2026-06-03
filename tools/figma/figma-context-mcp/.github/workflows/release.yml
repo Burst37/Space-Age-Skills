@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write # Required for npm OIDC trusted publishing
+
+jobs:
+  release-please:
+    if: ${{ github.repository_owner == 'GLips' }}
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+
+      - uses: actions/checkout@v4
+        if: ${{ steps.release.outputs.release_created }}
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.10.0
+        if: ${{ steps.release.outputs.release_created }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: "https://registry.npmjs.org"
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Install dependencies
+        run: pnpm install
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Type check
+        run: pnpm type-check
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Build
+        run: pnpm build
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Publish to npm
+        run: pnpm publish --no-git-checks
+        env:
+          NODE_ENV: production
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Update server.json version
+        run: |
+          VERSION="${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}"
+          jq --arg v "$VERSION" '.version = $v | .packages[0].version = $v' server.json > server.tmp && mv server.tmp server.json
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Install mcp-publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" | tar xz mcp-publisher
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Publish to MCP Registry
+        run: |
+          ./mcp-publisher login github-oidc
+          ./mcp-publisher publish
+        if: ${{ steps.release.outputs.release_created }}

@@ -1,0 +1,13 @@
+{
+  "name": "Text Review",
+  "id": "111111",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma"],
+  "capabilities": ["textreview"],
+  "enableProposedApi": true,
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  },
+  "documentAccess": "dynamic-page"
+}
