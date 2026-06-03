@@ -1,0 +1,12 @@
+{
+  "name": "Styles to Variables",
+  "id": "1225497355831498032",
+  "api": "1.0.0",
+  "editorType": ["figma"],
+  "permissions": [],
+  "main": "code.js",
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  },
+  "documentAccess": "dynamic-page"
+}

@@ -1,0 +1,40 @@
+{
+  "name": "Resizer",
+  "id": "994314547752599560",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma", "figjam"],
+  "menu": [
+    {
+      "name": "Absolute",
+      "command": "absolute",
+      "parameters": [
+        {
+          "name": "Width",
+          "key": "width",
+          "description": "enter a width in pixels"
+        },
+        {
+          "name": "Height",
+          "key": "height",
+          "description": "enter a height in pixels"
+        }
+      ]
+    },
+    {
+      "name": "Relative",
+      "command": "relative",
+      "parameters": [
+        {
+          "name": "Scale",
+          "key": "scale",
+          "description": "enter a relative scale factor"
+        }
+      ]
+    }
+  ],
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  },
+  "documentAccess": "dynamic-page"
+}
