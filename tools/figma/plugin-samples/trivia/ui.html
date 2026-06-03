@@ -1,0 +1,16 @@
+<script>
+  window.onmessage = async (event) => {
+    const msg = event.data.pluginMessage
+    const url = event.data.pluginMessage.url
+    const res = await fetch(url)
+    const json = await res.json()
+    postMessage(json, msg.type)
+  };
+
+  function postMessage(response, type) {
+    window.parent.postMessage(
+        { pluginMessage: { response, type } },
+        "*"
+      );
+  }
+</script>

@@ -1,0 +1,11 @@
+{
+  "id": "sierpinski-sample",
+  "name": "Sierpinski Sample",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma", "figjam"],
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  },
+  "documentAccess": "dynamic-page"
+}
