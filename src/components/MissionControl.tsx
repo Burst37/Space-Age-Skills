@@ -19,6 +19,7 @@ const QUICK = [
   { label: 'Video',      icon: '▶',   href: '/video'    },
   { label: 'Kanban',     icon: '▦',   href: '/kanban'   },
   { label: 'Journal',    icon: '✦',   href: '/journal'  },
+  { label: 'Lessons',    icon: '◬',   href: '/lessons'  },
 ]
 
 const stagger = {
