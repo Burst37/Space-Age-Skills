@@ -1,61 +1,61 @@
 'use client';
-import { useRef, useEffect, ReactNode, CSSProperties } from 'react';
-import { motion } from 'framer-motion';
 
-interface VideoHeroProps {
+import { useRef, useEffect } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+
+interface Props {
   src: string;
   poster?: string;
-  children?: ReactNode;
   overlayOpacity?: number;
+  children?: React.ReactNode;
   className?: string;
-  style?: CSSProperties;
 }
 
 export default function VideoHero({
   src,
   poster,
+  overlayOpacity = 0.4,
   children,
-  overlayOpacity = 0.6,
   className = '',
-  style,
-}: VideoHeroProps) {
+}: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const prefersReduced = useReducedMotion();
 
   useEffect(() => {
-    videoRef.current?.play().catch(() => {});
-  }, []);
+    if (!prefersReduced && videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
+  }, [prefersReduced]);
 
   return (
-    <div className={`relative overflow-hidden ${className}`} style={style}>
-      <video
-        ref={videoRef}
-        src={src}
-        poster={poster}
-        muted
-        loop
-        playsInline
-        autoPlay
-        style={{
-          position: 'absolute', inset: 0,
-          width: '100%', height: '100%',
-          objectFit: 'cover', zIndex: 0,
-        }}
-      />
+    <div className={`relative overflow-hidden ${className}`}>
+      {prefersReduced ? (
+        poster ? (
+          <img
+            src={poster}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        ) : null
+      ) : (
+        <video
+          ref={videoRef}
+          src={src}
+          poster={poster}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      )}
       <div
-        style={{
-          position: 'absolute', inset: 0,
-          background: `rgba(3,3,10,${overlayOpacity})`,
-          zIndex: 1,
-        }}
+        aria-hidden="true"
+        className="absolute inset-0 bg-black"
+        style={{ opacity: overlayOpacity }}
       />
-      <motion.div
-        style={{ position: 'relative', zIndex: 2, height: '100%' }}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-      >
-        {children}
-      </motion.div>
+      <div className="relative z-10">{children}</div>
     </div>
   );
 }
