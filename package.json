@@ -8,6 +8,9 @@
     "start": "next start"
   },
   "dependencies": {
+    "@maily-to/core": "^0.3.7",
+    "@maily-to/render": "^0.2.3",
+    "@mendable/firecrawl-js": "^4.25.2",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/addon-web-links": "^0.11.0",
