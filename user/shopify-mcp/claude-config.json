@@ -1,0 +1,10 @@
+{
+  "shopify": {
+    "command": "python",
+    "args": ["user/shopify-mcp/server.py"],
+    "env": {
+      "SHOPIFY_STORE_DOMAIN": "your-store.myshopify.com",
+      "SHOPIFY_ACCESS_TOKEN": "shpat_xxxxxxxxxxxxxxxxxxxx"
+    }
+  }
+}
