@@ -55,6 +55,7 @@ Skills live in two directories:
 | `page-upgrade` | When auditing and upgrading an existing client page |
 | `opencode` | Open-source multi-provider coding agent (DeepSeek, Gemini, Claude, 75+ providers) |
 | `sa-character-sheet` | Consistent character reference sheets — 8-page system, storyboard-to-video handoff |
+| `framer-web-design` | Ultimate Framer production guide — components, animation, SEO injection, video hero, voice agent |
 
 ## Usage
 
