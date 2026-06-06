@@ -1,0 +1,11 @@
+{
+  "tiktok": {
+    "command": "python",
+    "args": ["user/tiktok-mcp/server.py"],
+    "env": {
+      "TIKTOK_CLIENT_KEY": "your_client_key",
+      "TIKTOK_CLIENT_SECRET": "your_client_secret",
+      "TIKTOK_ACCESS_TOKEN": "your_oauth_access_token"
+    }
+  }
+}
