@@ -68,7 +68,8 @@ echo "  ✓ Config created at ~/.agentic-os/config.json"
 # ─── 7. PM2 — start & save ────────────────────────────────────
 echo "▶ Starting Agent OS with PM2..."
 pm2 delete agent-os 2>/dev/null || true
-pm2 start npm --name "agent-os" -- start -- --port $PORT
+# Bind to 0.0.0.0 so the app is reachable from outside the VPS, not just localhost
+pm2 start "$INSTALL_DIR/source/node_modules/.bin/next" --name "agent-os" -- start -H 0.0.0.0 -p $PORT
 pm2 save --force
 pm2 startup 2>/dev/null | tail -1 | bash 2>/dev/null || true
 echo "  ✓ Agent OS running on port $PORT"
