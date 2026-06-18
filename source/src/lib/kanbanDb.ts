@@ -6,7 +6,7 @@
 // Writes still go through `hermes kanban …` so we don't bypass event emission, the dispatcher
 // notification path, or the gateway's runtime locks.
 
-import { DatabaseSync } from "node:sqlite";
+import Database from "better-sqlite3";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 import os from "node:os";
@@ -79,11 +79,10 @@ function dbPathForBoard(slug: string | undefined): string {
   return path.join(HERMES_HOME, "kanban", "boards", slug, "kanban.db");
 }
 
-function openDb(slug?: string): DatabaseSync {
+function openDb(slug?: string): Database.Database {
   const p = dbPathForBoard(slug);
   if (!existsSync(p)) throw new Error(`board db not found: ${p}`);
-  // readonly + open immediately; closed by the caller via try/finally
-  return new DatabaseSync(p, { readOnly: true });
+  return new Database(p, { readonly: true });
 }
 
 // ─── Queries ────────────────────────────────────────────────────────────────

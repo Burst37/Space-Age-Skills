@@ -22,12 +22,10 @@ echo "▶ Updating system packages..."
 apt-get update -qq
 apt-get install -y -qq curl git ufw python3 python3-pip 2>/dev/null
 
-# ─── 2. Node.js 22 ────────────────────────────────────────────
-echo "▶ Installing Node.js 22..."
-if ! command -v node >/dev/null 2>&1 || [ "$(node -v | cut -d. -f1 | tr -d 'v')" -lt 20 ]; then
-  curl -fsSL https://deb.nodesource.com/setup_22.x | bash - >/dev/null 2>&1
-  apt-get install -y -qq nodejs
-fi
+# ─── 2. Node.js 22 (always refresh to latest patch) ──────────
+echo "▶ Installing/updating Node.js 22..."
+curl -fsSL https://deb.nodesource.com/setup_22.x | bash - >/dev/null 2>&1
+apt-get install -y -qq nodejs
 echo "  ✓ Node $(node -v)"
 
 # ─── 3. PM2 (keeps the app running after logout / on reboot) ──
