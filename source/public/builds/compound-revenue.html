@@ -1,0 +1,70 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Compound</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1280px;background:#070a07;font-family:'Inter',sans-serif;color:#e9f0e9;overflow:hidden;
+  background-image:radial-gradient(900px 500px at 85% -10%,rgba(212,165,116,.14),transparent),radial-gradient(700px 460px at -5% 110%,rgba(52,211,153,.10),transparent)}
+.wrap{padding:36px 44px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:26px}
+.brand{display:flex;align-items:center;gap:13px}
+.logo{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-size:23px;background:linear-gradient(135deg,#d4a574,#34d399);box-shadow:0 0 26px rgba(212,165,116,.5)}
+h1{font-family:'Space Grotesk';font-size:24px;font-weight:700;letter-spacing:-.5px}
+.sub{font-size:12.5px;color:#8a9a8a;margin-top:2px}
+.tag{font-size:11px;font-weight:700;letter-spacing:1.4px;color:#d4a574;background:rgba(212,165,116,.12);border:1px solid rgba(212,165,116,.32);padding:7px 13px;border-radius:99px}
+.grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;margin-bottom:18px}
+.card{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:24px;position:relative;overflow:hidden}
+.klabel{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:#8a9a8a;margin-bottom:10px}
+.mrr{font-family:'Space Grotesk';font-size:58px;font-weight:700;letter-spacing:-2px;line-height:1;background:linear-gradient(120deg,#d4a574,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.delta{display:inline-flex;gap:6px;font-size:14px;font-weight:600;color:#34d399;margin-top:12px;background:rgba(52,211,153,.12);padding:5px 11px;border-radius:8px}
+.row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px}
+.mini{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:15px}
+.mini .v{font-family:'Space Grotesk';font-size:24px;font-weight:700;letter-spacing:-.5px}
+.mini .l{font-size:10.5px;color:#8a9a8a;margin-top:4px;text-transform:uppercase;letter-spacing:.6px}
+.h3{font-family:'Space Grotesk';font-size:15px;font-weight:600;margin-bottom:16px}
+.funnel{display:flex;flex-direction:column;gap:9px}
+.fr{display:flex;align-items:center;gap:13px}
+.bar{height:38px;border-radius:9px;display:flex;align-items:center;padding:0 14px;font-weight:600;font-size:13.5px;color:#06140c}
+.frl{font-size:12.5px;color:#aab8aa;width:120px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.logos{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.lg{font-size:12.5px;font-weight:600;color:#cdd8cd;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);padding:8px 14px;border-radius:9px}
+</style></head>
+<body><div class="wrap">
+  <div class="top">
+    <div class="brand"><div class="logo">💰</div>
+      <div><h1>Compound — Revenue Command Center</h1><div class="sub">Goldie Labs · Company Operations · updated in real time from Stripe</div></div>
+    </div>
+    <div class="tag">📈 ON TRACK · $1M ARR</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="klabel">Monthly Recurring Revenue</div>
+      <div class="mrr">$84,200</div>
+      <div class="delta">▲ +27.4% MoM · +$18.1k net new</div>
+      <svg width="100%" height="150" viewBox="0 0 640 150" preserveAspectRatio="none" style="margin-top:18px">
+        <defs><linearGradient id="m" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34d399" stop-opacity=".45"/><stop offset="1" stop-color="#34d399" stop-opacity="0"/></linearGradient></defs>
+        <path d="M0,140 C90,138 150,134 220,124 C290,114 330,104 390,84 C450,64 500,46 560,24 C590,14 615,8 640,4 L640,150 L0,150 Z" fill="url(#m)"/>
+        <path d="M0,140 C90,138 150,134 220,124 C290,114 330,104 390,84 C450,64 500,46 560,24 C590,14 615,8 640,4" fill="none" stroke="#34d399" stroke-width="3"/>
+        <circle cx="640" cy="4" r="5" fill="#34d399"/><circle cx="640" cy="4" r="11" fill="#34d399" opacity=".25"/>
+      </svg>
+      <div class="row">
+        <div class="mini"><div class="v" style="color:#d4a574">$1.01M</div><div class="l">ARR</div></div>
+        <div class="mini"><div class="v" style="color:#34d399">2.1%</div><div class="l">Churn</div></div>
+        <div class="mini"><div class="v">$3,840</div><div class="l">LTV</div></div>
+        <div class="mini"><div class="v">14×</div><div class="l">LTV : CAC</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="h3">🔻 Growth funnel · last 30 days</div>
+      <div class="funnel">
+        <div class="fr"><div class="frl">Organic visitors</div><div class="bar" style="width:100%;background:linear-gradient(90deg,#22d3ee,#34d399)">184,000</div></div>
+        <div class="fr"><div class="frl">Trials started</div><div class="bar" style="width:62%;background:linear-gradient(90deg,#34d399,#86efac)">9,240</div></div>
+        <div class="fr"><div class="frl">Activated</div><div class="bar" style="width:40%;background:linear-gradient(90deg,#86efac,#d4a574)">5,180</div></div>
+        <div class="fr"><div class="frl">Paid</div><div class="bar" style="width:24%;background:linear-gradient(90deg,#d4a574,#fbbf24)">1,420</div></div>
+      </div>
+      <div class="h3" style="margin-top:24px">🏢 New logos this month</div>
+      <div class="logos"><span class="lg">Northwind</span><span class="lg">Lumen AI</span><span class="lg">Forge Labs</span><span class="lg">Pinecrest</span><span class="lg">Vertex</span><span class="lg">+38 more</span></div>
+    </div>
+  </div>
+</div></body></html>

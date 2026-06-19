@@ -1,0 +1,75 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Keyword Galaxy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1280px;height:820px;background:#04060c;font-family:'Inter',sans-serif;color:#e8edf4;overflow:hidden;position:relative}
+canvas{position:absolute;top:0;left:0;width:1280px;height:820px}
+.hud{position:absolute;inset:0;pointer-events:none;padding:34px 40px;display:flex;flex-direction:column;justify-content:space-between}
+.top{display:flex;justify-content:space-between;align-items:flex-start}
+h1{font-family:'Space Grotesk';font-size:24px;font-weight:700;letter-spacing:-.5px}
+.sub{font-size:12.5px;color:#8b96ad;margin-top:3px}
+.tag{font-size:11px;font-weight:700;letter-spacing:1.5px;color:#a855f7;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.3);padding:7px 13px;border-radius:99px}
+.stats{display:flex;gap:30px}
+.stat .v{font-family:'Space Grotesk';font-size:30px;font-weight:700;letter-spacing:-1px}
+.stat .l{font-size:11px;color:#8b96ad;text-transform:uppercase;letter-spacing:1.3px;margin-top:3px}
+.legend{display:flex;gap:18px;font-size:12px;color:#aab4c6;align-items:center}
+.lg{display:flex;align-items:center;gap:7px}.sw{width:11px;height:11px;border-radius:50%}
+</style></head>
+<body>
+<canvas id="c" width="2560" height="1640"></canvas>
+<div class="hud">
+  <div class="top">
+    <div><h1>✦ Keyword Galaxy — Topical Authority Map</h1><div class="sub">Goldie Labs · 2,847 keywords mapped into 6 topic clusters · sized by search volume</div></div>
+    <div class="tag">SEMANTIC GRAPH</div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end">
+    <div class="legend">
+      <div class="lg"><span class="sw" style="background:#34d399"></span>AI SEO</div>
+      <div class="lg"><span class="sw" style="background:#22d3ee"></span>Content</div>
+      <div class="lg"><span class="sw" style="background:#a855f7"></span>Automation</div>
+      <div class="lg"><span class="sw" style="background:#fbbf24"></span>Agencies</div>
+      <div class="lg"><span class="sw" style="background:#f472b6"></span>Tools</div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v" style="color:#34d399">2,847</div><div class="l">keywords</div></div>
+      <div class="stat"><div class="v" style="color:#22d3ee">6.2M</div><div class="l">total volume</div></div>
+      <div class="stat"><div class="v" style="color:#fbbf24">94%</div><div class="l">cluster coverage</div></div>
+    </div>
+  </div>
+</div>
+<script>
+const cv=document.getElementById('c'),x=cv.getContext('2d');x.scale(2,2);
+const W=1280,H=820;
+const clusters={seo:'#34d399',content:'#22d3ee',auto:'#a855f7',agency:'#fbbf24',tools:'#f472b6'};
+const N=[
+ {t:'ai seo',c:'seo',v:34,x:430,y:380,hub:1},
+ {t:'content engine',c:'content',v:30,x:760,y:300,hub:1},
+ {t:'automation',c:'auto',v:28,x:870,y:540,hub:1},
+ {t:'seo agency',c:'agency',v:24,x:360,y:560,hub:1},
+ {t:'ai tools',c:'tools',v:26,x:620,y:470,hub:1},
+];
+const sat=[
+ ['programmatic seo','seo',16,520,250],['keyword research','seo',15,300,300],['rank tracking','seo',12,520,500],['serp api','seo',11,250,470],['technical seo','seo',12,420,200],
+ ['ai writing','content',15,840,200],['content calendar','content',12,930,360],['topic clusters','content',13,690,180],['blog automation','content',11,1000,260],
+ ['ai agents','auto',16,1010,560],['workflow automation','auto',12,980,680],['zapier seo','auto',10,820,680],['n8n seo','auto',10,1080,470],
+ ['seo for saas','agency',13,230,640],['startup seo','agency',12,420,700],['white label seo','agency',10,170,560],
+ ['best ai seo tools','tools','14',660,620],['gpt seo','tools',12,540,640],['claude for seo','tools',11,720,720],
+];
+function jitter(n){return n}
+// connections
+x.lineWidth=1;
+function line(a,b,col){const g=x.createLinearGradient(a.x,a.y,b.x,b.y);g.addColorStop(0,col+'66');g.addColorStop(1,col+'08');x.strokeStyle=g;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke();}
+const hub={};N.forEach(n=>hub[n.c]=n);
+sat.forEach(s=>{const o={t:s[0],c:s[1],v:+s[2],x:+s[3],y:+s[4]};line(o,hub[o.c],clusters[o.c]);});
+// inter-hub links
+for(let i=0;i<N.length;i++)for(let j=i+1;j<N.length;j++){x.strokeStyle='rgba(255,255,255,.05)';x.beginPath();x.moveTo(N[i].x,N[i].y);x.lineTo(N[j].x,N[j].y);x.stroke();}
+function node(o,hubn){const col=clusters[o.c];const r=o.v/(hubn?1.1:1.4);
+ const gg=x.createRadialGradient(o.x,o.y,0,o.x,o.y,r*3);gg.addColorStop(0,col+'cc');gg.addColorStop(1,col+'00');x.fillStyle=gg;x.beginPath();x.arc(o.x,o.y,r*3,0,7);x.fill();
+ x.fillStyle=col;x.shadowColor=col;x.shadowBlur=hubn?22:12;x.beginPath();x.arc(o.x,o.y,r,0,7);x.fill();x.shadowBlur=0;
+ x.fillStyle=hubn?'#fff':'#cfd8e6';x.font=(hubn?'600 '+15+'px':'500 12px')+" 'Space Grotesk',sans-serif";x.textAlign='center';x.fillText(o.t,o.x,o.y+r+15);}
+sat.forEach(s=>node({t:s[0],c:s[1],v:+s[2],x:+s[3],y:+s[4]},0));
+N.forEach(n=>node(n,1));
+// faint stars
+for(let i=0;i<120;i++){x.fillStyle='rgba(255,255,255,'+(Math.random()*.25)+')';x.beginPath();x.arc(Math.random()*W,Math.random()*H,Math.random()*1.2,0,7);x.fill();}
+</script>
+</body></html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nebula — Autonomous SEO</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#070912;--ink:#e9edf6;--mut:#9aa6c0;--p:#a855f7;--c:#22d3ee;--g:#34d399}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+a{color:inherit;text-decoration:none}
+nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(16px);background:rgba(7,9,18,.72);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:66px}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk';font-weight:700;font-size:19px}
+.bd{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--p),var(--c));box-shadow:0 0 20px rgba(168,85,247,.55)}
+.nl{display:flex;gap:26px;font-size:14px;color:var(--mut)}
+.btn{font-weight:600;border-radius:11px;padding:11px 20px;font-size:14px;display:inline-flex;align-items:center;gap:7px;cursor:pointer;border:none}
+.bp{background:linear-gradient(135deg,var(--p),#7c3aed);color:#fff;box-shadow:0 8px 28px rgba(168,85,247,.4)}
+.bg{background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.14)}
+section{padding:84px 0}
+.hero{padding:92px 0 70px;text-align:center;position:relative;background:radial-gradient(900px 480px at 50% -10%,rgba(168,85,247,.2),transparent),radial-gradient(700px 480px at 90% 30%,rgba(34,211,238,.12),transparent)}
+.pill{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#d8b9ff;background:rgba(168,85,247,.14);border:1px solid rgba(168,85,247,.3);padding:7px 15px;border-radius:99px;margin-bottom:26px}
+h1{font-family:'Space Grotesk';font-size:68px;line-height:1.03;font-weight:700;letter-spacing:-2.6px;max-width:880px;margin:0 auto}
+.grad{background:linear-gradient(115deg,#c084fc,#22d3ee 70%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.lead{font-size:19px;color:var(--mut);max-width:600px;margin:24px auto 0;line-height:1.55}
+.hcta{display:flex;gap:13px;justify-content:center;margin-top:34px}
+.mock{margin:56px auto 0;max-width:980px;border-radius:18px;border:1px solid rgba(255,255,255,.1);background:linear-gradient(180deg,#0d1120,#0a0d18);box-shadow:0 40px 120px rgba(0,0,0,.6);overflow:hidden}
+.mockbar{display:flex;gap:7px;padding:13px 16px;border-bottom:1px solid rgba(255,255,255,.06)}
+.mockbar i{width:11px;height:11px;border-radius:50%;display:block}
+.mbody{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:24px}
+.mcard{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px}
+.mcard .n{font-family:'Space Grotesk';font-size:26px;font-weight:700}
+.mcard .l{font-size:11px;color:var(--mut);margin-top:4px}
+.mchart{grid-column:1/-1;height:140px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);position:relative;overflow:hidden}
+.logos{display:flex;gap:38px;justify-content:center;align-items:center;flex-wrap:wrap;opacity:.6;font-weight:600;font-size:16px;color:var(--mut)}
+.eyebrow{text-align:center;font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--c)}
+.h2{font-family:'Space Grotesk';font-size:42px;font-weight:700;letter-spacing:-1.4px;text-align:center;margin:14px auto 12px;max-width:680px}
+.sub{text-align:center;color:var(--mut);font-size:16px;max-width:560px;margin:0 auto 50px;line-height:1.55}
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.fc{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:28px;transition:.25s}
+.fc:hover{border-color:rgba(168,85,247,.4);transform:translateY(-4px)}
+.fi{width:48px;height:48px;border-radius:13px;display:grid;place-items:center;font-size:23px;margin-bottom:16px}
+.fc h3{font-family:'Space Grotesk';font-size:19px;font-weight:600;margin-bottom:9px}
+.fc p{font-size:14px;color:var(--mut);line-height:1.6}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;counter-reset:s}
+.step{text-align:left;position:relative;padding-top:8px}
+.step .num{font-family:'Space Grotesk';font-size:15px;font-weight:700;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(34,211,238,.12);color:var(--c);border:1px solid rgba(34,211,238,.3);margin-bottom:14px}
+.step h4{font-family:'Space Grotesk';font-size:18px;margin-bottom:7px}
+.step p{font-size:14px;color:var(--mut);line-height:1.55}
+.band{background:linear-gradient(135deg,rgba(168,85,247,.1),rgba(34,211,238,.07));border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center}
+.stats .v{font-family:'Space Grotesk';font-size:46px;font-weight:700;letter-spacing:-1.5px}
+.stats .l{font-size:13px;color:var(--mut);margin-top:6px}
+.price{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch}
+.pc{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:30px;display:flex;flex-direction:column}
+.pc.feat2{border-color:rgba(168,85,247,.5);box-shadow:0 20px 60px rgba(168,85,247,.18);position:relative}
+.tagp{position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;letter-spacing:1px;background:linear-gradient(135deg,var(--p),#7c3aed);color:#fff;padding:5px 14px;border-radius:99px}
+.pc .pn{font-family:'Space Grotesk';font-weight:600;font-size:18px}
+.pc .pp{font-family:'Space Grotesk';font-size:44px;font-weight:700;margin:14px 0 4px;letter-spacing:-1.5px}
+.pc .pp span{font-size:15px;color:var(--mut);font-weight:400}
+.pc ul{list-style:none;margin:20px 0;display:flex;flex-direction:column;gap:11px}
+.pc li{font-size:14px;color:var(--mut);display:flex;gap:9px}.pc li b{color:var(--g)}
+.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.quote{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:24px}
+.quote p{font-size:14.5px;line-height:1.6;margin-bottom:16px}
+.who{display:flex;align-items:center;gap:11px}
+.av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--c))}
+.who .nm{font-size:13.5px;font-weight:600}.who .rl{font-size:12px;color:var(--mut)}
+.finalcta{text-align:center;background:radial-gradient(700px 400px at 50% 0%,rgba(168,85,247,.18),transparent)}
+footer{border-top:1px solid rgba(255,255,255,.06);padding:42px 0;color:var(--mut);font-size:13px}
+.fcols{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px}
+.fcols .col{display:flex;flex-direction:column;gap:9px}
+.stars{color:#fbbf24;font-size:14px}
+</style></head>
+<body>
+<nav><div class="wrap nav">
+  <div class="brand"><span class="bd"></span>Nebula</div>
+  <div class="nl"><a href="#features">Features</a><a href="#how">How it works</a><a href="#pricing">Pricing</a><a href="#proof">Customers</a></div>
+  <button class="btn bp">Start free →</button>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="pill">✦ Now in public beta · built by Goldie Labs</div>
+  <h1>SEO that runs itself, <span class="grad">while you build the business.</span></h1>
+  <p class="lead">Nebula deploys a team of AI agents that research, write, publish and rank — autonomously, on a heartbeat. You set the goal. They compound the traffic.</p>
+  <div class="hcta"><button class="btn bp">Start free — no card</button><button class="btn bg">▶ Watch 90s demo</button></div>
+  <div class="mock">
+    <div class="mockbar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
+    <div class="mbody">
+      <div class="mcard"><div class="n" style="color:var(--g)">847</div><div class="l">page-1 keywords</div></div>
+      <div class="mcard"><div class="n" style="color:var(--c)">1.84M</div><div class="l">organic visits</div></div>
+      <div class="mcard"><div class="n" style="color:var(--p)">312</div><div class="l">pages shipped</div></div>
+      <div class="mcard"><div class="n">+218%</div><div class="l">traffic YoY</div></div>
+      <div class="mchart"><svg width="100%" height="140" viewBox="0 0 900 140" preserveAspectRatio="none"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34d399" stop-opacity=".4"/><stop offset="1" stop-color="#34d399" stop-opacity="0"/></linearGradient></defs><path d="M0,130 C150,126 250,116 380,96 C520,74 620,52 740,30 C800,20 850,12 900,6 L900,140 L0,140Z" fill="url(#g)"/><path d="M0,130 C150,126 250,116 380,96 C520,74 620,52 740,30 C800,20 850,12 900,6" fill="none" stroke="#34d399" stroke-width="3"/></svg></div>
+    </div>
+  </div>
+</div></header>
+
+<section style="padding:50px 0"><div class="wrap"><div class="logos"><span>Northwind</span><span>Lumen AI</span><span>Forge Labs</span><span>Pinecrest</span><span>Vertex</span><span>Halcyon</span></div></div></section>
+
+<section id="features"><div class="wrap">
+  <div class="eyebrow">The platform</div>
+  <div class="h2">An entire SEO department, on autopilot</div>
+  <div class="sub">Every part of the workflow — handled by a specialist agent, reporting to you.</div>
+  <div class="feat">
+    <div class="fc"><div class="fi" style="background:rgba(52,211,153,.12)">🧠</div><h3>Strategy that thinks</h3><p>Maps your full topical universe, finds the gaps competitors missed, and builds the plan to own them.</p></div>
+    <div class="fc"><div class="fi" style="background:rgba(34,211,238,.12)">✍️</div><h3>Writes &amp; publishes</h3><p>Research → draft → optimize → publish on a heartbeat. New pages go live while you sleep.</p></div>
+    <div class="fc"><div class="fi" style="background:rgba(168,85,247,.12)">📊</div><h3>Proves the ROI</h3><p>Every agent reports rank movement, traffic and revenue to one dashboard. No guesswork.</p></div>
+    <div class="fc"><div class="fi" style="background:rgba(251,191,36,.12)">🔗</div><h3>Internal linking</h3><p>Automatically wires topic clusters together so authority flows to the pages that matter.</p></div>
+    <div class="fc"><div class="fi" style="background:rgba(244,114,182,.12)">🛡️</div><h3>Stays on-brand</h3><p>Learns your voice and guardrails. Approves nothing risky without your sign-off.</p></div>
+    <div class="fc"><div class="fi" style="background:rgba(96,165,250,.12)">💸</div><h3>Budget control</h3><p>Hard monthly caps per agent. When they hit the limit, they stop. No runaway spend.</p></div>
+  </div>
+</div></section>
+
+<section id="how"><div class="wrap">
+  <div class="eyebrow">How it works</div>
+  <div class="h2">Live in minutes, ranking in weeks</div>
+  <div class="sub"></div>
+  <div class="steps">
+    <div class="step"><div class="num">1</div><h4>Set the goal</h4><p>"Rank #1 for AI SEO and hit $1M ARR." Nebula turns it into a full strategy.</p></div>
+    <div class="step"><div class="num">2</div><h4>Approve &amp; fund</h4><p>Review the plan, set per-agent budgets, hit go. The team starts working immediately.</p></div>
+    <div class="step"><div class="num">3</div><h4>Watch it compound</h4><p>Wake up to new pages live, keywords climbing, and traffic compounding — all on one dashboard.</p></div>
+  </div>
+</div></section>
+
+<section class="band"><div class="wrap" style="padding:62px 0"><div class="stats">
+  <div><div class="v" style="color:var(--g)">+218%</div><div class="l">avg. traffic in 90 days</div></div>
+  <div><div class="v" style="color:var(--c)">$0.04</div><div class="l">per ranked article</div></div>
+  <div><div class="v" style="color:var(--p)">24/7</div><div class="l">always shipping</div></div>
+  <div><div class="v" style="color:#fbbf24">12,400</div><div class="l">teams on Nebula</div></div>
+</div></div></section>
+
+<section id="pricing"><div class="wrap">
+  <div class="eyebrow">Pricing</div>
+  <div class="h2">Start free. Scale when it&apos;s working.</div>
+  <div class="sub">No contracts. Cancel anytime. Every plan includes the full agent team.</div>
+  <div class="price">
+    <div class="pc"><div class="pn">Starter</div><div class="pp">$0<span>/mo</span></div><p style="font-size:13px;color:var(--mut)">For trying it out</p><ul><li><b>✓</b> 1 site · 25 pages/mo</li><li><b>✓</b> 3 agents</li><li><b>✓</b> Rank tracking</li><li><b>✓</b> Community support</li></ul><button class="btn bg" style="margin-top:auto">Get started</button></div>
+    <div class="pc feat2"><div class="tagp">MOST POPULAR</div><div class="pn">Growth</div><div class="pp">$149<span>/mo</span></div><p style="font-size:13px;color:var(--mut)">For serious traffic</p><ul><li><b>✓</b> 5 sites · 500 pages/mo</li><li><b>✓</b> Full 10-agent team</li><li><b>✓</b> Auto internal linking</li><li><b>✓</b> Priority publishing</li><li><b>✓</b> Slack + email reports</li></ul><button class="btn bp" style="margin-top:auto">Start free trial</button></div>
+    <div class="pc"><div class="pn">Scale</div><div class="pp">$599<span>/mo</span></div><p style="font-size:13px;color:var(--mut)">For agencies &amp; brands</p><ul><li><b>✓</b> Unlimited sites</li><li><b>✓</b> Custom agents</li><li><b>✓</b> White-label reports</li><li><b>✓</b> Dedicated strategist</li></ul><button class="btn bg" style="margin-top:auto">Talk to sales</button></div>
+  </div>
+</div></section>
+
+<section id="proof"><div class="wrap">
+  <div class="eyebrow">Customers</div>
+  <div class="h2">Teams that stopped doing SEO by hand</div>
+  <div class="sub"></div>
+  <div class="tg">
+    <div class="quote"><div class="stars">★★★★★</div><p>"We replaced a 4-person content team and 3× our organic traffic in a quarter. Nebula just… ships."</p><div class="who"><div class="av"></div><div><div class="nm">Maya Chen</div><div class="rl">Head of Growth, Lumen AI</div></div></div></div>
+    <div class="quote"><div class="stars">★★★★★</div><p>"It found 400 keywords we'd never have thought of and built pages for all of them overnight. Unreal."</p><div class="who"><div class="av"></div><div><div class="nm">Dev Patel</div><div class="rl">Founder, Forge Labs</div></div></div></div>
+    <div class="quote"><div class="stars">★★★★★</div><p>"The ROI dashboard alone sold my CFO. Every dollar maps to a ranking and a revenue number."</p><div class="who"><div class="av"></div><div><div class="nm">Sara Okafor</div><div class="rl">CMO, Vertex</div></div></div></div>
+  </div>
+</div></section>
+
+<section class="finalcta"><div class="wrap" style="padding:90px 0">
+  <div class="h2" style="font-size:50px">Your SEO team starts<br>working tonight.</div>
+  <div class="sub" style="margin-top:18px">Free to start. No card. Live in under five minutes.</div>
+  <div class="hcta"><button class="btn bp" style="font-size:15px;padding:14px 28px">Start free →</button><button class="btn bg" style="font-size:15px;padding:14px 28px">Book a demo</button></div>
+</div></section>
+
+<footer><div class="wrap"><div class="fcols">
+  <div class="col"><div class="brand" style="font-size:16px"><span class="bd"></span>Nebula</div><div style="margin-top:8px;max-width:240px">Autonomous SEO for teams who'd rather build. © 2026 Goldie Labs.</div></div>
+  <div class="col"><b style="color:#fff">Product</b><a href="#features">Features</a><a href="#pricing">Pricing</a><a href="#">Changelog</a></div>
+  <div class="col"><b style="color:#fff">Company</b><a href="#">About</a><a href="#">Careers</a><a href="#">Blog</a></div>
+  <div class="col"><b style="color:#fff">Legal</b><a href="#">Privacy</a><a href="#">Terms</a></div>
+</div></div></footer>
+</body></html>

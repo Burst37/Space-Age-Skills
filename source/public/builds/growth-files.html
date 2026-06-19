@@ -1,0 +1,81 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The Growth Files</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#0c0a14;color:#ece8f5}
+.wrap{max-width:1140px;margin:0 auto;padding:0 30px}
+a{color:inherit;text-decoration:none}
+nav{border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:0;background:rgba(12,10,20,.8);backdrop-filter:blur(14px);z-index:20}
+.nav{display:flex;align-items:center;justify-content:space-between;height:70px}
+.logo{font-family:'Fraunces';font-weight:700;font-size:23px;letter-spacing:-.5px}
+.logo span{color:#c084fc}
+.nl{display:flex;gap:24px;font-size:14px;color:#a99fc4}
+.sub{border:1px solid rgba(192,132,252,.4);color:#d8b9ff;border-radius:99px;padding:9px 18px;font-size:13px;font-weight:600}
+.kicker{display:flex;gap:10px;align-items:center;font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#c084fc;margin:46px 0 22px}
+.kicker:before{content:"";width:26px;height:2px;background:#c084fc}
+.hero{display:grid;grid-template-columns:1.4fr 1fr;gap:30px;align-items:stretch;margin-bottom:20px}
+.feat{border-radius:22px;overflow:hidden;position:relative;min-height:380px;display:flex;flex-direction:column;justify-content:flex-end;padding:34px;
+  background:linear-gradient(180deg,rgba(12,10,20,0) 30%,rgba(12,10,20,.92)),linear-gradient(135deg,#7c3aed,#22d3ee)}
+.cat{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:rgba(255,255,255,.16);backdrop-filter:blur(4px);padding:5px 12px;border-radius:7px;margin-bottom:14px}
+.feat h2{font-family:'Fraunces';font-size:36px;font-weight:600;line-height:1.1;letter-spacing:-1px;max-width:520px}
+.feat .meta{margin-top:16px;font-size:13px;color:rgba(255,255,255,.8)}
+.side{display:flex;flex-direction:column;gap:18px}
+.scard{display:flex;gap:16px;align-items:flex-start;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:18px}
+.scard:last-child{border:none}
+.thumb{width:96px;height:72px;border-radius:12px;flex-shrink:0}
+.scard h3{font-family:'Fraunces';font-size:18px;font-weight:600;line-height:1.2;margin-bottom:7px}
+.scard .meta{font-size:12px;color:#a99fc4}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.acard{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);border-radius:18px;overflow:hidden;transition:.25s}
+.acard:hover{transform:translateY(-4px);border-color:rgba(192,132,252,.4)}
+.acard .img{height:160px}
+.acard .body{padding:20px}
+.acard h3{font-family:'Fraunces';font-size:20px;font-weight:600;line-height:1.2;margin:10px 0 9px}
+.acard p{font-size:13.5px;color:#a99fc4;line-height:1.55}
+.acard .meta{font-size:12px;color:#8c83a8;margin-top:14px;display:flex;align-items:center;gap:8px}
+.av{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#c084fc,#22d3ee)}
+.news{margin:64px 0;border-radius:24px;padding:46px;text-align:center;background:radial-gradient(500px 280px at 50% 0%,rgba(192,132,252,.16),transparent),rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08)}
+.news h2{font-family:'Fraunces';font-size:32px;font-weight:600;letter-spacing:-.5px}
+.news p{color:#a99fc4;font-size:15px;margin:12px 0 24px}
+.nf{display:flex;gap:10px;max-width:420px;margin:0 auto}
+.nf input{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:13px 16px;color:#fff;outline:none;font-family:inherit;font-size:14px}
+.nf button{border:none;border-radius:11px;padding:13px 22px;font-weight:600;background:linear-gradient(135deg,#c084fc,#7c3aed);color:#fff;cursor:pointer;font-size:14px}
+footer{border-top:1px solid rgba(255,255,255,.08);padding:34px 0;color:#8c83a8;font-size:13px;text-align:center}
+</style></head>
+<body>
+<nav><div class="wrap nav">
+  <div class="logo">The Growth <span>Files</span></div>
+  <div class="nl"><a>Strategy</a><a>AI &amp; SEO</a><a>Case Studies</a><a>Playbooks</a></div>
+  <div class="sub">Subscribe</div>
+</div></nav>
+<div class="wrap">
+  <div class="kicker">Featured this week</div>
+  <div class="hero">
+    <a class="feat">
+      <span class="cat">AI &amp; SEO</span>
+      <h2>We let 10 AI agents run our SEO for 90 days. Here&apos;s what happened.</h2>
+      <div class="meta">By Ogilvy · 12 min read · Jun 9, 2026</div>
+    </a>
+    <div class="side">
+      <a class="scard"><div class="thumb" style="background:linear-gradient(135deg,#34d399,#22d3ee)"></div><div><h3>The death of the keyword list</h3><div class="meta">Strategy · 6 min</div></div></a>
+      <a class="scard"><div class="thumb" style="background:linear-gradient(135deg,#fbbf24,#f472b6)"></div><div><h3>How topical authority actually compounds</h3><div class="meta">Playbooks · 8 min</div></div></a>
+      <a class="scard"><div class="thumb" style="background:linear-gradient(135deg,#a855f7,#22d3ee)"></div><div><h3>$0.04 per ranked article: the unit economics</h3><div class="meta">Case Studies · 5 min</div></div></a>
+      <a class="scard"><div class="thumb" style="background:linear-gradient(135deg,#60a5fa,#34d399)"></div><div><h3>Programmatic SEO without the spam</h3><div class="meta">Playbooks · 9 min</div></div></a>
+    </div>
+  </div>
+
+  <div class="kicker">Latest playbooks</div>
+  <div class="grid">
+    <a class="acard"><div class="img" style="background:linear-gradient(135deg,#7c3aed,#c084fc)"></div><div class="body"><span class="cat" style="background:rgba(192,132,252,.16);color:#d8b9ff">Strategy</span><h3>The 7-agent SEO framework</h3><p>The exact org chart we use to turn one goal into thousands of ranking pages.</p><div class="meta"><span class="av"></span>Sloan · Jun 8</div></div></a>
+    <a class="acard"><div class="img" style="background:linear-gradient(135deg,#22d3ee,#34d399)"></div><div class="body"><span class="cat" style="background:rgba(34,211,238,.16);color:#67e8f9">AI &amp; SEO</span><h3>Writing for robots and humans</h3><p>How modern ranking rewards depth, structure, and genuine usefulness — and how agents nail all three.</p><div class="meta"><span class="av"></span>Hemingway · Jun 7</div></div></a>
+    <a class="acard"><div class="img" style="background:linear-gradient(135deg,#fbbf24,#f59e0b)"></div><div class="body"><span class="cat" style="background:rgba(251,191,36,.16);color:#fcd34d">Case Study</span><h3>0 → 1.84M visits in a year</h3><p>A full teardown of how Goldie Labs compounded organic traffic with an autonomous team.</p><div class="meta"><span class="av"></span>Drucker · Jun 5</div></div></a>
+  </div>
+
+  <div class="news">
+    <h2>Get the playbook every Friday</h2>
+    <p>One sharp, no-fluff growth essay. 12,400 founders &amp; marketers read it.</p>
+    <div class="nf"><input placeholder="you@company.com" /><button>Subscribe</button></div>
+  </div>
+</div>
+<footer>The Growth Files — published by Goldie Labs · © 2026</footer>
+</body></html>
