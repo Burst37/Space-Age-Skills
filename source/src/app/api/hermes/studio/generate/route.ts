@@ -77,7 +77,7 @@ export async function POST(req: Request) {
 
   // ───────────────────────── MINIMAX (via API) ─────────────────────────
   const tok = minimaxToken();
-  if (!tok) return NextResponse.json({ error: "MiniMax not connected. Run `hermes auth add minimax-oauth` in a terminal." }, { status: 400 });
+  if (!tok) return NextResponse.json({ error: "MiniMax not connected. Add MINIMAX_API_KEY to .env.local, or run `hermes auth add minimax-oauth` in a terminal." }, { status: 400 });
   const H = { Authorization: `Bearer ${tok}`, "Content-Type": "application/json" };
 
   try {

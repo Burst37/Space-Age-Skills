@@ -31,6 +31,9 @@ export function studioDirs() {
 export const PREVIEW_BUCKET = { image: "images", voice: "audio", video: "videos" } as const;
 
 export function minimaxToken(): string | null {
+  // 1. Env var — simplest path (add MINIMAX_API_KEY to .env.local on the VPS)
+  if (process.env.MINIMAX_API_KEY) return process.env.MINIMAX_API_KEY;
+  // 2. Hermes OAuth flow — `hermes auth add minimax-oauth` stores it here
   const prof = activeProfile();
   try {
     const auth = JSON.parse(readFileSync(path.join(HERMES_ROOT, "profiles", prof, "auth.json"), "utf8"));
