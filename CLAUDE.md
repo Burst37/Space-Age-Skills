@@ -16,6 +16,8 @@ Before touching ANY task, run this checklist in order:
 2. `karpathy-guidelines`
 3. `icm-workspace-architect`
 4. `sa-obsidian-vault-ops`
+5. `caveman` — active immediately, full mode, every response
+6. `superpowers` — spec-first methodology, load before any build task
 
 ### 3. Identify Project Type → Load Tier 2 Stack
 See SESSION_INIT.md in Google Drive for full routing matrix.

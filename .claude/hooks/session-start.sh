@@ -17,7 +17,7 @@ Before doing ANYTHING else, you must:
    - Search parentId = '1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU' for title = '${TODAY}.md'
    - Read it with mcp__Google_Drive__read_file_content
    - If not found, get the most recent file in that folder and read it
-2. Load Tier 0 skills: SpaceAge_Orchestrator_v2, karpathy-guidelines, icm-workspace-architect, sa-obsidian-vault-ops
+2. Load Tier 0 skills: SpaceAge_Orchestrator_v2, karpathy-guidelines, icm-workspace-architect, sa-obsidian-vault-ops, caveman (active immediately — full mode every response), superpowers (spec-first before any build)
 3. Identify project type and load Tier 2 stack from SESSION_INIT.md
 
 INFRA QUICK REF:
