@@ -31,31 +31,34 @@ INFRA QUICK REF:
 
 DO NOT skip this. DO NOT start any task before reading Drive memory."
 
-# Output JSON with additionalContext — must be first stdout so Claude sees it immediately
+# Output JSON first — before npm install or anything that can block
 printf '%s' "{\"hookSpecificOutput\": {\"hookEventName\": \"SessionStart\", \"additionalContext\": $(printf '%s' "$CONTEXT" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))'), \"reloadSkills\": true}}"
 
-# Inject infra env vars
-cat >> "$CLAUDE_ENV_FILE" << 'EOF'
+# Now run background tasks after context is emitted
+(
+  # Install npm dependencies (cached after first run)
+  cd "$CLAUDE_PROJECT_DIR"
+  npm install --silent 2>/dev/null
+
+  # Sync all skills from repo into ~/.claude/skills/
+  SKILLS_SRC="$CLAUDE_PROJECT_DIR/.claude/skills"
+  SKILLS_DST="$HOME/.claude/skills"
+
+  if [ -d "$SKILLS_SRC" ]; then
+    mkdir -p "$SKILLS_DST"
+    for skill_dir in "$SKILLS_SRC"/*/; do
+      skill_name=$(basename "$skill_dir")
+      rm -rf "$SKILLS_DST/$skill_name"
+      cp -r "$skill_dir" "$SKILLS_DST/$skill_name"
+    done
+  fi
+
+  # Inject infra env vars
+  cat >> "$CLAUDE_ENV_FILE" << 'EOF'
 export SA_SESSION_MEMORY_FOLDER="1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU"
 export SA_SKILLS_DRIVE_FOLDER="1XWYm8AhG83vMn1p3RpM1UAkmiKcsnoC9"
 export SA_VPS_HOST="146.190.78.120"
 export SA_GITHUB_USER="Burst37"
 export SA_SKILLS_REPO="Burst37/Space-Age-Skills"
 EOF
-
-# Sync skills (after context emit — non-blocking for Claude)
-SKILLS_SRC="$CLAUDE_PROJECT_DIR/.claude/skills"
-SKILLS_DST="$HOME/.claude/skills"
-
-if [ -d "$SKILLS_SRC" ]; then
-  mkdir -p "$SKILLS_DST"
-  for skill_dir in "$SKILLS_SRC"/*/; do
-    skill_name=$(basename "$skill_dir")
-    rm -rf "$SKILLS_DST/$skill_name"
-    cp -r "$skill_dir" "$SKILLS_DST/$skill_name"
-  done
-fi
-
-# npm install last — slow on cold cache, runs after context already injected
-cd "$CLAUDE_PROJECT_DIR"
-npm install --silent 2>/dev/null || true
+) &
