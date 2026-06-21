@@ -20,6 +20,7 @@ if [ -d "$SKILLS_SRC" ]; then
   mkdir -p "$SKILLS_DST"
   for skill_dir in "$SKILLS_SRC"/*/; do
     skill_name=$(basename "$skill_dir")
+    rm -rf "$SKILLS_DST/$skill_name"
     cp -r "$skill_dir" "$SKILLS_DST/$skill_name"
   done
 fi

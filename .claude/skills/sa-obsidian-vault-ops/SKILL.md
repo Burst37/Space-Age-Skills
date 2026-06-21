@@ -16,7 +16,7 @@ The Obsidian vault lives on Mr. Black's Windows machine — not on the VPS. Goog
 
 At the start of every session, read the most recent memory note:
 
-1. Search for today's note: `title = '2026-06-21.md' and parentId = '1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU'`
+1. Search for today's note: `title = 'YYYY-MM-DD.md' and parentId = '1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU'` (substitute today's actual date)
 2. If found, read it with `mcp__Google_Drive__read_file_content`
 3. If not found, search for the most recent file in SESSION_MEMORY and read that
 
