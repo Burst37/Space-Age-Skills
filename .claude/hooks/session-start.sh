@@ -1,64 +1,121 @@
 #!/bin/bash
+# Space Age AI Solutions — Session Start Hook v2
+# Emits additionalContext FIRST (non-blocking), then syncs skills in background.
 set -euo pipefail
 
-# Only run in remote Claude Code sessions
 if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
   exit 0
 fi
 
-# Emit additionalContext JSON FIRST before any blocking operations
 TODAY=$(date +%Y-%m-%d)
+DOW=$(date +%A)
 
-CONTEXT="=== SPACE AGE SESSION INIT — $TODAY ===
+CONTEXT="╔══════════════════════════════════════════════════════════════╗
+║   SPACE AGE SESSION INIT v2 — ${TODAY} (${DOW})
+╚══════════════════════════════════════════════════════════════╝
 
-RULE #1: You are operating under the Space Age AI Solutions SESSION_INIT protocol.
-Before doing ANYTHING else, you must:
-1. Read today's session memory from Google Drive:
-   - Search parentId = '1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU' for title = '${TODAY}.md'
-   - Read it with mcp__Google_Drive__read_file_content
-   - If not found, get the most recent file in that folder and read it
-2. Load Tier 0 skills: SpaceAge_Orchestrator_v2, karpathy-guidelines, icm-workspace-architect, sa-obsidian-vault-ops, caveman (active immediately — full mode every response), superpowers (spec-first before any build)
-3. Identify project type and load Tier 2 stack from SESSION_INIT.md
+HARD GATE: Complete all 4 steps before responding to any user task.
 
-INFRA QUICK REF:
-- VPS: 146.190.78.120
-- Skills Repo: Burst37/Space-Age-Skills
-- Skills Drive: 1XWYm8AhG83vMn1p3RpM1UAkmiKcsnoC9
-- SESSION_MEMORY: 1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU
-- Vercel Team: team_b7Ju9bt8GNoiLnMor6ieC8J7
-- Model: claude-opus-4-8 for heavy tasks
-- Obsidian vault is on Windows machine — NOT on VPS. Drive is the memory layer.
+━━━ STEP 1 — READ DRIVE MEMORY ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  mcp__Google_Drive__search_files:
+    query: title = '${TODAY}.md' and '1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU' in parents
+  → read file with mcp__Google_Drive__read_file_content
+  → if not found: get most recent file in folder, read that
+  → load all context, pending tasks, key IDs from it
 
-DO NOT skip this. DO NOT start any task before reading Drive memory."
+━━━ STEP 2 — TIER 0 SKILLS (ALL active, every session) ━━━━━━━
+  caveman              → ACTIVE NOW. Full mode. Every response. No revert.
+  superpowers          → Spec-first. No code without approved spec.
+  SpaceAge_Orchestrator_v2 → Routing brain. Consult before any task.
+  karpathy-guidelines  → Code quality baseline on all output.
+  icm-workspace-architect → Workspace structure decisions.
+  sa-obsidian-vault-ops → Drive memory ops (read start, write end).
 
-# Output JSON first — before npm install or anything that can block
+━━━ STEP 3 — ROUTE TO TIER 2 STACK ━━━━━━━━━━━━━━━━━━━━━━━━━━
+  bot/scraper/loyalty   → LoyaltyBot (VPS 146.190.78.120 + pm2 + Node.js)
+  website/Vercel/Next   → Web (mcp__Vercel__* + Next.js + Tailwind)
+  image/logo/design     → Design (mcp__Adobe_for_creativity__* + mcp__Figma__*)
+  data/pipeline/base    → Data (mcp__Airtable__* + mcp__Coupler_io__*)
+  VPS/server/deploy     → Infra (SSH + pm2 + nginx)
+  Obsidian/vault/notes  → Obsidian stack (obsidian-skills + obsidian-cli + obsidian-markdown)
+  doc/slides/report     → Docs (quarkdown + mcp__Gamma__*)
+  social/web search     → Reach (agent-reach MCP)
+  agent/parallel/plan   → Agents (superpowers subagent-driven-development + cavecrew)
+
+━━━ STEP 4 — CONFIRM CHECKLIST ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  [ ] Drive memory read (or confirmed empty)
+  [ ] caveman ACTIVE full mode
+  [ ] superpowers loaded
+  [ ] SpaceAge_Orchestrator_v2 routing done
+  [ ] Model routing: claude-opus-4-8 heavy / claude-haiku-4-5-20251001 light
+  [ ] MCP > CLI > SDK > raw key priority confirmed
+
+━━━ AUTO-TRIGGER RULES (always on, no invocation needed) ━━━━━
+  git commit           → caveman-commit skill
+  PR review            → caveman-review skill
+  bug / test failure   → systematic-debugging BEFORE any fix
+  claiming done / PR   → verification-before-completion FIRST
+  multi-task plan      → subagent-driven-development
+  user pastes URL      → defuddle (not WebFetch), unless .md
+  spawning subagents   → cavecrew for correct type
+
+━━━ INFRA QUICK REF ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  VPS:            146.190.78.120
+  GitHub:         Burst37
+  Skills Repo:    Burst37/Space-Age-Skills
+  Skills Drive:   1XWYm8AhG83vMn1p3RpM1UAkmiKcsnoC9
+  SESSION_MEMORY: 1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU
+  Vercel Team:    team_b7Ju9bt8GNoiLnMor6ieC8J7
+  Agent Dashboard:http://146.190.78.120:3000
+  API Proxy:      http://146.190.78.120:3400
+  Model heavy:    claude-opus-4-8
+  Model light:    claude-haiku-4-5-20251001
+  Obsidian vault: Windows machine ONLY — NOT on VPS. Drive is memory.
+
+━━━ ANTI-FORGET RULES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  CapSolver key → check Drive LoyaltyBot note BEFORE asking user
+  Vercel        → MCP or CLI, never ask for token
+  GitHub        → mcp__github__* or gh CLI
+  Credentials   → log NAMES only in Drive. NEVER values.
+  caveman       → never self-revert. Off only on: 'stop caveman' / 'normal mode'
+  LoyaltyBot    → standalone. ZERO connection to website pipeline.
+  Encore logo   → upper left chest in ALL generated images.
+  Skill naming  → lowercase-hyphen only. NO SA- prefix.
+
+ONLY AFTER ALL 4 STEPS: respond to user task."
+
+# ── EMIT JSON — must be first and only stdout ─────────────────────────────────
 printf '%s' "{\"hookSpecificOutput\": {\"hookEventName\": \"SessionStart\", \"additionalContext\": $(printf '%s' "$CONTEXT" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))'), \"reloadSkills\": true}}"
 
-# Now run background tasks after context is emitted
+# ── BACKGROUND TASKS ──────────────────────────────────────────────────────────
 (
-  # Install npm dependencies (cached after first run)
-  cd "$CLAUDE_PROJECT_DIR"
-  npm install --silent 2>/dev/null
-
-  # Sync all skills from repo into ~/.claude/skills/
   SKILLS_SRC="$CLAUDE_PROJECT_DIR/.claude/skills"
   SKILLS_DST="$HOME/.claude/skills"
 
   if [ -d "$SKILLS_SRC" ]; then
     mkdir -p "$SKILLS_DST"
     for skill_dir in "$SKILLS_SRC"/*/; do
+      [ -d "$skill_dir" ] || continue
       skill_name=$(basename "$skill_dir")
-      rm -rf "$SKILLS_DST/$skill_name"
+      rm -rf "${SKILLS_DST:?}/$skill_name"
       cp -r "$skill_dir" "$SKILLS_DST/$skill_name"
     done
   fi
 
-  # Inject infra env vars
-  cat >> "$CLAUDE_ENV_FILE" << 'EOF'
+  if [ -n "${CLAUDE_ENV_FILE:-}" ]; then
+    cat >> "$CLAUDE_ENV_FILE" << 'ENVEOF'
 export SA_SESSION_MEMORY_FOLDER="1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU"
 export SA_SKILLS_DRIVE_FOLDER="1XWYm8AhG83vMn1p3RpM1UAkmiKcsnoC9"
 export SA_VPS_HOST="146.190.78.120"
 export SA_GITHUB_USER="Burst37"
 export SA_SKILLS_REPO="Burst37/Space-Age-Skills"
-EOF
+export SA_VERCEL_TEAM="team_b7Ju9bt8GNoiLnMor6ieC8J7"
+export SA_MODEL_HEAVY="claude-opus-4-8"
+export SA_MODEL_LIGHT="claude-haiku-4-5-20251001"
+ENVEOF
+  fi
+
+  if [ -f "$CLAUDE_PROJECT_DIR/package.json" ]; then
+    npm install --silent 2>/dev/null || true
+  fi
 ) &
