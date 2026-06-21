@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Space Age AI — Session Init Reference v2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #fff;
+    color: #111;
+    font-size: 11pt;
+    line-height: 1.55;
+    padding: 48px 56px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 22pt;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    border-bottom: 3px solid #111;
+    padding-bottom: 10px;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 10pt;
+    color: #555;
+    margin-bottom: 28px;
+  }
+
+  h2 {
+    font-size: 13pt;
+    font-weight: 700;
+    margin-top: 28px;
+    margin-bottom: 8px;
+    padding: 6px 10px;
+    background: #111;
+    color: #fff;
+    letter-spacing: 0.3px;
+  }
+
+  h3 {
+    font-size: 11pt;
+    font-weight: 700;
+    margin-top: 16px;
+    margin-bottom: 6px;
+    border-left: 3px solid #111;
+    padding-left: 8px;
+  }
+
+  p { margin-bottom: 8px; }
+
+  code, .mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5pt;
+    background: #f4f4f4;
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5pt;
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 12px 14px;
+    margin: 8px 0 14px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.5;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0 16px;
+    font-size: 9.5pt;
+  }
+
+  th {
+    background: #111;
+    color: #fff;
+    padding: 6px 10px;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  td {
+    padding: 5px 10px;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: top;
+  }
+
+  tr:nth-child(even) td { background: #f9f9f9; }
+
+  .checklist {
+    list-style: none;
+    padding: 0;
+    margin: 6px 0 14px;
+  }
+
+  .checklist li {
+    padding: 3px 0 3px 22px;
+    position: relative;
+  }
+
+  .checklist li::before {
+    content: '☐';
+    position: absolute;
+    left: 0;
+    font-size: 11pt;
+  }
+
+  .rule-box {
+    border: 2px solid #111;
+    border-radius: 4px;
+    padding: 12px 14px;
+    margin: 10px 0 16px;
+    background: #fafafa;
+  }
+
+  .rule-box .rule-title {
+    font-weight: 700;
+    font-size: 10pt;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+
+  .tag {
+    display: inline-block;
+    background: #111;
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8pt;
+    padding: 1px 6px;
+    border-radius: 2px;
+    margin: 1px 2px;
+  }
+
+  .section-intro {
+    font-size: 10pt;
+    color: #444;
+    margin-bottom: 14px;
+    border-left: 2px solid #ccc;
+    padding-left: 10px;
+  }
+
+  .page-break { page-break-before: always; }
+
+  .footer {
+    margin-top: 40px;
+    padding-top: 12px;
+    border-top: 1px solid #ccc;
+    font-size: 9pt;
+    color: #888;
+    text-align: center;
+  }
+
+  @media print {
+    body { padding: 24px 32px; }
+    h2 { break-before: avoid; }
+    pre, table { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Space Age AI Solutions<br>Session Init Reference</h1>
+<div class="subtitle">Version 2 &nbsp;·&nbsp; Hook file: <code>.claude/hooks/session-start.sh</code> &nbsp;·&nbsp; Repo: <code>Burst37/Space-Age-Skills</code> &nbsp;·&nbsp; Built 2026-06-21</div>
+
+<!-- ─── WHAT THIS IS ──────────────────────────────────────── -->
+<h2>What This Document Is</h2>
+<p class="section-intro">
+  This is the permanent offline reference for the Space Age AI Solutions Claude Code session initialization system. Keep it so you can rebuild the hook from scratch if Claude ever loses context or the repo is corrupted.
+</p>
+<p>
+  Every Claude Code session (web, desktop, GitHub Action) fires a <strong>SessionStart hook</strong> automatically. That hook does two things: (1) immediately injects a structured <code>additionalContext</code> string that tells Claude exactly what to do before answering any task, and (2) syncs all skills from the repo into <code>~/.claude/skills/</code> in the background so they're available as slash commands.
+</p>
+<p>
+  The hook was rebuilt from scratch during the session of 2026-06-21 after the v1 hook was producing a generic/stripped context. The v2 upgrade added the full 4-step hard gate, the tier 2 routing matrix, auto-trigger rules, and a more complete infra quick reference. It also fixed background task safety (guards against empty <code>SKILLS_DST</code>, conditional npm install, safe <code>CLAUDE_ENV_FILE</code> check).
+</p>
+
+<!-- ─── HOW THE HOOK WORKS ───────────────────────────────── -->
+<h2>How the Hook Works (Mechanics)</h2>
+
+<h3>Hook Location &amp; Format</h3>
+<p>The hook lives at <code>.claude/hooks/session-start.sh</code> in the repo root and is registered in <code>.claude/settings.json</code> under the <code>hooks.SessionStart</code> array. Claude Code executes it on session open.</p>
+
+<h3>Two-Phase Execution</h3>
+<table>
+  <tr><th>Phase</th><th>What happens</th><th>Why</th></tr>
+  <tr>
+    <td>Phase 1<br><em>(blocking)</em></td>
+    <td>Prints a single JSON object to stdout containing <code>hookSpecificOutput.additionalContext</code> and <code>hookSpecificOutput.reloadSkills: true</code></td>
+    <td>Claude reads this before the conversation starts — it becomes the system-level context that governs the whole session</td>
+  </tr>
+  <tr>
+    <td>Phase 2<br><em>(background &amp;)</em></td>
+    <td>Syncs <code>.claude/skills/*</code> → <code>~/.claude/skills/</code>, appends env vars to <code>CLAUDE_ENV_FILE</code>, runs <code>npm install</code> if <code>package.json</code> exists</td>
+    <td>Non-blocking — session starts instantly, skills and env vars are ready within seconds</td>
+  </tr>
+</table>
+
+<h3>JSON Output Format</h3>
+<pre>
+{
+  "hookSpecificOutput": {
+    "hookEventName": "SessionStart",
+    "additionalContext": "... the full 4-step context string ...",
+    "reloadSkills": true
+  }
+}
+</pre>
+<p><code>reloadSkills: true</code> tells Claude Code to re-scan <code>~/.claude/skills/</code> and make all SKILL.md files available as slash commands immediately.</p>
+
+<!-- ─── THE 4-STEP HARD GATE ─────────────────────────────── -->
+<h2>The 4-Step Hard Gate (injected into every session)</h2>
+<p class="section-intro">
+  This is the exact content injected as <code>additionalContext</code>. Claude is blocked from responding to any user task until all 4 steps are confirmed complete.
+</p>
+
+<h3>Step 1 — Read Drive Memory</h3>
+<div class="rule-box">
+  <div class="rule-title">Tool call sequence</div>
+  <pre>mcp__Google_Drive__search_files:
+  query: title = 'YYYY-MM-DD.md' and '1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU' in parents
+
+→ read file with mcp__Google_Drive__read_file_content
+→ if not found: get most recent file in folder, read that
+→ load all context, pending tasks, key IDs from it</pre>
+  <p>The <strong>SESSION_MEMORY folder</strong> (<code>1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU</code>) is the primary memory layer — Google Drive, not the Obsidian vault (which lives on the Windows machine only, not accessible from VPS or web sessions).</p>
+</div>
+
+<h3>Step 2 — Tier 0 Skills (all active, every session, no exceptions)</h3>
+<table>
+  <tr><th>Skill</th><th>Mode</th><th>What it does</th></tr>
+  <tr><td><code>caveman</code></td><td>ACTIVE immediately</td><td>~75% token reduction. Terse responses. Never self-reverts. Only off on "stop caveman" or "normal mode"</td></tr>
+  <tr><td><code>superpowers</code></td><td>Spec-first</td><td>No code written without an approved spec. Enforces subagent-driven-development for multi-task plans</td></tr>
+  <tr><td><code>SpaceAge_Orchestrator_v2</code></td><td>Routing brain</td><td>5-tier capability registry. Consulted before any task. Silent execution — no manual invocation required</td></tr>
+  <tr><td><code>karpathy-guidelines</code></td><td>Code quality</td><td>Baseline code quality rules applied to all output</td></tr>
+  <tr><td><code>icm-workspace-architect</code></td><td>Structure</td><td>Workspace/directory structure decisions</td></tr>
+  <tr><td><code>sa-obsidian-vault-ops</code></td><td>Memory ops</td><td>Drive read at session start, Drive write at session end</td></tr>
+</table>
+
+<h3>Step 3 — Tier 2 Stack Routing</h3>
+<table>
+  <tr><th>Signal in user request</th><th>Tier 2 stack loaded</th></tr>
+  <tr><td>bot / scraper / loyalty</td><td>LoyaltyBot — VPS 146.190.78.120 + pm2 + Node.js</td></tr>
+  <tr><td>website / Vercel / Next</td><td>Web — <code>mcp__Vercel__*</code> + Next.js + Tailwind</td></tr>
+  <tr><td>image / logo / design</td><td>Design — <code>mcp__Adobe_for_creativity__*</code> + <code>mcp__Figma__*</code></td></tr>
+  <tr><td>data / pipeline / airtable</td><td>Data — <code>mcp__Airtable__*</code> + <code>mcp__Coupler_io__*</code></td></tr>
+  <tr><td>VPS / server / deploy</td><td>Infra — SSH + pm2 + nginx</td></tr>
+  <tr><td>Obsidian / vault / notes</td><td>Obsidian — obsidian-skills + obsidian-cli + obsidian-markdown</td></tr>
+  <tr><td>doc / slides / report</td><td>Docs — quarkdown + <code>mcp__Gamma__*</code></td></tr>
+  <tr><td>social / web search</td><td>Reach — agent-reach MCP</td></tr>
+  <tr><td>agent / parallel / plan</td><td>Agents — superpowers subagent-driven-development + cavecrew</td></tr>
+</table>
+
+<h3>Step 4 — Confirm Checklist</h3>
+<ul class="checklist">
+  <li>Drive memory read (or confirmed empty)</li>
+  <li>caveman ACTIVE full mode</li>
+  <li>superpowers loaded</li>
+  <li>SpaceAge_Orchestrator_v2 routing done</li>
+  <li>Model routing: <code>claude-opus-4-8</code> heavy / <code>claude-haiku-4-5-20251001</code> light</li>
+  <li>MCP &gt; CLI &gt; SDK &gt; raw key priority confirmed</li>
+</ul>
+
+<!-- ─── AUTO-TRIGGER RULES ───────────────────────────────── -->
+<h2>Auto-Trigger Rules (always on, no invocation needed)</h2>
+<table>
+  <tr><th>Event</th><th>Auto-trigger</th></tr>
+  <tr><td>git commit</td><td>caveman-commit skill</td></tr>
+  <tr><td>PR review</td><td>caveman-review skill</td></tr>
+  <tr><td>bug / test failure</td><td>systematic-debugging BEFORE any fix</td></tr>
+  <tr><td>claiming done / PR ready</td><td>verification-before-completion FIRST</td></tr>
+  <tr><td>multi-task plan</td><td>subagent-driven-development</td></tr>
+  <tr><td>user pastes URL</td><td>defuddle (not WebFetch), unless URL ends in .md</td></tr>
+  <tr><td>spawning subagents</td><td>cavecrew for correct agent type</td></tr>
+</table>
+
+<!-- ─── INFRA QUICK REF ──────────────────────────────────── -->
+<h2>Infra Quick Reference</h2>
+<table>
+  <tr><th>Key</th><th>Value</th></tr>
+  <tr><td>VPS</td><td><code>146.190.78.120</code></td></tr>
+  <tr><td>GitHub user</td><td><code>Burst37</code></td></tr>
+  <tr><td>Skills Repo</td><td><code>Burst37/Space-Age-Skills</code></td></tr>
+  <tr><td>Skills Drive folder</td><td><code>1XWYm8AhG83vMn1p3RpM1UAkmiKcsnoC9</code></td></tr>
+  <tr><td>Session Memory folder</td><td><code>1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU</code></td></tr>
+  <tr><td>Vercel Team</td><td><code>team_b7Ju9bt8GNoiLnMor6ieC8J7</code></td></tr>
+  <tr><td>Agent Dashboard</td><td><code>http://146.190.78.120:3000</code></td></tr>
+  <tr><td>API Proxy</td><td><code>http://146.190.78.120:3400</code></td></tr>
+  <tr><td>Model (heavy tasks)</td><td><code>claude-opus-4-8</code></td></tr>
+  <tr><td>Model (fast/cheap)</td><td><code>claude-haiku-4-5-20251001</code></td></tr>
+  <tr><td>Obsidian vault location</td><td>Windows machine ONLY — NOT on VPS. Drive is the memory layer.</td></tr>
+</table>
+
+<!-- ─── ANTI-FORGET RULES ───────────────────────────────── -->
+<h2>Anti-Forget Rules</h2>
+<table>
+  <tr><th>Rule</th><th>Detail</th></tr>
+  <tr><td>CapSolver key</td><td>Check Drive LoyaltyBot note BEFORE asking user</td></tr>
+  <tr><td>Vercel</td><td>Use MCP or CLI. Never ask for token.</td></tr>
+  <tr><td>GitHub</td><td>Use <code>mcp__github__*</code> or <code>gh</code> CLI</td></tr>
+  <tr><td>Credentials</td><td>Log NAMES only in Drive notes. NEVER values.</td></tr>
+  <tr><td>caveman</td><td>Never self-revert. Only off on: "stop caveman" / "normal mode"</td></tr>
+  <tr><td>LoyaltyBot</td><td>Standalone product. ZERO connection to website pipeline. Do not conflate.</td></tr>
+  <tr><td>Encore logo</td><td>Upper left chest in ALL generated images</td></tr>
+  <tr><td>Skill naming</td><td>lowercase-hyphen only. NO <code>SA-</code> prefix.</td></tr>
+</table>
+
+<!-- ─── ENV VARS ─────────────────────────────────────────── -->
+<h2>Env Vars Written Each Session</h2>
+<p>These are appended to <code>CLAUDE_ENV_FILE</code> in the background phase so they're available in any shell during the session:</p>
+<pre>
+SA_SESSION_MEMORY_FOLDER="1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU"
+SA_SKILLS_DRIVE_FOLDER="1XWYm8AhG83vMn1p3RpM1UAkmiKcsnoC9"
+SA_VPS_HOST="146.190.78.120"
+SA_GITHUB_USER="Burst37"
+SA_SKILLS_REPO="Burst37/Space-Age-Skills"
+SA_VERCEL_TEAM="team_b7Ju9bt8GNoiLnMor6ieC8J7"
+SA_MODEL_HEAVY="claude-opus-4-8"
+SA_MODEL_LIGHT="claude-haiku-4-5-20251001"
+</pre>
+
+<!-- ─── REBUILD INSTRUCTIONS ─────────────────────────────── -->
+<div class="page-break"></div>
+<h2>How to Rebuild From Scratch</h2>
+<p class="section-intro">
+  If the repo is lost, the hook is corrupted, or Claude starts a session without any context — use these steps to restore everything.
+</p>
+
+<h3>1. Restore the hook file</h3>
+<p>Create <code>.claude/hooks/session-start.sh</code> from the full source below and <code>chmod +x</code> it.</p>
+
+<h3>2. Register it in settings</h3>
+<p>In <code>.claude/settings.json</code>, ensure the hooks block includes:</p>
+<pre>
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/session-start.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
+</pre>
+
+<h3>3. Rebuild the skills</h3>
+<p>Each skill is a folder in <code>.claude/skills/&lt;name&gt;/SKILL.md</code>. The 36 skills currently installed are:</p>
+<pre>
+SpaceAge_Orchestrator_v2    three-brain                 caveman
+superpowers                 karpathy-guidelines (TBD)   icm-workspace-architect (TBD)
+sa-obsidian-vault-ops       spaceage-savo-creative-director-os
+video-intelligence          website-intelligence        design-taste-frontend
+design-motion-principles    universal-build-handoff     sa-stop-slop
+sa-anti-slop-writer         sa-voice-agent-builder      sa-swarm-orchestrator
+sa-local-seo-geo            sa-graphify-operator        sa-pattern-genome
+sa-hero-genome              sa-gsap-motion-library      sa-ecommerce-genome
+sa-qa-production            carousel-skill              motion-graphics-skill
+static-visual-skill         video-editor-skill          gpt-image-prompt-skill
+quarkdown                   defuddle                    json-canvas
+agent-reach                 session-start-hook          obsidian-skills
+obsidian-cli                obsidian-markdown
+</pre>
+
+<h3>4. Restore the memory layer</h3>
+<p>The <strong>Google Drive folder</strong> <code>1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU</code> holds daily session notes in <code>YYYY-MM-DD.md</code> format. These are the long-term memory. The Drive folder ID never changes even if files are renamed.</p>
+
+<h3>5. Push and open a new session</h3>
+<p>Commit the restored hook + skills to branch <code>main</code> (or the active dev branch), push to <code>Burst37/Space-Age-Skills</code>, and start a new Claude Code session. The hook fires automatically and all 4 steps run before any task.</p>
+
+<!-- ─── FULL HOOK SOURCE ──────────────────────────────────── -->
+<h2>Full Hook Source (session-start.sh v2)</h2>
+<pre>
+#!/bin/bash
+# Space Age AI Solutions — Session Start Hook v2
+# Emits additionalContext FIRST (non-blocking), then syncs skills in background.
+set -euo pipefail
+
+if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
+  exit 0
+fi
+
+TODAY=$(date +%Y-%m-%d)
+DOW=$(date +%A)
+
+CONTEXT="╔══════════════════════════════════════════════════════════════╗
+║   SPACE AGE SESSION INIT v2 — ${TODAY} (${DOW})
+╚══════════════════════════════════════════════════════════════╝
+
+HARD GATE: Complete all 4 steps before responding to any user task.
+
+━━━ STEP 1 — READ DRIVE MEMORY ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  mcp__Google_Drive__search_files:
+    query: title = '${TODAY}.md' and '1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU' in parents
+  → read file with mcp__Google_Drive__read_file_content
+  → if not found: get most recent file in folder, read that
+  → load all context, pending tasks, key IDs from it
+
+━━━ STEP 2 — TIER 0 SKILLS (ALL active, every session) ━━━━━━━
+  caveman              → ACTIVE NOW. Full mode. Every response. No revert.
+  superpowers          → Spec-first. No code without approved spec.
+  SpaceAge_Orchestrator_v2 → Routing brain. Consult before any task.
+  karpathy-guidelines  → Code quality baseline on all output.
+  icm-workspace-architect → Workspace structure decisions.
+  sa-obsidian-vault-ops → Drive memory ops (read start, write end).
+
+━━━ STEP 3 — ROUTE TO TIER 2 STACK ━━━━━━━━━━━━━━━━━━━━━━━━━━
+  bot/scraper/loyalty   → LoyaltyBot (VPS 146.190.78.120 + pm2 + Node.js)
+  website/Vercel/Next   → Web (mcp__Vercel__* + Next.js + Tailwind)
+  image/logo/design     → Design (mcp__Adobe_for_creativity__* + mcp__Figma__*)
+  data/pipeline/base    → Data (mcp__Airtable__* + mcp__Coupler_io__*)
+  VPS/server/deploy     → Infra (SSH + pm2 + nginx)
+  Obsidian/vault/notes  → Obsidian stack (obsidian-skills + obsidian-cli + obsidian-markdown)
+  doc/slides/report     → Docs (quarkdown + mcp__Gamma__*)
+  social/web search     → Reach (agent-reach MCP)
+  agent/parallel/plan   → Agents (superpowers subagent-driven-development + cavecrew)
+
+━━━ STEP 4 — CONFIRM CHECKLIST ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  [ ] Drive memory read (or confirmed empty)
+  [ ] caveman ACTIVE full mode
+  [ ] superpowers loaded
+  [ ] SpaceAge_Orchestrator_v2 routing done
+  [ ] Model routing: claude-opus-4-8 heavy / claude-haiku-4-5-20251001 light
+  [ ] MCP > CLI > SDK > raw key priority confirmed
+
+━━━ AUTO-TRIGGER RULES (always on, no invocation needed) ━━━━━
+  git commit           → caveman-commit skill
+  PR review            → caveman-review skill
+  bug / test failure   → systematic-debugging BEFORE any fix
+  claiming done / PR   → verification-before-completion FIRST
+  multi-task plan      → subagent-driven-development
+  user pastes URL      → defuddle (not WebFetch), unless .md
+  spawning subagents   → cavecrew for correct type
+
+━━━ INFRA QUICK REF ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  VPS:            146.190.78.120
+  GitHub:         Burst37
+  Skills Repo:    Burst37/Space-Age-Skills
+  Skills Drive:   1XWYm8AhG83vMn1p3RpM1UAkmiKcsnoC9
+  SESSION_MEMORY: 1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU
+  Vercel Team:    team_b7Ju9bt8GNoiLnMor6ieC8J7
+  Agent Dashboard:http://146.190.78.120:3000
+  API Proxy:      http://146.190.78.120:3400
+  Model heavy:    claude-opus-4-8
+  Model light:    claude-haiku-4-5-20251001
+  Obsidian vault: Windows machine ONLY — NOT on VPS. Drive is memory.
+
+━━━ ANTI-FORGET RULES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  CapSolver key → check Drive LoyaltyBot note BEFORE asking user
+  Vercel        → MCP or CLI, never ask for token
+  GitHub        → mcp__github__* or gh CLI
+  Credentials   → log NAMES only in Drive. NEVER values.
+  caveman       → never self-revert. Off only on: 'stop caveman' / 'normal mode'
+  LoyaltyBot    → standalone. ZERO connection to website pipeline.
+  Encore logo   → upper left chest in ALL generated images.
+  Skill naming  → lowercase-hyphen only. NO SA- prefix.
+
+ONLY AFTER ALL 4 STEPS: respond to user task."
+
+# ── EMIT JSON — must be first and only stdout ─────────────────────────────────
+printf '%s' "{\"hookSpecificOutput\": {\"hookEventName\": \"SessionStart\", \"additionalContext\": $(printf '%s' "$CONTEXT" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))'), \"reloadSkills\": true}}"
+
+# ── BACKGROUND TASKS ──────────────────────────────────────────────────────────
+(
+  SKILLS_SRC="$CLAUDE_PROJECT_DIR/.claude/skills"
+  SKILLS_DST="$HOME/.claude/skills"
+
+  if [ -d "$SKILLS_SRC" ]; then
+    mkdir -p "$SKILLS_DST"
+    for skill_dir in "$SKILLS_SRC"/*/; do
+      [ -d "$skill_dir" ] || continue
+      skill_name=$(basename "$skill_dir")
+      rm -rf "${SKILLS_DST:?}/$skill_name"
+      cp -r "$skill_dir" "$SKILLS_DST/$skill_name"
+    done
+  fi
+
+  if [ -n "${CLAUDE_ENV_FILE:-}" ]; then
+    cat >> "$CLAUDE_ENV_FILE" &lt;&lt; 'ENVEOF'
+export SA_SESSION_MEMORY_FOLDER="1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU"
+export SA_SKILLS_DRIVE_FOLDER="1XWYm8AhG83vMn1p3RpM1UAkmiKcsnoC9"
+export SA_VPS_HOST="146.190.78.120"
+export SA_GITHUB_USER="Burst37"
+export SA_SKILLS_REPO="Burst37/Space-Age-Skills"
+export SA_VERCEL_TEAM="team_b7Ju9bt8GNoiLnMor6ieC8J7"
+export SA_MODEL_HEAVY="claude-opus-4-8"
+export SA_MODEL_LIGHT="claude-haiku-4-5-20251001"
+ENVEOF
+  fi
+
+  if [ -f "$CLAUDE_PROJECT_DIR/package.json" ]; then
+    npm install --silent 2>/dev/null || true
+  fi
+) &amp;
+</pre>
+
+<div class="footer">
+  Space Age AI Solutions &nbsp;·&nbsp; Session Init Reference v2 &nbsp;·&nbsp; 2026-06-21 &nbsp;·&nbsp; <code>Burst37/Space-Age-Skills</code>
+</div>
+
+</body>
+</html>
