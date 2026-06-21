@@ -16,20 +16,24 @@ CONTEXT="╔══════════════════════�
 
 HARD GATE: Complete all 4 steps before responding to any user task.
 
-━━━ STEP 1 — READ DRIVE MEMORY ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━ STEP 1 — MEMORY FIRST (sa-obsidian-vault-ops) ━━━━━━━━━━━━
+  This is the most important step. Without it, every other skill
+  runs blind. No context. No continuity. Do not skip.
+
   mcp__Google_Drive__search_files:
     query: title = '${TODAY}.md' and '1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU' in parents
   → read file with mcp__Google_Drive__read_file_content
   → if not found: get most recent file in folder, read that
-  → load all context, pending tasks, key IDs from it
+  → load ALL context: pending tasks, active projects, key IDs, credentials names
+  → at session END: write updated note back to Drive (same folder, today's date)
 
 ━━━ STEP 2 — TIER 0 SKILLS (ALL active, every session) ━━━━━━━
+  sa-obsidian-vault-ops → ALREADY RUNNING (Step 1). Memory layer. Read start, write end.
+  SpaceAge_Orchestrator_v2 → Routing brain. Consult before any task.
   caveman              → ACTIVE NOW. Full mode. Every response. No revert.
   superpowers          → Spec-first. No code without approved spec.
-  SpaceAge_Orchestrator_v2 → Routing brain. Consult before any task.
   karpathy-guidelines  → Code quality baseline on all output.
   icm-workspace-architect → Workspace structure decisions.
-  sa-obsidian-vault-ops → Drive memory ops (read start, write end).
 
 ━━━ STEP 3 — ROUTE TO TIER 2 STACK ━━━━━━━━━━━━━━━━━━━━━━━━━━
   bot/scraper/loyalty   → LoyaltyBot (VPS 146.190.78.120 + pm2 + Node.js)
