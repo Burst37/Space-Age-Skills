@@ -23,3 +23,14 @@ if [ -d "$SKILLS_SRC" ]; then
     cp -r "$skill_dir" "$SKILLS_DST/$skill_name"
   done
 fi
+
+# Write session context reminder to env so Claude loads it automatically
+# SESSION_MEMORY folder: 1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU
+# Skills Drive folder:   1XWYm8AhG83vMn1p3RpM1UAkmiKcsnoC9
+cat >> "$CLAUDE_ENV_FILE" << 'EOF'
+export SA_SESSION_MEMORY_FOLDER="1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU"
+export SA_SKILLS_DRIVE_FOLDER="1XWYm8AhG83vMn1p3RpM1UAkmiKcsnoC9"
+export SA_VPS_HOST="146.190.78.120"
+export SA_GITHUB_USER="Burst37"
+export SA_SKILLS_REPO="Burst37/Space-Age-Skills"
+EOF
