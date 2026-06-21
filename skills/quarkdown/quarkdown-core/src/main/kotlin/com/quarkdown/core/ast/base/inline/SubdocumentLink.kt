@@ -1,0 +1,68 @@
+package com.quarkdown.core.ast.base.inline
+
+import com.quarkdown.core.ast.base.LinkNode
+import com.quarkdown.core.ast.base.TextNode
+import com.quarkdown.core.context.Context
+import com.quarkdown.core.context.MutableContext
+import com.quarkdown.core.document.sub.Subdocument
+import com.quarkdown.core.pipeline.error.PipelineErrorHandler
+import com.quarkdown.core.property.Property
+import com.quarkdown.core.visitor.node.NodeVisitor
+
+/**
+ * A link to a Quarkdown subdocument.
+ * @param link the link to the subdocument
+ * @param anchor an optional anchor to a specific section within the subdocument
+ */
+class SubdocumentLink(
+    val link: Link,
+    val anchor: String? = null,
+) : LinkNode,
+    TextNode {
+    override val label by link::label
+    override val url by link::url
+    override val title by link::title
+    override val fileSystem by link::fileSystem
+    override val text by link::text
+
+    override var error: Pair<Throwable, PipelineErrorHandler>? = null
+
+    override fun <T> acceptOnSuccess(visitor: NodeVisitor<T>) = visitor.visit(this)
+
+    override fun copy(url: String) =
+        SubdocumentLink(
+            link = link.copy(url = url),
+            anchor = anchor,
+        )
+}
+
+/**
+ * A property that holds a reference to a [Subdocument] associated with a [SubdocumentLink]
+ * during the tree traversal stage.
+ * @see com.quarkdown.core.context.hooks.SubdocumentRegistrationHook for the registration stage
+ */
+data class SubdocumentProperty(
+    override val value: Subdocument,
+) : Property<Subdocument> {
+    companion object : Property.Key<Subdocument>
+
+    override val key: Property.Key<Subdocument> = SubdocumentProperty
+}
+
+/**
+ * @returns the [Subdocument] associated with this [SubdocumentLink] in the given [context], if any
+ */
+fun SubdocumentLink.getSubdocument(context: Context): Subdocument? = context.attributes.of(this)[SubdocumentProperty]
+
+/**
+ * Associates a [Subdocument] with the [SubdocumentLink] in the given [context].
+ * @param context context where subdocument data is stored
+ * @param subdocument the subdocument to set
+ * @see com.quarkdown.core.context.hooks.SubdocumentRegistrationHook for the registration stage
+ */
+fun SubdocumentLink.setSubdocument(
+    context: MutableContext,
+    subdocument: Subdocument,
+) {
+    context.attributes.of(this) += SubdocumentProperty(subdocument)
+}

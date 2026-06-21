@@ -1,0 +1,179 @@
+# This workflow will build the project with Gradle and release its build.
+
+name: Gradle deploy
+
+on:
+  push:
+    branches: [ "main", "workflow-test" ]
+    tags: [ "v*" ]
+    paths-ignore:
+      - '*.md'
+      - '**/README.md'
+      - 'LICENSE'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/FUNDING.yml'
+
+jobs:
+  test:
+    uses: iamgio/quarkdown/.github/workflows/gradle-test.yml@main
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [test]
+
+    steps:
+    - uses: iamgio/quarkdown/.github/actions/setup-environment@main
+      with:
+        full-checkout: true
+        checkout-token: ${{ secrets.COMMITTER_TOKEN }}
+
+    # Writes the new version (tag name without the leading 'v') to version.txt
+    - name: Bump version
+      if: github.ref_type == 'tag'
+      run: printf "%s" "${GITHUB_REF_NAME#v}" > version.txt
+
+    - name: Update changelog
+      uses: thomaseizinger/keep-a-changelog-new-release@v2
+      if: github.ref_type == 'tag'
+      with:
+        tag: ${{ github.ref_name }}
+
+    - name: Extract release notes
+      id: release-notes
+      if: github.ref_type == 'tag'
+      uses: ffurrer2/extract-release-notes@v3
+
+    # Reads SPONSORS.md into a step output, to be appended to the release notes.
+    - name: Read sponsors
+      id: sponsors
+      if: github.ref_type == 'tag' && hashFiles('SPONSORS.md') != ''
+      run: |
+        {
+          echo 'content<<SPONSORS_EOF'
+          cat SPONSORS.md
+          echo SPONSORS_EOF
+        } >> "$GITHUB_OUTPUT"
+
+    - name: Commit release updates
+      uses: stefanzweifel/git-auto-commit-action@v7
+      if: github.ref_type == 'tag'
+      with:
+        commit_message: "chore: release ${{ github.ref_name }}"
+        commit_user_name: "github-actions"
+        commit_user_email: "github-actions[bot]@users.noreply.github.com"
+        file_pattern: version.txt CHANGELOG.md
+        branch: main
+
+    - name: Build per-platform distributions
+      uses: burrunan/gradle-cache-action@v3
+      with:
+        job-id: main
+        arguments: distZipAll
+
+    - name: Unzip Linux distribution (used by downstream steps)
+      run: |
+        mkdir -p build/unzipped
+        unzip -q build/distributions/quarkdown-linux-x64.zip -d build/unzipped
+        echo "$PWD/build/unzipped/quarkdown/bin" >> $GITHUB_PATH
+
+    - name: Echo output files
+      run: ls -d "$PWD/build/"* && ls build/distributions
+
+    - name: Deploy wiki
+      if: github.ref_type == 'tag'
+      uses: iamgio/quarkdown/.github/actions/deploy-wiki@main
+      with:
+        quarkdown-path: ${{ github.workspace }}/build/unzipped/quarkdown/bin/quarkdown
+        github-token: ${{ secrets.COMMITTER_TOKEN }}
+
+    - name: Distribute artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: quarkdown
+        path: build/distributions/quarkdown-*.zip
+
+    - name: Move devbuild tag to latest commit
+      run: |
+        git tag -d latest || true
+        git tag -f latest
+        git push origin +latest
+
+    - name: Create devbuild release
+      uses: softprops/action-gh-release@v2.2.2
+      with:
+        token: "${{ secrets.GITHUB_TOKEN }}"
+        tag_name: "latest"
+        prerelease: true
+        generate_release_notes: true
+        name: Development build
+        files: build/distributions/quarkdown-*.zip
+
+    - name: Create release
+      uses: softprops/action-gh-release@v2
+      if: github.ref_type == 'tag'
+      with:
+        token: "${{ secrets.GITHUB_TOKEN }}"
+        body: |
+          ${{ steps.release-notes.outputs.release_notes }}
+
+          ${{ steps.sponsors.outputs.content }}
+        files: build/distributions/quarkdown-*.zip
+
+    - name: Generate docs
+      uses: burrunan/gradle-cache-action@v3
+      with:
+        job-id: main
+        arguments: quarkdocGenerateAll
+
+    - name: Deploy docs
+      uses: peaceiris/actions-gh-pages@v4
+      if: github.ref_type == 'tag'
+      with:
+        personal_token: ${{ secrets.COMMITTER_TOKEN }}
+        external_repository: quarkdown-labs/quarkdown.com
+        publish_dir: ./build/docs
+        destination_dir: docs
+
+    - name: Deploy devbuild docs
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        personal_token: ${{ secrets.COMMITTER_TOKEN }}
+        external_repository: quarkdown-labs/quarkdown.com
+        publish_dir: ./build/docs
+        destination_dir: docs/latest
+
+    # Bump Homebrew (both arches in one commit).
+    # A custom action is used instead of mislav/bump-homebrew-formula-action
+    # because that action's regex only replaces the first `url "..."` line in
+    # the formula, so it can't handle separate on_arm and on_intel blocks.
+    - uses: iamgio/quarkdown/.github/actions/bump-homebrew@main
+      if: github.ref_type == 'tag'
+      with:
+        version: ${{ github.ref_name }}
+        committer_token: ${{ secrets.COMMITTER_TOKEN }}
+
+    # Bump Scoop
+    - uses: iamgio/quarkdown/.github/actions/bump-scoop@main
+      if: github.ref_type == 'tag'
+      with:
+        version: ${{ github.ref_name }}
+        committer_token: ${{ secrets.COMMITTER_TOKEN }}
+
+  dependency-submission:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    # Generates and submits a dependency graph, enabling Dependabot Alerts for all project dependencies.
+    # See: https://github.com/gradle/actions/blob/main/dependency-submission/README.md
+    - name: Generate and submit dependency graph
+      uses: gradle/actions/dependency-submission@v4

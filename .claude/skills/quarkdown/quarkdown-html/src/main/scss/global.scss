@@ -1,0 +1,209 @@
+@use "components/viewport";
+@use "components/alignment";
+@use "components/page-break";
+@use "components/block";
+@use "components/multicolumn";
+@use "components/heading";
+@use "components/paragraph";
+@use "components/empty";
+@use "components/link";
+@use "components/math";
+@use "components/hr";
+@use "components/list";
+@use "components/table";
+@use "components/caption";
+@use "components/code";
+@use "components/focus";
+@use "components/blockquote";
+@use "components/figure";
+@use "components/mermaid";
+@use "components/filetree";
+@use "components/keybinding";
+@use "components/float";
+@use "components/clip";
+@use "components/box";
+@use "components/size";
+@use "components/collapsible";
+@use "components/container";
+@use "components/stack";
+@use "components/location";
+@use "components/footnote";
+@use "components/toc";
+@use "components/bibliography";
+@use "components/page-margin";
+@use "components/landscape";
+@use "components/paged";
+@use "components/docs";
+@use "components/smooth-scroll";
+@use "components/search.scss";
+@use "components/sidebar";
+
+:root {
+  // Quarkdown's exposed properties
+
+  // Colors
+  --qd-color-scheme: light; // Color scheme: light or dark
+  --qd-background-color: inherit; // Background color
+  --qd-main-color: inherit; // Main text color
+  --qd-main-color-muted: color-mix(in srgb, var(--qd-main-color) 20%, transparent); // Muted main text color
+  --qd-primary-color: var(--qd-main-color); // Primary/accent color
+  --qd-color-on-primary: var(--qd-background-color); // Text color on primary background color
+  --qd-heading-color: var(--qd-main-color); // Heading (titles) color
+  --qd-link-color: inherit; // Link color
+  --qd-nested-navigation-line-color: color-mix(in srgb, var(--qd-primary-color) 20%, transparent); // When expected by the layout theme, sets the color of lines in nested navigation (e.g. ToC)
+  --qd-selected-background-color: color-mix(in srgb, var(--qd-main-color) 5%, transparent); // Background color of selected items over the main background color (e.g. selected search result)
+  --qd-callout-box-header-color: var(--qd-main-color); // Color of the header of callout box headers. This is just a referenceable value and is not used in this global theme
+  --qd-collapsed-text-color: var(--qd-link-color); // Color of expandible text
+  --qd-error-message-collapsed-text-color: rgb(240, 246, 77); // Color of expandible text in error messages
+
+  // Fonts
+  --qd-main-font: inherit;
+  --qd-heading-font: inherit;
+  --qd-box-heading-font: inherit;
+  --qd-main-font-size: 1em;
+  --qd-code-font: monospace;
+  --qd-code-span-font-size: var(--qd-main-font-size);
+  --qd-code-block-font-size: var(--qd-code-span-font-size); // Font size of code blocks in non-slides documents
+  --qd-slides-code-block-font-size: var(--qd-code-block-font-size); // Font size of code blocks in slides documents
+  --qd-sm-code-block-font-size: calc(var(--qd-code-block-font-size) * .8); // Font size of code blocks in small screens
+  --qd-caption-font-size: var(--qd-main-font-size); // Font size of captions
+  --qd-sm-caption-font-size: max(calc(var(--qd-caption-font-size) * .9), 0.8em); // Font size of captions in small screens
+  --qd-caption-font-style: normal; // Font style of captions
+
+  // Localized fonts, which override the base fonts for specific locales (e.g. Chinese, see locale/zh.scss).
+  // Avoid overwriting these elsewhere.
+  --qd-main-localized-font: unset;
+  --qd-heading-localized-font: unset;
+  --qd-code-localized-font: unset;
+
+  // Custom fonts, which override both base and localized fonts.
+  // These are set by the user via the `.font` function. Avoid overwriting these.
+  --qd-main-custom-font: unset;
+  --qd-heading-custom-font: unset;
+  --qd-code-custom-font: unset;
+
+  // Margins
+  --qd-block-margin: 2em; // Margin of block elements
+  --qd-paragraph-vertical-margin: var(--qd-block-margin); // Vertical margin of paragraphs preceded by a paragraph
+  --qd-heading-margin: 40px 0 20px 0; // Margin of headings
+  --qd-task-checkbox-margin-right: 0.9em; // Right margin of checkboxes in GFM task list items
+  --qd-list-margin-multiplier: 0.4; // --qd-paragraph-vertical-margin * this = list vertical margin
+  --qd-caption-margin: 0.4em; // Margin between a caption and its content
+  --qd-box-margin-multiplier: 1.5; // --qd-block-margin * this = box vertical margin
+  --qd-box-content-vertical-padding: 8px; // Vertical padding of box content
+  --qd-nested-navigation-padding-left: 28px; // When expected by the layout theme, padding-left of nested ToC entries
+
+  // Border
+  --qd-page-content-border-width: unset;
+  --qd-page-content-border-color: var(--qd-main-color);
+  --qd-page-content-border-style: unset;
+
+  // Text
+  --qd-line-height: 1.5;
+  --qd-letter-spacing: normal;
+  --qd-paragraph-text-indent: none; // Paragraph indentation (with LaTeX policies)
+
+  // Misc
+  --qd-content-width: 45rem; // Width of the main content area of plain and docs viewports
+  --qd-column-count: unset; // Number of columns for multi-column layout
+
+  // Location labels
+  --qd-heading-label-suffix: ". "; // Suffix for heading labels, such as location numbering (e.g. the last `.` in `1.1. Heading`)
+  --qd-caption-label-suffix: ": "; // Suffix for labels in captions (e.g. the `:` in `Figure 1.1: ...`)
+
+  // Global horizontal alignment of content.
+  // This is applied to all elements in the document.
+  --qd-horizontal-alignment-global: start;
+  // Local horizontal alignment of content.
+  // This is applied only to selected elements in the document (e.g. justification).
+  --qd-horizontal-alignment-local: var(--qd-horizontal-alignment-global);
+  // Horizontal alignment of list items.
+  // Defaults to local alignment, but can be customized separately in case the local alignment is `center`.
+  --qd-horizontal-alignment-list-items: unset;
+
+  // Code
+  --qd-code-line-height: var(--qd-line-height); // Line height of code blocks
+  --qd-code-border-radius: 8px; // Border radius of code blocks
+  --qd-code-line-numbers-padding: 0 0.8em; // Padding of line numbers of code blocks. Vertical padding also defines code line height.
+  --qd-code-line-numbers-opacity: 0.6; // Opacity of line numbers of code blocks
+
+  // Tables
+  --qd-table-default-cell-alignment: initial; // Text alignment of table cells, if not specified
+  --qd-table-default-header-alignment: var(--qd-table-default-cell-alignment); // Text alignment of table header cells, if not specified
+
+  // Quotes
+  --qd-quote-type-label-suffix: ": "; // Suffix for localized quote type labels, e.g. Tip, Note, Warning, ...
+  --qd-quote-attribution-prefix: "— "; // Prefix for quote attributions
+  --qd-quote-foreground-color: var(--qd-main-color);
+  --qd-quote-background-color: color-mix(in srgb, var(--qd-quote-foreground-color) 5%, transparent);
+
+  // Boxes
+  --qd-box-border-radius: 8px;
+  --qd-box-section-padding: 12px 16px; // Padding of box sections (header and content)
+  --qd-box-icon-baseline: 0; // Y offset of icons in box headers
+  --qd-box-header-background-color: unset; // Background color of box headers (if not set, computed from header foreground color)
+
+  // Callout elements
+  --qd-callout-content-foreground-color: var(--qd-color-on-primary);
+  --qd-callout-title-foreground-color: var(--qd-color-on-primary);
+  --qd-callout-background-color: color-mix(in srgb, var(--qd-callout-title-foreground-color) 5%, transparent);
+  // Tip elements
+  --qd-tip-content-foreground-color: var(--qd-main-color);
+  --qd-tip-title-foreground-color: rgb(33, 102, 25);
+  --qd-tip-background-color: color-mix(in srgb, var(--qd-tip-title-foreground-color) 5%, transparent);
+  // Note elements
+  --qd-note-content-foreground-color: var(--qd-main-color);
+  --qd-note-title-foreground-color: rgb(25, 60, 102);
+  --qd-note-background-color: color-mix(in srgb, var(--qd-note-title-foreground-color) 5%, transparent);
+  // Warning elements
+  --qd-warning-content-foreground-color: var(--qd-main-color);
+  --qd-warning-title-foreground-color: rgb(161, 76, 32);
+  --qd-warning-background-color: color-mix(in srgb, var(--qd-warning-title-foreground-color) 5%, transparent);
+  // Important elements
+  --qd-important-content-foreground-color: var(--qd-main-color);
+  --qd-important-title-foreground-color: rgb(145, 34, 34);
+  --qd-important-background-color: color-mix(in srgb, var(--qd-important-title-foreground-color) 5%, transparent);
+  // Error elements
+  --qd-error-content-foreground-color: white;
+  --qd-error-title-foreground-color: white;
+  --qd-error-background-color: rgb(224, 67, 64);
+
+  // Mermaid diagrams
+  --qd-mermaid-node-background-color: var(--qd-primary-color);
+  --qd-mermaid-node-border-color: var(--qd-mermaid-node-text-color);
+  --qd-mermaid-node-border-width: 1px;
+  --qd-mermaid-node-text-color: var(--qd-color-on-primary);
+  --qd-mermaid-node-line-color: var(--qd-main-color);
+  --qd-mermaid-node-filter: none;
+
+  // File tree
+  --qd-file-tree-highlight-color: color-mix(in srgb, var(--qd-link-color) 10%, transparent);
+
+  // Keybinding
+  --qd-kbd-background-color: color-mix(in srgb, var(--qd-main-color-muted) 15%, var(--qd-background-color));
+  --qd-kbd-border-color: color-mix(in srgb, var(--qd-main-color-muted) 90%, var(--qd-main-color));
+
+  // Docs
+  --qd-docs-header-height: 60px;
+  --qd-docs-header-vertical-padding: 12px;
+  --qd-docs-header-background-color: var(--qd-primary-color);
+  --qd-docs-separator-border-color: var(--qd-docs-header-background-color);
+  --qd-docs-search-border-color: var(--qd-docs-separator-border-color);
+  --qd-docs-search-focused-border: var(--qd-primary-color);
+
+  // Do not modify the following properties directly.
+
+  color-scheme: var(--qd-color-scheme);
+
+  // Reveal properties.
+  --r-background-color: var(--qd-background-color);
+  --r-main-color: var(--qd-main-color);
+  --r-heading-color: var(--qd-heading-color);
+  --r-link-color: var(--qd-link-color);
+  --r-main-font: var(--qd-main-font);
+  --r-main-font-size: var(--qd-main-font-size);
+  --r-code-font: var(--qd-code-font);
+  --r-heading-font: var(--qd-heading-font);
+  --r-block-margin: var(--qd-block-margin);
+  --r-heading-margin: var(--qd-heading-margin);
+}

@@ -1,0 +1,343 @@
+package com.quarkdown.stdlib
+
+import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
+import com.quarkdown.core.ast.InlineContent
+import com.quarkdown.core.ast.InlineMarkdownContent
+import com.quarkdown.core.ast.base.block.Table
+import com.quarkdown.core.ast.dsl.buildInline
+import com.quarkdown.core.context.Context
+import com.quarkdown.core.context.file.FileSystem
+import com.quarkdown.core.context.file.RootGranularity
+import com.quarkdown.core.context.file.getRootFileSystem
+import com.quarkdown.core.function.library.module.QuarkdownModule
+import com.quarkdown.core.function.library.module.moduleOf
+import com.quarkdown.core.function.reflect.annotation.Injected
+import com.quarkdown.core.function.reflect.annotation.LikelyNamed
+import com.quarkdown.core.function.reflect.annotation.Name
+import com.quarkdown.core.function.value.IterableValue
+import com.quarkdown.core.function.value.NodeValue
+import com.quarkdown.core.function.value.OrderedCollectionValue
+import com.quarkdown.core.function.value.StringValue
+import com.quarkdown.core.function.value.UnorderedCollectionValue
+import com.quarkdown.core.function.value.data.Range
+import com.quarkdown.core.function.value.data.subList
+import com.quarkdown.core.function.value.factory.ValueFactory
+import com.quarkdown.core.function.value.wrappedAsValue
+import com.quarkdown.core.permissions.Permission
+import com.quarkdown.core.permissions.requireReadPermission
+import com.quarkdown.core.util.normalizeLineSeparators
+import com.quarkdown.stdlib.internal.AlphanumericComparator
+import com.quarkdown.stdlib.internal.Ordering
+import com.quarkdown.stdlib.internal.Sorting
+import com.quarkdown.stdlib.internal.sortedBy
+import java.io.File
+
+/**
+ * `Data` stdlib module exporter.
+ * This module handles content fetched from external resources.
+ */
+val Data: QuarkdownModule =
+    moduleOf(
+        ::read,
+        ::pathToRoot,
+        ::listFiles,
+        ::fileName,
+        ::csv,
+    )
+
+/**
+ * @param path path of the file, relative or absolute (with extension)
+ * @param requireExistence whether the corresponding file must exist
+ * @return a [File] instance of the file located in [path].
+ *         If the path is relative, the location is determined by the working directory of the pipeline.
+ * @throws IllegalArgumentException if the file does not exist and [requireExistence] is `true`
+ */
+internal fun file(
+    context: Context,
+    path: String,
+    requireExistence: Boolean = true,
+): File {
+    val file = context.fileSystem.resolve(path)
+    context.requireReadPermission(file)
+
+    if (requireExistence && !file.exists()) {
+        throw IllegalArgumentException("File $file does not exist.")
+    }
+
+    return file
+}
+
+/**
+ * @param path path of the file (with extension)
+ * @param lineRange range of lines to extract from the file.
+ *                  If not specified or infinite, the whole file is read
+ * @return a string value of the text extracted from the file
+ * @permission [Permission.ProjectRead] to read files located in the project directory
+ * @permission [Permission.GlobalRead] to read files located outside the project directory
+ * @throws IllegalArgumentException if [lineRange] is out of bounds
+ * @wiki file-data
+ */
+fun read(
+    @Injected context: Context,
+    path: String,
+    @Name("lines") lineRange: Range = Range.INFINITE,
+): StringValue {
+    val file = file(context, path)
+
+    // If the range is infinite on both ends, the whole file is read.
+    if (lineRange.isInfinite) {
+        return StringValue(file.readText().normalizeLineSeparators().toString())
+    }
+
+    // Lines from the file in the given range.
+    val lines = file.readLines()
+
+    // Check if the range is in bounds.
+    val bounds = Range(1, lines.size)
+    if (lineRange !in bounds) {
+        throw IllegalArgumentException("Invalid range $lineRange in bounds $bounds")
+    }
+
+    return lines
+        .subList(lineRange)
+        .joinToString("\n")
+        .wrappedAsValue()
+}
+
+/**
+ * Retrieves the relative path to the root of the file system.
+ * The root of the file system is determined by the working directory of either the project or the current subdocument, depending on the specified [granularity].
+ *
+ * If set to [RootGranularity.PROJECT], the root is the parent directory of the target file being processed by the `quarkdown compile` command.
+ * If set to [RootGranularity.SUBDOCUMENT], the root is the parent directory of the current subdocument file.
+ *
+ * For example, consider the following file tree:
+ * ```
+ * My-Project/
+ * ├─ main.qd
+ * ├─ file.txt
+ * ├─ subdocuments/
+ *    ├─ subdocument.qd
+ *    ├─ file.txt
+ * ├─ utils/
+ *    ├─ example.qd
+ * ```
+ *
+ * If `main.qd` invokes `.pathtoroot`, the result is `.` regardless of the granularity, since the working directory is the root of the project.
+ *
+ * Consider the content of `example.qd`:
+ * ```
+ * .read {.pathtoroot/file.txt}
+ *
+ * .read {.pathtoroot granularity:{subdocument}/file.txt}
+ * ```
+ *
+ * Now, assume `main.qd` invokes `.include {utils/example.qd}`.
+ * Regardless of the granularity, the `.pathtoroot` calls in `example.qd` return `..`,
+ * so that `My-Project/file.txt` is correctly accessed by `My-Project/utils/example.qd` through the relative path `../file.txt`.
+ *
+ * Assume now that `subdocument.qd` is a subdocument and invokes `.include {../utils/example.qd}`.
+ * - With [RootGranularity.PROJECT], the `.pathtoroot` calls in `example.qd` return `..`,
+ *   so that `My-Project/file.txt` is accessed by `My-Project/utils/example.qd` through the relative path `../file.txt`.
+ * - With [RootGranularity.SUBDOCUMENT], the `.pathtoroot` calls in `example.qd` return `../subdocuments`,
+ *   so that `My-Project/subdocuments/file.txt` is accessed by `My-Project/utils/example.qd` through the relative path `../subdocuments/file.txt`.
+ *
+ * @param granularity the granularity for determining the root of the file system
+ * @return a string value of the relative path to the root of the file system
+ * @throws IllegalStateException if the relative path cannot be determined
+ */
+@Name("pathtoroot")
+fun pathToRoot(
+    @Injected context: Context,
+    @LikelyNamed granularity: RootGranularity = RootGranularity.PROJECT,
+): StringValue {
+    val root: FileSystem = context.getRootFileSystem(granularity) ?: return ".".wrappedAsValue()
+    val path: String =
+        context.fileSystem.relativePathTo(root)?.toString()
+            ?: throw IllegalStateException(
+                """
+                Unable to determine relative path to file system root.
+                Root: ${root.workingDirectory}
+                Current working directory: ${context.fileSystem.workingDirectory}
+                """.trimIndent(),
+            )
+
+    if (path.isEmpty()) {
+        return ".".wrappedAsValue()
+    }
+    return path.wrappedAsValue()
+}
+
+/**
+ * Criterion to sort files by.
+ * @param sort lambda that sorts a sequence of files
+ * @see listFiles
+ */
+enum class FileSorting(
+    override val sort: (Sequence<File>, Ordering) -> Sequence<File>,
+) : Sorting<File> {
+    /** No sorting is applied. */
+    NONE({ files, _ -> files }),
+
+    /** Files are sorted by name. */
+    NAME({ files, ordering ->
+        files.sortedBy(ordering, AlphanumericComparator) { it.name.lowercase() }
+    }),
+
+    /** Files are sorted by last modified date. */
+    LAST_MODIFIED({ files, ordering ->
+        files.sortedBy(ordering) { it.lastModified() }
+    }),
+}
+
+/**
+ * Lists the files located in a directory.
+ * @param path directory path
+ * @param listDirectories whether to include directories in the listing
+ * @param recursive whether to recursively list files in nested subdirectories
+ * @param pattern optional regular expression to filter entries by name.
+ *                When non-`null`, only entries whose file name (always the bare name, regardless of [fullPath]) matches the pattern are returned.
+ * @param fullPath whether to return the absolute path of each file, rather than just the file name
+ * @param sortBy criterion to sort the files by
+ * @param order order to sort the files in
+ * @return a collection of string values, each representing an entry (file or directory) located in the directory.
+ *         The collection is unordered when [sortBy] is [FileSorting.NONE], and ordered otherwise.
+ * @throws IllegalArgumentException if the directory does not exist, is not a directory,
+ *                                  or if [pattern] is not a valid regular expression
+ * @permission [Permission.ProjectRead] to list files located in the project directory
+ * @permission [Permission.GlobalRead] to list files located outside the project directory
+ * @see fileName to exclude the extension from file names
+ * @wiki listing-files
+ */
+@Name("listfiles")
+fun listFiles(
+    @Injected context: Context,
+    path: String,
+    @Name("directories") listDirectories: Boolean = true,
+    @LikelyNamed recursive: Boolean = false,
+    @LikelyNamed pattern: String? = null,
+    @Name("fullpath") fullPath: Boolean = true,
+    @Name("sortby") sortBy: FileSorting = FileSorting.NONE,
+    @LikelyNamed order: Ordering = Ordering.ASCENDING,
+): IterableValue<StringValue> {
+    val rootDirectory = file(context, path)
+
+    if (!rootDirectory.exists()) {
+        throw IllegalArgumentException("Directory $rootDirectory does not exist.")
+    }
+    if (!rootDirectory.isDirectory) {
+        throw IllegalArgumentException("Path $rootDirectory is not a directory.")
+    }
+
+    val nameRegex = pattern?.toRegex()
+
+    val files =
+        listFiles(rootDirectory, recursive)
+            .filter { listDirectories || it.isFile }
+            .filter { currentFile -> nameRegex == null || nameRegex.matches(currentFile.name) }
+            .let { sortBy.sort(it, order) }
+            .map { if (fullPath) it.absolutePath else it.name }
+            .map(::StringValue)
+
+    return when {
+        sortBy == FileSorting.NONE -> UnorderedCollectionValue(files.toSet())
+        else -> OrderedCollectionValue(files.toList())
+    }
+}
+
+private fun listFiles(
+    directory: File,
+    recursive: Boolean,
+): Sequence<File> =
+    if (recursive) {
+        directory.walkTopDown().drop(1)
+    } else {
+        directory.listFiles()?.asSequence() ?: emptySequence()
+    }
+
+/**
+ * Retrieves the name of a file located in [path].
+ * @param path path of the file (with extension)
+ * @param includeExtension whether to include the file extension in the name
+ * @return the name of the file located in [path]
+ * @throws IllegalArgumentException if the file does not exist
+ * @permission [Permission.ProjectRead] to access files located in the project directory
+ * @permission [Permission.GlobalRead] to access files located outside the project directory
+ * @wiki file-data
+ */
+@Name("filename")
+fun fileName(
+    @Injected context: Context,
+    path: String,
+    @Name("extension") includeExtension: Boolean = true,
+): StringValue {
+    val file = file(context, path)
+    val name = if (includeExtension) file.name else file.nameWithoutExtension
+    return StringValue(name)
+}
+
+/**
+ * Strategies to parse CSV cell content.
+ * @param transform function that transforms the cell content string into parsed content
+ */
+enum class CsvParsingMode(
+    val transform: (String, Context) -> InlineContent,
+) {
+    /** Cell content is treated as plain text. */
+    PLAIN({ text, _ -> buildInline { text(text) } }),
+
+    /** Cell content is treated as inline Quarkdown. */
+    MARKDOWN({ text, context -> ValueFactory.inlineMarkdown(text, context).unwrappedValue.children }),
+}
+
+/**
+ * Loads a CSV file and returns its content as a display-ready table.
+ * @param path path of the CSV file (with extension) to show
+ * @param mode mode to handle the content of each cell and header (plain or Markdown)
+ * @param caption optional caption of the table. If set, the table will be numbered according to the current [numbering] format
+ * @param referenceId optional ID for cross-referencing via [reference]
+ * @return a table whose content is loaded from the file located in [path]
+ * @permission [Permission.ProjectRead] to read CSV files located in the project directory
+ * @permission [Permission.GlobalRead] to read CSV files located outside the project directory
+ * @wiki file-data
+ */
+fun csv(
+    @Injected context: Context,
+    path: String,
+    @LikelyNamed mode: CsvParsingMode = CsvParsingMode.PLAIN,
+    @LikelyNamed caption: InlineMarkdownContent? = null,
+    @Name("ref") referenceId: String? = null,
+): NodeValue {
+    val file = file(context, path)
+    val columns = mutableListOf<Table.MutableColumn>()
+
+    // CSV is read row-by-row, while the Table is built by columns.
+    csvReader().open(file) {
+        readAllWithHeaderAsSequence()
+            .forEach { row ->
+                row.entries.forEachIndexed { index, (header, content) ->
+                    val cell = mode.transform(content.trim(), context).let(Table::Cell)
+
+                    if (index < columns.size) {
+                        // Adding cell to existing column.
+                        columns[index].cells += cell
+                    } else {
+                        // Pushing new column.
+                        val headerCell = mode.transform(header.trim(), context).let(Table::Cell)
+                        columns +=
+                            Table.MutableColumn(
+                                alignment = Table.Alignment.NONE,
+                                header = headerCell,
+                                cells = mutableListOf(cell),
+                            )
+                    }
+                }
+            }
+    }
+
+    return Table(
+        columns = columns.map { it.toColumn() },
+        caption = caption?.children,
+        referenceId = referenceId,
+    ).wrappedAsValue()
+}

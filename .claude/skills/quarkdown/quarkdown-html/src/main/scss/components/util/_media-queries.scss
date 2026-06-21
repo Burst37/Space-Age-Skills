@@ -1,0 +1,56 @@
+// Media query utilities and breakpoints.
+
+// Mobile
+$sm: 800px;
+
+// Tablet
+$md: 1200px;
+
+@mixin bp-down($breakpoint, $print: false) {
+  @if $print {
+    @media screen and (max-width: $breakpoint), print, pagedjs-ignore {
+      @content;
+    }
+  } @else {
+    @media screen and (max-width: $breakpoint), pagedjs-ignore {
+      @content;
+    }
+  }
+}
+
+@mixin bp-up($breakpoint) {
+  @media screen and (min-width: #{$breakpoint + 1}), pagedjs-ignore {
+    @content;
+  }
+}
+
+@mixin sm-down($print: false) {
+  @include bp-down($sm, $print) {
+    @content;
+  }
+}
+
+@mixin sm-up {
+  @include bp-up($sm) {
+    @content;
+  }
+}
+
+@mixin md-down($print: false) {
+  @include bp-down($md, $print) {
+    @content;
+  }
+}
+
+@mixin md-up {
+  @include bp-up($md) {
+    @content;
+  }
+}
+
+// Targets print media.
+@mixin print {
+  @media print {
+    @content;
+  }
+}

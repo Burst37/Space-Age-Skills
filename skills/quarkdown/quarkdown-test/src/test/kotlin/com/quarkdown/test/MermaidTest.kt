@@ -1,0 +1,369 @@
+package com.quarkdown.test
+
+import com.quarkdown.core.ast.attributes.presence.hasMermaidDiagram
+import com.quarkdown.test.util.execute
+import kotlin.test.Test
+import kotlin.test.assertContains
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+
+private const val MERMAID_OPEN = "<figure><pre class=\"mermaid\">"
+private const val MERMAID_CLOSE = "</pre></figure>"
+
+/**
+ * Tests for Mermaid diagrams.
+ */
+class MermaidTest {
+    private fun String.escape() = replace("<", "&lt;").replace(">", "&gt;")
+
+    @Test
+    fun mermaid() {
+        execute(
+            """
+            .mermaid
+                graph TD
+                    A-->B
+                    A-->C
+            """.trimIndent(),
+        ) {
+            assertEquals(
+                MERMAID_OPEN +
+                    "graph TD\n    A-->B\n    A-->C".escape() +
+                    MERMAID_CLOSE,
+                it,
+            )
+            assertTrue(attributes.hasMermaidDiagram)
+        }
+    }
+
+    @Test
+    fun `mermaid with caption`() {
+        execute(
+            """
+            .mermaid caption:{My graph}
+                graph TD
+                    A-->B
+                    A-->C
+            """.trimIndent(),
+        ) {
+            assertEquals(
+                MERMAID_OPEN +
+                    "graph TD\n    A-->B\n    A-->C".escape() +
+                    "</pre><figcaption class=\"caption-bottom\">My graph</figcaption></figure>",
+                it,
+            )
+            assertTrue(attributes.hasMermaidDiagram)
+        }
+    }
+
+    @Test
+    fun `mermaid from file`() {
+        execute(
+            """
+            .mermaid caption:{My graph}
+                .read {mermaid/class.mmd}
+            """.trimIndent(),
+        ) {
+            assertEquals(it.lines().first(), MERMAID_OPEN + "classDiagram")
+            assertEquals(it.lines()[1], "    class Bank {")
+            assertContains(it, "<figcaption class=\"caption-bottom\">My graph</figcaption></figure>")
+        }
+    }
+
+    private fun String.expectedChart() = MERMAID_OPEN + trimIndent().escape().replace("    ", "\t") + "\n" + MERMAID_CLOSE
+
+    @Test
+    fun `xy chart`() {
+        execute(
+            """
+            .xychart
+              - 5000
+              - 6000
+              - 7500
+            """.trimIndent(),
+        ) {
+            assertEquals(
+                """
+                    xychart-beta
+                        line [5000.0, 6000.0, 7500.0]
+                """.expectedChart(),
+                it,
+            )
+            assertTrue(attributes.hasMermaidDiagram)
+        }
+    }
+
+    @Test
+    fun `xy chart with bars`() {
+        execute(
+            """
+            .xychart bars:{yes}
+              - 5000
+              - 6000
+              - 7500
+            """.trimIndent(),
+        ) {
+            assertEquals(
+                """
+                    xychart-beta
+                        bar [5000.0, 6000.0, 7500.0]
+                        line [5000.0, 6000.0, 7500.0]
+                """.expectedChart(),
+                it,
+            )
+        }
+    }
+
+    @Test
+    fun `xy chart with named axis`() {
+        execute(
+            """
+            .xychart x:{Months} y:{Revenue}
+              - 5000
+              - 6000
+              - 7500
+            """.trimIndent(),
+        ) {
+            assertEquals(
+                """
+                    xychart-beta
+                        x-axis &quot;Months&quot;
+                        y-axis &quot;Revenue&quot;
+                        line [5000.0, 6000.0, 7500.0]
+                """.expectedChart(),
+                it,
+            )
+        }
+    }
+
+    @Test
+    fun `xy chart with ranged and named y axis`() {
+        execute(
+            """
+            .xychart y:{Revenue} yrange:{2..8000}
+              - 5000
+              - 6000
+              - 7500
+            """.trimIndent(),
+        ) {
+            assertEquals(
+                """
+                    xychart-beta
+                        y-axis &quot;Revenue&quot; 2 --> 8000
+                        line [5000.0, 6000.0, 7500.0]
+                """.expectedChart(),
+                it,
+            )
+        }
+    }
+
+    @Test
+    fun `xy chart with open-ranged y axis`() {
+        execute(
+            """
+            .xychart yrange:{..}
+              - 5000
+              - 6000
+              - 7500
+            """.trimIndent(),
+        ) {
+            assertEquals(
+                """
+                    xychart-beta
+                        y-axis 5000.0 --> 7500.0
+                        line [5000.0, 6000.0, 7500.0]
+                """.expectedChart(),
+                it,
+            )
+        }
+    }
+
+    @Test
+    fun `xy chart with function call in data`() {
+        execute(
+            """
+            .var {x} {2}
+            .xychart
+              .repeat {3}
+                .var {x} {.pow {.x} {2}}
+                .x
+            """.trimIndent(),
+        ) {
+            assertEquals(
+                """
+                    xychart-beta
+                        line [4.0, 16.0, 256.0]
+                """.expectedChart(),
+                it,
+            )
+        }
+    }
+
+    @Test
+    fun `xy chart with three lines`() {
+        execute(
+            """
+            .xychart
+              - - 3
+                - 2
+                - 1
+                
+              - - 1
+                - 2
+                - 3
+                
+              - - 2
+                - 1
+                - 3
+            """.trimIndent(),
+        ) {
+            assertEquals(
+                """
+                    xychart-beta
+                        line [3.0, 2.0, 1.0]
+                        line [1.0, 2.0, 3.0]
+                        line [2.0, 1.0, 3.0]
+                """.expectedChart(),
+                it,
+            )
+        }
+    }
+
+    @Test
+    fun `xy chart with open-ranged x axis`() {
+        execute(
+            """
+            .xychart xrange:{1..}
+              - |
+                - 3
+                - 2
+              - |
+                - 1
+                - 2
+                - 3
+            """.trimIndent(),
+        ) {
+            assertEquals(
+                """
+                    xychart-beta
+                        x-axis 1 --> 3.0
+                        line [3.0, 2.0]
+                        line [1.0, 2.0, 3.0]
+                """.expectedChart(),
+                it,
+            )
+        }
+    }
+
+    @Test
+    fun `xy chart with two curves`() {
+        execute(
+            """
+            .xychart
+              .repeat {3}
+                .1::pow {2}
+              
+              .repeat {3}
+                .1::sin::multiply {5}::round
+            """.trimIndent(),
+        ) {
+            assertEquals(
+                """
+                    xychart-beta
+                        line [4.0, 5.0, 1.0]
+                        line [1.0, 4.0, 9.0]
+                """.expectedChart(),
+                it,
+            )
+        }
+    }
+
+    @Test
+    fun `xy chart from csv`() {
+        execute(
+            """
+            .xychart
+                .tablecolumn {2}
+                    .csv {csv/people.csv}
+            """.trimIndent(),
+        ) {
+            assertEquals(
+                """
+                    xychart-beta
+                        line [25.0, 32.0, 19.0]
+                """.expectedChart(),
+                it,
+            )
+        }
+    }
+
+    @Test
+    fun `bar chart counting element repetitions`() {
+        // Build a frequency chart from a list of strings:
+        // sort, then count repetitions per distinct group.
+        execute(
+            """
+            .var {x}
+                - b
+                - a
+                - b
+                - c
+                - b
+                - a
+                - d
+                - e
+                - f
+                - e
+                - d
+                - b
+
+            .x {.x::sorted}
+
+            .xychart bars:{yes} lines:{no} xtags:{.x::distinct}
+                .foreach {.x::groupvalues}
+                    .1::size
+            """.trimIndent(),
+        ) {
+            assertEquals(
+                """
+                <figure><pre class="mermaid">xychart-beta
+                	x-axis [a, b, c, d, e, f]
+                	bar [2.0, 4.0, 1.0, 2.0, 2.0, 1.0]
+                </pre></figure>
+                """.trimIndent(),
+                it,
+            )
+        }
+    }
+
+    @Test
+    fun `combined bar and line chart from a csv via destructuring`() {
+        execute(
+            """
+            .let {.csv {csv/sales.csv}}
+                data:
+                .var {columns}
+                    .tablecolumns
+                        .data
+
+                .xychart xtags:{.columns::first} y:{Sales} bars:{yes}
+                    .columns::second
+                    .columns::third
+            """.trimIndent(),
+        ) {
+            assertEquals(
+                """
+                <figure><pre class="mermaid">xychart-beta
+                    x-axis [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
+                    y-axis &quot;Sales&quot;
+                    bar [230.0, 190.0, 180.0, 175.0, 200.0, 250.0, 290.0, 350.0, 470.0]
+                    line [230.0, 190.0, 180.0, 175.0, 200.0, 250.0, 290.0, 350.0, 470.0]
+                    bar [85.0, 100.0, 135.0, 180.0, 240.0, 320.0, 430.0, 580.0, 800.0, 0.0]
+                    line [85.0, 100.0, 135.0, 180.0, 240.0, 320.0, 430.0, 580.0, 800.0, 0.0]
+                </pre></figure>
+                """.trimIndent(),
+                it.toString().replace("\t", "    "),
+            )
+        }
+    }
+}

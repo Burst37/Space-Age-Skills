@@ -1,0 +1,23 @@
+# Code
+
+#### Default
+
+.code lang:{java}
+	.read {code/Wrapper.java}
+
+#### With caption
+
+.code lang:{java} caption:{A wrapper class}
+	.read {code/Wrapper.java}
+
+<<<
+
+#### Focused
+
+.code lang:{java} focus:{4..6}
+	.read {code/Wrapper.java}
+
+#### Without line numbers
+
+.code lang:{java} linenumbers:{no}
+	.read {code/Wrapper.java}

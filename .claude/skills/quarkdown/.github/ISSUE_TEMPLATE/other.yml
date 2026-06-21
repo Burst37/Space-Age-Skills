@@ -1,0 +1,17 @@
+name: Other
+description: Report an issue that doesn't fit other categories
+title: "[Other] "
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the issue.
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Any other context, screenshots, or information that might help.

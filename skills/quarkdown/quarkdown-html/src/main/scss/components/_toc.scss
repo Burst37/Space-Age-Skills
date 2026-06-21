@@ -1,0 +1,56 @@
+.quarkdown {
+  h1#table-of-contents {
+    text-align: start;
+  }
+
+  .current-page-number, .total-page-number {
+    display: inline;
+  }
+
+  nav {
+    text-align: start;
+
+    ul, ol {
+      flex-basis: 100%;
+      width: 100%;
+      list-style-position: inside;
+      margin: 0 0 0 1em;
+
+      &:not(:is(ul, ol) :is(ul, ol)) {
+        padding-left: 0;
+      }
+    }
+
+    li {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+
+      a {
+        display: flex;
+        flex-grow: 1;
+        align-items: baseline;
+
+        .toc-page-number {
+          margin-left: auto;
+          font-variant-numeric: tabular-nums;
+
+          &:empty, &[data-empty] {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+// ToC is scrollable in slides (not in PDF view)
+.quarkdown-slides nav:not(.pdf-page nav) {
+  overflow-y: scroll;
+  max-height: 50vh;
+}
+
+// Hide ToC title in docs if there are no entries.
+.quarkdown-docs #table-of-contents:has(+ nav[data-role="table-of-contents"] > :only-child:empty) {
+  visibility: hidden;
+}

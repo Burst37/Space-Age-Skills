@@ -1,0 +1,61 @@
+@use "highlightjs";
+
+@include highlightjs.theme("default");
+
+:root {
+    --qd-primary-color: rgb(220, 220, 220);
+    --qd-background-color: white;
+    --qd-main-color: hsl(0, 5%, 10%);
+    --qd-link-color: hsl(0, 100%, 33%);
+    --qd-nested-navigation-line-color: rgba(0, 0, 0, .2);
+    --qd-color-on-primary: var(--qd-main-color);
+    --qd-mermaid-node-background-color: var(--qd-background-color);
+
+    --qd-docs-header-background-color: rgb(246, 247, 249);
+    --qd-docs-separator-border-color: rgb(237, 238, 243);
+    --qd-docs-search-border-color: rgb(193, 195, 200);
+    --qd-docs-search-focused-border: var(--qd-main-color);
+}
+
+.quarkdown {
+    blockquote {
+        border-color: rgba(0, 0, 0, 0.2);
+    }
+
+    pre {
+        border: 1px solid var(--qd-main-color-muted);
+
+        code {
+            background-color: transparent;
+        }
+    }
+
+    &.quarkdown-paged {
+        pre {
+            border: none;
+
+            code {
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
+    }
+
+    &.quarkdown-slides {
+        blockquote {
+            box-shadow: none;
+        }
+    }
+
+    .hljs-ln td:first-child {
+        padding-left: 0 !important;
+    }
+
+    .box.callout {
+        --box-header-background-color: rgba(0, 0, 0, .03);
+    }
+
+    .mermaid .plot .line-plot-3 path {
+        stroke: lightskyblue;
+    }
+}

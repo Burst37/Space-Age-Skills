@@ -1,0 +1,27 @@
+# Math
+
+#### Inline
+Let $ F(u) $ be the *Fourier Transform* of the function $ f(x) $.
+
+#### Block
+$ F(u) = \int_{-\infty}^{\infty} f(x) e^{-2 \pi i u x} dx $
+
+#### Multiline block
+
+$$$
+f(x) = \begin{cases} 
+  x^2, & \text{if } x \ge 0 \\
+  -x, & \text{if } x < 0
+\end{cases}
+$$$
+
+#### Numbered block
+
+$ E = mc^2 $ {#_}
+
+.texmacro {\binomdef}
+  \frac{#1!}{#2!(#1 - #2)!}
+
+> Tip: Quarkdown supports TeX macros.
+>
+> $ \binom{n}{k} = \binomdef{n}{k} $

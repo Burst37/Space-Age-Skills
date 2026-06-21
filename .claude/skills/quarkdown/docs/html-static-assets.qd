@@ -1,0 +1,51 @@
+.docname {HTML static assets}
+.include {docs}
+
+Static assets let you ship arbitrary files alongside your compiled HTML output, without any further processing.
+
+Place files in a `public/` directory at the project root, next to your main source file. When compiling, Quarkdown copies its entire contents into the root of the output directory, preserving the original directory structure.
+
+Common examples of static assets include `robots.txt` for search engine crawling rules, `CNAME` for custom domain configuration on GitHub Pages, and misc binary files.
+
+.example
+    Given this project structure:
+
+    .filetree
+        - main.qd
+        - **public**
+          - robots.txt
+          - CNAME
+          - static
+            - resume.pdf
+
+    After compiling, the output looks like:
+
+    .filetree
+        - My document
+          - index.html
+          - theme
+            - ...
+          - script
+            - ...
+          - **robots.txt**
+          - **CNAME**
+          - **static**
+            - resume.pdf
+
+## Referencing static assets
+
+Assets copied from `public/` can be referenced using relative paths from the output root. For example, an image at `public/logo.png` can be used in the document with:
+
+```markdown
+![Logo](@/logo.png)
+```
+
+.box title:{Why `@`?}
+    The `@` prefix is called [media passthrough](media-storage.qd#opting-out) and resolves to the output root.
+    A path starting with this prefix prevents the media storage from processing it, since the asset is not present at that location in the source and would produce a warning.
+
+    Additionally, when working with [subdocuments](subdocuments.qd), the `@` prefix ensures that the path is correctly resolved regardless of the subdocument's output location.
+
+## Name collisions
+
+Avoid placing files in `public/` that share names with Quarkdown's generated resources (e.g. `index.html`, `theme/`, `script/`). If a collision occurs, it is undefined which version ends up in the output.

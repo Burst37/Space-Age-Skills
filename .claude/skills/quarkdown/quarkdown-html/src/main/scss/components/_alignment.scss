@@ -1,0 +1,62 @@
+@use "util/media-queries";
+
+.quarkdown {
+  text-align: var(--qd-horizontal-alignment-global);
+
+  // Local alignment (e.g. justification) is applied to specific elements instead of the whole document (#123).
+  p:not(.page-margin-content p, .mermaid p) {
+    text-align: var(--qd-horizontal-alignment-local);
+    &:not([data-split-to]) {
+      text-align-last: var(--qd-horizontal-alignment-global);
+    }
+  }
+
+  li:not(nav li) {
+    text-align: var(--qd-horizontal-alignment-list-items, var(--qd-horizontal-alignment-local));
+    text-align-last: start;
+  }
+
+  caption, figcaption {
+    text-align: var(--qd-horizontal-alignment-local);
+    text-align-last: center;
+  }
+
+  [style*="text-align"] > :is(p, li, span) {
+    text-align: unset !important;
+    text-align-last: unset !important;
+  }
+
+  // #263
+  formula {
+    text-align: initial;
+    text-align-last: initial;
+  }
+}
+
+.quarkdown-plain, .quarkdown-paged {
+  --qd-horizontal-alignment-global: start;
+  --qd-horizontal-alignment-local: justify;
+  --qd-horizontal-alignment-list-items: justify;
+}
+
+.quarkdown-plain {
+  @include media-queries.sm-down {
+    --qd-horizontal-alignment-local: start;
+    --qd-horizontal-alignment-list-items: start;
+  }
+}
+
+.quarkdown-slides {
+  --qd-horizontal-alignment-global: center;
+  --qd-horizontal-alignment-local: center;
+  --qd-horizontal-alignment-list-items: start;
+
+  .reveal .slides > :is(section, .pdf-page) {
+    text-align: var(--qd-horizontal-alignment-global);
+  }
+
+  .speaker-notes {
+    --qd-horizontal-alignment-global: start;
+    --qd-horizontal-alignment-local: start;
+  }
+}

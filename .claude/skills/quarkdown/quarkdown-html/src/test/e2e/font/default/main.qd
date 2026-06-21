@@ -1,0 +1,21 @@
+.theme layout:{latex}
+
+## Heading
+
+Text
+
+| Header 1 | Header 2 |
+|----------|----------|
+| Cell 1   | Cell 2   |
+"Caption"
+
+`code span`
+
+```text "Caption"
+code block
+```
+
+.box {Box}
+    Text
+
+.keybinding {Ctrl+K}

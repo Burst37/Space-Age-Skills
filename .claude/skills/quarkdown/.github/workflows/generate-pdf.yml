@@ -1,0 +1,72 @@
+name: PDF generation via Puppeteer
+
+on:
+  push:
+    tags: [ "v*" ]
+    paths-ignore:
+      - '*.md'
+      - '**/README.md'
+      - 'LICENSE'
+      - '.github/FUNDING.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: iamgio/quarkdown/.github/actions/setup-environment@main
+
+    - name: Setup Chrome
+      uses: browser-actions/setup-chrome@v1.7.3
+      id: setup-chrome
+
+    - name: Build distribution
+      uses: burrunan/gradle-cache-action@v3
+      with:
+        job-id: main
+        arguments: distZip
+
+    - name: Unzip distribution
+      run: unzip -q build/distributions/quarkdown.zip -d build/distributions/
+
+    - name: Setup staging directory
+      run: |
+        rm -rf pdf
+        mkdir -p pdf/mock
+
+    - name: Generate theme combinations
+      run: |
+        node .github/workflows/generate-pdf/generate-theme-combinations.js
+
+    - name: Compile Mock as PDF
+      run: |
+        for generated in $(ls mock/generated_*.qd); do
+          ./build/distributions/quarkdown/bin/quarkdown c $generated -o pdf/mock --pdf --pdf-no-sandbox
+        done
+        ls -d $PWD/pdf/*
+
+    - name: Remove directories, keep files
+      run: |
+        rm -rf pdf/mock/*/
+        ls -d $PWD/pdf/*
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: mock-pdf
+        path: pdf/mock
+
+    - name: Push to generated repo
+      uses: cpina/github-action-push-to-another-repository@v1.7.2
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.COMMITTER_TOKEN }}
+      with:
+        source-directory: pdf/mock
+        destination-github-username: quarkdown-labs
+        destination-repository-name: generated
+        target-directory: mock
+        commit-message: "Generate Mock PDF files from ${{ github.sha }}"
+        user-name: "github-actions[bot]"
+        user-email: "github-actions[bot]@users.noreply.github.com"

@@ -1,0 +1,10 @@
+build/
+**/build/
+.git/
+.github/
+.run/
+demo/
+docs/
+mock/
+*.md
+.typos.toml

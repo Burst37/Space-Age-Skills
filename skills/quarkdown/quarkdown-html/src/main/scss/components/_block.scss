@@ -1,0 +1,20 @@
+.quarkdown {
+  // Vertical block spacing.
+  table:not(code table), pre, figure, blockquote,
+  hr, .stack:not(.stack .stack), .file-tree {
+    margin-top: var(--qd-block-margin);
+    margin-bottom: var(--qd-block-margin);
+  }
+
+  .box {
+    $margin: calc(var(--qd-block-margin) * var(--qd-box-margin-multiplier));
+    margin-top: $margin;
+    margin-bottom: $margin;
+  }
+
+  // Resets the top margin of the first element in a page.
+  .paged-content-wrapper > :first-child,
+  .paged-content-wrapper > [data-hidden]:first-child ~ :nth-child(2) {
+    margin-top: 0 !important;
+  }
+}

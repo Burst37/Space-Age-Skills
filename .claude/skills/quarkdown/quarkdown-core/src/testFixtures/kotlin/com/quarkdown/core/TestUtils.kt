@@ -1,0 +1,110 @@
+package com.quarkdown.core
+
+import com.quarkdown.core.ast.AstRoot
+import com.quarkdown.core.ast.InlineContent
+import com.quarkdown.core.ast.Node
+import com.quarkdown.core.context.MutableContext
+import com.quarkdown.core.context.file.FileSystem
+import com.quarkdown.core.lexer.Lexer
+import com.quarkdown.core.lexer.tokens.LineBreakToken
+import com.quarkdown.core.lexer.tokens.NewlineToken
+import com.quarkdown.core.lexer.tokens.PlainTextToken
+import com.quarkdown.core.permissions.Permission
+import com.quarkdown.core.permissions.PermissionHolder
+import com.quarkdown.core.pipeline.Pipeline
+import com.quarkdown.core.pipeline.PipelineOptions
+import com.quarkdown.core.pipeline.Pipelines
+import com.quarkdown.core.visitor.token.TokenVisitor
+import org.assertj.core.api.Assertions.assertThat
+import kotlin.test.assertIs
+
+/**
+ * Asserts that the contents of two nodes are equal.
+ * @param expected expected node
+ * @param actual actual node
+ */
+fun assertNodeEquals(
+    expected: Node,
+    actual: Node,
+) = assertThat(actual)
+    .usingRecursiveComparison()
+    .isEqualTo(expected)!!
+
+/**
+ * Asserts that the contents of two inline content nodes are equal.
+ * @param expected expected node
+ * @param actual actual node
+ */
+fun assertNodeEquals(
+    expected: InlineContent,
+    actual: InlineContent,
+) = assertNodeEquals(AstRoot(expected), AstRoot(actual))
+
+/**
+ * Reads the text content of a test resource.
+ * @param path path to the test resource
+ * @return text of the test resource
+ * @throws IllegalAccessError if the resource was not found
+ */
+fun readSource(path: String) =
+    object {}::class.java
+        .getResourceAsStream(path)
+        ?.bufferedReader()
+        ?.readText()
+        ?: throw IllegalAccessError("No resource $path")
+
+/**
+ * Tokenizes and parses some input.
+ * @param assertType if `true`, asserts each output node is of type [T]
+ * @param lexer lexer to use to tokenize
+ * @param parser parser to use on each token
+ * @param T type of the nodes to output
+ * @return iterator of the parsed nodes
+ */
+inline fun <reified T : Node> nodesIterator(
+    lexer: Lexer,
+    parser: TokenVisitor<Node>,
+    assertType: Boolean = true,
+): Iterator<T> =
+    lexer
+        .tokenize()
+        .filterNot { it is NewlineToken }
+        .filterNot { it is PlainTextToken && it.data.text.isBlank() }
+        .filterNot { it is LineBreakToken && it.data.text.first() != ' ' && it.data.text.first() != '\\' }
+        .map { it to it.accept(parser) }
+        .onEach { (token, node) ->
+            if (assertType) {
+                assertIs<T>(
+                    node,
+                    message = "From token:\n${token.data.text}\n\n",
+                )
+            }
+        }.map { it.second }
+        .filterIsInstance<T>()
+        .iterator()
+
+/**
+ * A minimal [PermissionHolder] for tests with configurable permissions and root file system.
+ * @param permissions the set of granted permissions
+ * @param rootFileSystem the root file system, or `null` if all file reads are considered global
+ */
+class MockPermissionHolder(
+    override val permissions: Set<Permission>,
+    override val rootFileSystem: FileSystem? = null,
+) : PermissionHolder
+
+/**
+ * Attaches a mock pipeline to a context for tests only, which does not support rendering.
+ * @param options options of the pipeline
+ */
+fun MutableContext.attachMockPipeline(options: PipelineOptions = PipelineOptions()): Pipeline {
+    val pipeline =
+        Pipeline(
+            this,
+            options,
+            libraries = emptySet(),
+            renderer = { _, _ -> throw UnsupportedOperationException() },
+        )
+    Pipelines.attach(this, pipeline)
+    return pipeline
+}

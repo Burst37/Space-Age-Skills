@@ -1,0 +1,60 @@
+.quarkdown.quarkdown {
+  p {
+    margin-top: 0;
+    margin-bottom: 0;
+    text-indent: var(--qd-paragraph-text-indent);
+  }
+
+  &:not(.quarkdown-slides) p {
+    hyphens: auto;
+  }
+
+  p, li, td, caption, figcaption, .footnote-definition {
+    line-height: var(--qd-line-height);
+    letter-spacing: var(--qd-letter-spacing);
+  }
+}
+
+p, .container:has(> p:last-child) {
+  $valid-paragraph-type-1: 'p:not(.stack > p):not(.page-margin-content > p)';
+  $valid-paragraph-type-2: '.container:has(> p:first-child)';
+
+  // These selectors could be shorter, but pagedjs fails on `+` and complex selectors.
+
+  // Spacing between two sibling paragraphs
+  + #{$valid-paragraph-type-1},
+  + #{$valid-paragraph-type-2},
+    // Spacing between two sibling paragraphs with a floating element in-between
+  + .float + #{$valid-paragraph-type-1},
+  + .float + #{$valid-paragraph-type-2},
+    // Spacing between the paragraph and its floating element sibling
+  + .float:has(+ #{$valid-paragraph-type-1}) {
+    margin-top: var(--qd-paragraph-vertical-margin) !important;
+  }
+}
+
+// Paragraphs that don't expect indentation.
+figure p,
+.stack > p,
+[style*="text-align"] > p,
+[style*="justify-items"] > p,
+.mermaid p,
+.page-margin-content p {
+  text-indent: 0 !important;
+}
+
+// First paragraphs may not expect indentation, depending on the locale or theme.
+p:first-child,
+h1 + p,
+h2 + p,
+h3 + p,
+h4 + p,
+h5 + p,
+h6 + p,
+hr + p,
+figure + p,
+table + p,
+details > summary + p,
+.float + p {
+  text-indent: var(--qd-first-paragraph-text-indent, 0) !important;
+}

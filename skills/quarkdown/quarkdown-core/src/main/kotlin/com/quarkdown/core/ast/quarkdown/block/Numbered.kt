@@ -1,0 +1,49 @@
+package com.quarkdown.core.ast.quarkdown.block
+
+import com.quarkdown.core.ast.NestableNode
+import com.quarkdown.core.ast.Node
+import com.quarkdown.core.ast.attributes.error.ErrorCapableNode
+import com.quarkdown.core.ast.attributes.location.LocationTrackableNode
+import com.quarkdown.core.ast.attributes.location.SectionLocation
+import com.quarkdown.core.ast.quarkdown.reference.CrossReferenceableNode
+import com.quarkdown.core.document.numbering.DocumentNumbering
+import com.quarkdown.core.pipeline.error.PipelineErrorHandler
+import com.quarkdown.core.visitor.node.NodeVisitor
+
+/**
+ * Node that can be numbered depending on its location in the document
+ * and the amount of occurrences according to its [key].
+ *
+ * This node is peculiar, as it's the only node whose children are not evaluated directly during the function call expansion stage,
+ * but rather during the AST traversal.
+ *
+ * This is because in order to evaluate the children, we need to know the location of the node in the document,
+ * which is not known until the AST is fully traversed by [com.quarkdown.core.context.hooks.location.LocationAwareLabelStorerHook].
+ *
+ * After the traversal, the [com.quarkdown.core.context.hooks.location.NumberedEvaluatorHook] will evaluate and assign the [children] of this node, ready to be rendered.
+ *
+ * Since the evaluation does not happen within [com.quarkdown.core.function.call.FunctionCallNodeExpander],
+ * errors thrown during the evaluation will have to be caught externally. This is handled by the hook itself,
+ * which appends an error box (the same produced from the expander) to [children].
+ * From the user's perspective, this does not have any effect.
+ * @param key name to group (and count) numbered nodes
+ * @param referenceId optional ID for cross-referencing via a [com.quarkdown.core.ast.quarkdown.reference.CrossReference]
+ * @param childrenSupplier supplier of the node content given the evaluated [SectionLocation], formatted according to the active [DocumentNumbering]
+ * @see com.quarkdown.core.context.hooks.location.LocationAwareLabelStorerHook for storing locations
+ * @see com.quarkdown.core.context.hooks.location.NumberedEvaluatorHook for evaluating [location] and [childrenSupplier]
+ * @see com.quarkdown.core.document.numbering.NumberingFormat
+ */
+class Numbered(
+    val key: String,
+    override val referenceId: String? = null,
+    internal val childrenSupplier: (location: String) -> List<Node>,
+) : NestableNode,
+    ErrorCapableNode,
+    LocationTrackableNode,
+    CrossReferenceableNode {
+    override var children: List<Node> = emptyList()
+
+    override var error: Pair<Throwable, PipelineErrorHandler>? = null
+
+    override fun <T> acceptOnSuccess(visitor: NodeVisitor<T>): T = visitor.visit(this)
+}

@@ -1,0 +1,108 @@
+@use "font";
+@use "util/media-queries";
+
+.quarkdown {
+  code {
+    @include font.global-font-family("code", monospace);
+    text-align: start;
+
+    &:not(pre code) {
+      font-size: var(--qd-code-span-font-size);
+    }
+  }
+
+  pre {
+    min-width: 20%;
+
+    &:not(.stack > pre, .box pre) {
+      min-width: 100%;
+    }
+  }
+
+  pre code {
+    font-size: var(--qd-code-block-font-size);
+    line-height: var(--qd-code-line-height);
+    font-style: normal;
+    max-height: none;
+    overflow: hidden;
+
+    @at-root .quarkdown-slides#{&} {
+      font-size: var(--qd-slides-code-block-font-size);
+    }
+
+    @at-root :is(.quarkdown-plain, .quarkdown-docs)#{&} {
+      @include media-queries.sm-down {
+        font-size: var(--qd-sm-code-block-font-size);
+      }
+    }
+
+    // Line numbers are displayed in a table, so no borders by default
+    table {
+      td, th {
+        border: 0;
+      }
+    }
+  }
+
+  pre, pre code {
+    border-radius: var(--qd-code-border-radius);
+  }
+
+  // Code block line numbers
+
+  .hljs-ln td {
+    padding: var(--qd-code-line-numbers-padding) !important;
+  }
+
+  .hljs-ln-numbers {
+    opacity: var(--qd-code-line-numbers-opacity);
+  }
+
+  // Diff
+
+  .hljs-deletion {
+    background-color: darkred;
+    color: white;
+  }
+
+  .hljs-addition {
+    background-color: darkgreen;
+    color: white;
+  }
+
+  // Code block copy button
+
+  .hljs-copy-wrapper {
+    .hljs-copy-container {
+      --hljs-theme-padding: 16px !important;
+      transform: none;
+      opacity: 0;
+      transition: opacity 300ms ease;
+    }
+
+    .hljs-copy-button {
+      cursor: pointer;
+    }
+
+    &:hover .hljs-copy-container {
+      opacity: .8;
+    }
+  }
+
+  // Code span + additional content
+
+  .codespan-content {
+    // Has additional content.
+    &:has(:nth-child(2)) {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .color-preview {
+      margin-left: 0.4em;
+      width: 0.5em;
+      height: 0.5em;
+      border: 0.1em solid var(--qd-main-color-muted);
+    }
+  }
+}

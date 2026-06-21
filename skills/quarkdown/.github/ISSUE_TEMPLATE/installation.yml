@@ -1,0 +1,63 @@
+name: Installation issue
+description: Report a problem with installing or updating Quarkdown
+title: "[Installation] "
+labels: ["installation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting an installation issue!
+        Please make sure your issue is related to the Quarkdown compiler itself before submitting.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Before submitting
+      description: |
+        This repository only tracks issues with the Quarkdown compiler.
+        If your issue is related to a specific installer, please open it in the corresponding repository:
+        - [get-quarkdown](https://github.com/quarkdown-labs/get-quarkdown) for the install script (Linux, macOS, Windows)
+        - [homebrew-quarkdown](https://github.com/quarkdown-labs/homebrew-quarkdown) for Homebrew (macOS, Linux)
+        - [scoop-quarkdown](https://github.com/quarkdown-labs/scoop-quarkdown) for Scoop (Windows)
+        - [setup-quarkdown](https://github.com/quarkdown-labs/setup-quarkdown) for the GitHub Action
+      options:
+        - label: This issue is related to the Quarkdown compiler, not to a specific installer.
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the installation problem.
+      placeholder: Describe what happened and what you expected to happen instead.
+    validations:
+      required: true
+
+  - type: input
+    id: installation-method
+    attributes:
+      label: Installation method
+      placeholder: e.g. Homebrew, Scoop, install script, GitHub Action, manual (ZIP/TAR)
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: e.g. macOS 15, Windows 11, Ubuntu 24.04
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or error output
+      description: Paste any relevant terminal output or error messages.
+      render: shell
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Any other context or information that might help.

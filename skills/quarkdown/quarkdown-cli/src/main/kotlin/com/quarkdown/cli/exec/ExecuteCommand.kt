@@ -1,0 +1,358 @@
+package com.quarkdown.cli.exec
+
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.CliktError
+import com.github.ajalt.clikt.core.ProgramResult
+import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.multiple
+import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.types.choice
+import com.github.ajalt.clikt.parameters.types.file
+import com.github.ajalt.clikt.parameters.types.int
+import com.quarkdown.cli.CliOptions
+import com.quarkdown.cli.exec.strategy.PipelineExecutionStrategy
+import com.quarkdown.cli.server.DEFAULT_SERVER_PORT
+import com.quarkdown.cli.util.checkCleanSafety
+import com.quarkdown.cli.util.runWithTimeout
+import com.quarkdown.cli.watcher.DirectoryWatcher
+import com.quarkdown.core.TIMEOUT_EXIT_CODE
+import com.quarkdown.core.document.sub.SubdocumentOutputNaming
+import com.quarkdown.core.log.Log
+import com.quarkdown.core.media.storage.options.ReadOnlyMediaStorageOptions
+import com.quarkdown.core.permissions.Permission
+import com.quarkdown.core.pipeline.PipelineOptions
+import com.quarkdown.core.pipeline.error.BasePipelineErrorHandler
+import com.quarkdown.core.pipeline.error.StrictPipelineErrorHandler
+import com.quarkdown.core.util.kebabCaseName
+import com.quarkdown.installlayout.InstallLayout
+import com.quarkdown.interaction.executable.NodeJsWrapper
+import com.quarkdown.interaction.executable.NpmWrapper
+import java.io.File
+
+/**
+ * Name of the default directory to save output files in.
+ * It can be overridden by the user.
+ */
+const val DEFAULT_OUTPUT_DIRECTORY = "quarkdown-output"
+
+/**
+ * CLI name to [Permission] set mapping, shared by `--allow` and `--deny`.
+ * Individual permissions are keyed by their [Permission.name]; `all` grants every permission.
+ */
+private val permissionChoices =
+    Permission.ALL.associate { it.name to setOf(it) } +
+        ("all" to Permission.ALL)
+
+/**
+ * Template for Quarkdown commands that launch a complete pipeline and produce output files.
+ * @param name name of the command
+ * @see CompileCommand
+ * @see ReplCommand
+ */
+abstract class ExecuteCommand(
+    name: String,
+) : CliktCommand(name) {
+    /**
+     * @param cliOptions options that define the behavior of the CLI (already finalized by [finalizeCliOptions])
+     * @return strategy to launch the pipeline, e.g. from file or REPL
+     */
+    protected abstract fun createExecutionStrategy(cliOptions: CliOptions): PipelineExecutionStrategy
+
+    /**
+     * Finalizes the CLI options before running the pipeline by creating a new instance.
+     * The [original] options are created by [ExecuteCommand]'s (= this base class) properties.
+     * @param original original CLI options
+     * @return finalized CLI options
+     */
+    protected open fun finalizeCliOptions(original: CliOptions): CliOptions = original
+
+    /**
+     * Optional output directory.
+     * If not set, the output is saved in [DEFAULT_OUTPUT_DIRECTORY].
+     */
+    private val outputDirectory: File? by option("-o", "--out", help = "Output directory")
+        .file(
+            mustExist = false,
+            canBeFile = false,
+            canBeDir = true,
+        ).default(File(DEFAULT_OUTPUT_DIRECTORY))
+
+    /**
+     * Optional name of the output resource, to be located in [outputDirectory].
+     * If not set, defaults to the value of `.docname`.
+     */
+    private val resourceName: String? by option(
+        "--out-name",
+        help = "Name of the output resource, to be located in the output directory. Note: special characters will be sanitized to dashes.",
+    )
+
+    /**
+     * Optional library directory.
+     * If not set, defaults to the `qd/` subdirectory of the resolved install directory.
+     */
+    private val libraryDirectory: File? by option("-l", "--libs", help = "Library directory")
+        .file(
+            mustExist = true,
+            canBeFile = false,
+            canBeDir = true,
+        )
+
+    /**
+     * The rendering target to generate output for.
+     */
+    private val renderer: String by option(
+        "-r",
+        "--render",
+        help = "Rendering target to generate output for",
+    ).default("html")
+
+    /**
+     * When enabled, the rendering stage produces pretty output code.
+     */
+    private val prettyOutput: Boolean by option("--pretty", help = "Pretty output").flag()
+
+    /**
+     * When enabled, the rendered code isn't wrapped in a template code.
+     * For example, an HTML wrapper may add `<html><head>...</head><body>...</body></html>`, with the content injected in `body`.
+     * @see com.quarkdown.template.TemplateProcessor
+     */
+    private val noWrap: Boolean by option("--nowrap", help = "Don't wrap output").flag()
+
+    /**
+     * When enabled, the process is aborted whenever any pipeline error occurs.
+     * By default, this is disabled and error messages are displayed in the final document without killing the pipeline.
+     */
+    private val strict: Boolean by option("--strict", help = "Exit on error").flag()
+
+    /**
+     * When enabled, the output directory is cleaned before generating new files.
+     */
+    private val clean: Boolean by option("--clean", help = "Clean output directory").flag()
+
+    /**
+     * Additional permissions to grant on top of [Permission.DEFAULT_SET].
+     */
+    private val allowPermissions: List<Set<Permission>> by option(
+        "--allow",
+        help = "Grant an additional permission (repeatable)",
+    ).choice(permissionChoices).multiple()
+
+    /**
+     * Permissions to revoke from the resulting set.
+     */
+    private val denyPermissions: List<Set<Permission>> by option(
+        "--deny",
+        help = "Revoke a permission (repeatable)",
+    ).choice(permissionChoices).multiple()
+
+    /**
+     * When enabled, the program does not store any media (e.g. images) into the output directory `media` directory
+     * and nodes that reference those media objects are not updated to reflect the new local path.
+     */
+    private val noMediaStorage: Boolean by option("--no-media-storage", help = "Disables media storage").flag()
+
+    /**
+     * When enabled, defining a function with an existing name raises an error, rather than overwriting the previous function definition.
+     */
+    private val forbidFunctionOverwriting: Boolean by option(
+        "--forbid-function-overwriting",
+        help = "Raise error on clashing function names",
+    ).flag()
+
+    /**
+     * The strategy used to determine subdocument output file names.
+     */
+    private val subdocumentNaming: SubdocumentOutputNaming by option(
+        "--subdoc-naming",
+        help = "Subdocument output naming strategy",
+    ).choice(choices = SubdocumentOutputNaming.entries.associateBy { it.kebabCaseName })
+        .default(SubdocumentOutputNaming.FILE_NAME)
+
+    /**
+     * When enabled, the program communicates with the local server to dynamically reload the requested resources.
+     */
+    protected val preview: Boolean by option("-p", "--preview", help = "Open or reload content after compiling").flag()
+
+    /**
+     * When enabled, the program watches for file changes and automatically recompiles the source.
+     * If [preview] is enabled as well, this allows for live reloading.
+     */
+    protected val watch: Boolean by option("-w", "--watch", help = "Watch for file changes").flag()
+
+    /**
+     * Port to communicate with the local server on if [preview] is enabled.
+     */
+    protected val serverPort: Int by option("--server-port", help = "Port to communicate with the local server on")
+        .int()
+        .default(DEFAULT_SERVER_PORT)
+
+    /**
+     * Path to the Node.js executable, needed for PDF export.
+     */
+    private val nodePath: String by option("--node-path", help = "Path to the Node.js executable")
+        .default(NodeJsWrapper.defaultPath)
+
+    /**
+     * Path to the npm executable, needed for PDF export.
+     */
+    private val npmPath: String by option("--npm-path", help = "Path to the npm executable")
+        .default(NpmWrapper.defaultPath)
+
+    /**
+     * Maximum time, in seconds, allowed for the entire execution (pipeline + export) to complete.
+     * `null` or non-positive disables the timeout. Subclasses may override to provide a value.
+     */
+    protected open val timeoutSeconds: Int? = null
+
+    /**
+     * @return the finalized CLI options based on the command's properties
+     */
+    fun createCliOptions(): CliOptions =
+        CliOptions(
+            // Might be overridden by a subclass via `finalizeCliOptions`, e.g. `CompileCommand` which requires a source file.
+            source = null,
+            outputDirectory,
+            libraryDirectory = libraryDirectory ?: InstallLayout.get.quarkdownLibraries.file,
+            renderer,
+            clean,
+            pipe = false,
+            nodePath,
+            npmPath,
+        ).let(::finalizeCliOptions)
+
+    /**
+     * When preview is enabled, the output resource name must be fixed
+     * so that changing the document title doesn't break the live preview.
+     * If the user explicitly set [resourceName], that value is used as-is.
+     * Otherwise, if preview is enabled, the resource name is derived from a hash of the source file path.
+     * @param cliOptions finalized CLI options
+     * @return the resolved resource name, or `null` to let the pipeline decide
+     */
+    private fun resolveResourceName(cliOptions: CliOptions): String? =
+        when {
+            resourceName != null -> {
+                resourceName
+            }
+
+            preview -> {
+                cliOptions.source
+                    ?.let { it.nameWithoutExtension to it.absolutePath.hashCode().toUInt() }
+                    ?.let { (name, hash) -> "preview-$name-$hash" }
+            }
+
+            else -> {
+                null
+            }
+        }
+
+    /**
+     * @param cliOptions finalized CLI options
+     * @return pipeline options based on the command's properties
+     */
+    fun createPipelineOptions(cliOptions: CliOptions) =
+        PipelineOptions(
+            resourceName = resolveResourceName(cliOptions),
+            prettyOutput = prettyOutput,
+            wrapOutput = !noWrap,
+            workingDirectory = cliOptions.source?.absoluteFile?.parentFile,
+            enableMediaStorage = !noMediaStorage,
+            forbidFunctionOverwriting = forbidFunctionOverwriting,
+            subdocumentNaming = subdocumentNaming,
+            isPreview = preview,
+            serverPort = serverPort.takeIf { preview },
+            mediaStorageOptionsOverrides = ReadOnlyMediaStorageOptions(),
+            permissions =
+                Permission.DEFAULT_SET +
+                    allowPermissions.flatten().toSet() -
+                    denyPermissions.flatten().toSet(),
+            errorHandler =
+                when {
+                    strict -> StrictPipelineErrorHandler()
+                    else -> BasePipelineErrorHandler()
+                },
+        )
+
+    override fun run() {
+        val cliOptions = this.createCliOptions()
+        val pipelineOptions = this.createPipelineOptions(cliOptions)
+
+        // Prevents `--clean` from deleting sensitive directories.
+        if (cliOptions.clean) {
+            cliOptions.outputDirectory?.let { dir ->
+                dir.checkCleanSafety(cliOptions.source)?.let { refusal ->
+                    throw CliktError(
+                        "Refusing to clean output directory '${dir.absolutePath}': ${refusal.message}. " +
+                            "Please pick a different --out directory or omit --clean.",
+                    )
+                }
+            }
+        }
+
+        // If pipe mode is enabled, all logging is disabled, so that only the rendered content is printed to stdout.
+        if (cliOptions.pipe) {
+            Log.disableLogging()
+        }
+
+        // If file watching is enabled, a file change triggers the pipeline execution again.
+        cliOptions.takeIf { watch }?.source?.absoluteFile?.parentFile?.let { sourceDirectory ->
+            Log.info("Watching for file changes in source directory: $sourceDirectory")
+
+            DirectoryWatcher
+                .create(sourceDirectory, exclude = cliOptions.outputDirectory) { event ->
+                    Log.info("File changed: ${event.path()}. Launching.")
+                    execute(cliOptions, pipelineOptions)
+                }.watch()
+        }
+
+        // Executes the Quarkdown pipeline.
+        execute(cliOptions, pipelineOptions)
+    }
+
+    /**
+     * Executes the Quarkdown pipeline: compiles and generates output files.
+     * [preExecute] and [postExecute] are called before and after the execution respectively.
+     * If [timeoutSeconds] is set, the execution is bounded by the specified duration.
+     */
+    private fun execute(
+        cliOptions: CliOptions,
+        pipelineOptions: PipelineOptions,
+    ) {
+        val strategy = createExecutionStrategy(cliOptions)
+
+        this.preExecute(cliOptions, pipelineOptions)
+
+        val outcome: ExecutionOutcome =
+            runWithTimeout(
+                timeoutSeconds,
+                onTimeout = { e ->
+                    Log.error("Execution timed out (--timeout ${e.timeoutSeconds}).")
+                    throw ProgramResult(TIMEOUT_EXIT_CODE)
+                },
+            ) {
+                runQuarkdown(strategy, cliOptions, pipelineOptions)
+            }
+
+        this.postExecute(outcome, cliOptions, pipelineOptions)
+    }
+
+    /**
+     * Executes actions before the execution of the pipeline starts.
+     */
+    protected open fun preExecute(
+        cliOptions: CliOptions,
+        pipelineOptions: PipelineOptions,
+    ) {
+    }
+
+    /**
+     * Executes actions after the execution of the pipeline has been completed
+     * and the output files have been generated.
+     */
+    protected open fun postExecute(
+        outcome: ExecutionOutcome,
+        cliOptions: CliOptions,
+        pipelineOptions: PipelineOptions,
+    ) {
+    }
+}

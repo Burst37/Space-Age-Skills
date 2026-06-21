@@ -1,0 +1,169 @@
+@use "_font";
+@use "util/icon" as *;
+
+.quarkdown .box {
+  --box-background-color: transparent;
+  --box-content-foreground-color: var(--qd-main-color);
+  --box-header-foreground-color: var(--qd-main-color);
+  --box-header-background-color: var(--qd-box-header-background-color,
+          color-mix(in srgb,
+                  var(--box-header-foreground-color, var(--qd-main-color)) 2.5%,
+                  color-mix(in srgb,
+                          var(--box-background-color, transparent) 98%,
+                          rgba(0, 0, 0, .1)
+                  )
+          )
+  );
+
+  width: 100%;
+  border-radius: var(--qd-box-border-radius);
+  background-color: var(--box-background-color);
+  break-inside: avoid;
+
+  > header, > .box-content {
+    padding: var(--qd-box-section-padding);
+  }
+
+  > header {
+    display: flex;
+    color: var(--box-header-foreground-color);
+    background-color: var(--box-header-background-color);
+    border-radius: var(--qd-box-border-radius) var(--qd-box-border-radius) 0 0;
+
+    p {
+      margin: 0;
+    }
+
+    > h4 {
+      color: var(--box-header-foreground-color);
+      margin: 0;
+      @include font.global-font-family-with-heading-fallback($kind: "box-heading");
+    }
+  }
+
+  > .box-content {
+    color: var(--box-content-foreground-color);
+
+    > :first-child {
+      margin-top: var(--qd-box-content-vertical-padding);
+    }
+
+    > :last-child {
+      margin-bottom: var(--qd-box-content-vertical-padding);
+    }
+
+    ul, ol {
+      padding-left: 18px;
+
+      @at-root .quarkdown-paged#{&} {
+        padding-left: 24px;
+      }
+
+      @at-root .quarkdown-slides#{&} {
+        padding-left: 4px;
+      }
+    }
+  }
+
+  &.error {
+    > .box-content {
+      font-size: 0.7em;
+      font-family: var(--qd-code-font), monospace;
+    }
+
+    .inline-collapse[data-collapsed="true"] {
+      --qd-collapsed-text-color: var(--qd-error-message-collapsed-text-color);
+      background-color: rgba(0, 0, 0, 0.09);
+      border: none;
+    }
+  }
+
+  // Header icons
+
+  > header > h4::before {
+    font-weight: normal;
+    float: left;
+    margin-right: 10px;
+    margin-top: var(--qd-box-icon-baseline);
+  }
+
+  @mixin header-icon($icon, $margin-top: null) {
+    > header > h4 {
+      display: flex;
+      flex-direction: row;
+      align-items: center; // Align icons
+      justify-content: var(--qd-horizontal-alignment-global);
+
+      &::before {
+        @include icon($icon);
+        @if $margin-top != null { margin-top: $margin-top; }
+        font-size: 0.8em;
+      }
+    }
+  }
+
+  &.tip {
+    @include header-icon("\f46b"); /* 'lightbulb' icon */
+  }
+
+  &.note {
+    @include header-icon("\f431"); /* 'info circle' icon */
+  }
+
+  &.warning {
+    @include header-icon("\f33b", $margin-top: 0px); /* 'warning triangle' icon */
+  }
+}
+
+// Box (and quote) types
+.quarkdown {
+  .callout {
+    --box-background-color: var(--qd-callout-background-color);
+    --box-content-foreground-color: var(--qd-callout-content-foreground-color);
+    --box-header-foreground-color: var(--qd-callout-title-foreground-color);
+  }
+
+  .tip {
+    --box-background-color: var(--qd-tip-background-color);
+    --box-content-foreground-color: var(--qd-tip-content-foreground-color);
+    --box-header-foreground-color: var(--qd-tip-title-foreground-color);
+  }
+
+  .note {
+    --box-background-color: var(--qd-note-background-color);
+    --box-content-foreground-color: var(--qd-note-content-foreground-color);
+    --box-header-foreground-color: var(--qd-note-title-foreground-color);
+  }
+
+  .important {
+    --box-background-color: var(--qd-important-background-color);
+    --box-content-foreground-color: var(--qd-important-content-foreground-color);
+    --box-header-foreground-color: var(--qd-important-title-foreground-color);
+  }
+
+  .warning {
+    --box-background-color: var(--qd-warning-background-color);
+    --box-content-foreground-color: var(--qd-warning-content-foreground-color);
+    --box-header-foreground-color: var(--qd-warning-title-foreground-color);
+  }
+
+  .error {
+    --box-header-background-color: rgba(0, 0, 0, .1);
+    --box-background-color: var(--qd-error-background-color);
+    --box-content-foreground-color: var(--qd-error-content-foreground-color);
+    --box-header-foreground-color: var(--qd-error-title-foreground-color);
+
+    &, p {
+      text-align: start !important;
+    }
+
+    pre {
+      background-color: var(--box-header-background-color);
+      padding: 12px;
+
+      code {
+        color: var(--box-header-foreground-color);
+      }
+    }
+  }
+}

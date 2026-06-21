@@ -1,0 +1,20 @@
+.doctype {paged}
+
+$$$
+\begin{cases}
+x+y+z=1\\
+2x-y+z=2\\
+x-2y+3z=3
+\end{cases}
+$$$
+
+.repeat {5}
+    .loremipsum
+
+$$$
+\begin{cases}
+x+y+z=1\\
+2x-y+z=2\\
+x-2y+3z=3
+\end{cases}
+$$$

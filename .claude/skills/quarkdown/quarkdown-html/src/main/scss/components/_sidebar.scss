@@ -1,0 +1,104 @@
+// Navigation sidebar (not part of the document)
+
+@use "util/media-queries" as media-queries;
+
+$max-level: 3;
+$level-width: 9px;
+
+.quarkdown nav.sidebar.sidebar.sidebar.sidebar {
+  position: fixed;
+  display: none;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  padding: 20px;
+  border-radius: 8px;
+  max-height: 90vh;
+  overflow-y: auto;
+  transition: background-color 0.3s;
+
+  @include media-queries.sm-up {
+    display: block;
+  }
+
+  ol {
+    list-style: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin: 0 !important;
+
+    @for $level from 1 through $max-level {
+      &[data-depth="#{$level}"] > a::after {
+        width: ($max-level - $level + 1) * $level-width;
+        margin-left: ($level - 1) * $level-width;
+      }
+    }
+
+    &:before {
+      display: none;
+    }
+  }
+
+  a {
+    height: 12px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: transparent;
+    font-size: 0.75rem;
+    text-decoration: none !important;
+    transition: color 0.2s;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    gap: 12px;
+
+    &:hover {
+      opacity: 1;
+
+      &::after {
+        opacity: 1;
+      }
+    }
+
+    &::after {
+      content: '';
+      width: 100%;
+      height: 2px;
+      background: var(--qd-main-color);
+      opacity: 0.25;
+      transition: opacity 0.2s;
+    }
+  }
+
+  // Expanded state.
+  &:hover {
+    background-color: var(--qd-background-color);
+
+    a {
+      color: var(--qd-main-color);
+      opacity: .85;
+
+      &:hover {
+        color: var(--qd-link-color);
+      }
+    }
+  }
+
+  // Collapsed state has fixed color in paged documents.
+  &:not(:hover):is(.quarkdown-paged .sidebar) a::after {
+    background: #444;
+  }
+
+  li.active {
+    > a::after {
+      opacity: .75;
+    }
+  }
+}
