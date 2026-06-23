@@ -12,6 +12,13 @@ const AGENTS = [
   { id: 'deepseek', label: 'DeepSeek',  role: 'Primary Code',   color: '#38bdf8', status: 'idle',    model: 'v4-pro',        ctx: '128K' },
 ]
 
+const SELF_HOSTED = [
+  { id: 'n8n',         label: 'n8n',          role: 'Workflow Automation', color: '#ea4b71', icon: '⇶', repo: 'stacks/n8n',          url: 'http://146.190.78.120:5678' },
+  { id: 'ghost',       label: 'Ghost',         role: 'Publishing Platform', color: '#15171a', icon: '◈', repo: 'stacks/ghost',         url: 'http://146.190.78.120:2368' },
+  { id: 'stirling',    label: 'Stirling PDF',  role: 'PDF Toolkit',        color: '#4e9af1', icon: '▤', repo: 'stacks/stirling-pdf',  url: 'http://146.190.78.120:8080' },
+  { id: 'chatwoot',    label: 'Chatwoot',      role: 'Customer Support',   color: '#1f93ff', icon: '✉', repo: 'stacks/chatwoot',      url: 'http://146.190.78.120:3000' },
+]
+
 const QUICK = [
   { label: 'Terminal',    icon: '>_',  href: '/terminal' },
   { label: 'Pipeline',   icon: '⇶',   href: '/pipeline' },
@@ -300,6 +307,71 @@ export default function MissionControl() {
                 textTransform: 'uppercase',
                 color: 'rgba(255,255,255,0.65)',
               }}>{q.label}</span>
+            </motion.a>
+          ))}
+        </motion.div>
+      </div>
+
+      {/* ── SELF-HOSTED STACK ───────────────────── */}
+      <div>
+        <div style={{
+          fontFamily: "'Rajdhani', sans-serif",
+          fontWeight: 700,
+          fontSize: 9,
+          letterSpacing: '0.25em',
+          textTransform: 'uppercase',
+          color: 'rgba(255,255,255,0.25)',
+          marginBottom: 14,
+        }}>SELF-HOSTED STACK</div>
+
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          animate="show"
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}
+        >
+          {SELF_HOSTED.map(s => (
+            <motion.a
+              key={s.id}
+              href={s.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              variants={fadeUp}
+              whileHover={{ scale: 1.015, y: -3, transition: { type: 'spring', stiffness: 320, damping: 22 } }}
+              style={{
+                textDecoration: 'none',
+                background: 'rgba(255,255,255,0.025)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                borderTop: `2px solid ${s.color}55`,
+                borderRadius: 10,
+                padding: '14px 16px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 5,
+                cursor: 'pointer',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 14, color: s.color }}>{s.icon}</span>
+                <span style={{
+                  fontFamily: "'Orbitron', sans-serif",
+                  fontWeight: 700,
+                  fontSize: 11,
+                  color: s.color,
+                  letterSpacing: '0.03em',
+                }}>{s.label}</span>
+              </div>
+              <span style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: 11,
+                color: 'rgba(255,255,255,0.4)',
+              }}>{s.role}</span>
+              <span style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 9,
+                color: 'rgba(255,255,255,0.2)',
+                marginTop: 4,
+              }}>{s.repo}</span>
             </motion.a>
           ))}
         </motion.div>
