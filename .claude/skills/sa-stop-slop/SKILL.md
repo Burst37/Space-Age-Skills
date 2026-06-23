@@ -1,177 +1,262 @@
 ---
 name: sa-stop-slop
 description: >
-  Space Age anti-slop enforcement system. Audits and rejects generic AI-generated copy,
-  website content, and design descriptions. Enforces SA copy standards across cold email,
-  artist bios, website headlines, credit repair letters, and social content.
-  Load before reviewing or publishing any copy output.
+  SA-supercharged version of hardikpandya/stop-slop (~3k stars). A drop-in
+  skill file that catches every AI writing tell — throat-clearing openers,
+  emphasis crutches, binary contrasts, dramatic fragmentation, em dashes,
+  business jargon, adverbs, vague declaratives — and forces prose that sounds
+  like it came from a human with taste. SA extends with: cinematic copywriting
+  standards for client deliverables, cold outreach anti-slop rules (the $300-750
+  pitch), Record Exec in a Box artist bio standards, credit repair document
+  tone enforcement, and social media caption standards. Load this skill in
+  ANY writing session — outreach emails, site copy, artist bios, captions,
+  credit dispute letters, proposals. Trigger: "write copy", "outreach email",
+  "artist bio", "caption", "website copy", "make this sound human", "fix this
+  writing", "stop sounding like AI", "anti-slop".
+license: Space Age AI Solutions — internal use
 ---
 
-# SA Stop Slop OS
+# SA Stop-Slop Writing Skill
+## Base: hardikpandya/stop-slop | SA-extended May 2026
 
-## The Problem
+---
 
-AI copy is immediately identifiable — not because it's wrong, but because it's average.
-It uses the same phrases, the same structure, the same fake enthusiasm.
-Clients pay for differentiation. Generic output costs them money.
+## WHAT THIS SKILL DOES
 
-## The 5 Slop Categories
+Enforces human-sounding prose by banning every detectable AI writing pattern.
+Five rule categories. Non-negotiable. Applies to all SA writing outputs.
 
-### Category 1: Transition Phrases (BANNED FOREVER)
-Never use these to start a sentence or paragraph:
+---
 
+## BANNED PHRASES (Hard Block)
+
+### Throat-Clearing Openers
 ```
-Certainly! / Absolutely! / Of course!
-I'd be happy to help / Let me help you with that
-Dive in / Let's dive in / Let's get started
-Enhance / Elevate / Unleash
-Leverage / Synergy / Navigate
-Tailored / Seamless / Streamlined
-In the ever-evolving landscape of...
-It's important to note that...
-I hope this helps / Feel free to reach out
-```
-
-### Category 2: Generic Hero Headlines (REJECT ON SIGHT)
-
-```
-"Transform Your [X]"
-"Elevate Your [X]"
-"The Future of [X]"
-"Revolutionize Your [X]"
-"Unlock Your Full Potential"
-"Take Your [X] to the Next Level"
-"We Help [X] Achieve [Y]"
-"Empowering [Audience] to [Verb]"
-"Your [X] Partner"
-"Solutions for [X]"
+NEVER start with:
+- "Certainly"
+- "Of course"
+- "Absolutely"
+- "Great question"
+- "I'd be happy to"
+- "Sure!"
+- "Sure, here's"
+- "Let me"
+- "Allow me to"
+- "I understand that"
 ```
 
-### Category 3: Weak Body Copy Patterns
-
+### Emphasis Crutches
 ```
-"Our team of experts..."
-"With years of experience..."
-"We are committed to..."
-"We pride ourselves on..."
-"Quality is at the heart of everything we do"
-"Customer satisfaction is our top priority"
-"We go above and beyond"
-"State-of-the-art" / "cutting-edge" / "best-in-class"
-```
-
-### Category 4: AI-Tell Formatting
-
-```
-- Bullet lists that state the obvious
-- Three-item lists that feel forced
-- "Here are X ways to..." openers
-- Bold terms followed by colon and explanation
-- "In conclusion" / "To summarize" / "In short"
-- Numbered steps for things that aren't steps
+NEVER use:
+- "Crucial"
+- "Vital"
+- "Essential"
+- "Groundbreaking"
+- "Revolutionary"
+- "Game-changing"
+- "Innovative" (unless client's actual product claim)
+- "Cutting-edge" (unless technical spec)
+- "State-of-the-art"
+- "Best-in-class"
+- "World-class"
+- "Seamless"
+- "Robust"
+- "Scalable" (unless technical context)
+- "Leverage" (as a verb)
+- "Utilize" → use "use"
+- "Implement" → use "build" or "add"
 ```
 
-### Category 5: Fake Specificity
-
+### Business Jargon
 ```
-"97% of our clients see results" (no source)
-"We've helped over 500 businesses" (no context)
-"Industry-leading" (leading what?)
-"Proven system" (proven by whom?)
-"Guaranteed results" (what results?)
-```
-
-## SA Copy Standards by Context
-
-### Cold Email
-```
-BANNED: "I wanted to reach out..."
-BANNED: "I hope this email finds you well..."
-BANNED: "I came across your [business] and was impressed..."
-BANNED: "I think we could work great together"
-
-REQUIRED:
-- Subject: specific, non-salesy, creates curiosity
-- Opener: their name, specific observation about THEM
-- Problem: name the pain without being presumptuous
-- Evidence: one real proof point
-- CTA: one small ask (not "schedule a call")
-- Total length: < 120 words
+NEVER use:
+- "Synergy" / "synergistic"
+- "Holistic approach"
+- "Move the needle"
+- "Low-hanging fruit"
+- "Circle back"
+- "Deep dive" (as a noun)
+- "Pain points" (in client-facing copy)
+- "Value proposition" (in outreach)
+- "At the end of the day"
+- "It goes without saying"
+- "Needless to say"
 ```
 
-### Artist Bio
+### Structural Clichés
 ```
-BANNED: "Is an emerging artist..." / "Known for his/her..."
-BANNED: "Blends [genre] with [genre] to create [vague adjective] sound"
-BANNED: Generic hometown/year started story
-
-REQUIRED:
-- Open with the vibe, not the resume
-- Write in third person but make it feel first person
-- Name the specific mood/world the artist creates
-- One concrete cultural reference that places the sound
-- No clichés about the "journey" or "passion"
-```
-
-### Website Hero Headlines
-```
-BANNED: Anything in the "Generic Hero" list above
-BANNED: Gerunds as first word ("Transforming...", "Building...", "Creating...")
-BANNED: Adjective + noun + vague claim
-
-REQUIRED:
-- Outcome-first (what the client gets, not what you do)
-- Specific audience (not "businesses", "local restaurants")
-- Tension or contrast creates interest
-- < 10 words for the hero, < 20 for subhead
+NEVER use:
+- Em dash as a dramatic pause (—) in body copy
+- "Not only X, but also Y" constructions
+- "X. But Y." two-word dramatic fragments
+- Bullet list of negatives before the solution
+- "The truth is..."
+- "Here's the thing..."
+- "The reality is..."
+- "What if I told you..."
+- "In today's world..."
+- "In this day and age..."
 ```
 
-### Credit Repair (Accelerated Pressure Protocol Mode 3)
+### Adverb Kill List
 ```
-BANNED: Soft language ("We'd like to request...")
-BANNED: Apologetic tone ("I apologize for any inconvenience...")
-BANNED: Explaining yourself to bureaus
-
-REQUIRED:
-- Direct legal citation: FCRA § [section]
-- Demand language: "You are required to..." / "Failure to comply..."
-- 30-day compliance window stated
-- Method of verification demanded
-- Consequences stated (complaint to CFPB / legal action)
-- Certified mail reference
-```
-
-### Social Content
-```
-BANNED: "Let me know in the comments below!"
-BANNED: "Don't forget to like and subscribe"
-BANNED: Generic motivational quotes with no context
-BANNED: "The secret to [X] is..."
-
-REQUIRED:
-- Hook in first 2 lines that creates pattern interrupt
-- Specific story or observation, not general advice
-- Carousel: each slide advances the idea, doesn't repeat
-- Caption under 150 words (unless educational thread)
+NEVER use:
+- "Truly"
+- "Really"
+- "Very"
+- "Incredibly"
+- "Extremely"
+- "Highly" (before an adjective)
+- "Deeply" (before an adjective)
+- "Simply" (as a filler)
+- "Just" (as a filler)
+- "Basically"
+- "Literally" (unless literal)
+- "Honestly"
+- "Genuinely"
 ```
 
-## Slop Score Audit
+---
 
-Rate any copy 1-10 on each dimension (10 = slop-free):
+## SA COPY STANDARDS BY CONTEXT
+
+### Cold Outreach Emails (Lead-Gen Pipeline)
+```
+Rules:
+- Subject line: specific, no ALL CAPS, no "!!!", under 50 chars
+- Opening: their business name or observation, not a compliment
+- Body: what you already built for them, not what you could do
+- Social proof: specific (number, client name, result) not vague
+- CTA: one sentence, one action, no "feel free to"
+- Length: under 120 words total
+- Tone: peer-to-peer, not vendor-to-prospect
+
+BANNED in outreach specifically:
+- "I hope this email finds you well"
+- "I came across your business"
+- "I wanted to reach out"
+- "I'd love to connect"
+- "Please don't hesitate to"
+- "Feel free to"
+- "At your earliest convenience"
+- "Looking forward to hearing from you"
+```
+
+### Artist Bios (Record Exec in a Box)
+```
+Rules:
+- Open with a scene or moment, not the artist's name
+- No birth city unless it's the hook
+- No "emerging artist" — say what they actually do
+- No "unique sound" — describe the sound specifically
+- Active voice throughout
+- Quote (if any): one line max, must feel earned
+- Length: 80-120 words for press bio, 40-60 for Instagram
+
+BANNED in artist bios:
+- "Emerging artist"
+- "Unique sound"
+- "Genre-defying"
+- "Making waves"
+- "Taking the industry by storm"
+- "On the rise"
+- "You don't want to miss"
+- "Music speaks for itself"
+```
+
+### Website Copy (Cinematic Builder)
+```
+Rules:
+- Hero headline: outcome or transformation, not feature list
+- Subhead: specific proof or mechanism
+- Body: problem → framing → solution → proof → next step
+- No section titled "About Us" → use the brand's actual differentiator
+- No "We're passionate about" anything
+- CTAs: action + specific outcome ("See your new site" not "Learn More")
+
+BANNED in site copy:
+- "We are committed to"
+- "We strive to"
+- "Our mission is to"
+- "Passionate about"
+- "Dedicated to"
+- "Here to help"
+- "Your one-stop shop"
+- "Solutions" (as a standalone noun)
+```
+
+### Credit Repair Documents
+```
+Rules (Accelerated Pressure Protocol Mode 3):
+- Formal register only — no conversational softening
+- Every claim cites the specific statute (FCRA §611, etc.)
+- No hedging language ("we believe", "it appears", "may be")
+- Conditional acceptance: specific, numbered conditions
+- Tacit agreement clauses: explicit timeframe and remedy
+- Never apologize, never request — demand and notify
+
+BANNED in legal docs:
+- "We hope"
+- "We would appreciate"
+- "Please consider"
+- "If possible"
+- "At your discretion"
+- "We respectfully request"
+```
+
+### Social Media Captions
+```
+Rules:
+- Hook in first 7 words (before the "more" cutoff)
+- No generic CTAs at the end of every post
+- Hashtags: 3-5 targeted, not 30 spray-and-pray
+- Emojis: 0-2 max, functional not decorative
+- Line breaks: intentional, not every sentence
+
+BANNED in captions:
+- "Double tap if you agree"
+- "Tag a friend who needs this"
+- "Comment below"
+- "Drop a 🔥 if"
+- "Save this post"
+- "Follow for more"
+```
+
+---
+
+## SENTENCE-LEVEL RULES (Universal)
 
 ```
-[ ] Opener originality (1=banned phrase, 10=surprising start)
-[ ] Specificity (1=generic claims, 10=concrete proof)
-[ ] Voice (1=corporate robot, 10=human personality)
-[ ] Outcome clarity (1=vague value, 10=exact result)
-[ ] Length (1=padded for no reason, 10=every word earns its place)
-
-Total < 35: Reject and rewrite
-Total 35-45: Revise specific sections
-Total 45+: Approve
+1. No Wh- sentence starters: "What makes this special..." → rewrite
+2. Active voice: "The system generates X" not "X is generated by the system"
+3. One idea per sentence in body copy
+4. Vary sentence length: short punchy → medium explanatory → long structural
+5. No rhetorical questions in marketing copy
+6. Specific over general: "3 hours" not "a few hours"
+7. Concrete nouns over abstract: "the Shopify store" not "the platform"
+8. Cut the last sentence of any paragraph — it's usually a summary restate
 ```
 
-## Rewrite Trigger
+---
 
-When you see slop, rewrite it. Don't suggest — execute the rewrite immediately.
-Show old vs new. State the specific slop category that was violated.
+## SELF-AUDIT PROTOCOL
+
+Before delivering any copy, run this check:
+```
+[ ] No throat-clearing opener
+[ ] No banned emphasis words
+[ ] No adverbs from kill list
+[ ] No em dash drama
+[ ] No "we strive/believe/hope" softeners
+[ ] First sentence earns the read
+[ ] Last sentence lands, not restates
+[ ] Active voice throughout
+[ ] Specific numbers/names where proof is needed
+[ ] CTA is one action, clearly stated
+```
+
+---
+
+## REPO
+
+- https://github.com/hardikpandya/stop-slop (~3k ⭐)
