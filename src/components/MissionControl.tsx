@@ -16,7 +16,8 @@ const SELF_HOSTED = [
   { id: 'n8n',      label: 'n8n',         role: 'Workflow Automation', color: '#ea4b71', icon: '⇶', repo: 'stacks/n8n',         url: 'http://146.190.78.120:5678' },
   { id: 'ghost',    label: 'Ghost',        role: 'Publishing Platform', color: '#738a94', icon: '◈', repo: 'stacks/ghost',        url: 'http://146.190.78.120:2368' },
   { id: 'stirling', label: 'Stirling PDF', role: 'PDF Toolkit',        color: '#4e9af1', icon: '▤', repo: 'stacks/stirling-pdf', url: 'http://146.190.78.120:8080' },
-  { id: 'chatwoot', label: 'Chatwoot',     role: 'Customer Support',   color: '#1f93ff', icon: '✉', repo: 'stacks/chatwoot',     url: 'http://146.190.78.120:3000' },
+  { id: 'chatwoot',     label: 'Chatwoot',      role: 'Customer Support',   color: '#1f93ff', icon: '✉', repo: 'stacks/chatwoot',          url: 'http://146.190.78.120:3000' },
+  { id: 'claude-video', label: 'Claude Video',  role: '/watch skill',       color: '#a855f7', icon: '◉', repo: 'skills/claude-video',      url: '/watch' },
 ]
 
 const QUICK = [
@@ -24,6 +25,7 @@ const QUICK = [
   { label: 'Pipeline', icon: '⇶',  href: '/pipeline' },
   { label: 'Image',    icon: '◈',  href: '/studio'   },
   { label: 'Video',    icon: '▶',  href: '/video'    },
+  { label: 'Watch',    icon: '◉',  href: '/watch'    },
   { label: 'Kanban',   icon: '▦',  href: '/kanban'   },
   { label: 'Journal',  icon: '✦',  href: '/journal'  },
 ]
