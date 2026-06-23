@@ -396,9 +396,12 @@ export default function MissionControl() {
           style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}
         >
           {[
-            { name: 'DeepSeek V4 Pro',   role: 'Primary coding',       ctx: '16T params · 1M ctx', color: '#38bdf8' },
-            { name: 'Minimax 2.7',        role: 'Long-context creative', ctx: '1M ctx',              color: '#a855f7' },
-            { name: 'Gemma 3 27B',        role: 'Fast · batch tasks',    ctx: 'Free tier',           color: '#00e676' },
+            { name: 'DeepSeek V4 Pro',   role: 'Primary coding',        ctx: '16T params · 1M ctx', color: '#38bdf8', price: '$0.14/M' },
+            { name: 'Minimax 2.7',        role: 'Long-context creative',  ctx: '1M ctx',              color: '#a855f7', price: '$0.40/M' },
+            { name: 'GLM-5.2',            role: 'Agentic coding · 753B',  ctx: '1M ctx · MIT',        color: '#ea4b71', price: '$1.00/M' },
+            { name: 'Kimi K2.7 Code',     role: 'End-to-end coding',      ctx: '262K ctx',            color: '#f5a623', price: '$0.61/M' },
+            { name: 'Gemma 4 31B',        role: 'Fast · free tier avail', ctx: '256K · multimodal',   color: '#00e676', price: '$0.12/M' },
+            { name: 'Gemma 4 26B A4B',    role: 'MoE · batch tasks',      ctx: '256K · free',         color: '#34d399', price: '$0.06/M' },
           ].map(m => (
             <motion.div
               key={m.name}
@@ -406,7 +409,7 @@ export default function MissionControl() {
               style={{
                 background: 'rgba(255,255,255,0.025)',
                 border: '1px solid rgba(255,255,255,0.06)',
-                borderTop: '1px solid rgba(255,255,255,0.1)',
+                borderTop: `2px solid ${m.color}55`,
                 borderRadius: 10,
                 padding: '14px 16px',
                 display: 'flex',
@@ -414,13 +417,24 @@ export default function MissionControl() {
                 gap: 5,
               }}
             >
-              <span style={{
-                fontFamily: "'Orbitron', sans-serif",
-                fontWeight: 700,
-                fontSize: 11,
-                color: m.color,
-                letterSpacing: '0.03em',
-              }}>{m.name}</span>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{
+                  fontFamily: "'Orbitron', sans-serif",
+                  fontWeight: 700,
+                  fontSize: 11,
+                  color: m.color,
+                  letterSpacing: '0.03em',
+                }}>{m.name}</span>
+                <span style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: 9,
+                  color: m.color,
+                  background: `${m.color}18`,
+                  border: `1px solid ${m.color}33`,
+                  padding: '2px 6px',
+                  borderRadius: 4,
+                }}>{m.price}</span>
+              </div>
               <span style={{
                 fontFamily: "'DM Sans', sans-serif",
                 fontSize: 11,
