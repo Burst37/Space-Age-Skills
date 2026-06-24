@@ -15,7 +15,22 @@ const SUGGESTIONS = [
 ];
 
 const GREETING =
-  "Good evening. I'm the Private concierge. Ask me about tables, bottle service, dress code, parking, events, or the guestlist.";
+  "Good evening, I'm Tory, your concierge at Private. Ask me about tables, bottle service, dress code, parking, events, or the guestlist.";
+
+/** Tory's avatar. Falls back to the monogram until /brand/tory.webp is added. */
+function ToryAvatar({ className = "" }: { className?: string }) {
+  const [ok, setOk] = useState(true);
+  if (!ok) return <span className="display text-lg leading-none">P</span>;
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/brand/tory.webp"
+      alt="Tory, the Private concierge"
+      onError={() => setOk(false)}
+      className={`h-full w-full rounded-full object-cover ${className}`}
+    />
+  );
+}
 
 /**
  * Floating luxury concierge. Talks to /api/concierge, which answers from the
@@ -64,9 +79,9 @@ export default function Concierge() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Close concierge" : "Open concierge"}
-        className="fixed bottom-20 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-gold/40 bg-black/80 text-gold shadow-lift backdrop-blur-xl transition-colors hover:border-gold hover:text-champagne md:bottom-6 md:right-6"
+        className="fixed bottom-20 right-5 z-50 flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border border-gold/40 bg-black/80 text-gold shadow-lift backdrop-blur-xl transition-colors hover:border-gold hover:text-champagne md:bottom-6 md:right-6"
       >
-        <span className="display text-2xl leading-none">{open ? "×" : "C"}</span>
+        {open ? <span className="display text-2xl leading-none">×</span> : <ToryAvatar />}
         {!open && <span className="absolute inset-0 animate-drift rounded-full ring-1 ring-gold/20" />}
       </button>
 
@@ -80,12 +95,12 @@ export default function Concierge() {
             className="atmosphere fixed bottom-36 right-5 z-50 flex h-[30rem] w-[min(92vw,23rem)] flex-col overflow-hidden border border-gold/25 bg-black/95 shadow-lift backdrop-blur-2xl md:bottom-24 md:right-6"
           >
             <div className="flex items-center gap-3 border-b border-gold/15 px-5 py-4">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-gold/40 text-gold">
-                <span className="display text-lg">P</span>
+              <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-gold/40 text-gold">
+                <ToryAvatar />
               </span>
               <div>
-                <div className="text-sm text-cream">Private Concierge</div>
-                <div className="text-[0.62rem] uppercase tracking-wide2 text-gold/70">Online now</div>
+                <div className="text-sm text-cream">Tory</div>
+                <div className="text-[0.62rem] uppercase tracking-wide2 text-gold/70">Private Concierge {String.fromCharCode(183)} Online</div>
               </div>
             </div>
 

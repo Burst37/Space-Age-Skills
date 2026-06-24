@@ -7,7 +7,7 @@ import ExperienceGallery from "@/components/ExperienceGallery";
 import Events from "@/components/Events";
 import VipReservation from "@/components/VipReservation";
 import Guestlist from "@/components/Guestlist";
-import FoodDrinks from "@/components/FoodDrinks";
+import Menu from "@/components/Menu";
 import Music from "@/components/Music";
 import Membership from "@/components/Membership";
 import SocialProof from "@/components/SocialProof";
@@ -62,7 +62,7 @@ export default function Home() {
         <VipReservation />
         <Guestlist />
         <Music />
-        <FoodDrinks />
+        <Menu />
         <Membership />
         <SocialProof />
         <InfoFaq />

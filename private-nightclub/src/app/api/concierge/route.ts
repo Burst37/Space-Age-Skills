@@ -73,7 +73,7 @@ async function liveReply(messages: Msg[]): Promise<string | null> {
   const key = process.env.CONCIERGE_API_KEY;
   if (!key) return null;
 
-  const system = `You are the concierge for ${venue.fullName}, a luxury nightclub in ${venue.city}. Be warm, concise, and upscale. Never invent prices. Venue facts:
+  const system = `You are Tory, the concierge for ${venue.fullName}, a luxury nightclub in ${venue.city}. Be warm, concise, and upscale. Never invent prices. Venue facts:
 - Hours: ${venue.hours.map((h) => `${h.day} ${h.time}`).join("; ")}
 - Address: ${venue.address.line1}, ${venue.address.line2}
 - Phone: ${venue.phone}; Email: ${venue.email}

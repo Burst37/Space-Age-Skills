@@ -98,7 +98,7 @@ export const experiences: ExperienceCard[] = [
   { key: "vip", title: "VIP Tables", blurb: "Reserved seating, your own host, the best sightlines in the room.", href: "#vip" },
   { key: "djs", title: "Resident DJs", blurb: "Open-format residents and touring headliners every weekend.", href: "#music" },
   { key: "events", title: "Live Events", blurb: "Themed nights, takeovers, and holiday weekend productions.", href: "#events" },
-  { key: "food", title: "Food + Drinks", blurb: "Late-night plates and a champagne-forward bottle list.", href: "#food" },
+  { key: "food", title: "Food + Drinks", blurb: "Late-night plates and a champagne-forward bottle list.", href: "#menu" },
   { key: "membership", title: "Black Card", blurb: "Priority entry, standing tables, and members-only nights.", href: "#membership" },
   { key: "private", title: "Private Events", blurb: "Buyouts, birthdays, and corporate nights built around you.", href: "#vip" },
 ];
@@ -134,12 +134,121 @@ export const splitSlides = [
   },
 ] as const;
 
-export const drinks = [
-  { name: "Champagne & Sparkling", note: "Brut, rosé, and reserve cuvées by the bottle." },
-  { name: "Top-Shelf Spirits", note: "Aged tequila, cognac, single-malt, and rare pours." },
-  { name: "Signature Cocktails", note: "House builds shaken to order, garnished tableside." },
-  { name: "Late-Night Plates", note: "Wagyu sliders, truffle fries, and shareable bites until 2 AM." },
+/* ----- Menu (transcribed from the official Private Nightclub menu cards) ----- */
+
+export type MenuRow = { name: string; price: string };
+export type MenuGroup = { title: string; rows: MenuRow[]; note?: string };
+
+export const foodMenu: MenuGroup[] = [
+  {
+    title: "Appetizers",
+    rows: [
+      { name: "Mac and Cheese Bites", price: "10" },
+      { name: "Beef Toasted Ravioli", price: "10" },
+      { name: "Fried Pickles", price: "10" },
+      { name: "Buffalo Shrimp", price: "12" },
+      { name: "Buffalo Cauliflower", price: "10" },
+    ],
+  },
+  {
+    title: "Wings",
+    rows: [
+      { name: "5pc Party Wing", price: "8" },
+      { name: "10pc Party Wing", price: "16" },
+      { name: "20pc Party Wing", price: "24" },
+      { name: "All Flats", price: "+3" },
+      { name: "5pc Whole Wing", price: "16" },
+      { name: "10pc Whole Wing", price: "24" },
+      { name: "20pc Whole Wing", price: "32" },
+    ],
+    note: "Sauces: Buffalo, Honey Hot, Korean BBQ, Lemon Pepper, Garlic Parmesan. Additional wing sauce 50 cent upcharge.",
+  },
+  {
+    title: "From the Grill",
+    rows: [
+      { name: "All Beef Hot Dog", price: "7" },
+      { name: "Polish Sausage", price: "7" },
+      { name: "Hamburger", price: "10" },
+      { name: "Cheeseburger", price: "12" },
+    ],
+  },
+  {
+    title: "Pizza",
+    rows: [
+      { name: "10in Cheese Pizza", price: "12" },
+      { name: "12in Cheese Pizza", price: "14" },
+    ],
+    note: "Add toppings: pepperoni or sausage +2, green pepper, onion, or mushroom +1.",
+  },
 ];
+
+export const foodNote = "Kitchen open until 1:30 AM.";
+
+export const bottleMenu: MenuGroup[] = [
+  {
+    title: "Tequila",
+    rows: [
+      { name: "Teremana Blanco", price: "200" },
+      { name: "Teremana Reposado", price: "225" },
+      { name: "La Gritona Reposado", price: "275" },
+      { name: "Don Julio Blanco", price: "250" },
+      { name: "Don Julio Reposado", price: "275" },
+      { name: "Don Fulano Reposado", price: "275" },
+      { name: "Don Julio 1942", price: "600" },
+      { name: "Clase Azul Reposado", price: "600" },
+    ],
+  },
+  {
+    title: "Sparkling",
+    rows: [
+      { name: "Luc Belaire Rare Luxe", price: "100" },
+      { name: "Luc Belaire Brut Gold", price: "100" },
+      { name: "Luc Belaire Bleu", price: "100" },
+      { name: "Luc Belaire Luxe Rose", price: "100" },
+    ],
+  },
+  {
+    title: "Whiskey",
+    rows: [
+      { name: "Jameson", price: "150" },
+      { name: "Makers Mark", price: "200" },
+      { name: "Woodford Reserve", price: "250" },
+    ],
+  },
+  {
+    title: "Vodka",
+    rows: [
+      { name: "Tito's", price: "150" },
+      { name: "Ketel One", price: "200" },
+      { name: "Grey Goose", price: "225" },
+      { name: "Deep Eddy's Lemon", price: "200" },
+      { name: "Deep Eddy's Lime", price: "200" },
+    ],
+  },
+  {
+    title: "Cognac",
+    rows: [
+      { name: "Hennessy VS", price: "225" },
+      { name: "D'usse", price: "250" },
+      { name: "Remy Martin VSOP", price: "275" },
+      { name: "Remy Martin 1738", price: "300" },
+      { name: "Yah-Yah", price: "275" },
+    ],
+  },
+];
+
+export const bottleNote =
+  "Bottle service includes 2 juice or soda options or 2 Red Bulls. 20% automatic gratuity added for bottle sales.";
+
+/* Extracted menu photography (self-labeled cards from the menu PDFs). */
+export const foodImages: string[] = Array.from(
+  { length: 22 },
+  (_, i) => `/menu/food/food-${String(i + 1).padStart(2, "0")}.webp`,
+);
+export const drinkImages: string[] = Array.from(
+  { length: 25 },
+  (_, i) => `/menu/drinks/drink-${String(i + 1).padStart(2, "0")}.webp`,
+);
 
 export const residents = [
   { name: "Marcel Vaughn", style: "Open-format · House", night: "Fridays" },
