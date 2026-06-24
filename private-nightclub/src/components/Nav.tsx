@@ -41,50 +41,58 @@ export default function Nav() {
           : "border-b border-transparent bg-gradient-to-b from-black/60 to-transparent"
       }`}
     >
-      <nav className="mx-auto flex h-[68px] max-w-edge items-center justify-between px-5 sm:px-8">
-        <a href="#top" className="flex items-baseline gap-2" aria-label={`${venue.fullName} home`}>
+      <nav className="relative mx-auto flex h-[68px] max-w-edge items-center px-5 sm:px-8">
+        {/* Left: primary links */}
+        <ul className="hidden items-center gap-6 lg:flex">
+          {nav
+            .filter((item) => item.href !== "#top")
+            .map((item) => (
+              <li key={item.href}>
+                <a
+                  href={item.href}
+                  className="text-[0.74rem] uppercase tracking-wide2 text-cream/65 transition-colors hover:text-champagne"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+        </ul>
+
+        {/* Center: wordmark */}
+        <a
+          href="#top"
+          className="absolute left-1/2 flex -translate-x-1/2 items-baseline gap-2"
+          aria-label={`${venue.fullName} home`}
+        >
           <span className="display text-2xl text-cream">{venue.name}</span>
           <span className="hidden text-[0.6rem] uppercase tracking-brand text-gold/80 sm:inline">
             Nightclub
           </span>
         </a>
 
-        <ul className="hidden items-center gap-7 lg:flex">
-          {nav.map((item) => (
-            <li key={item.href}>
-              <a
-                href={item.href}
-                className="text-[0.78rem] uppercase tracking-wide2 text-cream/65 transition-colors hover:text-champagne"
-              >
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-
-        <div className="hidden items-center gap-3 md:flex">
+        {/* Right: actions */}
+        <div className="ml-auto flex items-center gap-3">
           <a
             href="#guestlist"
-            className="border border-gold/40 px-4 py-2.5 text-[0.68rem] uppercase tracking-wide2 text-champagne transition-colors hover:border-gold hover:text-cream"
+            className="hidden border border-gold/40 px-4 py-2.5 text-[0.68rem] uppercase tracking-wide2 text-champagne transition-colors hover:border-gold hover:text-cream md:inline-block"
           >
-            Join Guestlist
+            Guestlist
           </a>
           <a
             href="#vip"
-            className="group inline-flex items-center gap-2 bg-gold px-4 py-2.5 text-[0.68rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne"
+            className="group hidden items-center gap-2 bg-gold px-4 py-2.5 text-[0.68rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne md:inline-flex"
           >
             Reserve VIP
             <span className="transition-transform duration-300 group-hover:translate-x-1">{"→"}</span>
           </a>
-        </div>
 
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          className="flex h-10 w-10 items-center justify-center text-cream lg:hidden"
-        >
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            className="flex h-10 w-10 items-center justify-center text-cream lg:hidden"
+          >
           <span className="relative block h-4 w-6">
             <span
               className={`absolute left-0 block h-px w-6 bg-current transition-all duration-300 ${
@@ -102,7 +110,8 @@ export default function Nav() {
               }`}
             />
           </span>
-        </button>
+          </button>
+        </div>
       </nav>
 
       <AnimatePresence>

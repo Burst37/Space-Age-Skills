@@ -98,32 +98,37 @@ export default function Hero() {
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/40" />
       <div className="hero-veil pointer-events-none absolute inset-0 bg-black/60 opacity-0" />
 
-      {/* Copy */}
-      <div className="relative z-10 mx-auto flex h-full max-w-edge flex-col justify-end px-5 pb-28 sm:px-8 sm:pb-24 md:justify-center md:pb-16">
-        <p className="hero-rise mb-5 text-[0.7rem] uppercase tracking-brand text-gold/90">
-          {venue.city} {String.fromCharCode(183)} Est. After Dark
-        </p>
-        <h1 className="hero-rise display max-w-5xl text-[16vw] leading-[0.84] text-cream sm:text-[12vw] md:text-[9rem] lg:text-[10.5rem]">
-          Private
-          <span className="block text-outline-gold">Nightclub</span>
-        </h1>
-        <p className="hero-rise mt-6 max-w-md text-lg font-light text-cream/70">
-          {venue.tagline}. Bottle service, reserved tables, and the only room in
-          the city that feels like this.
-        </p>
-        <div className="hero-rise mt-9 flex flex-wrap items-center gap-4">
-          <a
-            href="#vip"
-            className="bg-gold px-8 py-4 text-[0.72rem] uppercase tracking-wide2 text-black transition-colors duration-300 hover:bg-champagne"
-          >
-            Reserve VIP
-          </a>
-          <a
-            href="#guestlist"
-            className="border border-gold/50 px-8 py-4 text-[0.72rem] uppercase tracking-wide2 text-champagne transition-colors duration-300 hover:border-gold hover:text-cream"
-          >
-            Join Guestlist
-          </a>
+      {/* Copy: giant outlined display type fills the viewport (reference look) */}
+      <div className="relative z-10 mx-auto flex h-full max-w-edge flex-col px-5 sm:px-8">
+        <div className="flex flex-1 flex-col justify-center pt-24">
+          <p className="hero-rise mb-3 text-[0.7rem] uppercase tracking-brand text-gold/90 sm:mb-5">
+            {venue.city} {String.fromCharCode(183)} Est. After Dark
+          </p>
+          <h1 className="hero-rise display leading-[0.8] tracking-[-0.02em]">
+            <span className="block text-[clamp(3.5rem,17vw,15rem)] text-cream">Private</span>
+            <span className="block text-[clamp(3.5rem,17vw,15rem)] text-outline-gold">Nightclub</span>
+          </h1>
+        </div>
+        <div className="hero-rise flex flex-col gap-6 pb-28 sm:pb-24 md:flex-row md:items-end md:justify-between md:pb-14">
+          <p className="max-w-sm text-base font-light text-cream/70 sm:text-lg">
+            {venue.tagline}. Bottle service, reserved tables, and the only room in
+            the city that feels like this.
+          </p>
+          <div className="flex flex-wrap items-center gap-4">
+            <a
+              href="#vip"
+              className="group inline-flex items-center gap-2 bg-gold px-8 py-4 text-[0.72rem] uppercase tracking-wide2 text-black transition-colors duration-300 hover:bg-champagne"
+            >
+              Reserve VIP
+              <span className="transition-transform duration-300 group-hover:translate-x-1">{"→"}</span>
+            </a>
+            <a
+              href="#guestlist"
+              className="border border-gold/50 px-8 py-4 text-[0.72rem] uppercase tracking-wide2 text-champagne transition-colors duration-300 hover:border-gold hover:text-cream"
+            >
+              Join Guestlist
+            </a>
+          </div>
         </div>
       </div>
     </section>
