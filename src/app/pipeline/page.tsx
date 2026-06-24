@@ -1,4 +1,9 @@
-import PipelineMonitor from "@/components/PipelineMonitor";
+import PipelineView from "@/components/PipelineView";
+
 export default function PipelineRoute() {
-  return <PipelineMonitor />;
+  return (
+    <div className="pb-6">
+      <PipelineView />
+    </div>
+  );
 }
