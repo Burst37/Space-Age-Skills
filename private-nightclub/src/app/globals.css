@@ -72,6 +72,18 @@
     letter-spacing: -0.01em;
   }
 
+  /* Outlined gold display type with a soft neon glow (reference hero look). */
+  .text-outline-gold {
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(201, 162, 77, 0.92);
+    text-shadow: 0 0 22px rgba(201, 162, 77, 0.28);
+  }
+  @media (min-width: 1024px) {
+    .text-outline-gold {
+      -webkit-text-stroke-width: 2px;
+    }
+  }
+
   /* Film-grain + vignette atmosphere layer for dark sections. */
   .atmosphere::after {
     content: "";

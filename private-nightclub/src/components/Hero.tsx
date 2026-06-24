@@ -103,9 +103,9 @@ export default function Hero() {
         <p className="hero-rise mb-5 text-[0.7rem] uppercase tracking-brand text-gold/90">
           {venue.city} {String.fromCharCode(183)} Est. After Dark
         </p>
-        <h1 className="hero-rise display max-w-4xl text-[15vw] leading-[0.86] text-cream sm:text-[11vw] md:text-[8.5rem] lg:text-[9.5rem]">
+        <h1 className="hero-rise display max-w-5xl text-[16vw] leading-[0.84] text-cream sm:text-[12vw] md:text-[9rem] lg:text-[10.5rem]">
           Private
-          <span className="block text-gold">Nightclub</span>
+          <span className="block text-outline-gold">Nightclub</span>
         </h1>
         <p className="hero-rise mt-6 max-w-md text-lg font-light text-cream/70">
           {venue.tagline}. Bottle service, reserved tables, and the only room in

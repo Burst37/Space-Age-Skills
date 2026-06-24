@@ -71,9 +71,10 @@ export default function Nav() {
           </a>
           <a
             href="#vip"
-            className="bg-gold px-4 py-2.5 text-[0.68rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne"
+            className="group inline-flex items-center gap-2 bg-gold px-4 py-2.5 text-[0.68rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne"
           >
             Reserve VIP
+            <span className="transition-transform duration-300 group-hover:translate-x-1">{"→"}</span>
           </a>
         </div>
 
