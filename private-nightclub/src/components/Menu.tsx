@@ -7,9 +7,10 @@ import {
   bottleMenu,
   foodNote,
   bottleNote,
-  foodImages,
-  drinkImages,
+  foodSelectItems,
+  drinkSelectItems,
   type MenuGroup,
+  type MenuSelectItem,
 } from "@/lib/site";
 import { springs } from "@/lib/motion";
 import SectionHeading from "./ui/SectionHeading";
@@ -17,9 +18,15 @@ import Reveal from "./ui/Reveal";
 
 type TabKey = "food" | "bottle";
 
-const tabs: { key: TabKey; label: string; note: string; images: string[]; menu: MenuGroup[]; alt: string }[] = [
-  { key: "food", label: "Late Night Kitchen", note: foodNote, images: foodImages, menu: foodMenu, alt: "Late night dish at Private Nightclub" },
-  { key: "bottle", label: "Bottle Service", note: bottleNote, images: drinkImages, menu: bottleMenu, alt: "Premium bottle service at Private Nightclub" },
+const tabs: {
+  key: TabKey;
+  label: string;
+  note: string;
+  items: MenuSelectItem[];
+  menu: MenuGroup[];
+}[] = [
+  { key: "food", label: "Late Night Kitchen", note: foodNote, items: foodSelectItems, menu: foodMenu },
+  { key: "bottle", label: "Bottle Service", note: bottleNote, items: drinkSelectItems, menu: bottleMenu },
 ];
 
 function PriceList({ groups }: { groups: MenuGroup[] }) {
@@ -48,22 +55,23 @@ function PriceList({ groups }: { groups: MenuGroup[] }) {
 
 export default function Menu() {
   const [tab, setTab] = useState<TabKey>("food");
-  const [lightbox, setLightbox] = useState<number | null>(null);
+  const [selected, setSelected] = useState<number | null>(null);
   const active = tabs.find((t) => t.key === tab)!;
-  const images = active.images;
+  const items = active.items;
 
-  const close = useCallback(() => setLightbox(null), []);
+  const close = useCallback(() => setSelected(null), []);
   const step = useCallback(
-    (dir: number) => setLightbox((i) => (i === null ? i : (i + dir + images.length) % images.length)),
-    [images.length],
+    (dir: number) =>
+      setSelected((i) => (i === null ? i : (i + dir + items.length) % items.length)),
+    [items.length],
   );
 
   useEffect(() => {
-    if (lightbox === null) return;
+    if (selected === null) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();
-      if (e.key === "ArrowRight") step(1);
-      if (e.key === "ArrowLeft") step(-1);
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") step(1);
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") step(-1);
     };
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
@@ -71,7 +79,9 @@ export default function Menu() {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [lightbox, close, step]);
+  }, [selected, close, step]);
+
+  const detail = selected !== null ? items[selected] : null;
 
   return (
     <section id="menu" className="relative bg-black px-5 py-24 sm:px-8 lg:py-32">
@@ -79,7 +89,7 @@ export default function Menu() {
         <SectionHeading
           eyebrow="The Menu"
           title={<>Food and bottle service</>}
-          intro="A champagne-forward bottle list and a late-night kitchen, shot in the room. Tap any image to view it full size."
+          intro="Every item shot in the room. Tap a card to open it full-screen with the details."
         />
 
         {/* Tabs */}
@@ -90,7 +100,10 @@ export default function Menu() {
                 key={t.key}
                 role="tab"
                 aria-selected={tab === t.key}
-                onClick={() => setTab(t.key)}
+                onClick={() => {
+                  setTab(t.key);
+                  setSelected(null);
+                }}
                 className={`px-6 py-3 text-[0.7rem] uppercase tracking-wide2 transition-colors ${
                   tab === t.key
                     ? "bg-gold text-black"
@@ -105,22 +118,22 @@ export default function Menu() {
 
         <p className="mt-5 text-sm text-gold/80">{active.note}</p>
 
-        {/* Gallery (masonry preserves the full self-labeled cards) */}
+        {/* Bento court — the cards rest here; tap one to open the split view */}
         <Reveal
           delay={0.1}
           className="mt-8 columns-2 gap-3 sm:gap-4 md:columns-3 lg:columns-4 [&>*]:mb-3 sm:[&>*]:mb-4"
         >
-          {images.map((src, i) => (
+          {items.map((it, i) => (
             <button
-              key={src}
-              onClick={() => setLightbox(i)}
-              aria-label={`View ${active.alt} ${i + 1}`}
+              key={it.img}
+              onClick={() => setSelected(i)}
+              aria-label={`View ${it.name}`}
               className="group block w-full overflow-hidden border border-gold/12 bg-soft-black transition-colors hover:border-gold/40"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={src}
-                alt={`${active.alt} ${i + 1}`}
+                src={it.img}
+                alt={it.name}
                 loading="lazy"
                 decoding="async"
                 className="w-full transition-transform duration-500 group-hover:scale-[1.03]"
@@ -140,48 +153,95 @@ export default function Menu() {
         </Reveal>
       </div>
 
-      {/* Lightbox */}
+      {/* Split-screen detail — opens when a bento card is chosen */}
       <AnimatePresence>
-        {lightbox !== null && (
+        {detail && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[70] flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm"
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[70] bg-black/96 backdrop-blur-sm"
             onClick={close}
           >
             <button
               onClick={close}
               aria-label="Close"
-              className="absolute right-5 top-5 flex h-11 w-11 items-center justify-center border border-gold/30 text-2xl text-champagne hover:border-gold"
+              className="absolute right-5 top-5 z-10 flex h-11 w-11 items-center justify-center border border-gold/30 text-2xl text-champagne hover:border-gold"
             >
               ×
             </button>
-            <button
-              onClick={(e) => { e.stopPropagation(); step(-1); }}
-              aria-label="Previous"
-              className="absolute left-3 flex h-12 w-12 items-center justify-center text-3xl text-champagne/70 hover:text-champagne sm:left-8"
-            >
-              ‹
-            </button>
-            <motion.img
-              key={images[lightbox]}
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={springs.smooth}
-              src={images[lightbox]}
-              alt={`${active.alt} ${lightbox + 1}`}
-              className="max-h-[88vh] max-w-[92vw] object-contain shadow-lift"
+
+            <div
+              className="mx-auto grid h-full max-w-6xl grid-cols-1 items-center gap-6 px-5 py-16 md:grid-cols-2 md:gap-12 md:px-10"
               onClick={(e) => e.stopPropagation()}
-            />
-            <button
-              onClick={(e) => { e.stopPropagation(); step(1); }}
-              aria-label="Next"
-              className="absolute right-3 flex h-12 w-12 items-center justify-center text-3xl text-champagne/70 hover:text-champagne sm:right-8"
             >
-              ›
-            </button>
+              {/* Left: the chosen card, large */}
+              <div className="relative flex h-[42vh] items-center justify-center md:h-[78vh]">
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={detail.img}
+                    src={detail.img}
+                    alt={detail.name}
+                    initial={{ opacity: 0, scale: 1.03 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={springs.smooth}
+                    className="max-h-full max-w-full object-contain shadow-lift"
+                  />
+                </AnimatePresence>
+              </div>
+
+              {/* Right: the details */}
+              <div className="flex flex-col justify-center">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={detail.name}
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <span className="text-[0.7rem] uppercase tracking-brand text-gold/80">
+                      {detail.category}
+                    </span>
+                    <h3 className="display mt-3 text-[clamp(2.4rem,5vw,4rem)] leading-[0.95] text-cream">
+                      {detail.name}
+                    </h3>
+                    {detail.note && (
+                      <p className="mt-4 max-w-sm text-base text-cream/55">{detail.note}</p>
+                    )}
+                    <div className="mt-7 flex items-baseline gap-3">
+                      <span className="text-[0.66rem] uppercase tracking-wide2 text-cream/40">
+                        {tab === "food" ? "Price" : "Bottle"}
+                      </span>
+                      <span className="display text-2xl text-champagne">${detail.price}</span>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* Step controls */}
+                <div className="mt-10 flex items-center gap-4">
+                  <button
+                    onClick={() => step(-1)}
+                    aria-label="Previous item"
+                    className="flex h-11 w-11 items-center justify-center border border-gold/30 text-xl text-champagne transition-colors hover:border-gold hover:text-cream"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    onClick={() => step(1)}
+                    aria-label="Next item"
+                    className="flex h-11 w-11 items-center justify-center border border-gold/30 text-xl text-champagne transition-colors hover:border-gold hover:text-cream"
+                  >
+                    ›
+                  </button>
+                  <span className="ml-2 text-xs uppercase tracking-wide2 text-cream/40">
+                    {String(selected! + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
+                  </span>
+                </div>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

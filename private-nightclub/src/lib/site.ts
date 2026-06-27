@@ -237,6 +237,69 @@ export const bottleMenu: MenuGroup[] = [
 export const bottleNote =
   "Bottle service includes 2 juice or soda options or 2 Red Bulls. 20% automatic gratuity added for bottle sales.";
 
+/* ----- Split-screen menu items (name <-> branded card image <-> price) ----- */
+
+export type MenuSelectItem = {
+  name: string;
+  category: string;
+  price: string;
+  note?: string;
+  img: string;
+};
+
+export const foodSelectItems: MenuSelectItem[] = [
+  { name: "Classic Buffalo", category: "Wings", price: "8 / 16 / 24", note: "The standard. Tossed in our buffalo.", img: "/menu/food/food-01.webp" },
+  { name: "Korean BBQ Wings", category: "Wings", price: "8 / 16 / 24", note: "Sweet, savory, sticky.", img: "/menu/food/food-02.webp" },
+  { name: "Garlic Parmesan Wings", category: "Wings", price: "8 / 16 / 24", note: "Herb crusted, aged cheese.", img: "/menu/food/food-03.webp" },
+  { name: "Lemon Pepper Wings", category: "Wings", price: "8 / 16 / 24", note: "Citrus and cracked pepper.", img: "/menu/food/food-04.webp" },
+  { name: "Honey Hot Wings", category: "Wings", price: "8 / 16 / 24", note: "Sweet heat.", img: "/menu/food/food-05.webp" },
+  { name: "Teriyaki Wings", category: "Wings", price: "8 / 16 / 24", note: "Sticky, scallion.", img: "/menu/food/food-06.webp" },
+  { name: "Parmesan Crusted Wings", category: "Wings", price: "8 / 16 / 24", note: "Aged cheese crust.", img: "/menu/food/food-07.webp" },
+  { name: "Mango Habanero Wings", category: "Wings", price: "8 / 16 / 24", note: "Sweet fire.", img: "/menu/food/food-08.webp" },
+  { name: "Blackened Lemon Pepper", category: "Wings", price: "8 / 16 / 24", note: "Bold citrus.", img: "/menu/food/food-09.webp" },
+  { name: "Sweet Chili Wings", category: "Wings", price: "8 / 16 / 24", note: "Glazed, tangy.", img: "/menu/food/food-10.webp" },
+  { name: "Mac & Cheese Bites", category: "Appetizers", price: "10", img: "/menu/food/food-11.webp" },
+  { name: "Beef Toasted Ravioli", category: "Appetizers", price: "10", img: "/menu/food/food-12.webp" },
+  { name: "Fried Pickles", category: "Appetizers", price: "10", img: "/menu/food/food-13.webp" },
+  { name: "Buffalo Cauliflower", category: "Appetizers", price: "10", img: "/menu/food/food-14.webp" },
+  { name: "Buffalo Shrimp", category: "Appetizers", price: "12", img: "/menu/food/food-15.webp" },
+  { name: "Cheeseburger", category: "From the Grill", price: "12", img: "/menu/food/food-16.webp" },
+  { name: "All Beef Hot Dog", category: "From the Grill", price: "7", img: "/menu/food/food-17.webp" },
+  { name: "The Works Pizza", category: "Pizza", price: "12 / 14", note: "Pepperoni, sausage, chicken.", img: "/menu/food/food-18.webp" },
+  { name: "Supreme Veggie Pizza", category: "Pizza", price: "12 / 14", note: "Olives, onion, pepper, mushroom.", img: "/menu/food/food-19.webp" },
+  { name: "Sausage Pizza", category: "Pizza", price: "12 / 14", note: "Italian sausage.", img: "/menu/food/food-20.webp" },
+  { name: "Pepperoni Pizza", category: "Pizza", price: "12 / 14", note: "Classic pepperoni.", img: "/menu/food/food-21.webp" },
+  { name: "Cheese Pizza", category: "Pizza", price: "12 / 14", note: "10in or 12in.", img: "/menu/food/food-22.webp" },
+];
+
+export const drinkSelectItems: MenuSelectItem[] = [
+  { name: "Teremana Blanco", category: "Tequila", price: "200", img: "/menu/drinks/drink-01.webp" },
+  { name: "Teremana Reposado", category: "Tequila", price: "225", img: "/menu/drinks/drink-02.webp" },
+  { name: "La Gritona Reposado", category: "Tequila", price: "275", img: "/menu/drinks/drink-03.webp" },
+  { name: "Don Julio Blanco", category: "Tequila", price: "250", img: "/menu/drinks/drink-04.webp" },
+  { name: "Don Julio Reposado", category: "Tequila", price: "275", img: "/menu/drinks/drink-05.webp" },
+  { name: "Don Fulano Reposado", category: "Tequila", price: "275", img: "/menu/drinks/drink-06.webp" },
+  { name: "Don Julio 1942", category: "Tequila", price: "600", img: "/menu/drinks/drink-07.webp" },
+  { name: "Clase Azul Reposado", category: "Tequila", price: "600", img: "/menu/drinks/drink-08.webp" },
+  { name: "Tito's", category: "Vodka", price: "150", img: "/menu/drinks/drink-09.webp" },
+  { name: "Ketel One", category: "Vodka", price: "200", img: "/menu/drinks/drink-10.webp" },
+  { name: "Yah-Yah", category: "Cognac", price: "275", img: "/menu/drinks/drink-11.webp" },
+  { name: "Remy Martin 1738", category: "Cognac", price: "300", img: "/menu/drinks/drink-12.webp" },
+  { name: "Remy Martin VSOP", category: "Cognac", price: "275", img: "/menu/drinks/drink-13.webp" },
+  { name: "Luc Belaire Rare Luxe", category: "Sparkling", price: "100", img: "/menu/drinks/drink-14.webp" },
+  { name: "Luc Belaire Brut Gold", category: "Sparkling", price: "100", img: "/menu/drinks/drink-15.webp" },
+  { name: "Luc Belaire Bleu", category: "Sparkling", price: "100", img: "/menu/drinks/drink-16.webp" },
+  { name: "Luc Belaire Luxe Rose", category: "Sparkling", price: "100", img: "/menu/drinks/drink-17.webp" },
+  { name: "Jameson", category: "Whiskey", price: "150", img: "/menu/drinks/drink-18.webp" },
+  { name: "Makers Mark", category: "Whiskey", price: "200", img: "/menu/drinks/drink-19.webp" },
+  { name: "Woodford Reserve", category: "Whiskey", price: "250", img: "/menu/drinks/drink-20.webp" },
+  { name: "D'usse", category: "Cognac", price: "250", img: "/menu/drinks/drink-21.webp" },
+  { name: "Hennessy VS", category: "Cognac", price: "225", img: "/menu/drinks/drink-22.webp" },
+  { name: "Deep Eddy's Lime", category: "Vodka", price: "200", img: "/menu/drinks/drink-23.webp" },
+  { name: "Deep Eddy's Lemon", category: "Vodka", price: "200", img: "/menu/drinks/drink-24.webp" },
+  { name: "Grey Goose", category: "Vodka", price: "225", img: "/menu/drinks/drink-25.webp" },
+];
+
 /* Extracted menu photography (self-labeled cards from the menu PDFs). */
 export const foodImages: string[] = Array.from(
   { length: 22 },
