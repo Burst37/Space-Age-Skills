@@ -54,6 +54,7 @@ in the Vercel dashboard — then every push auto-deploys.
 - **JoinList** — email capture section → Supabase
 - **Contact / footer** — map, hours, real logo
 - **Owner dashboard `/owner`** — passcode-gated (cookie + middleware); metric tiles, ranked menu-engagement bars (Food/Bottle), CTA counts, email list + CSV export. Styled after the Agentic OS mission-control, recolored black + gold. Tracking is engagement (opens), **not POS sales**.
+- **Orbiting 3D sphere gallery** ("The room") — 14 real venue photos on a Fibonacci sphere (Three.js): auto-rotate, drag-to-spin, tilt, depth fade, click-to-view; static-grid fallback. _Framing tuned by numbers, not eye — eyeball on deploy and tweak `R`/camera `z`/`CARD_W` in `SphereGallery.tsx` if needed._
 - All real assets pulled from the user's Higgsfield account (logo, venue photos, Tory, menu cards).
 
 ---
