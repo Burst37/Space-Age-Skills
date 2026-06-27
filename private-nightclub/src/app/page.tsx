@@ -3,6 +3,7 @@ import MobileCtaBar from "@/components/MobileCtaBar";
 import Hero from "@/components/Hero";
 import Intro from "@/components/Intro";
 import Services from "@/components/Services";
+import SphereGallery from "@/components/SphereGallery";
 import Menu from "@/components/Menu";
 import Concierge from "@/components/Concierge";
 import JoinList from "@/components/JoinList";
@@ -61,6 +62,7 @@ export default function Home() {
         <Hero />
         <Intro />
         <Services />
+        <SphereGallery />
         <Menu />
         <Concierge />
         <JoinList />

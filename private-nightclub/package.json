@@ -16,12 +16,14 @@
     "lenis": "1.1.18",
     "next": "^15.5.19",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "three": "^0.160.0"
   },
   "devDependencies": {
     "@types/node": "20.17.12",
     "@types/react": "18.3.18",
     "@types/react-dom": "18.3.5",
+    "@types/three": "^0.185.0",
     "autoprefixer": "10.4.20",
     "postcss": "8.4.49",
     "tailwindcss": "3.4.17",

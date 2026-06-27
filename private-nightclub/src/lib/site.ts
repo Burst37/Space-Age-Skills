@@ -32,6 +32,7 @@ export const venue = {
 export const nav = [
   { label: "About", href: "#about" },
   { label: "Services", href: "#services" },
+  { label: "Gallery", href: "#gallery" },
   { label: "Menu", href: "#menu" },
   { label: "Contact", href: "#contact" },
 ] as const;
