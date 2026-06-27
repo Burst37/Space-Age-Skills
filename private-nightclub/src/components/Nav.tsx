@@ -45,7 +45,7 @@ export default function Nav() {
         {/* Left: primary links */}
         <ul className="hidden items-center gap-6 lg:flex">
           {nav
-            .filter((item) => item.href !== "#top")
+            .filter((item) => item.href !== ("#top" as string))
             .map((item) => (
               <li key={item.href}>
                 <a

@@ -30,12 +30,10 @@ export const venue = {
 } as const;
 
 export const nav = [
-  { label: "Home", href: "#top" },
-  { label: "Events", href: "#events" },
-  { label: "VIP", href: "#vip" },
-  { label: "Guestlist", href: "#guestlist" },
-  { label: "Membership", href: "#membership" },
-  { label: "Gallery", href: "#gallery" },
+  { label: "About", href: "#about" },
+  { label: "Services", href: "#services" },
+  { label: "Menu", href: "#menu" },
+  { label: "Concierge", href: "#concierge" },
   { label: "Contact", href: "#contact" },
 ] as const;
 

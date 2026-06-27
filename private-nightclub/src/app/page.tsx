@@ -1,22 +1,13 @@
 import Nav from "@/components/Nav";
 import MobileCtaBar from "@/components/MobileCtaBar";
 import Hero from "@/components/Hero";
-import ScrollStory from "@/components/ScrollStory";
-import SplitShowcase from "@/components/SplitShowcase";
-import ExperienceGallery from "@/components/ExperienceGallery";
-import Events from "@/components/Events";
-import VipReservation from "@/components/VipReservation";
-import Guestlist from "@/components/Guestlist";
+import Intro from "@/components/Intro";
+import Services from "@/components/Services";
 import Menu from "@/components/Menu";
-import Music from "@/components/Music";
-import Membership from "@/components/Membership";
-import SocialProof from "@/components/SocialProof";
-import InfoFaq from "@/components/InfoFaq";
-import Contact from "@/components/Contact";
 import Concierge from "@/components/Concierge";
+import Contact from "@/components/Contact";
 import { venue, events } from "@/lib/site";
 
-/** Structured data so search engines understand the venue and its events. */
 function StructuredData() {
   const json = {
     "@context": "https://schema.org",
@@ -48,6 +39,18 @@ function StructuredData() {
   );
 }
 
+/**
+ * Page structure follows the Dinely luxury restaurant template wireframe,
+ * adapted for a nightclub with Private's custom video hero, liquid-glass
+ * typography, and GSAP scroll reveals layered on top.
+ *
+ * Section order:
+ *   Nav → Hero → Intro (split: headline + stats / atmospheric photo)
+ *   → Services (alternating image + text cards)
+ *   → Menu (late-night food + bottle list)
+ *   → Concierge (Tory — solo team card)
+ *   → Contact / Footer
+ */
 export default function Home() {
   return (
     <>
@@ -55,21 +58,13 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
-        <ScrollStory />
-        <SplitShowcase />
-        <ExperienceGallery />
-        <Events />
-        <VipReservation />
-        <Guestlist />
-        <Music />
+        <Intro />
+        <Services />
         <Menu />
-        <Membership />
-        <SocialProof />
-        <InfoFaq />
+        <Concierge />
         <Contact />
       </main>
       <MobileCtaBar />
-      <Concierge />
     </>
   );
 }
