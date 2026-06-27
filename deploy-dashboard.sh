@@ -11,7 +11,7 @@ TGZ="spaceage-dashboard-src-v9.tgz"
 RAW="https://raw.githubusercontent.com/Burst37/Space-Age-Skills/refs/heads/${BRANCH}/${TGZ}"
 DIR=/root/spaceage-dashboard
 
-echo "→ fetching Space Age OS v6…"
+echo "→ fetching Space Age OS (${TGZ})…"
 rm -rf "$DIR"; mkdir -p "$DIR"
 curl -fsSL "$RAW" | tar xz -C "$DIR"
 
