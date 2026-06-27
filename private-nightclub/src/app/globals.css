@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --black: #030303;
+  --soft-black: #0a0a0a;
+  --gold: #c9a24d;
+  --champagne: #f4d78f;
+  --cream: #f7efe0;
+  --smoke: rgba(255, 255, 255, 0.08);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background: var(--black);
+    color: var(--cream);
+    font-family: var(--font-sans), system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: rgba(201, 162, 77, 0.3);
+    color: var(--cream);
+  }
+
+  /* Subtle gold-on-dark scrollbar to stay on brand. */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #050505;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2a2418;
+    border-radius: 0;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3a3120;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  /* Hairline gold rule used across sections instead of heavy borders. */
+  .hairline {
+    border-color: rgba(201, 162, 77, 0.22);
+  }
+
+  .gold-text {
+    background: linear-gradient(100deg, #b8923f, #f4d78f 45%, #c9a24d);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  .display {
+    font-family: var(--font-display), Georgia, serif;
+    font-weight: 500;
+    line-height: 0.92;
+    letter-spacing: -0.01em;
+  }
+
+  /* Outlined gold display type with a soft neon glow (reference hero look). */
+  .text-outline-gold {
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(201, 162, 77, 0.92);
+    text-shadow: 0 0 22px rgba(201, 162, 77, 0.28);
+  }
+  @media (min-width: 1024px) {
+    .text-outline-gold {
+      -webkit-text-stroke-width: 2px;
+    }
+  }
+
+  /* Transparent amber "liquid glass" jumbo type: the footage shows through the
+     glyphs with an amber tint, a glass rim, depth shadow, and a slow refraction
+     sheen. Background-clip paints the translucent amber gradient into the text;
+     because it is semi-transparent the video behind reads through the letters. */
+  .liquid-amber {
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    background-image:
+      linear-gradient(
+        115deg,
+        transparent 38%,
+        rgba(255, 255, 255, 0.5) 50%,
+        transparent 62%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(247, 239, 224, 0.34) 0%,
+        rgba(244, 215, 143, 0.26) 40%,
+        rgba(201, 162, 77, 0.24) 72%,
+        rgba(184, 146, 63, 0.34) 100%
+      );
+    background-size: 300% 100%, 100% 100%;
+    background-position: 150% 0, 0 0;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-stroke: 1px rgba(244, 215, 143, 0.55);
+    filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.22))
+      drop-shadow(0 22px 46px rgba(0, 0, 0, 0.55));
+    animation: amber-sheen 7s ease-in-out infinite;
+  }
+  @media (min-width: 1024px) {
+    .liquid-amber {
+      -webkit-text-stroke-width: 1.5px;
+    }
+  }
+}
+
+@keyframes amber-sheen {
+  0% {
+    background-position: 150% 0, 0 0;
+  }
+  100% {
+    background-position: -150% 0, 0 0;
+  }
+
+  /* Film-grain + vignette atmosphere layer for dark sections. */
+  .atmosphere::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(120% 80% at 50% 0%, transparent 55%, rgba(0, 0, 0, 0.55) 100%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  }
+}
+
+/* Reduced-motion mandate (design-motion-principles). Kills transforms and
+   long transitions while keeping content fully visible. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  /* Elements that GSAP would have revealed must never get stuck hidden. */
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
