@@ -83,28 +83,33 @@ export default function Menu() {
         />
 
         {/* Tabs */}
-        <div className="mt-10 flex gap-3" role="tablist" aria-label="Menu sections">
-          {tabs.map((t) => (
-            <button
-              key={t.key}
-              role="tab"
-              aria-selected={tab === t.key}
-              onClick={() => setTab(t.key)}
-              className={`px-6 py-3 text-[0.7rem] uppercase tracking-wide2 transition-colors ${
-                tab === t.key
-                  ? "bg-gold text-black"
-                  : "border border-gold/30 text-champagne hover:border-gold/60"
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
+        <Reveal delay={0.05}>
+          <div className="mt-10 flex gap-3" role="tablist" aria-label="Menu sections">
+            {tabs.map((t) => (
+              <button
+                key={t.key}
+                role="tab"
+                aria-selected={tab === t.key}
+                onClick={() => setTab(t.key)}
+                className={`px-6 py-3 text-[0.7rem] uppercase tracking-wide2 transition-colors ${
+                  tab === t.key
+                    ? "bg-gold text-black"
+                    : "border border-gold/30 text-champagne hover:border-gold/60"
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </Reveal>
 
         <p className="mt-5 text-sm text-gold/80">{active.note}</p>
 
         {/* Gallery (masonry preserves the full self-labeled cards) */}
-        <div className="mt-8 columns-2 gap-3 sm:gap-4 md:columns-3 lg:columns-4 [&>*]:mb-3 sm:[&>*]:mb-4">
+        <Reveal
+          delay={0.1}
+          className="mt-8 columns-2 gap-3 sm:gap-4 md:columns-3 lg:columns-4 [&>*]:mb-3 sm:[&>*]:mb-4"
+        >
           {images.map((src, i) => (
             <button
               key={src}
@@ -122,7 +127,7 @@ export default function Menu() {
               />
             </button>
           ))}
-        </div>
+        </Reveal>
 
         {/* Priced menu */}
         <Reveal delay={0.05} className="mt-16">

@@ -81,6 +81,24 @@ export default function Services() {
           },
         });
       });
+
+      // Subtle ken-burns: photo settles from a slight zoom as it scrolls in.
+      gsap.utils.toArray<HTMLElement>("[data-svc-img]").forEach((img) => {
+        gsap.fromTo(
+          img,
+          { scale: 1.14 },
+          {
+            scale: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: img,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1,
+            },
+          },
+        );
+      });
     }, root);
     return () => ctx.revert();
   }, []);
@@ -106,11 +124,12 @@ export default function Services() {
             }`}
           >
             <Image
+              data-svc-img
               src={svc.image}
               alt={`${svc.eyebrow} at Private Nightclub`}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover"
+              className="object-cover will-change-transform"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/20" />
             {/* Decorative oversized number, seated over the photo */}
