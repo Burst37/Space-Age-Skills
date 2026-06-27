@@ -84,6 +84,52 @@
     }
   }
 
+  /* Transparent amber "liquid glass" jumbo type: the footage shows through the
+     glyphs with an amber tint, a glass rim, depth shadow, and a slow refraction
+     sheen. Background-clip paints the translucent amber gradient into the text;
+     because it is semi-transparent the video behind reads through the letters. */
+  .liquid-amber {
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    background-image:
+      linear-gradient(
+        115deg,
+        transparent 38%,
+        rgba(255, 255, 255, 0.5) 50%,
+        transparent 62%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(247, 239, 224, 0.34) 0%,
+        rgba(244, 215, 143, 0.26) 40%,
+        rgba(201, 162, 77, 0.24) 72%,
+        rgba(184, 146, 63, 0.34) 100%
+      );
+    background-size: 300% 100%, 100% 100%;
+    background-position: 150% 0, 0 0;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-stroke: 1px rgba(244, 215, 143, 0.55);
+    filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.22))
+      drop-shadow(0 22px 46px rgba(0, 0, 0, 0.55));
+    animation: amber-sheen 7s ease-in-out infinite;
+  }
+  @media (min-width: 1024px) {
+    .liquid-amber {
+      -webkit-text-stroke-width: 1.5px;
+    }
+  }
+}
+
+@keyframes amber-sheen {
+  0% {
+    background-position: 150% 0, 0 0;
+  }
+  100% {
+    background-position: -150% 0, 0 0;
+  }
+
   /* Film-grain + vignette atmosphere layer for dark sections. */
   .atmosphere::after {
     content: "";

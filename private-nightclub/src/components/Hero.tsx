@@ -94,8 +94,8 @@ export default function Hero() {
       </div>
 
       {/* Contrast + atmosphere veils */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/35 to-black/55" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/40" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/45" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/55 via-transparent to-black/30" />
       <div className="hero-veil pointer-events-none absolute inset-0 bg-black/60 opacity-0" />
 
       {/* Copy: giant outlined display type fills the viewport (reference look) */}
@@ -104,9 +104,9 @@ export default function Hero() {
           <p className="hero-rise mb-3 text-[0.7rem] uppercase tracking-brand text-gold/90 sm:mb-5">
             {venue.city} {String.fromCharCode(183)} Est. After Dark
           </p>
-          <h1 className="hero-rise display leading-[0.8] tracking-[-0.02em]">
-            <span className="block text-[clamp(3.5rem,17vw,15rem)] text-cream">Private</span>
-            <span className="block text-[clamp(3.5rem,17vw,15rem)] text-outline-gold">Nightclub</span>
+          <h1 className="hero-rise display leading-[0.78] tracking-[-0.03em]">
+            <span className="liquid-amber block text-[clamp(4rem,19.5vw,18rem)]">Private</span>
+            <span className="liquid-amber block text-[clamp(4rem,19.5vw,18rem)]">Nightclub</span>
           </h1>
         </div>
         <div className="hero-rise flex flex-col gap-6 pb-28 sm:pb-24 md:flex-row md:items-end md:justify-between md:pb-14">
