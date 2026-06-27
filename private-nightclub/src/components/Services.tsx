@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/motion";
@@ -7,6 +8,7 @@ import { prefersReducedMotion } from "@/lib/motion";
 const services = [
   {
     id: "bottle",
+    image: "/venue/bottle-service.webp",
     eyebrow: "Bottle Service",
     heading: "The Parade Starts at Your Table",
     body:
@@ -24,6 +26,7 @@ const services = [
   },
   {
     id: "events",
+    image: "/venue/crowd.webp",
     eyebrow: "Private Events",
     heading: "Your Night, Your Venue",
     body:
@@ -41,6 +44,7 @@ const services = [
   },
   {
     id: "vip",
+    image: "/venue/vip-room.webp",
     eyebrow: "VIP Tables",
     heading: "The Best Sightlines in the Room",
     body:
@@ -95,15 +99,22 @@ export default function Services() {
           data-svc-card
           className="mx-auto grid max-w-[1440px] grid-cols-1 border-b border-gold/10 lg:grid-cols-2"
         >
-          {/* Image panel — Dinely alternates left/right */}
+          {/* Image panel — real venue photo, Dinely alternates left/right */}
           <div
             className={`relative min-h-[360px] overflow-hidden bg-[#0d0a05] lg:min-h-[520px] ${
               svc.imagePos === "left" ? "lg:order-first" : "lg:order-last"
             }`}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-[#1c1408] via-[#0d0a05] to-black" />
-            {/* Giant ambient glyph — Dinely uses decorative oversized number */}
-            <span className="display absolute bottom-8 right-8 select-none text-[14rem] leading-none text-gold/[0.05]">
+            <Image
+              src={svc.image}
+              alt={`${svc.eyebrow} at Private Nightclub`}
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/20" />
+            {/* Decorative oversized number, seated over the photo */}
+            <span className="display absolute bottom-6 right-7 select-none text-[9rem] leading-none text-cream/85 mix-blend-overlay">
               {svc.id === "bottle" ? "01" : svc.id === "events" ? "02" : "03"}
             </span>
           </div>

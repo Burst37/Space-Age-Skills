@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/motion";
@@ -76,18 +77,21 @@ export default function Intro() {
           </div>
         </div>
 
-        {/* Right — atmospheric dark panel (swap for real photo when available) */}
+        {/* Right — real venue: the Escalade arrival outside the club */}
         <div
           data-intro-fade
           className="relative hidden min-h-[540px] overflow-hidden lg:block"
         >
-          {/* Dark gradient atmosphere matching Dinely's right-side photo panel */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#1a1206] via-[#0d0a05] to-black" />
-          <div className="absolute inset-0 bg-[url('/video/poster.svg')] bg-cover bg-center opacity-25" />
-          {/* Giant ambient "P" monogram, same treatment as Dinely's decorative typography */}
-          <span className="display absolute bottom-10 right-8 select-none text-[18rem] leading-none text-gold/[0.04]">
-            P
-          </span>
+          <Image
+            src="/venue/exterior.webp"
+            alt="Arrivals outside Private Nightclub in downtown St. Louis"
+            fill
+            sizes="50vw"
+            className="object-cover"
+          />
+          {/* Cinematic veil to seat the photo in the dark page */}
+          <div className="absolute inset-0 bg-gradient-to-l from-transparent via-black/10 to-black/70" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         </div>
       </div>
     </section>
