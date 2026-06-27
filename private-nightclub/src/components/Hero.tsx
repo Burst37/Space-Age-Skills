@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/motion";
+import { track } from "@/lib/track";
 import { venue } from "@/lib/site";
 
 /**
@@ -117,13 +118,15 @@ export default function Hero() {
           <div className="flex flex-wrap items-center gap-4">
             <a
               href="#vip"
+              onClick={() => track({ type: "cta", label: "Reserve VIP" })}
               className="group inline-flex items-center gap-2 bg-gold px-8 py-4 text-[0.72rem] uppercase tracking-wide2 text-black transition-colors duration-300 hover:bg-champagne"
             >
               Reserve VIP
               <span className="transition-transform duration-300 group-hover:translate-x-1">{"→"}</span>
             </a>
             <a
-              href="#guestlist"
+              href="#list"
+              onClick={() => track({ type: "cta", label: "Join Guestlist" })}
               className="border border-gold/50 px-8 py-4 text-[0.72rem] uppercase tracking-wide2 text-champagne transition-colors duration-300 hover:border-gold hover:text-cream"
             >
               Join Guestlist

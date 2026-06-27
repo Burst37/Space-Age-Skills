@@ -5,6 +5,7 @@ import Intro from "@/components/Intro";
 import Services from "@/components/Services";
 import Menu from "@/components/Menu";
 import Concierge from "@/components/Concierge";
+import JoinList from "@/components/JoinList";
 import Contact from "@/components/Contact";
 import { venue, events } from "@/lib/site";
 
@@ -62,6 +63,7 @@ export default function Home() {
         <Services />
         <Menu />
         <Concierge />
+        <JoinList />
         <Contact />
       </main>
       <MobileCtaBar />

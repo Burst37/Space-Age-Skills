@@ -13,6 +13,7 @@ import {
   type MenuSelectItem,
 } from "@/lib/site";
 import { springs } from "@/lib/motion";
+import { track } from "@/lib/track";
 import SectionHeading from "./ui/SectionHeading";
 import Reveal from "./ui/Reveal";
 
@@ -126,7 +127,10 @@ export default function Menu() {
           {items.map((it, i) => (
             <button
               key={it.img}
-              onClick={() => setSelected(i)}
+              onClick={() => {
+                setSelected(i);
+                track({ type: "menu", item: it.name, category: it.category, tab });
+              }}
               aria-label={`View ${it.name}`}
               className="group block w-full overflow-hidden border border-gold/12 bg-soft-black transition-colors hover:border-gold/40"
             >
