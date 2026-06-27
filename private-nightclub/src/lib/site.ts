@@ -33,7 +33,6 @@ export const nav = [
   { label: "About", href: "#about" },
   { label: "Services", href: "#services" },
   { label: "Menu", href: "#menu" },
-  { label: "Concierge", href: "#concierge" },
   { label: "Contact", href: "#contact" },
 ] as const;
 

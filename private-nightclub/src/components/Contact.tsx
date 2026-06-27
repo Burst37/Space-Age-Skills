@@ -89,9 +89,10 @@ export default function Contact() {
         </div>
 
         <div className="mt-20 flex flex-col items-center justify-between gap-6 border-t border-gold/12 py-8 sm:flex-row">
-          <div className="flex items-baseline gap-2">
-            <span className="display text-2xl text-cream">{venue.name}</span>
-            <span className="text-[0.6rem] uppercase tracking-brand text-gold/70">Nightclub</span>
+          <div className="flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/brand/logo.png" alt={venue.fullName} className="h-12 w-12 object-contain" />
+            <span className="display text-xl text-cream/90">{venue.fullName}</span>
           </div>
           <div className="flex gap-5">
             {venue.social.map((s) => (

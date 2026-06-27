@@ -58,16 +58,18 @@ export default function Nav() {
             ))}
         </ul>
 
-        {/* Center: wordmark */}
+        {/* Center: real gold logo badge */}
         <a
           href="#top"
-          className="absolute left-1/2 flex -translate-x-1/2 items-baseline gap-2"
+          className="absolute left-1/2 flex -translate-x-1/2 items-center"
           aria-label={`${venue.fullName} home`}
         >
-          <span className="display text-2xl text-cream">{venue.name}</span>
-          <span className="hidden text-[0.6rem] uppercase tracking-brand text-gold/80 sm:inline">
-            Nightclub
-          </span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/brand/logo.png"
+            alt={venue.fullName}
+            className="h-12 w-12 object-contain sm:h-[52px] sm:w-[52px]"
+          />
         </a>
 
         {/* Right: actions */}
