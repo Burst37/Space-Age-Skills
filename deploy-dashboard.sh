@@ -7,7 +7,7 @@
 set -e
 
 BRANCH="claude/stoic-rubin-ze3f9i"
-TGZ="spaceage-dashboard-src-v9.tgz"
+TGZ="spaceage-dashboard-src-v10.tgz"
 RAW="https://raw.githubusercontent.com/Burst37/Space-Age-Skills/refs/heads/${BRANCH}/${TGZ}"
 DIR=/root/spaceage-dashboard
 
