@@ -8,7 +8,12 @@ Branch: `claude/trusting-sagan-5z6ux2` · PR #43
 
 ---
 
-## 🚀 Deploy to Vercel (do this to make the site + /owner dashboard live)
+## ✅ LIVE: https://private-nightclub.vercel.app
+Deployed to the Vercel team (project `private-nightclub`, prj_aISj6E0MBQzmxsiixrr2cx7ZXsf6) via CLI; all 5 env vars set + encrypted in production; Tory (Gemini) + owner dashboard verified working live. Owner: `/owner` (passcode `private2026` — change it). Note: deployed via CLI, not git-connected — re-deploy with `vercel deploy --prod` or connect the GitHub repo in Vercel for auto-deploys.
+
+---
+
+## 🚀 Deploy to Vercel (reference — already done once via CLI)
 
 The MCP deploy tool can't target a subfolder or set env vars, so set it up once
 in the Vercel dashboard — then every push auto-deploys.
