@@ -1,20 +1,13 @@
 import { NextResponse } from "next/server";
-import {
-  venue,
-  events,
-  faqs,
-  membershipTiers,
-  foodSelectItems,
-  drinkSelectItems,
-} from "@/lib/site";
+import { venue, events, faqs, membershipTiers } from "@/lib/site";
+import { systemPrompt, type Msg } from "@/lib/concierge-knowledge";
 
 /**
  * Concierge endpoint ("Tory"). Tries Gemini first (grounded in the whole venue
  * incl. the full menu), then Claude, then a built-in knowledge base — so it
- * always answers, with or without keys configured.
+ * always answers, with or without keys configured. The venue/menu grounding
+ * lives in `@/lib/concierge-knowledge` so the text and live-voice brains share it.
  */
-
-type Msg = { role: "user" | "assistant"; content: string };
 
 const tonight = events[0];
 
@@ -74,27 +67,6 @@ function knowledgeReply(text: string): string {
   const hit = KB.find((k) => k.match.test(text));
   if (hit) return hit.answer;
   return `I can help with tables and bottle service, dress code, parking, hours, events, birthdays, the guestlist, and membership. Tell me which one, or call ${venue.phone} for the desk directly.`;
-}
-
-/** Shared system prompt — grounds Tory in the whole venue, including the menu
- *  with real prices so it can answer "how much is Don Julio 1942" accurately. */
-function systemPrompt(): string {
-  const food = foodSelectItems.map((i) => `${i.name} $${i.price}`).join(", ");
-  const bottles = drinkSelectItems.map((i) => `${i.name} $${i.price}`).join(", ");
-  return `You are Tory, the concierge for ${venue.fullName}, a luxury nightclub in ${venue.city}. Be warm, concise, and upscale. Never invent prices — use only the figures below. Keep replies under 90 words. Guide guests toward reserving a VIP table, joining the list, or calling the booking line.
-
-VENUE
-- Hours: ${venue.hours.map((h) => `${h.day} ${h.time}`).join("; ")}
-- Address: ${venue.address.line1}, ${venue.address.line2}
-- Phone: ${venue.phone} | Email: ${venue.email}
-- Next event: ${tonight.name} (${tonight.weekday} ${tonight.date}) with ${tonight.host}
-- Dress code: upscale; no athletic or baggy wear
-- VIP: reserved tables, bottle service, dedicated host; pricing is a minimum spend confirmed at booking
-- Guestlist: free, speeds entry, does not guarantee admission at capacity; tables and members enter first
-- Membership: ${membershipTiers[0].name} — ${membershipTiers[0].perks.slice(0, 3).join(", ")}
-
-FOOD MENU: ${food}
-BOTTLE SERVICE (750ml): ${bottles}`;
 }
 
 async function geminiReply(messages: Msg[]): Promise<string | null> {

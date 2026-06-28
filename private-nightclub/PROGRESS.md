@@ -57,7 +57,7 @@ in the Vercel dashboard — then every push auto-deploys.
 - **Intro** — split: headline + stat counters / real venue arrival photo
 - **Services** — alternating cards (Bottle Service, Private Events, VIP Tables) with real venue photos + ken-burns on scroll
 - **Menu** — bento court of branded food/bottle cards → **split-screen detail on tap** (name·category·price·note, prev/next). All 47 cards mapped to correct names/prices.
-- **Concierge** — floating bubble with Tory's real headshot (backend = future Gemini Flash TTS agent)
+- **Concierge** — floating bubble with Tory's real headshot + a glass label. Text brain = Gemini. **Live voice = Gemini 3.1 Flash Live (native audio), base voice Charon** steered to a warm St. Louis host (mixed Black/Latino male, early 30s). Tap-to-call mic in the panel; browser connects to Gemini over WebSocket using a short-lived **ephemeral token** minted by `/api/concierge/live-token` (real key never reaches the browser; persona/voice/model locked server-side). Transcripts stream into the chat. **NOT Higgsfield.**
 - **JoinList** — email capture section → Supabase
 - **Contact / footer** — map, hours, real logo
 - **Owner dashboard `/owner`** — passcode-gated (cookie + middleware); metric tiles, ranked menu-engagement bars (Food/Bottle), CTA counts, email list + CSV export. Styled after the Agentic OS mission-control, recolored black + gold. Tracking is engagement (opens), **not POS sales**.
@@ -71,7 +71,8 @@ in the Vercel dashboard — then every push auto-deploys.
 - [ ] **Deploy** (above) + change the passcode
 - [x] **Orbiting 3D sphere gallery** — built ("The room", Three.js).
 - [x] **Tory's brain (text)** — `/api/concierge` uses Gemini (gemini-2.5-flash) grounded in the whole site + menu, Claude + KB fallbacks. ✓ Verified live with a valid key (in workspace `.env.local`; add to Vercel env on deploy).
-- [ ] **Tory voice (Phase 2)** — Gemini TTS / realtime voice on top of the text brain.
+- [x] **Tory voice** — Gemini 3.1 Flash Live native-audio, two-way conversation, Charon base voice. ✓ Verified end-to-end (token mint + live connect returns audio + transcript). Env: `GEMINI_LIVE_MODEL`, `GEMINI_VOICE` set in `.env.local` + Vercel prod. 15-min audio session cap handled gracefully.
+- [ ] **Tory voice (next)** — optional: session-resumption auto-reconnect past the 15-min cap; voice-base A/B (one-line `GEMINI_VOICE` swap) once owner hears Charon.
 - [ ] Optional: scrubbing-video hero (needs a dense-keyframe re-encode; no ffmpeg here).
 
 ---
