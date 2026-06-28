@@ -95,11 +95,17 @@ export default function Hero() {
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/15" />
       <div className="hero-veil pointer-events-none absolute inset-0 bg-black/60 opacity-0" />
 
-      {/* Copy: giant OUTLINED gold type — see-through, fills the viewport (ref) */}
-      <div className="relative z-10 mx-auto flex h-full max-w-edge flex-col justify-center px-5 sm:px-8">
-        <h1 className="hero-rise font-semibold uppercase leading-[0.82] tracking-[-0.01em]">
-          <span className="block text-outline-gold text-[clamp(4rem,20vw,30rem)]">Private</span>
-          <span className="block text-outline-gold text-[clamp(4rem,20vw,30rem)]">Nightclub</span>
+      {/* Copy: giant OUTLINED gold type — see-through, fills the WHOLE viewport
+          top-to-bottom (ref). Anton is condensed so NIGHTCLUB spans the full
+          width while the glyphs stay tall enough to reach both edges. */}
+      <div className="relative z-10 flex h-full w-full flex-col justify-center px-[1.5vw]">
+        <h1 className="hero-rise font-condensed uppercase text-center leading-[0.8] tracking-[0.005em]">
+          <span className="block text-outline-gold text-[clamp(3.5rem,22vw,26rem)]">
+            Private
+          </span>
+          <span className="block text-outline-gold text-[clamp(3.5rem,22vw,26rem)]">
+            Nightclub
+          </span>
         </h1>
       </div>
     </section>

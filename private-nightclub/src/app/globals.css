@@ -72,15 +72,23 @@
     letter-spacing: -0.01em;
   }
 
-  /* Outlined gold display type with a soft neon glow (reference hero look). */
+  /* Heavy condensed face for the full-screen hero wordmark. */
+  .font-condensed {
+    font-family: var(--font-condensed), "Arial Narrow", sans-serif;
+    font-weight: 400;
+  }
+
+  /* Outlined gold display type with a soft neon glow (reference hero look).
+     The stroke scales up with the type so the giant hero letters read as a
+     clean rim, not a hairline. */
   .text-outline-gold {
     color: transparent;
-    -webkit-text-stroke: 1.5px rgba(201, 162, 77, 0.92);
-    text-shadow: 0 0 22px rgba(201, 162, 77, 0.28);
+    -webkit-text-stroke: 2px rgba(201, 162, 77, 0.95);
+    text-shadow: 0 0 26px rgba(201, 162, 77, 0.3);
   }
   @media (min-width: 1024px) {
     .text-outline-gold {
-      -webkit-text-stroke-width: 2px;
+      -webkit-text-stroke-width: 3px;
     }
   }
 
@@ -129,17 +137,17 @@
   100% {
     background-position: -150% 0, 0 0;
   }
+}
 
-  /* Film-grain + vignette atmosphere layer for dark sections. */
-  .atmosphere::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-      radial-gradient(120% 80% at 50% 0%, transparent 55%, rgba(0, 0, 0, 0.55) 100%),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-  }
+/* Film-grain + vignette atmosphere layer for dark sections. */
+.atmosphere::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 80% at 50% 0%, transparent 55%, rgba(0, 0, 0, 0.55) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
 }
 
 /* Reduced-motion mandate (design-motion-principles). Kills transforms and

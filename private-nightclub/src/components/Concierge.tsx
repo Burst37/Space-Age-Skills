@@ -75,15 +75,38 @@ export default function Concierge() {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Close concierge" : "Open concierge"}
-        className="fixed bottom-20 right-5 z-50 flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border border-gold/40 bg-black/80 text-gold shadow-lift backdrop-blur-xl transition-colors hover:border-gold hover:text-champagne md:bottom-6 md:right-6"
-      >
-        {open ? <span className="display text-2xl leading-none">×</span> : <ToryAvatar />}
-        {!open && <span className="absolute inset-0 animate-drift rounded-full ring-1 ring-gold/20" />}
-      </button>
+      <div className="fixed bottom-20 right-5 z-50 flex flex-row-reverse items-center gap-3 md:bottom-6 md:right-6">
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-label={open ? "Close concierge" : "Open concierge — ask questions or place an order"}
+          className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-gold/40 bg-black/80 text-gold shadow-lift backdrop-blur-xl transition-colors hover:border-gold hover:text-champagne"
+        >
+          {open ? <span className="display text-2xl leading-none">×</span> : <ToryAvatar />}
+          {!open && <span className="absolute inset-0 animate-drift rounded-full ring-1 ring-gold/20" />}
+        </button>
+
+        {/* Label so visitors know the bubble is a live concierge — not just a
+            headshot. Glass pill that points at the avatar; hidden once open. */}
+        {!open && (
+          <motion.div
+            initial={{ opacity: 0, x: 8 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1.1, duration: 0.5 }}
+            className="relative hidden items-center rounded-full border border-gold/30 bg-black/80 py-2 pl-4 pr-4 shadow-lift backdrop-blur-xl sm:flex"
+          >
+            <span className="leading-tight">
+              <span className="block text-[0.72rem] font-medium text-cream">
+                Ask me anything
+              </span>
+              <span className="block text-[0.6rem] uppercase tracking-wide2 text-gold/80">
+                Questions {String.fromCharCode(183)} Orders {String.fromCharCode(183)} 24/7
+              </span>
+            </span>
+            <span className="absolute -right-1 top-1/2 h-2.5 w-2.5 -translate-y-1/2 rotate-45 border-r border-t border-gold/30 bg-black/80" />
+          </motion.div>
+        )}
+      </div>
 
       <AnimatePresence>
         {open && (

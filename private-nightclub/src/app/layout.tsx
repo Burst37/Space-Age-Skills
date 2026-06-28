@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Outfit } from "next/font/google";
+import { Cormorant_Garamond, Outfit, Anton } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import { venue } from "@/lib/site";
@@ -20,6 +20,16 @@ const sans = Outfit({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
   variable: "--font-sans",
+  display: "swap",
+});
+
+// Heavy condensed display face for the full-screen hero wordmark. Anton is
+// tall and narrow, so the glyphs fill the viewport height while a long word
+// like NIGHTCLUB still fits the width — exactly the reference look.
+const condensed = Anton({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-condensed",
   display: "swap",
 });
 
@@ -56,7 +66,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable}`}>
+    <html lang="en" className={`${display.variable} ${sans.variable} ${condensed.variable}`}>
       <body>
         <SmoothScroll>{children}</SmoothScroll>
       </body>

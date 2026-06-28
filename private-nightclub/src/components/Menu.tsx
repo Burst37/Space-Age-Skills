@@ -70,18 +70,22 @@ function MenuList({
           <h4 className="mb-4 border-b border-gold/20 pb-2 text-sm uppercase tracking-wide2 text-gold">
             {g.cat}
           </h4>
-          <ul className="space-y-0.5">
+          <ul className="space-y-2.5">
             {g.rows.map(({ item, idx }) => (
               <li key={item.img}>
+                {/* Skeuomorphic liquid-glass pill — same gold language as the
+                    Reserve button, rounded into a capsule with a glass rim and
+                    top highlight. Fills with gold on hover. */}
                 <button
                   onClick={() => onPick(idx)}
-                  className="group flex w-full items-baseline gap-3 py-1.5 text-left"
+                  className="group flex w-full items-center justify-between gap-3 rounded-full border border-gold/25 bg-white/[0.04] px-5 py-2.5 text-left shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-md transition-all duration-300 hover:border-gold/70 hover:bg-gold/10 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_10px_26px_-10px_rgba(201,162,77,0.55)]"
                 >
-                  <span className="text-sm text-cream/85 transition-colors group-hover:text-champagne">
+                  <span className="text-sm text-cream/90 transition-colors group-hover:text-champagne">
                     {item.name}
                   </span>
-                  <span className="mx-1 flex-1 translate-y-[-3px] border-b border-dotted border-cream/15 transition-colors group-hover:border-gold/40" />
-                  <span className="text-sm text-champagne">${item.price}</span>
+                  <span className="shrink-0 text-sm font-medium text-champagne">
+                    ${item.price}
+                  </span>
                 </button>
               </li>
             ))}
@@ -143,9 +147,9 @@ export default function Menu() {
                   setTab(t.key);
                   setSelected(null);
                 }}
-                className={`px-6 py-3 text-[0.7rem] uppercase tracking-wide2 transition-colors ${
+                className={`rounded-full px-6 py-3 text-[0.7rem] uppercase tracking-wide2 transition-colors ${
                   tab === t.key
-                    ? "bg-gold text-black"
+                    ? "bg-gold text-black shadow-[0_8px_24px_-10px_rgba(201,162,77,0.7)]"
                     : "border border-gold/30 text-champagne hover:border-gold/60"
                 }`}
               >
