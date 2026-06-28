@@ -20,11 +20,8 @@ export default function Hero() {
     const v = video.current;
     const reduce = prefersReducedMotion();
 
-    // Slow-zoom hold on the final frame once the narrative finishes.
-    const onEnded = () => {
-      if (!v || reduce) return;
-      gsap.to(v, { scale: 1.12, duration: 8, ease: "none" });
-    };
+    // Video loops continuously (see attribute below) — no end-frame zoom.
+    const onEnded = () => {};
     v?.addEventListener("ended", onEnded);
 
     if (reduce) return; // content is already visible via CSS
@@ -41,16 +38,16 @@ export default function Hero() {
         delay: 0.35,
       });
 
-      // Intro settle on the video itself.
+      // Very subtle intro settle — no heavy zoom (keep the room visible).
       gsap.fromTo(
         ".hero-media",
-        { scale: 1.14 },
-        { scale: 1, duration: 2.4, ease: "power2.out" },
+        { scale: 1.04 },
+        { scale: 1, duration: 1.8, ease: "power2.out" },
       );
 
-      // Scroll parallax: drift the media and deepen the overlay as you leave.
+      // Scroll parallax: gentle drift as you leave (small, no zoom).
       gsap.to(".hero-parallax", {
-        yPercent: 18,
+        yPercent: 8,
         ease: "none",
         scrollTrigger: {
           trigger: root.current,
@@ -85,6 +82,7 @@ export default function Hero() {
           ref={video}
           className="hero-media h-full w-full object-cover"
           autoPlay
+          loop
           muted
           playsInline
           preload="metadata"
@@ -95,8 +93,8 @@ export default function Hero() {
       </div>
 
       {/* Contrast + atmosphere veils */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/45" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/55 via-transparent to-black/30" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/25" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/15" />
       <div className="hero-veil pointer-events-none absolute inset-0 bg-black/60 opacity-0" />
 
       {/* Copy: giant outlined display type fills the viewport (reference look) */}
@@ -105,9 +103,9 @@ export default function Hero() {
           <p className="hero-rise mb-3 text-[0.7rem] uppercase tracking-brand text-gold/90 sm:mb-5">
             {venue.city} {String.fromCharCode(183)} Est. After Dark
           </p>
-          <h1 className="hero-rise display leading-[0.78] tracking-[-0.03em]">
-            <span className="liquid-amber block text-[clamp(4rem,19.5vw,18rem)]">Private</span>
-            <span className="liquid-amber block text-[clamp(4rem,19.5vw,18rem)]">Nightclub</span>
+          <h1 className="hero-rise display leading-[0.74] tracking-[-0.03em]">
+            <span className="liquid-amber block text-[clamp(4.5rem,21vw,30rem)]">Private</span>
+            <span className="liquid-amber block text-[clamp(4.5rem,21vw,30rem)]">Nightclub</span>
           </h1>
         </div>
         <div className="hero-rise flex flex-col gap-6 pb-28 sm:pb-24 md:flex-row md:items-end md:justify-between md:pb-14">
