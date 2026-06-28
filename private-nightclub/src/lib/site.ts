@@ -267,7 +267,7 @@ export const foodSelectItems: MenuSelectItem[] = [
   { name: "Beef Toasted Ravioli", category: "Appetizers", price: "10", note: "St. Louis style, marinara.", img: "/menu/food/food-12.webp" },
   { name: "Buffalo Shrimp", category: "Appetizers", price: "12", note: "Crispy shrimp tossed in buffalo.", img: "/menu/food/food-15.webp" },
   { name: "Buffalo Cauliflower", category: "Appetizers", price: "10", note: "Crispy cauliflower, buffalo sauce.", img: "/menu/food/food-14.webp" }, // PHOTO shows pizza — regenerate
-  { name: "Fried Pickles", category: "Appetizers", price: "10", note: "Hand-battered dill pickles.", img: "/menu/food/food-13.webp" }, // PHOTO shows hot dog — regenerate
+  { name: "Fried Pickles", category: "Appetizers", price: "10", note: "Hand-battered dill pickles.", img: "/menu/food/food-13.webp" }, // real photo (owner-supplied)
   // FROM THE GRILL
   { name: "All Beef Hot Dog", category: "From the Grill", price: "7", note: "Quarter-pound all-beef dog.", img: "/menu/food/food-17.webp" }, // PHOTO shows bites — regenerate
   { name: "Cheeseburger", category: "From the Grill", price: "12", note: "Char-grilled, American cheese.", img: "/menu/food/food-16.webp" }, // PHOTO shows pizza — regenerate
