@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Field, SelectField, TextareaField, FormShell } from "./ui/Field";
 import SectionHeading from "./ui/SectionHeading";
 import Reveal from "./ui/Reveal";
@@ -17,6 +17,38 @@ const intents = [
 export default function VipReservation() {
   const [status, setStatus] = useState<Status>("idle");
   const [intent, setIntent] = useState("table");
+  const [paying, setPaying] = useState(false);
+  const stripeEnabled = process.env.NEXT_PUBLIC_STRIPE_ENABLED === "1";
+
+  // Show the success state when Stripe sends the guest back after paying.
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    if (p.get("reserved") === "1") setStatus("success");
+  }, []);
+
+  // Pay the table deposit via Stripe Checkout, carrying the form details along.
+  async function payDeposit(e: React.MouseEvent<HTMLButtonElement>) {
+    const form = e.currentTarget.closest("form");
+    if (!form || !form.reportValidity()) return;
+    const data = Object.fromEntries(new FormData(form).entries());
+    setPaying(true);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...data, intent }),
+      });
+      const json = await res.json();
+      if (json.url) {
+        window.location.href = json.url as string;
+        return;
+      }
+      setStatus("error");
+    } catch {
+      setStatus("error");
+    }
+    setPaying(false);
+  }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -111,6 +143,16 @@ export default function VipReservation() {
             >
               {status === "submitting" ? "Sending..." : "Request my table"}
             </button>
+            {stripeEnabled && (
+              <button
+                type="button"
+                onClick={payDeposit}
+                disabled={paying || status === "submitting"}
+                className="mt-3 w-full rounded-full border border-gold/40 py-4 text-[0.72rem] uppercase tracking-wide2 text-champagne transition-colors hover:border-gold hover:text-cream disabled:opacity-60"
+              >
+                {paying ? "Redirecting to secure checkout..." : "Reserve now with a deposit →"}
+              </button>
+            )}
           </FormShell>
         </Reveal>
       </div>

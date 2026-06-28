@@ -22,10 +22,7 @@ export const venue = {
     { day: "Sun - Wed", time: "Private events only" },
   ],
   social: [
-    { label: "Instagram", slug: "instagram", href: "https://instagram.com" },
-    { label: "TikTok", slug: "tiktok", href: "https://tiktok.com" },
-    { label: "X", slug: "x", href: "https://x.com" },
-    { label: "YouTube", slug: "youtube", href: "https://youtube.com" },
+    { label: "@privatenightclubstl", slug: "instagram", href: "https://instagram.com/privatenightclubstl" },
   ],
 } as const;
 
