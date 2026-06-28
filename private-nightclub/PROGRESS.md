@@ -22,7 +22,7 @@ in the Vercel dashboard — then every push auto-deploys.
    | `SUPABASE_URL` | `https://oczbsvhkgbskxhmtkjnk.supabase.co` |
    | `SUPABASE_ANON_KEY` | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9jemJzdmhrZ2Jza3hobXRram5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1Nzk1NTgsImV4cCI6MjA5ODE1NTU1OH0.kLJyq-1DEXIw2O_y3UUMiQi-rvKCB4uEMqTJ9qooQjg` |
    | `OWNER_PASSCODE` | _choose your own — this is the real secret_ |
-   | `GEMINI_API_KEY` | _Tory's brain. The key in the master config is INVALID (revoked) — get a fresh one at aistudio.google.com → "Get API key". Without it Tory falls back to the built-in knowledge base._ |
+   | `GEMINI_API_KEY` | _Tory's brain. A VALID key is set in the workspace `.env.local` and verified working — paste that same value into Vercel on deploy. (Not committed to git.)_ |
    | `GEMINI_MODEL` | `gemini-2.5-flash` |
 
 4. **Deploy.**
@@ -65,7 +65,7 @@ in the Vercel dashboard — then every push auto-deploys.
 
 - [ ] **Deploy** (above) + change the passcode
 - [x] **Orbiting 3D sphere gallery** — built ("The room", Three.js).
-- [x] **Tory's brain (text)** — `/api/concierge` uses Gemini (gemini-2.5-flash) grounded in the whole site + menu, Claude + KB fallbacks. ⚠️ Needs a **valid `GEMINI_API_KEY`** (master-config key is revoked) — falls back to the KB until set.
+- [x] **Tory's brain (text)** — `/api/concierge` uses Gemini (gemini-2.5-flash) grounded in the whole site + menu, Claude + KB fallbacks. ✓ Verified live with a valid key (in workspace `.env.local`; add to Vercel env on deploy).
 - [ ] **Tory voice (Phase 2)** — Gemini TTS / realtime voice on top of the text brain.
 - [ ] Optional: scrubbing-video hero (needs a dense-keyframe re-encode; no ffmpeg here).
 
