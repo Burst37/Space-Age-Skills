@@ -29,6 +29,25 @@ const tabs: {
   { key: "bottle", label: "Bottle Service", note: bottleNote, items: drinkSelectItems, menu: bottleMenu },
 ];
 
+/** Real, standard bottle specs. Most spirits are 40% ABV / 750ml; overrides
+ *  below are the genuine label figures. Used only for the Bottle tab. */
+const BOTTLE_ABV: Record<string, string> = {
+  "Makers Mark": "45%",
+  "Woodford Reserve": "45.2%",
+  "Deep Eddy's Lime": "35%",
+  "Deep Eddy's Lemon": "35%",
+  "Luc Belaire Rare Luxe": "12.5%",
+  "Luc Belaire Brut Gold": "12.5%",
+  "Luc Belaire Bleu": "12.5%",
+  "Luc Belaire Luxe Rose": "12.5%",
+};
+function bottleSpecs(item: MenuSelectItem): { k: string; v: string }[] {
+  return [
+    { k: "Size", v: "750ml" },
+    { k: "ABV", v: BOTTLE_ABV[item.name] ?? "40%" },
+  ];
+}
+
 function PriceList({ groups }: { groups: MenuGroup[] }) {
   return (
     <div className="columns-1 gap-10 md:columns-2 [&>*]:break-inside-avoid">
@@ -191,9 +210,9 @@ export default function Menu() {
                     </span>
                     {/* Name scrolls in to the LEFT + enlarges */}
                     <motion.h3
-                      initial={{ x: 160, scale: 0.84, opacity: 0 }}
+                      initial={{ x: 300, scale: 0.7, opacity: 0 }}
                       animate={{ x: 0, scale: 1, opacity: 1 }}
-                      transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+                      transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
                       className="display mt-2 whitespace-nowrap text-[clamp(2.6rem,7vw,5.5rem)] leading-[0.95] text-cream"
                     >
                       {detail.name}
@@ -218,7 +237,7 @@ export default function Menu() {
                         <span className="border border-gold/20 px-3 py-1.5 text-[0.62rem] uppercase tracking-wide2 text-champagne">
                           ${detail.price}
                         </span>
-                        {detail.macros?.map((m) => (
+                        {(detail.macros ?? (tab === "bottle" ? bottleSpecs(detail) : [])).map((m) => (
                           <span
                             key={m.k}
                             className="border border-gold/20 px-3 py-1.5 text-[0.62rem] uppercase tracking-wide2 text-cream/60"
@@ -284,10 +303,10 @@ export default function Menu() {
                     key={detail.img}
                     src={detail.img}
                     alt={detail.name}
-                    initial={{ x: -130, scale: 0.9, opacity: 0 }}
+                    initial={{ x: -260, scale: 0.8, opacity: 0 }}
                     animate={{ x: 0, scale: 1, opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: 0.95, ease: [0.16, 1, 0.3, 1] }}
                     className="h-full w-full object-cover"
                   />
                 </AnimatePresence>
