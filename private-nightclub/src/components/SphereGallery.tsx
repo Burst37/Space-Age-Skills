@@ -12,7 +12,7 @@ import SectionHeading from "./ui/SectionHeading";
  * depth-based scale/opacity for real 3D depth. Click a frame to open it.
  * Falls back to a static grid for reduced-motion / no-WebGL.
  */
-const IMAGES = Array.from({ length: 14 }, (_, i) => `/gallery/g-${String(i + 1).padStart(2, "0")}.webp`);
+const IMAGES = Array.from({ length: 10 }, (_, i) => `/gallery/g-${String(i + 1).padStart(2, "0")}.webp`);
 const CARD_ASPECT = 3 / 2;
 
 export default function SphereGallery() {
