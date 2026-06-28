@@ -78,6 +78,26 @@
     font-weight: 400;
   }
 
+  /* SVG hero wordmark: see-through gold outline. Each line is stretched to the
+     full width via textLength, so PRIVATE and NIGHTCLUB are equal width and
+     reach both edges. non-scaling-stroke keeps the rim an even pixel weight
+     even though the text is non-uniformly scaled to fill the viewport. */
+  .hero-word {
+    font-family: var(--font-condensed), "Arial Narrow", sans-serif;
+    font-size: 55px;
+    fill: transparent;
+    stroke: rgba(201, 162, 77, 0.95);
+    stroke-width: 2px;
+    vector-effect: non-scaling-stroke;
+    paint-order: stroke;
+    filter: drop-shadow(0 0 18px rgba(201, 162, 77, 0.3));
+  }
+  @media (min-width: 1024px) {
+    .hero-word {
+      stroke-width: 3px;
+    }
+  }
+
   /* Outlined gold display type with a soft neon glow (reference hero look).
      The stroke scales up with the type so the giant hero letters read as a
      clean rim, not a hairline. */

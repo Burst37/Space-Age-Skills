@@ -95,18 +95,39 @@ export default function Hero() {
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/15" />
       <div className="hero-veil pointer-events-none absolute inset-0 bg-black/60 opacity-0" />
 
-      {/* Copy: giant OUTLINED gold type — see-through, fills the WHOLE viewport
-          top-to-bottom (ref). Anton is condensed so NIGHTCLUB spans the full
-          width while the glyphs stay tall enough to reach both edges. */}
-      <div className="relative z-10 flex h-full w-full flex-col justify-center px-[1.5vw]">
-        <h1 className="hero-rise font-condensed uppercase text-center leading-[0.8] tracking-[0.005em]">
-          <span className="block text-outline-gold text-[clamp(3.5rem,22vw,26rem)]">
-            Private
-          </span>
-          <span className="block text-outline-gold text-[clamp(3.5rem,22vw,26rem)]">
-            Nightclub
-          </span>
-        </h1>
+      {/* Copy: giant OUTLINED gold wordmark. Rendered as SVG so textLength can
+          stretch EACH word to the full width independently — PRIVATE and
+          NIGHTCLUB end up exactly the same width, spanning edge-to-edge and
+          filling top-to-bottom. fill:none lets the video show through. */}
+      <div className="hero-rise pointer-events-none absolute inset-x-0 bottom-[3vh] top-[68px] z-10 px-3">
+        <svg
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          className="h-full w-full"
+          role="img"
+          aria-label="Private Nightclub"
+        >
+          <text
+            x="50"
+            y="44"
+            textLength="100"
+            lengthAdjust="spacingAndGlyphs"
+            textAnchor="middle"
+            className="hero-word"
+          >
+            PRIVATE
+          </text>
+          <text
+            x="50"
+            y="97"
+            textLength="100"
+            lengthAdjust="spacingAndGlyphs"
+            textAnchor="middle"
+            className="hero-word"
+          >
+            NIGHTCLUB
+          </text>
+        </svg>
       </div>
     </section>
   );

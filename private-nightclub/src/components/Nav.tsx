@@ -78,7 +78,7 @@ export default function Nav() {
           <a
             href="#vip"
             onClick={() => track({ type: "cta", label: "Reserve VIP (nav)" })}
-            className="group hidden items-center gap-2 bg-gold px-4 py-2.5 text-[0.68rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne md:inline-flex"
+            className="group hidden items-center gap-2 rounded-full bg-gold px-5 py-2.5 text-[0.68rem] uppercase tracking-wide2 text-black shadow-[0_8px_24px_-10px_rgba(201,162,77,0.7)] transition-colors hover:bg-champagne md:inline-flex"
           >
             Reserve VIP
             <span className="transition-transform duration-300 group-hover:translate-x-1">{"→"}</span>

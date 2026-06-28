@@ -299,7 +299,7 @@ export default function Menu() {
                             track({ type: "cta", label: `Order: ${detail.name}` });
                             close();
                           }}
-                          className="bg-gold px-7 py-3.5 text-[0.7rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne"
+                          className="rounded-full bg-gold px-7 py-3.5 text-[0.7rem] uppercase tracking-wide2 text-black shadow-[0_8px_24px_-10px_rgba(201,162,77,0.7)] transition-colors hover:bg-champagne"
                         >
                           {tab === "bottle" ? "Add to Bottle Service" : "Order at Your Table"}
                         </a>
@@ -309,7 +309,7 @@ export default function Menu() {
                             track({ type: "cta", label: "Reserve (from menu)" });
                             close();
                           }}
-                          className="border border-gold/40 px-7 py-3.5 text-[0.7rem] uppercase tracking-wide2 text-champagne transition-colors hover:border-gold hover:text-cream"
+                          className="rounded-full border border-gold/40 px-7 py-3.5 text-[0.7rem] uppercase tracking-wide2 text-champagne transition-colors hover:border-gold hover:text-cream"
                         >
                           Reserve a Table
                         </a>
