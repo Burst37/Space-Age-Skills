@@ -178,6 +178,22 @@
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
 }
 
+/* Section background depth — radial gold glow over near-black so sections read
+   rich, not flat. Two variants alternate down the page (glow from top vs.
+   bottom). Pair with .atmosphere for grain. */
+.lux-bg {
+  background-color: #050505;
+  background-image:
+    radial-gradient(80% 60% at 50% -8%, rgba(201, 162, 77, 0.1), transparent 62%),
+    radial-gradient(50% 40% at 92% 8%, rgba(201, 162, 77, 0.05), transparent 60%);
+}
+.lux-bg-alt {
+  background-color: #070707;
+  background-image:
+    radial-gradient(75% 55% at 50% 108%, rgba(201, 162, 77, 0.08), transparent 62%),
+    radial-gradient(45% 40% at 8% 92%, rgba(201, 162, 77, 0.045), transparent 60%);
+}
+
 /* Reduced-motion mandate (design-motion-principles). Kills transforms and
    long transitions while keeping content fully visible. */
 @media (prefers-reduced-motion: reduce) {

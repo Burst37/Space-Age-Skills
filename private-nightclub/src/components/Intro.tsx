@@ -51,7 +51,7 @@ export default function Intro() {
   }, []);
 
   return (
-    <section id="about" ref={root} className="relative overflow-hidden bg-black">
+    <section id="about" ref={root} className="relative overflow-hidden lux-bg">
       <div className="mx-auto grid max-w-[1440px] grid-cols-1 lg:grid-cols-2">
 
         {/* Left — headline, body, stats (mirrors Dinely's left panel) */}

@@ -67,7 +67,7 @@ export default function VipReservation() {
   }
 
   return (
-    <section id="vip" className="relative bg-black px-5 py-24 sm:px-8 lg:py-32">
+    <section id="vip" className="atmosphere relative lux-bg-alt px-5 py-24 sm:px-8 lg:py-32">
       <div className="mx-auto grid max-w-edge gap-12 lg:grid-cols-2 lg:gap-16">
         <div>
           <SectionHeading

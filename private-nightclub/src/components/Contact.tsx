@@ -10,7 +10,7 @@ const mapsLink = `https://maps.google.com/maps?q=${encodeURIComponent(venue.addr
 /** Contact, directions, map, hours, social, and footer. */
 export default function Contact() {
   return (
-    <footer id="contact" className="relative bg-soft-black px-5 pt-24 sm:px-8 lg:pt-32">
+    <footer id="contact" className="relative lux-bg-alt px-5 pt-24 sm:px-8 lg:pt-32">
       <div className="mx-auto max-w-edge">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           <div>

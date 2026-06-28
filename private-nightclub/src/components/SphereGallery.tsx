@@ -47,7 +47,7 @@ export default function SphereGallery() {
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(42, w / h, 0.1, 100);
-    camera.position.set(0, 0, 8.4);
+    camera.position.set(0, 0, 7.1);
 
     // Fibonacci sphere directions
     const N = IMAGES.length;
@@ -60,8 +60,8 @@ export default function SphereGallery() {
       dirs.push(new THREE.Vector3(Math.cos(t) * r, y, Math.sin(t) * r));
     }
 
-    const R = 3.25;
-    const CARD_W = 1.18;
+    const R = 3.55;
+    const CARD_W = 1.58;
     const CARD_H = CARD_W / CARD_ASPECT;
     const geo = new THREE.PlaneGeometry(CARD_W, CARD_H);
     const loader = new THREE.TextureLoader();
@@ -233,7 +233,7 @@ export default function SphereGallery() {
   }, []);
 
   return (
-    <section id="gallery" className="relative bg-black px-5 py-24 sm:px-8 lg:py-28">
+    <section id="gallery" className="atmosphere relative lux-bg-alt px-5 py-24 sm:px-8 lg:py-28">
       <div className="mx-auto max-w-edge">
         <SectionHeading
           eyebrow="Inside"
@@ -247,7 +247,7 @@ export default function SphereGallery() {
       </div>
 
       {webgl ? (
-        <div ref={mount} className="relative mt-6 h-[68vh] min-h-[420px] w-full" />
+        <div ref={mount} className="relative mt-6 h-[88vh] min-h-[560px] w-full" />
       ) : (
         <div className="mx-auto mt-8 grid max-w-edge grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {IMAGES.map((src) => (

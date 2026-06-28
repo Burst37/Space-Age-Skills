@@ -127,7 +127,7 @@ export default function Menu() {
   const detail = selected !== null ? items[selected] : null;
 
   return (
-    <section id="menu" className="relative bg-black px-5 py-24 sm:px-8 lg:py-32">
+    <section id="menu" className="atmosphere relative lux-bg px-5 py-24 sm:px-8 lg:py-32">
       <div className="mx-auto max-w-edge">
         <SectionHeading
           eyebrow="The Menu"

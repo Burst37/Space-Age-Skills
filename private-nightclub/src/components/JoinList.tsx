@@ -30,7 +30,7 @@ export default function JoinList() {
   }
 
   return (
-    <section id="list" className="relative border-t border-gold/12 bg-black px-5 py-24 sm:px-8 lg:py-28">
+    <section id="list" className="relative border-t border-gold/12 lux-bg px-5 py-24 sm:px-8 lg:py-28">
       <div className="mx-auto max-w-edge">
         <SectionHeading
           eyebrow="Stay Close"

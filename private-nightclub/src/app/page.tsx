@@ -5,6 +5,7 @@ import Intro from "@/components/Intro";
 import Services from "@/components/Services";
 import SphereGallery from "@/components/SphereGallery";
 import Menu from "@/components/Menu";
+import VipReservation from "@/components/VipReservation";
 import Concierge from "@/components/Concierge";
 import JoinList from "@/components/JoinList";
 import Contact from "@/components/Contact";
@@ -64,6 +65,7 @@ export default function Home() {
         <Services />
         <SphereGallery />
         <Menu />
+        <VipReservation />
         <Concierge />
         <JoinList />
         <Contact />
