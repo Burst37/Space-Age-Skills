@@ -12,7 +12,6 @@ import {
   type MenuGroup,
   type MenuSelectItem,
 } from "@/lib/site";
-import { springs } from "@/lib/motion";
 import { track } from "@/lib/track";
 import SectionHeading from "./ui/SectionHeading";
 import Reveal from "./ui/Reveal";
@@ -176,51 +175,83 @@ export default function Menu() {
               ×
             </button>
 
+            {/* Push-pull: name scrolls in from the right (moving left), image
+                scrolls in from the left (moving right) — opposite directions,
+                both enlarging. Image rests on the right ~1/3, full height. */}
             <div
-              className="mx-auto grid h-full max-w-6xl grid-cols-1 items-center gap-6 px-5 py-16 md:grid-cols-2 md:gap-12 md:px-10"
+              className="grid h-full grid-cols-1 md:grid-cols-[1.7fr_1fr]"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Left: the chosen card, large */}
-              <div className="relative flex h-[42vh] items-center justify-center md:h-[78vh]">
+              {/* LEFT — details */}
+              <div className="order-2 flex flex-col justify-center overflow-hidden px-5 py-10 sm:px-10 md:order-1 md:py-16 md:pl-14 md:pr-10">
                 <AnimatePresence mode="wait">
-                  <motion.img
-                    key={detail.img}
-                    src={detail.img}
-                    alt={detail.name}
-                    initial={{ opacity: 0, scale: 1.03 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={springs.smooth}
-                    className="max-h-full max-w-full object-contain shadow-lift"
-                  />
-                </AnimatePresence>
-              </div>
-
-              {/* Right: the details */}
-              <div className="flex flex-col justify-center">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={detail.name}
-                    initial={{ opacity: 0, y: 18 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.4 }}
-                  >
+                  <motion.div key={detail.name} className="overflow-hidden">
                     <span className="text-[0.7rem] uppercase tracking-brand text-gold/80">
                       {detail.category}
                     </span>
-                    <h3 className="display mt-3 text-[clamp(2.4rem,5vw,4rem)] leading-[0.95] text-cream">
+                    {/* Name scrolls in to the LEFT + enlarges */}
+                    <motion.h3
+                      initial={{ x: 160, scale: 0.84, opacity: 0 }}
+                      animate={{ x: 0, scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+                      className="display mt-2 whitespace-nowrap text-[clamp(2.6rem,7vw,5.5rem)] leading-[0.95] text-cream"
+                    >
                       {detail.name}
-                    </h3>
-                    {detail.note && (
-                      <p className="mt-4 max-w-sm text-base text-cream/55">{detail.note}</p>
-                    )}
-                    <div className="mt-7 flex items-baseline gap-3">
-                      <span className="text-[0.66rem] uppercase tracking-wide2 text-cream/40">
-                        {tab === "food" ? "Price" : "Bottle"}
-                      </span>
-                      <span className="display text-2xl text-champagne">${detail.price}</span>
-                    </div>
+                    </motion.h3>
+
+                    <motion.div
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.25 }}
+                    >
+                      {detail.note && (
+                        <p className="mt-4 max-w-md text-base leading-relaxed text-cream/60">
+                          {detail.note}
+                        </p>
+                      )}
+
+                      {/* Spec / macros chips */}
+                      <div className="mt-6 flex flex-wrap gap-2.5">
+                        <span className="border border-gold/20 px-3 py-1.5 text-[0.62rem] uppercase tracking-wide2 text-cream/60">
+                          {detail.category}
+                        </span>
+                        <span className="border border-gold/20 px-3 py-1.5 text-[0.62rem] uppercase tracking-wide2 text-champagne">
+                          ${detail.price}
+                        </span>
+                        {detail.macros?.map((m) => (
+                          <span
+                            key={m.k}
+                            className="border border-gold/20 px-3 py-1.5 text-[0.62rem] uppercase tracking-wide2 text-cream/60"
+                          >
+                            {m.k} {m.v}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Purchase buttons */}
+                      <div className="mt-8 flex flex-wrap gap-3">
+                        <a
+                          href="#vip"
+                          onClick={() => {
+                            track({ type: "cta", label: `Order: ${detail.name}` });
+                            close();
+                          }}
+                          className="bg-gold px-7 py-3.5 text-[0.7rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne"
+                        >
+                          {tab === "bottle" ? "Add to Bottle Service" : "Order at Your Table"}
+                        </a>
+                        <a
+                          href="#vip"
+                          onClick={() => {
+                            track({ type: "cta", label: "Reserve (from menu)" });
+                            close();
+                          }}
+                          className="border border-gold/40 px-7 py-3.5 text-[0.7rem] uppercase tracking-wide2 text-champagne transition-colors hover:border-gold hover:text-cream"
+                        >
+                          Reserve a Table
+                        </a>
+                      </div>
+                    </motion.div>
                   </motion.div>
                 </AnimatePresence>
 
@@ -244,6 +275,23 @@ export default function Menu() {
                     {String(selected! + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
                   </span>
                 </div>
+              </div>
+
+              {/* RIGHT — image scrolls in to the RIGHT + enlarges, full height */}
+              <div className="relative order-1 h-[38vh] overflow-hidden md:order-2 md:h-full">
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={detail.img}
+                    src={detail.img}
+                    alt={detail.name}
+                    initial={{ x: -130, scale: 0.9, opacity: 0 }}
+                    animate={{ x: 0, scale: 1, opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    className="h-full w-full object-cover"
+                  />
+                </AnimatePresence>
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
               </div>
             </div>
           </motion.div>

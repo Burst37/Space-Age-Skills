@@ -246,6 +246,8 @@ export type MenuSelectItem = {
   price: string;
   note?: string;
   img: string;
+  /** Optional spec chips shown in the detail view, e.g. [{k:"ABV",v:"40%"}]. */
+  macros?: { k: string; v: string }[];
 };
 
 export const foodSelectItems: MenuSelectItem[] = [
