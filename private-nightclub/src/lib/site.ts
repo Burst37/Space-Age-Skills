@@ -180,7 +180,8 @@ export const foodMenu: MenuGroup[] = [
   },
 ];
 
-export const foodNote = "Kitchen open until 1:30 AM.";
+export const foodNote =
+  "Kitchen open until 1:30 AM. Wing sauces: Buffalo, Honey Hot, Korean BBQ, Lemon Pepper, Garlic Parmesan (extra sauce +50¢). Pizza toppings: pepperoni +$2, sausage, green pepper +$1, onion, mushroom.";
 
 export const bottleMenu: MenuGroup[] = [
   {
@@ -250,29 +251,28 @@ export type MenuSelectItem = {
   macros?: { k: string; v: string }[];
 };
 
+// Real Late Night Food Menu (from the venue's printed menu). Each item uses the
+// owner's OWN labeled card image (name matches the label printed on the card),
+// with the real prices. NOTE: a few cards have an AI photo that doesn't match
+// their (correct) label — flagged with PHOTO; regenerate those images.
 export const foodSelectItems: MenuSelectItem[] = [
-  { name: "Classic Buffalo", category: "Wings", price: "8 / 16 / 24", note: "The standard. Tossed in our buffalo.", img: "/menu/food/food-01.webp" },
-  { name: "Korean BBQ Wings", category: "Wings", price: "8 / 16 / 24", note: "Sweet, savory, sticky.", img: "/menu/food/food-02.webp" },
-  { name: "Garlic Parmesan Wings", category: "Wings", price: "8 / 16 / 24", note: "Herb crusted, aged cheese.", img: "/menu/food/food-03.webp" },
-  { name: "Lemon Pepper Wings", category: "Wings", price: "8 / 16 / 24", note: "Citrus and cracked pepper.", img: "/menu/food/food-04.webp" },
-  { name: "Honey Hot Wings", category: "Wings", price: "8 / 16 / 24", note: "Sweet heat.", img: "/menu/food/food-05.webp" },
-  { name: "Teriyaki Wings", category: "Wings", price: "8 / 16 / 24", note: "Sticky, scallion.", img: "/menu/food/food-06.webp" },
-  { name: "Parmesan Crusted Wings", category: "Wings", price: "8 / 16 / 24", note: "Aged cheese crust.", img: "/menu/food/food-07.webp" },
-  { name: "Mango Habanero Wings", category: "Wings", price: "8 / 16 / 24", note: "Sweet fire.", img: "/menu/food/food-08.webp" },
-  { name: "Blackened Lemon Pepper", category: "Wings", price: "8 / 16 / 24", note: "Bold citrus.", img: "/menu/food/food-09.webp" },
-  { name: "Sweet Chili Wings", category: "Wings", price: "8 / 16 / 24", note: "Glazed, tangy.", img: "/menu/food/food-10.webp" },
-  { name: "Mac & Cheese Bites", category: "Appetizers", price: "10", img: "/menu/food/food-11.webp" },
-  { name: "Beef Toasted Ravioli", category: "Appetizers", price: "10", img: "/menu/food/food-12.webp" },
-  { name: "Fried Pickles", category: "Appetizers", price: "10", img: "/menu/food/food-13.webp" },
-  { name: "Buffalo Cauliflower", category: "Appetizers", price: "10", img: "/menu/food/food-14.webp" },
-  { name: "Buffalo Shrimp", category: "Appetizers", price: "12", img: "/menu/food/food-15.webp" },
-  { name: "Cheeseburger", category: "From the Grill", price: "12", img: "/menu/food/food-16.webp" },
-  { name: "All Beef Hot Dog", category: "From the Grill", price: "7", img: "/menu/food/food-17.webp" },
-  { name: "The Works Pizza", category: "Pizza", price: "12 / 14", note: "Pepperoni, sausage, chicken.", img: "/menu/food/food-18.webp" },
-  { name: "Supreme Veggie Pizza", category: "Pizza", price: "12 / 14", note: "Olives, onion, pepper, mushroom.", img: "/menu/food/food-19.webp" },
-  { name: "Sausage Pizza", category: "Pizza", price: "12 / 14", note: "Italian sausage.", img: "/menu/food/food-20.webp" },
-  { name: "Pepperoni Pizza", category: "Pizza", price: "12 / 14", note: "Classic pepperoni.", img: "/menu/food/food-21.webp" },
-  { name: "Cheese Pizza", category: "Pizza", price: "12 / 14", note: "10in or 12in.", img: "/menu/food/food-22.webp" },
+  // WINGS — party 5/10/20 = $8/$16/$24; whole 5/10/20 = $16/$24/$32; flats +$3
+  { name: "Buffalo Wings", category: "Wings", price: "8 / 16 / 24", note: "Classic buffalo. Party wings 5/10/20 pc; whole 16/24/32; flats +$3.", img: "/menu/food/food-01.webp" },
+  { name: "Honey Hot Wings", category: "Wings", price: "8 / 16 / 24", note: "Sweet heat. Party wings 5/10/20 pc; whole 16/24/32; flats +$3.", img: "/menu/food/food-05.webp" },
+  { name: "Korean BBQ Wings", category: "Wings", price: "8 / 16 / 24", note: "Sweet, savory, sticky. Party wings 5/10/20 pc; whole 16/24/32; flats +$3.", img: "/menu/food/food-02.webp" },
+  { name: "Lemon Pepper Wings", category: "Wings", price: "8 / 16 / 24", note: "Citrus and cracked pepper. Party wings 5/10/20 pc; whole 16/24/32; flats +$3.", img: "/menu/food/food-04.webp" },
+  { name: "Garlic Parmesan Wings", category: "Wings", price: "8 / 16 / 24", note: "Herb and aged parmesan. Party wings 5/10/20 pc; whole 16/24/32; flats +$3.", img: "/menu/food/food-03.webp" },
+  // APPETIZERS
+  { name: "Mac & Cheese Bites", category: "Appetizers", price: "10", note: "Crispy fried mac and cheese.", img: "/menu/food/food-11.webp" },
+  { name: "Beef Toasted Ravioli", category: "Appetizers", price: "10", note: "St. Louis style, marinara.", img: "/menu/food/food-12.webp" },
+  { name: "Buffalo Shrimp", category: "Appetizers", price: "12", note: "Crispy shrimp tossed in buffalo.", img: "/menu/food/food-15.webp" },
+  { name: "Buffalo Cauliflower", category: "Appetizers", price: "10", note: "Crispy cauliflower, buffalo sauce.", img: "/menu/food/food-14.webp" }, // PHOTO shows pizza — regenerate
+  { name: "Fried Pickles", category: "Appetizers", price: "10", note: "Hand-battered dill pickles.", img: "/menu/food/food-13.webp" }, // PHOTO shows hot dog — regenerate
+  // FROM THE GRILL
+  { name: "All Beef Hot Dog", category: "From the Grill", price: "7", note: "Quarter-pound all-beef dog.", img: "/menu/food/food-17.webp" }, // PHOTO shows bites — regenerate
+  { name: "Cheeseburger", category: "From the Grill", price: "12", note: "Char-grilled, American cheese.", img: "/menu/food/food-16.webp" }, // PHOTO shows pizza — regenerate
+  // PIZZA — cheese; toppings extra (pepperoni +$2, sausage, green pepper +$1, onion, mushroom)
+  { name: "Cheese Pizza", category: "Pizza", price: "12 / 14", note: "10-inch $12 · 12-inch $14. Add toppings.", img: "/menu/food/food-22.webp" }, // PHOTO shows ravioli — regenerate
 ];
 
 export const drinkSelectItems: MenuSelectItem[] = [

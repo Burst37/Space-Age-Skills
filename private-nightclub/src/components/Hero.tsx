@@ -107,24 +107,43 @@ export default function Hero() {
           role="img"
           aria-label="Private Nightclub"
         >
-          <text
-            x="50"
-            y="44"
-            textLength="100"
-            lengthAdjust="spacingAndGlyphs"
-            textAnchor="middle"
-            className="hero-word"
-          >
+          <defs>
+            {/* Translucent amber tint — video reads through the letters. */}
+            <linearGradient id="amberGlass" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#f7efe0" stopOpacity="0.38" />
+              <stop offset="38%" stopColor="#f4d78f" stopOpacity="0.30" />
+              <stop offset="72%" stopColor="#c9a24d" stopOpacity="0.27" />
+              <stop offset="100%" stopColor="#b8923f" stopOpacity="0.38" />
+            </linearGradient>
+            {/* Slow glass sheen that sweeps across the wordmark. */}
+            <linearGradient id="amberSheen" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
+              <stop offset="50%" stopColor="#ffffff" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+              <animateTransform
+                attributeName="gradientTransform"
+                type="translate"
+                from="-1.2 0"
+                to="1.2 0"
+                dur="7s"
+                repeatCount="indefinite"
+              />
+            </linearGradient>
+          </defs>
+
+          {/* Base: amber glass fill + gold rim */}
+          <text x="50" y="44" textLength="100" lengthAdjust="spacingAndGlyphs" textAnchor="middle" className="hero-word" fill="url(#amberGlass)">
             PRIVATE
           </text>
-          <text
-            x="50"
-            y="97"
-            textLength="100"
-            lengthAdjust="spacingAndGlyphs"
-            textAnchor="middle"
-            className="hero-word"
-          >
+          <text x="50" y="97" textLength="100" lengthAdjust="spacingAndGlyphs" textAnchor="middle" className="hero-word" fill="url(#amberGlass)">
+            NIGHTCLUB
+          </text>
+
+          {/* Overlay: sweeping glass highlight */}
+          <text x="50" y="44" textLength="100" lengthAdjust="spacingAndGlyphs" textAnchor="middle" className="hero-word hero-sheen" fill="url(#amberSheen)">
+            PRIVATE
+          </text>
+          <text x="50" y="97" textLength="100" lengthAdjust="spacingAndGlyphs" textAnchor="middle" className="hero-word hero-sheen" fill="url(#amberSheen)">
             NIGHTCLUB
           </text>
         </svg>

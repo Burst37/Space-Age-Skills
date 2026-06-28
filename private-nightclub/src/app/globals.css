@@ -78,14 +78,15 @@
     font-weight: 400;
   }
 
-  /* SVG hero wordmark: see-through gold outline. Each line is stretched to the
-     full width via textLength, so PRIVATE and NIGHTCLUB are equal width and
-     reach both edges. non-scaling-stroke keeps the rim an even pixel weight
-     even though the text is non-uniformly scaled to fill the viewport. */
+  /* SVG hero wordmark: translucent amber "liquid glass" — the video shows
+     through each letter with an amber tint and a gold rim. Each line is
+     stretched to the full width via textLength, so PRIVATE and NIGHTCLUB are
+     equal width and reach both edges. non-scaling-stroke keeps the rim an even
+     pixel weight even though the text is non-uniformly scaled to fill the view.
+     Fill is set per-element (the amber gradient) so it isn't declared here. */
   .hero-word {
     font-family: var(--font-condensed), "Arial Narrow", sans-serif;
     font-size: 55px;
-    fill: transparent;
     stroke: rgba(201, 162, 77, 0.95);
     stroke-width: 2px;
     vector-effect: non-scaling-stroke;
@@ -96,6 +97,13 @@
     .hero-word {
       stroke-width: 3px;
     }
+  }
+  /* The sweeping glass highlight layered over the amber fill — no rim, screen
+     blend so it reads as light catching the glass. */
+  .hero-sheen {
+    stroke: none;
+    filter: none;
+    mix-blend-mode: screen;
   }
 
   /* Outlined gold display type with a soft neon glow (reference hero look).

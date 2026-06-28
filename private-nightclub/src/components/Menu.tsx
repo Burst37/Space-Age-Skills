@@ -254,9 +254,9 @@ export default function Menu() {
                     </span>
                     {/* Name scrolls in to the LEFT + enlarges */}
                     <motion.h3
-                      initial={{ x: 300, scale: 0.7, opacity: 0 }}
+                      initial={{ x: 340, scale: 0.55, opacity: 0 }}
                       animate={{ x: 0, scale: 1, opacity: 1 }}
-                      transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                      transition={{ duration: 2, ease: [0.65, 0, 0.35, 1] }}
                       className="display mt-2 whitespace-nowrap text-[clamp(2.6rem,7vw,5.5rem)] leading-[0.95] text-cream"
                     >
                       {detail.name}
@@ -265,7 +265,7 @@ export default function Menu() {
                     <motion.div
                       initial={{ opacity: 0, y: 16 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.25 }}
+                      transition={{ duration: 0.8, delay: 1 }}
                     >
                       {detail.note && (
                         <p className="mt-4 max-w-md text-base leading-relaxed text-cream/60">
@@ -347,10 +347,10 @@ export default function Menu() {
                     key={detail.img}
                     src={detail.img}
                     alt={detail.name}
-                    initial={{ x: -260, scale: 0.8, opacity: 0 }}
+                    initial={{ x: -300, scale: 0.65, opacity: 0 }}
                     animate={{ x: 0, scale: 1, opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.95, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: 2.3, ease: [0.65, 0, 0.35, 1] }}
                     className="h-full w-full object-cover"
                   />
                 </AnimatePresence>
