@@ -3,13 +3,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  foodMenu,
-  bottleMenu,
   foodNote,
   bottleNote,
   foodSelectItems,
   drinkSelectItems,
-  type MenuGroup,
   type MenuSelectItem,
 } from "@/lib/site";
 import { track } from "@/lib/track";
@@ -23,10 +20,9 @@ const tabs: {
   label: string;
   note: string;
   items: MenuSelectItem[];
-  menu: MenuGroup[];
 }[] = [
-  { key: "food", label: "Late Night Kitchen", note: foodNote, items: foodSelectItems, menu: foodMenu },
-  { key: "bottle", label: "Bottle Service", note: bottleNote, items: drinkSelectItems, menu: bottleMenu },
+  { key: "food", label: "Late Night Kitchen", note: foodNote, items: foodSelectItems },
+  { key: "bottle", label: "Bottle Service", note: bottleNote, items: drinkSelectItems },
 ];
 
 /** Real, standard bottle specs. Most spirits are 40% ABV / 750ml; overrides
@@ -48,24 +44,48 @@ function bottleSpecs(item: MenuSelectItem): { k: string; v: string }[] {
   ];
 }
 
-function PriceList({ groups }: { groups: MenuGroup[] }) {
+/** The full menu as a clickable priced list, grouped by category. Each row maps
+ *  back to its index in the flat items array so picking opens the same detail. */
+function MenuList({
+  items,
+  onPick,
+}: {
+  items: MenuSelectItem[];
+  onPick: (idx: number) => void;
+}) {
+  const groups: { cat: string; rows: { item: MenuSelectItem; idx: number }[] }[] = [];
+  items.forEach((item, idx) => {
+    let g = groups.find((x) => x.cat === item.category);
+    if (!g) {
+      g = { cat: item.category, rows: [] };
+      groups.push(g);
+    }
+    g.rows.push({ item, idx });
+  });
+
   return (
-    <div className="columns-1 gap-10 md:columns-2 [&>*]:break-inside-avoid">
+    <div className="columns-1 gap-12 md:columns-2 [&>*]:break-inside-avoid">
       {groups.map((g) => (
-        <div key={g.title} className="mb-9">
+        <div key={g.cat} className="mb-9">
           <h4 className="mb-4 border-b border-gold/20 pb-2 text-sm uppercase tracking-wide2 text-gold">
-            {g.title}
+            {g.cat}
           </h4>
-          <ul className="space-y-2.5">
-            {g.rows.map((r) => (
-              <li key={r.name} className="flex items-baseline gap-3 text-sm">
-                <span className="text-cream/85">{r.name}</span>
-                <span className="mx-1 flex-1 translate-y-[-3px] border-b border-dotted border-cream/15" />
-                <span className="text-champagne">{r.price}</span>
+          <ul className="space-y-0.5">
+            {g.rows.map(({ item, idx }) => (
+              <li key={item.img}>
+                <button
+                  onClick={() => onPick(idx)}
+                  className="group flex w-full items-baseline gap-3 py-1.5 text-left"
+                >
+                  <span className="text-sm text-cream/85 transition-colors group-hover:text-champagne">
+                    {item.name}
+                  </span>
+                  <span className="mx-1 flex-1 translate-y-[-3px] border-b border-dotted border-cream/15 transition-colors group-hover:border-gold/40" />
+                  <span className="text-sm text-champagne">${item.price}</span>
+                </button>
               </li>
             ))}
           </ul>
-          {g.note && <p className="mt-3 text-xs leading-relaxed text-cream/40">{g.note}</p>}
         </div>
       ))}
     </div>
@@ -173,13 +193,24 @@ export default function Menu() {
           ))}
         </Reveal>
 
-        {/* Priced menu */}
+        {/* The full menu — tap any line to open it large */}
         <Reveal delay={0.05} className="mt-16">
           <div className="atmosphere relative border border-gold/15 bg-soft-black p-8 sm:p-12">
-            <h3 className="display mb-8 text-3xl text-cream sm:text-4xl">
-              {tab === "food" ? "Late Night Food Menu" : "Bottle Service Menu"}
-            </h3>
-            <PriceList groups={active.menu} />
+            <div className="mb-8 flex items-baseline justify-between gap-4">
+              <h3 className="display text-3xl text-cream sm:text-4xl">
+                {tab === "food" ? "Late Night Food Menu" : "Bottle Service Menu"}
+              </h3>
+              <span className="text-[0.62rem] uppercase tracking-wide2 text-gold/60">
+                Tap any item
+              </span>
+            </div>
+            <MenuList
+              items={items}
+              onPick={(idx) => {
+                setSelected(idx);
+                track({ type: "menu", item: items[idx].name, category: items[idx].category, tab });
+              }}
+            />
           </div>
         </Reveal>
       </div>
