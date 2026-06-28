@@ -150,7 +150,7 @@ export default function Menu() {
                 track({ type: "menu", item: it.name, category: it.category, tab });
               }}
               aria-label={`View ${it.name}`}
-              className="group block w-full overflow-hidden border border-gold/12 bg-soft-black transition-colors hover:border-gold/40"
+              className="group relative block w-full overflow-hidden border border-gold/15 bg-soft-black transition-all duration-300 ease-out hover:-translate-y-1 hover:border-gold/55 hover:shadow-[0_18px_50px_-12px_rgba(201,162,77,0.45)]"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -158,8 +158,17 @@ export default function Menu() {
                 alt={it.name}
                 loading="lazy"
                 decoding="async"
-                className="w-full transition-transform duration-500 group-hover:scale-[1.03]"
+                className="w-full transition-transform duration-700 ease-out group-hover:scale-[1.06]"
               />
+              {/* Name + price reveal on hover */}
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end bg-gradient-to-t from-black/90 via-black/25 to-transparent p-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <span className="text-left">
+                  <span className="block text-[0.7rem] uppercase tracking-wide2 text-cream">
+                    {it.name}
+                  </span>
+                  <span className="text-[0.66rem] text-champagne">${it.price}</span>
+                </span>
+              </div>
             </button>
           ))}
         </Reveal>

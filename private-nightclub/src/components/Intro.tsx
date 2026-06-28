@@ -29,6 +29,23 @@ export default function Intro() {
           toggleActions: "play none none none",
         },
       });
+
+      // Parallax drift on the arrival photo (image is over-scaled so the
+      // translate never reveals an edge).
+      gsap.fromTo(
+        "[data-parallax]",
+        { yPercent: -6 },
+        {
+          yPercent: 6,
+          ease: "none",
+          scrollTrigger: {
+            trigger: root.current,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1,
+          },
+        },
+      );
     }, root);
     return () => ctx.revert();
   }, []);
@@ -83,11 +100,12 @@ export default function Intro() {
           className="relative hidden min-h-[540px] overflow-hidden lg:block"
         >
           <Image
+            data-parallax
             src="/venue/exterior.webp"
             alt="Arrivals outside Private Nightclub in downtown St. Louis"
             fill
             sizes="50vw"
-            className="object-cover"
+            className="scale-[1.15] object-cover will-change-transform"
           />
           {/* Cinematic veil to seat the photo in the dark page */}
           <div className="absolute inset-0 bg-gradient-to-l from-transparent via-black/10 to-black/70" />
