@@ -76,13 +76,6 @@ export default function Nav() {
         {/* Right: actions */}
         <div className="ml-auto flex items-center gap-3">
           <a
-            href="#list"
-            onClick={() => track({ type: "cta", label: "Guestlist (nav)" })}
-            className="hidden border border-gold/40 px-4 py-2.5 text-[0.68rem] uppercase tracking-wide2 text-champagne transition-colors hover:border-gold hover:text-cream md:inline-block"
-          >
-            Guestlist
-          </a>
-          <a
             href="#vip"
             onClick={() => track({ type: "cta", label: "Reserve VIP (nav)" })}
             className="group hidden items-center gap-2 bg-gold px-4 py-2.5 text-[0.68rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne md:inline-flex"

@@ -3,8 +3,6 @@
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/motion";
-import { track } from "@/lib/track";
-import { venue } from "@/lib/site";
 
 /**
  * Fullscreen cinematic hero. The 21:9 video fills the viewport (object-cover
@@ -97,40 +95,12 @@ export default function Hero() {
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/15" />
       <div className="hero-veil pointer-events-none absolute inset-0 bg-black/60 opacity-0" />
 
-      {/* Copy: giant outlined display type fills the viewport (reference look) */}
-      <div className="relative z-10 mx-auto flex h-full max-w-edge flex-col px-5 sm:px-8">
-        <div className="flex flex-1 flex-col justify-center pt-24">
-          <p className="hero-rise mb-3 text-[0.7rem] uppercase tracking-brand text-gold/90 sm:mb-5">
-            {venue.city} {String.fromCharCode(183)} Est. After Dark
-          </p>
-          <h1 className="hero-rise display leading-[0.74] tracking-[-0.03em]">
-            <span className="liquid-amber block text-[clamp(4.5rem,21vw,30rem)]">Private</span>
-            <span className="liquid-amber block text-[clamp(4.5rem,21vw,30rem)]">Nightclub</span>
-          </h1>
-        </div>
-        <div className="hero-rise flex flex-col gap-6 pb-28 sm:pb-24 md:flex-row md:items-end md:justify-between md:pb-14">
-          <p className="max-w-sm text-base font-light text-cream/70 sm:text-lg">
-            {venue.tagline}. Bottle service, reserved tables, and the only room in
-            the city that feels like this.
-          </p>
-          <div className="flex flex-wrap items-center gap-4">
-            <a
-              href="#vip"
-              onClick={() => track({ type: "cta", label: "Reserve VIP" })}
-              className="group inline-flex items-center gap-2 bg-gold px-8 py-4 text-[0.72rem] uppercase tracking-wide2 text-black transition-colors duration-300 hover:bg-champagne"
-            >
-              Reserve VIP
-              <span className="transition-transform duration-300 group-hover:translate-x-1">{"→"}</span>
-            </a>
-            <a
-              href="#list"
-              onClick={() => track({ type: "cta", label: "Join Guestlist" })}
-              className="border border-gold/50 px-8 py-4 text-[0.72rem] uppercase tracking-wide2 text-champagne transition-colors duration-300 hover:border-gold hover:text-cream"
-            >
-              Join Guestlist
-            </a>
-          </div>
-        </div>
+      {/* Copy: giant OUTLINED gold type — see-through, fills the viewport (ref) */}
+      <div className="relative z-10 mx-auto flex h-full max-w-edge flex-col justify-center px-5 sm:px-8">
+        <h1 className="hero-rise font-semibold uppercase leading-[0.82] tracking-[-0.01em]">
+          <span className="block text-outline-gold text-[clamp(4rem,20vw,30rem)]">Private</span>
+          <span className="block text-outline-gold text-[clamp(4rem,20vw,30rem)]">Nightclub</span>
+        </h1>
       </div>
     </section>
   );
