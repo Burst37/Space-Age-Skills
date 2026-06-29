@@ -8,6 +8,13 @@ export const OWNER_COOKIE = "owner_session";
 
 export async function expectedToken(): Promise<string> {
   const secret = process.env.OWNER_PASSCODE ?? "";
+  // Fail closed: with no configured passcode, return an unguessable,
+  // non-reproducible token so no cookie can ever validate. Otherwise an
+  // attacker could forge the cookie as SHA-256 of the known empty secret and
+  // walk into /owner and /api/owner/*. Login already rejects an empty passcode.
+  if (!secret) {
+    return `${crypto.randomUUID()}${crypto.randomUUID()}`;
+  }
   const data = new TextEncoder().encode(`nightclub-owner:${secret}`);
   const digest = await crypto.subtle.digest("SHA-256", data);
   return Array.from(new Uint8Array(digest))

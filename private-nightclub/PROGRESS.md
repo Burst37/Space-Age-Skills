@@ -9,7 +9,7 @@ Branch: `claude/trusting-sagan-5z6ux2` · PR #43
 ---
 
 ## ✅ LIVE: https://private-nightclub.vercel.app
-Deployed to the Vercel team (project `private-nightclub`, prj_aISj6E0MBQzmxsiixrr2cx7ZXsf6) via CLI; all 5 env vars set + encrypted in production; Tory (Gemini) + owner dashboard verified working live. Owner: `/owner` (passcode `private2026` — change it). Note: deployed via CLI, not git-connected — re-deploy with `vercel deploy --prod` or connect the GitHub repo in Vercel for auto-deploys.
+Deployed to the Vercel team (project `private-nightclub`) via CLI; all 5 env vars set + encrypted in production; Tory (Gemini) + owner dashboard verified working live. Owner: `/owner` — the passcode lives only in the Vercel `OWNER_PASSCODE` env var (never commit it). Note: deployed via CLI, not git-connected — re-deploy with `vercel deploy --prod` or connect the GitHub repo in Vercel for auto-deploys.
 
 ---
 
@@ -24,8 +24,8 @@ in the Vercel dashboard — then every push auto-deploys.
 
    | Key | Value |
    |---|---|
-   | `SUPABASE_URL` | `https://oczbsvhkgbskxhmtkjnk.supabase.co` |
-   | `SUPABASE_ANON_KEY` | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9jemJzdmhrZ2Jza3hobXRram5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1Nzk1NTgsImV4cCI6MjA5ODE1NTU1OH0.kLJyq-1DEXIw2O_y3UUMiQi-rvKCB4uEMqTJ9qooQjg` |
+   | `SUPABASE_URL` | _from Supabase → Project Settings → API (keep out of git)_ |
+   | `SUPABASE_ANON_KEY` | _from Supabase → Project Settings → API (keep out of git)_ |
    | `OWNER_PASSCODE` | _choose your own — this is the real secret_ |
    | `GEMINI_API_KEY` | _Tory's brain. A VALID key is set in the workspace `.env.local` and verified working — paste that same value into Vercel on deploy. (Not committed to git.)_ |
    | `GEMINI_MODEL` | `gemini-2.5-flash` |

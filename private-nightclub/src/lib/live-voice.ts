@@ -137,6 +137,10 @@ export class LiveVoiceSession {
         this.worklet = new AudioWorkletNode(this.inCtx, "pcm-recorder");
         this.worklet.port.onmessage = (ev) => send(ev.data as Int16Array);
         this.micSource.connect(this.worklet);
+        // Give the graph a pulled output so the processor is actually driven.
+        // The worklet writes nothing to its output, so destination stays silent
+        // (no echo) — same trick as the ScriptProcessor fallback below.
+        this.worklet.connect(this.inCtx.destination);
         return;
       } catch {
         // fall through to legacy
