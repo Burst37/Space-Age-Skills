@@ -43,7 +43,7 @@ const services = [
     imagePos: "left" as const,
   },
   {
-    id: "vip",
+    id: "vip-tables",
     image: "/venue/vip-room.webp",
     eyebrow: "VIP Tables",
     heading: "The Best Sightlines in the Room",

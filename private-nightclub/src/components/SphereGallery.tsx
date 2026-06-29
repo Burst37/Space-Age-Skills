@@ -99,6 +99,9 @@ export default function SphereGallery() {
     let lastY = 0;
     let moved = 0;
     let downIdx = -1;
+    let downX = 0;
+    let downY = 0;
+    let downT = 0;
     let hoverIdx = -1;
     const ray = new THREE.Raycaster();
     const ndc = new THREE.Vector2();
@@ -122,6 +125,9 @@ export default function SphereGallery() {
       moved = 0;
       lastX = e.clientX;
       lastY = e.clientY;
+      downX = e.clientX;
+      downY = e.clientY;
+      downT = performance.now();
       setNDC(e);
       downIdx = pick();
       renderer.domElement.style.cursor = "grabbing";
@@ -142,14 +148,25 @@ export default function SphereGallery() {
       yawVel = dx * 0.06;
       pitch = THREE.MathUtils.clamp(pitch + dy * 0.005, -MAXTILT, MAXTILT);
     };
-    const onUp = (_e: PointerEvent) => {
+    const onUp = (e: PointerEvent) => {
       if (!dragging) return;
       dragging = false;
       renderer.domElement.style.cursor = "grab";
-      // The sphere rotates continuously, so re-picking at pointerup lands on a
-      // different card than the one pressed. Use the index captured at pointerdown.
-      if (moved < 6 && downIdx >= 0) {
-        setLightbox(IMAGES[downIdx]);
+      // Tap = small straight-line travel in a short window. A summed-path test
+      // (moved < 6) wrongly rejected real touch taps, which jitter several px;
+      // distance + time is what fingers actually produce.
+      const dist = Math.hypot(e.clientX - downX, e.clientY - downY);
+      const quick = performance.now() - downT < 700;
+      if (dist < 14 && quick) {
+        // The sphere keeps spinning, so the card under the press is the intent.
+        // If that press missed (sparse cards / drift), re-pick where the finger
+        // lifted as a fallback before giving up.
+        let idx = downIdx;
+        if (idx < 0) {
+          setNDC(e);
+          idx = pick();
+        }
+        if (idx >= 0) setLightbox(IMAGES[idx]);
       }
     };
     const onLeave = () => {
@@ -159,6 +176,9 @@ export default function SphereGallery() {
     renderer.domElement.addEventListener("pointerdown", onDown);
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
+    // Some mobile browsers end a tap with pointercancel (scroll arbitration)
+    // instead of pointerup; treat it the same so the tap still registers.
+    window.addEventListener("pointercancel", onUp);
     renderer.domElement.addEventListener("pointerleave", onLeave);
 
     const rotM = new THREE.Matrix4();
@@ -220,6 +240,7 @@ export default function SphereGallery() {
       window.removeEventListener("resize", onResize);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
       renderer.domElement.removeEventListener("pointerdown", onDown);
       renderer.domElement.removeEventListener("pointerleave", onLeave);
       geo.dispose();
