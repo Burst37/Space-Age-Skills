@@ -78,7 +78,7 @@ function MenuList({
                     top highlight. Fills with gold on hover. */}
                 <button
                   onClick={() => onPick(idx)}
-                  className="group flex w-full items-center justify-between gap-3 rounded-full border border-gold/25 bg-white/[0.04] px-5 py-2.5 text-left shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-md transition-all duration-300 hover:border-gold/70 hover:bg-gold/10 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_10px_26px_-10px_rgba(201,162,77,0.55)]"
+                  className="group flex min-h-[3rem] w-full items-center justify-between gap-3 rounded-full border border-gold/25 bg-white/[0.04] px-5 py-2.5 text-left shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-md transition-all duration-300 hover:border-gold/70 hover:bg-gold/10 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_10px_26px_-10px_rgba(201,162,77,0.55)]"
                 >
                   <span className="text-sm text-cream/90 transition-colors group-hover:text-champagne">
                     {item.name}
@@ -164,6 +164,7 @@ export default function Menu() {
         {/* Bento court — the cards rest here; tap one to open the split view */}
         <Reveal
           delay={0.1}
+          amount={0.05}
           className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4"
         >
           {items.map((it, i) => (
@@ -174,7 +175,7 @@ export default function Menu() {
                 track({ type: "menu", item: it.name, category: it.category, tab });
               }}
               aria-label={`View ${it.name}`}
-              className="group relative block aspect-[3/4] w-full overflow-hidden rounded-2xl border border-gold/15 bg-soft-black transition-all duration-300 ease-out hover:-translate-y-1 hover:border-gold/55 hover:shadow-[0_18px_50px_-12px_rgba(201,162,77,0.45)]"
+              className="group relative block aspect-square w-full overflow-hidden rounded-3xl border border-gold/15 bg-soft-black transition-all duration-300 ease-out hover:-translate-y-1 hover:border-gold/55 hover:shadow-[0_18px_50px_-12px_rgba(201,162,77,0.45)]"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -198,7 +199,7 @@ export default function Menu() {
         </Reveal>
 
         {/* The full menu — tap any line to open it large */}
-        <Reveal delay={0.05} className="mt-16">
+        <Reveal delay={0.05} amount={0.05} className="mt-16">
           <div className="atmosphere relative border border-gold/15 bg-soft-black p-8 sm:p-12">
             <div className="mb-8 flex items-baseline justify-between gap-4">
               <h3 className="display text-3xl text-cream sm:text-4xl">

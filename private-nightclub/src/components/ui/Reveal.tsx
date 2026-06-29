@@ -15,12 +15,14 @@ export default function Reveal({
   y = 26,
   className = "",
   as = "div",
+  amount = 0.15,
 }: {
   children: ReactNode;
   delay?: number;
   y?: number;
   className?: string;
   as?: "div" | "li" | "span" | "section";
+  amount?: number;
 }) {
   const MotionTag = motion[as];
   return (
@@ -29,7 +31,7 @@ export default function Reveal({
       className={className}
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
+      viewport={{ once: true, amount }}
       transition={{ duration: 0.7, delay, ease: easeCinematic }}
     >
       {children}

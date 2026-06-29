@@ -142,14 +142,14 @@ export default function SphereGallery() {
       yawVel = dx * 0.06;
       pitch = THREE.MathUtils.clamp(pitch + dy * 0.005, -MAXTILT, MAXTILT);
     };
-    const onUp = (e: PointerEvent) => {
+    const onUp = (_e: PointerEvent) => {
       if (!dragging) return;
       dragging = false;
       renderer.domElement.style.cursor = "grab";
-      if (moved < 6) {
-        setNDC(e);
-        const i = pick();
-        if (i >= 0 && i === downIdx) setLightbox(IMAGES[i]);
+      // The sphere rotates continuously, so re-picking at pointerup lands on a
+      // different card than the one pressed. Use the index captured at pointerdown.
+      if (moved < 6 && downIdx >= 0) {
+        setLightbox(IMAGES[downIdx]);
       }
     };
     const onLeave = () => {
