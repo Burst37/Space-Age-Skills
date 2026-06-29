@@ -106,13 +106,13 @@ export default function OwnerDashboard() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => router.refresh()}
-              className="border border-gold/25 px-4 py-2.5 text-[0.66rem] uppercase tracking-wide2 text-champagne transition-colors hover:border-gold/60"
+              className="rounded-full border border-gold/25 px-4 py-2.5 text-[0.66rem] uppercase tracking-wide2 text-champagne transition-colors hover:border-gold/60"
             >
               Refresh
             </button>
             <button
               onClick={logout}
-              className="border border-gold/25 px-4 py-2.5 text-[0.66rem] uppercase tracking-wide2 text-cream/60 transition-colors hover:border-gold/50 hover:text-cream"
+              className="rounded-full border border-gold/25 px-4 py-2.5 text-[0.66rem] uppercase tracking-wide2 text-cream/60 transition-colors hover:border-gold/50 hover:text-cream"
             >
               Sign out
             </button>
@@ -145,7 +145,7 @@ export default function OwnerDashboard() {
                     <button
                       key={t}
                       onClick={() => setTab(t)}
-                      className={`px-4 py-2 text-[0.62rem] uppercase tracking-wide2 transition-colors ${
+                      className={`rounded-full px-4 py-2 text-[0.62rem] uppercase tracking-wide2 transition-colors ${
                         tab === t ? "bg-gold text-black" : "border border-gold/25 text-champagne"
                       }`}
                     >
@@ -201,7 +201,7 @@ export default function OwnerDashboard() {
                   <button
                     onClick={exportCsv}
                     disabled={data.signups.length === 0}
-                    className="border border-gold/25 px-4 py-2 text-[0.62rem] uppercase tracking-wide2 text-champagne transition-colors hover:border-gold/60 disabled:opacity-40"
+                    className="rounded-full border border-gold/25 px-4 py-2 text-[0.62rem] uppercase tracking-wide2 text-champagne transition-colors hover:border-gold/60 disabled:opacity-40"
                   >
                     Export CSV
                   </button>

@@ -167,7 +167,7 @@ export default function Services() {
             <div className="mt-10">
               <a
                 href={svc.cta.href}
-                className="inline-block bg-gold px-8 py-4 text-[0.7rem] uppercase tracking-[0.16em] text-black transition-colors duration-300 hover:bg-champagne"
+                className="inline-block rounded-full bg-gold px-8 py-4 text-[0.7rem] uppercase tracking-[0.16em] text-black transition-colors duration-300 hover:bg-champagne"
               >
                 {svc.cta.label}
               </a>

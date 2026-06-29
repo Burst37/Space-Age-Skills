@@ -74,7 +74,7 @@ export default function Guestlist() {
             <button
               type="submit"
               disabled={status === "submitting"}
-              className="mt-7 w-full bg-gold py-4 text-[0.72rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne disabled:opacity-60"
+              className="mt-7 w-full rounded-full bg-gold py-4 text-[0.72rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne disabled:opacity-60"
             >
               {status === "submitting" ? "Adding you..." : "Add me to the list"}
             </button>

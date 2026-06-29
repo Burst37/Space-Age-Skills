@@ -61,13 +61,13 @@ export default function Contact() {
               <div className="flex flex-wrap gap-3 pt-2">
                 <a
                   href="#vip"
-                  className="bg-gold px-6 py-3.5 text-[0.7rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne"
+                  className="rounded-full bg-gold px-6 py-3.5 text-[0.7rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne"
                 >
                   Reserve VIP
                 </a>
                 <a
                   href="#guestlist"
-                  className="border border-gold/40 px-6 py-3.5 text-[0.7rem] uppercase tracking-wide2 text-champagne transition-colors hover:border-gold hover:text-cream"
+                  className="rounded-full border border-gold/40 px-6 py-3.5 text-[0.7rem] uppercase tracking-wide2 text-champagne transition-colors hover:border-gold hover:text-cream"
                 >
                   Join Guestlist
                 </a>

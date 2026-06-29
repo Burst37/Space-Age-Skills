@@ -85,7 +85,7 @@ export default function VipReservation() {
                 key={it.id}
                 type="button"
                 onClick={() => setIntent(it.id)}
-                className={`flex w-full items-center justify-between border px-5 py-4 text-left transition-colors ${
+                className={`flex w-full items-center justify-between rounded-full border px-5 py-4 text-left transition-colors ${
                   intent === it.id
                     ? "border-gold bg-gold/10"
                     : "border-gold/20 hover:border-gold/45"
@@ -139,7 +139,7 @@ export default function VipReservation() {
             <button
               type="submit"
               disabled={status === "submitting"}
-              className="mt-7 w-full bg-gold py-4 text-[0.72rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne disabled:opacity-60"
+              className="mt-7 w-full rounded-full bg-gold py-4 text-[0.72rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne disabled:opacity-60"
             >
               {status === "submitting" ? "Sending..." : "Request my table"}
             </button>

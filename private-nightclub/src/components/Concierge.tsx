@@ -222,7 +222,7 @@ export default function Concierge() {
                     key={s}
                     type="button"
                     onClick={() => send(s)}
-                    className="border border-gold/25 px-3 py-1.5 text-[0.66rem] uppercase tracking-wide2 text-champagne transition-colors hover:border-gold/60"
+                    className="rounded-full border border-gold/25 px-3 py-1.5 text-[0.66rem] uppercase tracking-wide2 text-champagne transition-colors hover:border-gold/60"
                   >
                     {s}
                   </button>
@@ -271,7 +271,7 @@ export default function Concierge() {
               <button
                 type="submit"
                 disabled={busy}
-                className="bg-gold px-4 py-2 text-[0.66rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne disabled:opacity-50"
+                className="rounded-full bg-gold px-4 py-2 text-[0.66rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne disabled:opacity-50"
               >
                 Send
               </button>

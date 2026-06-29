@@ -234,7 +234,7 @@ export default function Menu() {
             <button
               onClick={close}
               aria-label="Close"
-              className="absolute right-5 top-5 z-10 flex h-11 w-11 items-center justify-center border border-gold/30 text-2xl text-champagne hover:border-gold"
+              className="absolute right-5 top-5 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-gold/30 text-2xl text-champagne hover:border-gold"
             >
               ×
             </button>
@@ -276,16 +276,16 @@ export default function Menu() {
 
                       {/* Spec / macros chips */}
                       <div className="mt-6 flex flex-wrap gap-2.5">
-                        <span className="border border-gold/20 px-3 py-1.5 text-[0.62rem] uppercase tracking-wide2 text-cream/60">
+                        <span className="rounded-full border border-gold/20 px-3 py-1.5 text-[0.62rem] uppercase tracking-wide2 text-cream/60">
                           {detail.category}
                         </span>
-                        <span className="border border-gold/20 px-3 py-1.5 text-[0.62rem] uppercase tracking-wide2 text-champagne">
+                        <span className="rounded-full border border-gold/20 px-3 py-1.5 text-[0.62rem] uppercase tracking-wide2 text-champagne">
                           ${detail.price}
                         </span>
                         {(detail.macros ?? (tab === "bottle" ? bottleSpecs(detail) : [])).map((m) => (
                           <span
                             key={m.k}
-                            className="border border-gold/20 px-3 py-1.5 text-[0.62rem] uppercase tracking-wide2 text-cream/60"
+                            className="rounded-full border border-gold/20 px-3 py-1.5 text-[0.62rem] uppercase tracking-wide2 text-cream/60"
                           >
                             {m.k} {m.v}
                           </span>
@@ -324,14 +324,14 @@ export default function Menu() {
                   <button
                     onClick={() => step(-1)}
                     aria-label="Previous item"
-                    className="flex h-11 w-11 items-center justify-center border border-gold/30 text-xl text-champagne transition-colors hover:border-gold hover:text-cream"
+                    className="flex h-11 w-11 items-center justify-center rounded-full border border-gold/30 text-xl text-champagne transition-colors hover:border-gold hover:text-cream"
                   >
                     ‹
                   </button>
                   <button
                     onClick={() => step(1)}
                     aria-label="Next item"
-                    className="flex h-11 w-11 items-center justify-center border border-gold/30 text-xl text-champagne transition-colors hover:border-gold hover:text-cream"
+                    className="flex h-11 w-11 items-center justify-center rounded-full border border-gold/30 text-xl text-champagne transition-colors hover:border-gold hover:text-cream"
                   >
                     ›
                   </button>

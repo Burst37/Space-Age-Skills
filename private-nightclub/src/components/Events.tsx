@@ -22,7 +22,7 @@ export default function Events() {
           <Reveal delay={0.1}>
             <a
               href="#guestlist"
-              className="inline-block whitespace-nowrap border border-gold/40 px-6 py-3 text-[0.7rem] uppercase tracking-wide2 text-champagne transition-colors hover:border-gold hover:text-cream"
+              className="inline-block whitespace-nowrap rounded-full border border-gold/40 px-6 py-3 text-[0.7rem] uppercase tracking-wide2 text-champagne transition-colors hover:border-gold hover:text-cream"
             >
               Join the guestlist
             </a>
@@ -54,13 +54,13 @@ export default function Events() {
                 <div className="flex gap-3 md:col-span-4 md:justify-end">
                   <a
                     href="#vip"
-                    className="border border-gold/40 px-5 py-2.5 text-[0.68rem] uppercase tracking-wide2 text-champagne transition-colors hover:border-gold hover:text-cream"
+                    className="rounded-full border border-gold/40 px-5 py-2.5 text-[0.68rem] uppercase tracking-wide2 text-champagne transition-colors hover:border-gold hover:text-cream"
                   >
                     Reserve table
                   </a>
                   <a
                     href="#guestlist"
-                    className="bg-gold/90 px-5 py-2.5 text-[0.68rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne"
+                    className="rounded-full bg-gold/90 px-5 py-2.5 text-[0.68rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne"
                   >
                     RSVP
                   </a>

@@ -29,7 +29,7 @@ export default function Membership() {
                 }`}
               >
                 {tier.highlight && (
-                  <span className="absolute right-6 top-6 border border-gold/50 px-3 py-1 text-[0.6rem] uppercase tracking-wide2 text-gold">
+                  <span className="absolute right-6 top-6 rounded-full border border-gold/50 px-3 py-1 text-[0.6rem] uppercase tracking-wide2 text-gold">
                     Flagship
                   </span>
                 )}
@@ -45,7 +45,7 @@ export default function Membership() {
                 </ul>
                 <a
                   href="#contact"
-                  className={`mt-8 inline-block px-6 py-3.5 text-center text-[0.7rem] uppercase tracking-wide2 transition-colors ${
+                  className={`mt-8 inline-block rounded-full px-6 py-3.5 text-center text-[0.7rem] uppercase tracking-wide2 transition-colors ${
                     tier.highlight
                       ? "bg-gold text-black hover:bg-champagne"
                       : "border border-gold/40 text-champagne hover:border-gold hover:text-cream"

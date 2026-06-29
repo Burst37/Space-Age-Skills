@@ -60,7 +60,7 @@ export default function JoinList() {
             <button
               type="submit"
               disabled={state === "busy"}
-              className="bg-gold px-8 py-4 text-[0.72rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne disabled:opacity-60"
+              className="rounded-full bg-gold px-8 py-4 text-[0.72rem] uppercase tracking-wide2 text-black transition-colors hover:bg-champagne disabled:opacity-60"
             >
               {state === "busy" ? "Joining…" : "Join the List"}
             </button>
