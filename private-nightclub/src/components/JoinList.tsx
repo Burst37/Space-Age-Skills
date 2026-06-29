@@ -55,7 +55,7 @@ export default function JoinList() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@email.com"
               aria-label="Email address"
-              className="flex-1 border border-gold/25 bg-soft-black px-5 py-4 text-cream outline-none transition-colors placeholder:text-cream/30 focus:border-gold/60"
+              className="flex-1 rounded-full border border-gold/25 bg-soft-black px-6 py-4 text-cream outline-none transition-colors placeholder:text-cream/30 focus:border-gold/60"
             />
             <button
               type="submit"

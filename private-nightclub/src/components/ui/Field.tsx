@@ -3,8 +3,10 @@
 import type { ReactNode } from "react";
 
 const labelCls = "mb-2 block text-[0.66rem] uppercase tracking-wide2 text-cream/50";
-const controlCls =
-  "w-full border border-gold/20 bg-black/40 px-4 py-3 text-cream placeholder:text-cream/30 outline-none transition-colors focus:border-gold/70";
+const controlBase =
+  "w-full border border-gold/20 bg-black/40 px-5 py-3 text-cream placeholder:text-cream/30 outline-none transition-colors focus:border-gold/70";
+// Single-line controls are full pills; the multi-line textarea uses a softer radius.
+const controlCls = `${controlBase} rounded-full`;
 
 export function Field({
   label,
@@ -82,7 +84,7 @@ export function TextareaField({
   return (
     <label className="block">
       <span className={labelCls}>{label}</span>
-      <textarea className={`${controlCls} min-h-[110px] resize-y`} name={name} placeholder={placeholder} />
+      <textarea className={`${controlBase} min-h-[110px] resize-y rounded-3xl`} name={name} placeholder={placeholder} />
     </label>
   );
 }
