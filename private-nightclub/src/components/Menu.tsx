@@ -164,7 +164,7 @@ export default function Menu() {
         {/* Bento court — the cards rest here; tap one to open the split view */}
         <Reveal
           delay={0.1}
-          className="mt-8 columns-2 gap-3 sm:gap-4 md:columns-3 lg:columns-4 [&>*]:mb-3 sm:[&>*]:mb-4"
+          className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4"
         >
           {items.map((it, i) => (
             <button
@@ -174,7 +174,7 @@ export default function Menu() {
                 track({ type: "menu", item: it.name, category: it.category, tab });
               }}
               aria-label={`View ${it.name}`}
-              className="group relative block w-full overflow-hidden border border-gold/15 bg-soft-black transition-all duration-300 ease-out hover:-translate-y-1 hover:border-gold/55 hover:shadow-[0_18px_50px_-12px_rgba(201,162,77,0.45)]"
+              className="group relative block aspect-[3/4] w-full overflow-hidden rounded-2xl border border-gold/15 bg-soft-black transition-all duration-300 ease-out hover:-translate-y-1 hover:border-gold/55 hover:shadow-[0_18px_50px_-12px_rgba(201,162,77,0.45)]"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -182,7 +182,7 @@ export default function Menu() {
                 alt={it.name}
                 loading="lazy"
                 decoding="async"
-                className="w-full transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
               />
               {/* Name + price reveal on hover */}
               <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end bg-gradient-to-t from-black/90 via-black/25 to-transparent p-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100">

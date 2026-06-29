@@ -182,16 +182,18 @@
    rich, not flat. Two variants alternate down the page (glow from top vs.
    bottom). Pair with .atmosphere for grain. */
 .lux-bg {
-  background-color: #050505;
+  background-color: #060503;
   background-image:
-    radial-gradient(80% 60% at 50% -8%, rgba(201, 162, 77, 0.1), transparent 62%),
-    radial-gradient(50% 40% at 92% 8%, rgba(201, 162, 77, 0.05), transparent 60%);
+    radial-gradient(95% 70% at 50% -12%, rgba(201, 162, 77, 0.2), transparent 60%),
+    radial-gradient(60% 50% at 100% 0%, rgba(184, 146, 63, 0.12), transparent 55%),
+    linear-gradient(180deg, rgba(201, 162, 77, 0.06), transparent 28%);
 }
 .lux-bg-alt {
-  background-color: #070707;
+  background-color: #080604;
   background-image:
-    radial-gradient(75% 55% at 50% 108%, rgba(201, 162, 77, 0.08), transparent 62%),
-    radial-gradient(45% 40% at 8% 92%, rgba(201, 162, 77, 0.045), transparent 60%);
+    radial-gradient(90% 70% at 50% 112%, rgba(201, 162, 77, 0.17), transparent 60%),
+    radial-gradient(55% 45% at 0% 100%, rgba(184, 146, 63, 0.11), transparent 55%),
+    linear-gradient(0deg, rgba(201, 162, 77, 0.05), transparent 30%);
 }
 
 /* Reduced-motion mandate (design-motion-principles). Kills transforms and
