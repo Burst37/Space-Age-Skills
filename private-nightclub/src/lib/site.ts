@@ -263,11 +263,11 @@ export const foodSelectItems: MenuSelectItem[] = [
   { name: "Mac & Cheese Bites", category: "Appetizers", price: "10", note: "Crispy fried mac and cheese.", img: "/menu/food/food-11.webp" },
   { name: "Beef Toasted Ravioli", category: "Appetizers", price: "10", note: "St. Louis style, marinara.", img: "/menu/food/food-12.webp" },
   { name: "Buffalo Shrimp", category: "Appetizers", price: "12", note: "Crispy shrimp tossed in buffalo.", img: "/menu/food/food-15.webp" },
-  { name: "Buffalo Cauliflower", category: "Appetizers", price: "10", note: "Crispy cauliflower, buffalo sauce.", img: "/menu/food/food-14.webp" }, // PHOTO shows pizza — regenerate
+  { name: "Buffalo Cauliflower", category: "Appetizers", price: "10", note: "Crispy cauliflower, buffalo sauce.", img: "/menu/food/food-14.webp" }, // owner-supplied photo
   { name: "Fried Pickles", category: "Appetizers", price: "10", note: "Hand-battered dill pickles.", img: "/menu/food/food-13.webp" }, // real photo (owner-supplied)
   // FROM THE GRILL
-  { name: "All Beef Hot Dog", category: "From the Grill", price: "7", note: "Quarter-pound all-beef dog.", img: "/menu/food/food-17.webp" }, // PHOTO shows bites — regenerate
-  { name: "Hamburger", category: "From the Grill", price: "10", note: "Char-grilled all-beef patty, brioche bun.", img: "/menu/food/food-20.webp" }, // real burger photo (baked-in label crops out)
+  { name: "All Beef Hot Dog", category: "From the Grill", price: "7", note: "Quarter-pound all-beef dog.", img: "/menu/food/food-17.webp" }, // owner-supplied photo
+  { name: "Hamburger", category: "From the Grill", price: "10", note: "Char-grilled all-beef patty, brioche bun.", img: "/menu/food/food-20.webp" }, // owner-supplied photo
   { name: "Cheeseburger", category: "From the Grill", price: "12", note: "Char-grilled, American cheese.", img: "/menu/food/food-16.webp" }, // owner-supplied photo
   // PIZZA — cheese; pepperoni is the popular topping (+$2)
   { name: "Cheese Pizza", category: "Pizza", price: "12 / 14", note: "10-inch $12 · 12-inch $14. Add toppings.", img: "/menu/food/food-19.webp" },
