@@ -268,7 +268,7 @@ export const foodSelectItems: MenuSelectItem[] = [
   // FROM THE GRILL
   { name: "All Beef Hot Dog", category: "From the Grill", price: "7", note: "Quarter-pound all-beef dog.", img: "/menu/food/food-17.webp" }, // PHOTO shows bites — regenerate
   { name: "Hamburger", category: "From the Grill", price: "10", note: "Char-grilled all-beef patty, brioche bun.", img: "/menu/food/food-20.webp" }, // real burger photo (baked-in label crops out)
-  { name: "Cheeseburger", category: "From the Grill", price: "12", note: "Char-grilled, American cheese.", img: "/menu/food/food-16.webp" }, // PHOTO shows pizza — regenerate
+  { name: "Cheeseburger", category: "From the Grill", price: "12", note: "Char-grilled, American cheese.", img: "/menu/food/food-16.webp" }, // owner-supplied photo
   // PIZZA — cheese; pepperoni is the popular topping (+$2)
   { name: "Cheese Pizza", category: "Pizza", price: "12 / 14", note: "10-inch $12 · 12-inch $14. Add toppings.", img: "/menu/food/food-19.webp" },
   { name: "Pepperoni Pizza", category: "Pizza", price: "14 / 16", note: "Cheese pizza + pepperoni. 10-inch $14 · 12-inch $16.", img: "/menu/food/food-21.webp" },
