@@ -11,9 +11,9 @@ export const venue = {
   phone: process.env.NEXT_PUBLIC_VENUE_PHONE ?? "+1 (314) 555-0142",
   email: process.env.NEXT_PUBLIC_VENUE_EMAIL ?? "vip@privatestl.com",
   address: {
-    line1: "1142 Washington Ave",
-    line2: "St. Louis, MO 63101",
-    mapsQuery: "1142 Washington Ave, St. Louis, MO 63101",
+    line1: "212 S Tucker Blvd",
+    line2: "St. Louis, MO 63102",
+    mapsQuery: "212 S Tucker Blvd, St. Louis, MO 63102",
   },
   hours: [
     { day: "Thursday", time: "10:00 PM - 3:00 AM" },
@@ -352,7 +352,7 @@ export const faqs = [
   },
   {
     q: "Where do I park?",
-    a: "Valet runs at the front entrance on Washington Ave from 10 PM. Self-park is available in the Lucas Avenue garage one block north, and street metered parking is free after 11 PM.",
+    a: "Valet runs at the front entrance on S Tucker Blvd from 10 PM. Self-park is available in the City Hall lot and nearby downtown garages, and street metered parking is free after 11 PM.",
   },
   {
     q: "What are the hours?",

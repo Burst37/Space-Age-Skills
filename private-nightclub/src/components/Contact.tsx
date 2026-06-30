@@ -21,7 +21,7 @@ export default function Contact() {
                   {venue.city}, <span className="gold-text">after dark</span>
                 </>
               }
-              intro="On Washington Avenue in the heart of downtown. Valet at the door, doors at 10."
+              intro="On South Tucker Boulevard in the heart of downtown. Valet at the door, doors at 10."
             />
 
             <div className="mt-10 space-y-6 text-sm">
