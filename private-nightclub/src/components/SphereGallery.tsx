@@ -166,7 +166,22 @@ export default function SphereGallery() {
           setNDC(e);
           idx = pick();
         }
-        if (idx >= 0) setLightbox(IMAGES[idx]);
+        if (idx >= 0) {
+          // On touch, the browser fires a synthetic "click" right after this
+          // pointerup. Since we open a full-screen overlay here, that ghost
+          // click lands on the freshly-rendered overlay and instantly closes
+          // it — the lightbox flashes open and shut. Swallow that one click.
+          if (e.pointerType !== "mouse") {
+            const swallow = (ev: Event) => {
+              ev.stopPropagation();
+              ev.preventDefault();
+              window.removeEventListener("click", swallow, true);
+            };
+            window.addEventListener("click", swallow, true);
+            window.setTimeout(() => window.removeEventListener("click", swallow, true), 700);
+          }
+          setLightbox(IMAGES[idx]);
+        }
       }
     };
     const onLeave = () => {
