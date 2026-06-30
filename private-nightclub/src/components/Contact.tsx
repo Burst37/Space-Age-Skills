@@ -82,7 +82,10 @@ export default function Contact() {
                 src={mapsEmbed}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                className="h-full min-h-[360px] w-full grayscale invert-[0.92] contrast-[1.1]"
+                // Dark-but-colorful map: invert darkens the bright Google tiles,
+                // and hue-rotate-180 cancels the hue flip invert causes — so parks
+                // read green-ish and water blue-ish instead of black-and-white.
+                className="h-full min-h-[360px] w-full invert-[0.92] hue-rotate-180 brightness-95 contrast-[0.9] saturate-150"
               />
             </div>
           </Reveal>
