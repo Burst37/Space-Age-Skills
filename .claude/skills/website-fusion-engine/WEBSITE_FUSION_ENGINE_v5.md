@@ -642,3 +642,14 @@ Violations:
 - Claims a clone without browser evidence.
 
 Correct response: STOP. Run onboarding → authorization → doctor → forensics → decisions → DESIGN.md → gate. Downgrade to `inspired-by` if rights are absent. Never keep the third-party logo.
+
+---
+
+# Part 14 — Verification Record (v5.0.0.1)
+
+This is not a theoretical spec. Before shipping, every executable piece was actually run, not just read for plausibility:
+
+- `tools/fusion.mjs` — every command (`doctor`, `init`, `validate`, `scan`, `gate`) exercised end-to-end: fresh manifest correctly rejected for `UNDECIDED` fields, a real planted credential (`sk-ant-api03-...`) was correctly caught by `scan` and cleared after removal, `gate` correctly blocked with missing artifacts, authorized once they existed, and re-blocked the instant one was deleted.
+- Every JS/JSX code block in `references/recipes/` was extracted and compiled with a real parser (Node's own syntax checker, esbuild for JSX). Every CSS block was parsed by esbuild's CSS engine. All passed — these are real, runnable snippets, not prose that merely looks like code.
+- `tools/forensics.mjs` was run against a live Chromium instance. This surfaced three real bugs, which were fixed (see `CHANGELOG.md`): `doctor` checking the wrong signal for Playwright availability, an unhandled crash on a browser-binary mismatch, and — the important one — the tool silently treating a failed navigation as success and writing Chromium's own error page as if it were captured evidence. All three are fixed in this version.
+- Live end-to-end capture against a real external URL was blocked in the verification sandbox by that environment's own proxy/TLS interception, not reproduced with a raw CONNECT tunnel or curl through the same proxy — root cause not fully isolated there. **Run `tools/forensics.mjs` against a real target on your own machine once before depending on the browser-capture path in production.**

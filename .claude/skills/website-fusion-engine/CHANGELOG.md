@@ -1,5 +1,45 @@
 # Changelog
 
+## 5.0.0.1 — Post-release verification pass
+
+Ran everything for real instead of trusting that it read plausibly: syntax-checked
+every shipped script and every JS/CSS block in the recipes, then exercised
+`tools/fusion.mjs` end-to-end (fresh `init` → `validate` fails on `UNDECIDED` →
+plant a real credential and confirm `scan` catches it and clears after removal →
+`gate` blocks with missing artifacts, authorizes once they exist, re-blocks the
+instant one is deleted). All of that was already correct. Found and fixed three
+real defects in `tools/forensics.mjs` by actually running it against a live
+Chromium instance, not by reading the code:
+
+- **`doctor` lied about Playwright.** It checked `npx playwright --version`
+  (which npx can satisfy from a global cache) instead of the module import
+  `forensics.mjs` actually needs. A machine could show "available" and then
+  fail on first real use. Fixed: `doctor` now checks the exact `import('playwright')`
+  path.
+- **Chromium/browser-binary mismatch crashed with a raw stack trace** instead of
+  failing cleanly. Fixed: launch failures now fall back to an explicit
+  `PLAYWRIGHT_CHROMIUM_PATH` override with a clear message, instead of an
+  unhandled exception.
+- **The serious one:** when navigation actually failed, the tool wrote
+  Chromium's own network-error interstitial to `page.html`, reported technology
+  detection against that error page, and printed a green "✓ forensics captured"
+  — a fabricated-looking success on zero real evidence. Fixed: a failed or
+  non-OK navigation now hard-fails (`exit 1`) with an explicit "no evidence
+  captured" message and never writes a success artifact.
+- Chromium does not inherit `HTTPS_PROXY`/`https_proxy` from the environment the
+  way Node's own `fetch` does — added explicit proxy passthrough on launch — and
+  hardened `page.content()` against a real race condition against a trailing
+  same-page redirect (reproduced and fixed, not theoretical).
+
+Live capture against a real external URL was blocked in this specific sandboxed
+session by proxy/TLS-interception behavior in Chromium's own network stack that a
+raw CONNECT tunnel and curl through the same proxy did not hit — root cause not
+fully isolated, and likely specific to this container rather than a normal
+developer machine. Recorded here rather than hidden: **run `tools/forensics.mjs`
+against a real target on your own machine before trusting the browser-capture
+path in production**, same as the skill's own "evidence over claims" rule
+demands of everything else.
+
 ## 5.0.0 — Rebuild (senior-dev pass)
 
 Rebuilt from `space_age_website_fusion_skill_v3.1.0` (the 13-platform zip) and the v4.0.0 master.

@@ -35,12 +35,21 @@ function have(bin, probe) {
   catch { return false; }
 }
 
+// Must match exactly what forensics.mjs does (`await import('playwright')`).
+// A resolvable `npx playwright --version` does NOT imply the local `playwright`
+// package resolves as a module import — npx can satisfy the CLI from a global
+// cache while `import('playwright')` still fails. Check the real import path.
+function playwrightImportable() {
+  try { execSync(`node -e "await import('playwright')"`, { stdio: 'ignore', shell: '/bin/bash' }); return true; }
+  catch { return false; }
+}
+
 // ---------------------------------------------------------------- doctor
 function doctor() {
   const checks = {
     node: { ok: true, detail: process.version },
     git: { ok: have('git'), detail: 'isolated worktrees + version control' },
-    playwright: { ok: have('npx', 'npx playwright --version'), detail: 'browser forensics + visual QA' },
+    playwright: { ok: playwrightImportable(), detail: 'browser forensics + visual QA (tools/forensics.mjs)' },
     chromium: {
       ok: !!process.env.PLAYWRIGHT_BROWSERS_PATH || have('chromium', 'command -v chromium || command -v chromium-browser'),
       detail: 'headless capture engine',

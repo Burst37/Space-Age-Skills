@@ -36,7 +36,30 @@ catch { console.error('Playwright not installed. Mark `interactive browser` capa
 fs.mkdirSync(path.join(outDir, 'screenshots'), { recursive: true });
 const write = (name, data) => fs.writeFileSync(path.join(outDir, name), typeof data === 'string' ? data : JSON.stringify(data, null, 2) + '\n');
 
-const browser = await chromium.launch();
+// If the installed `playwright` package's expected browser revision doesn't match
+// what's actually on disk (common when browsers were pre-provisioned separately
+// from npm install), fall back to an explicit executable path via
+// PLAYWRIGHT_CHROMIUM_PATH instead of crashing with an unhandled launch error.
+// Chromium does not inherit HTTPS_PROXY/https_proxy from the environment the way
+// Node's own fetch/undici does — it must be told explicitly, or outbound requests
+// fail closed in any sandboxed/proxied environment (ERR_CONNECTION_CLOSED etc.)
+// even though `node -e "fetch(...)"` would succeed.
+const proxyServer = process.env.HTTPS_PROXY || process.env.https_proxy || process.env.HTTP_PROXY || process.env.http_proxy;
+const launchOpts = proxyServer ? { proxy: { server: proxyServer } } : {};
+
+let browser;
+try {
+  browser = await chromium.launch(launchOpts);
+} catch (e) {
+  const fallback = process.env.PLAYWRIGHT_CHROMIUM_PATH;
+  if (fallback && fs.existsSync(fallback)) {
+    browser = await chromium.launch({ ...launchOpts, executablePath: fallback });
+  } else {
+    console.error(`Chromium launch failed: ${e.message.split('\n')[0]}`);
+    console.error('Mark `interactive browser` capability MISSING, or set PLAYWRIGHT_CHROMIUM_PATH to a working Chromium binary, then retry.');
+    process.exit(1);
+  }
+}
 const ctx = await browser.newContext({ viewport: viewports[0] });
 const page = await ctx.newPage();
 
@@ -50,10 +73,30 @@ page.on('requestfailed', (r) => errors.push({ kind: 'requestfailed', url: r.url(
 page.on('console', (m) => { if (m.type() === 'error') errors.push({ kind: 'console', text: m.text() }); });
 page.on('pageerror', (e) => errors.push({ kind: 'pageerror', text: String(e) }));
 
-await page.goto(url, { waitUntil: 'networkidle', timeout: 60000 }).catch((e) => errors.push({ kind: 'navigation', text: String(e) }));
+const nav = await page.goto(url, { waitUntil: 'networkidle', timeout: 60000 }).catch((e) => { errors.push({ kind: 'navigation', text: String(e) }); return null; });
 
-// --- rendered DOM
-write('page.html', await page.content());
+// Fail loudly instead of writing a Chromium error-interstitial to page.html and
+// reporting success. A failed/absent response (or non-2xx/3xx status) means there
+// is no real evidence to capture — this must not exit 0 or print a checkmark.
+if (!nav || !nav.ok()) {
+  await browser.close();
+  write('runtime-errors.json', { source: url, evidence: 'observed', count: errors.length, errors });
+  console.error(`✗ navigation failed for ${url} (status: ${nav ? nav.status() : 'no response'}) — no evidence captured.`);
+  console.error('Mark this source `blocked` for static/behavioral capture. Do not treat runtime-errors.json as a successful run.');
+  process.exit(1);
+}
+await page.waitForTimeout(300); // let any trailing same-page navigation/redirect settle before reading state
+
+// --- rendered DOM (page.content() can race a late navigation; retry once)
+async function contentSafe() {
+  try { return await page.content(); }
+  catch (e) {
+    errors.push({ kind: 'content-race', text: String(e) });
+    await page.waitForTimeout(500);
+    return page.content();
+  }
+}
+write('page.html', await contentSafe());
 
 // --- technology detection (observed evidence only)
 const tech = await page.evaluate(() => {
