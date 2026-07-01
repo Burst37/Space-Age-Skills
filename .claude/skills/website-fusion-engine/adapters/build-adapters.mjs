@@ -17,7 +17,18 @@ const desc = (skill.match(/^description:\s*(.+)$/m) || [, ''])[1].trim();
 const version = (skill.match(/^version:\s*(.+)$/m) || [, '0.0.0'])[1].trim();
 
 const HEADER = '<!-- AUTO-GENERATED from SKILL.md. Do not edit. Run: node adapters/build-adapters.mjs -->';
-const POINTER = `Canonical workflow: see \`.claude/skills/website-fusion-engine/SKILL.md\` (v${version}). Load reference files on demand. Do not duplicate the workflow here.`;
+
+function findRepoRoot(dir) {
+  let cur = dir;
+  while (cur !== path.parse(cur).root) {
+    if (fs.existsSync(path.join(cur, '.git'))) return cur;
+    cur = path.dirname(cur);
+  }
+  return null;
+}
+const repoRoot = findRepoRoot(root);
+const skillPath = repoRoot ? path.relative(repoRoot, path.join(root, 'SKILL.md')) : path.join(path.basename(root), 'SKILL.md');
+const POINTER = `Canonical workflow: see \`${skillPath}\` (v${version}). Load reference files on demand. Do not duplicate the workflow here.`;
 
 const targets = [
   { dir: '.cursor/commands', file: 'website-fusion.md', fmt: 'md' },
