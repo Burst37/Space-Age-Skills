@@ -227,9 +227,25 @@ DEFAULT_WORKERS       = 5
 DEFAULT_DELAY_SECONDS = 1.5
 NAVIGATION_TIMEOUT_MS = 25_000   # LOW-POWER: 25s nav cap (was 40s) — N6000 physics
 FILL_TIMEOUT_MS       = 4_000
-CAPTCHA_TIMEOUT_SEC   = 120      # manual fallback timeout
+CAPTCHA_TIMEOUT_SEC   = 120      # manual fallback timeout (interactive modes only)
 HEALTH_TIMEOUT_MS     = 15_000
-CAPSOLVER_TIMEOUT_SEC = 20       # max wait for CapSolver response (was 60 — too slow)
+CAPSOLVER_TIMEOUT_SEC = 40       # max wait for CapSolver — raised 20→40 so hard
+                                 # reCAPTCHA v2 image challenges have time to solve
+                                 # (biggest lever on the captcha_failed bucket)
+
+# ── PER-SITE HARD CAP ─────────────────────────────────────────────────────────
+# The outer watchdog that kills a frozen site so the worker moves on. This MUST
+# exceed the worst-case successful path: nav (25s) + fill/hydrate (~20s) +
+# CapSolver (~40s) + submit & detect (~15s) ≈ 100s. The old value was 60s, which
+# guaranteed that every captcha site and every merely-slow-but-valid site was
+# killed as a "timeout" before it could finish — the single largest cause of the
+# 19.8% timeout bucket. 110s recovers them without letting truly-hung sites hang
+# forever. Non-captcha sites finish in 30–50s and are unaffected.
+PER_SITE_HARD_CAP_SEC = 110
+# In headless batch mode there is no human to solve a captcha CapSolver couldn't,
+# so the 120s manual fallback would just burn the cap and fail anyway. Cap the
+# manual wait short unless we're in an interactive (MANUAL) mode.
+BATCH_MANUAL_CAPTCHA_WAIT_SEC = 12
 
 # ── LOW-POWER MODE ────────────────────────────────────────────────────────────
 # Optimized for Intel Pentium Silver N6000 (2 workers).
@@ -1312,6 +1328,37 @@ async def click_submit(page) -> bool:
     except Exception:
         pass
 
+    # JS fallback 3 — submit a form that lives inside an open shadow root
+    # (web-component signup widgets). page.locator CSS pierces shadow DOM for
+    # matching, but form.submit() must be called on the element itself.
+    try:
+        shadow_submitted = await page.evaluate("""() => {
+            function tryRoot(root) {
+                const btn = root.querySelector('button[type="submit"], input[type="submit"]');
+                if (btn) { btn.click(); return true; }
+                const form = root.querySelector('form');
+                if (form) {
+                    try { form.requestSubmit ? form.requestSubmit() : form.submit(); return true; } catch(e) {}
+                }
+                for (const el of root.querySelectorAll('*')) {
+                    if (el.shadowRoot && tryRoot(el.shadowRoot)) return true;
+                }
+                return false;
+            }
+            return tryRoot(document);
+        }""")
+        if shadow_submitted:
+            return True
+    except Exception:
+        pass
+
+    # Last resort — many single-field (email-only) loyalty joins submit on Enter.
+    try:
+        await page.keyboard.press("Enter")
+        return True
+    except Exception:
+        pass
+
     return False
 
 
@@ -2160,14 +2207,18 @@ async def process_entry(page, row: dict, config: dict, worker: int, dry_run: boo
                     logger.warning(f"  [W{worker}] Token injection failed — {brand}")
                     return "captcha_failed", "token injection failed"
             else:
-                # CapSolver failed — fall back to manual if browser is visible
+                # CapSolver failed — fall back to manual if browser is visible.
+                # In headless batch mode no human is watching, so a long wait just
+                # burns the per-site cap; keep it short there.
+                manual_wait = captcha_timeout if MANUAL_MODE else BATCH_MANUAL_CAPTCHA_WAIT_SEC
                 logger.warning(f"  [W{worker}] CapSolver failed, trying manual — {brand}")
-                solved = await wait_for_manual_captcha(page, brand, worker, captcha_timeout)
+                solved = await wait_for_manual_captcha(page, brand, worker, manual_wait)
                 if not solved:
                     return "captcha_failed", f"CapSolver + manual both failed"
         else:
             # No CapSolver key or couldn't extract sitekey — manual mode
-            solved = await wait_for_manual_captcha(page, brand, worker, captcha_timeout)
+            manual_wait = captcha_timeout if MANUAL_MODE else BATCH_MANUAL_CAPTCHA_WAIT_SEC
+            solved = await wait_for_manual_captcha(page, brand, worker, manual_wait)
             if not solved:
                 return "captcha_skipped", f"CAPTCHA not solved ({fields_filled} fields filled)"
 
@@ -2231,10 +2282,39 @@ async def process_entry(page, row: dict, config: dict, worker: int, dry_run: boo
         if page.url != url_before:
             return "success", ""
 
-        # ── Form still showing = submission was rejected ──────────────────
+        # ── Form still showing = maybe rejected — give it ONE more shot ────
+        # Many forms need a second submit after client-side validation, or an
+        # Enter keypress, or the button only enables once fields blur. Retry
+        # once and re-check before calling it a failure.
         fields_still_present = await detect_form_fields(page)
         if fields_still_present >= 2:
-            return "failed", "form still present after submit (likely rejected)"
+            try:
+                await page.keyboard.press("Enter")
+            except Exception:
+                pass
+            try:
+                await click_submit(page)
+            except Exception:
+                pass
+            await page.wait_for_timeout(1200)
+            try:
+                low2 = (await page.inner_text("body", timeout=3000)).lower()
+                retry_success = [
+                    "welcome", "thank you", "thanks for", "successfully",
+                    "you're in", "you are in", "you're all set", "account created",
+                    "registration complete", "registration successful",
+                    "check your email", "verify your email", "confirmation email",
+                    "email sent", "we sent you", "enrollment complete",
+                    "you've joined", "congratulations", "already",
+                ]
+                if any(k in low2 for k in retry_success):
+                    return "success", "success after retry submit"
+                if page.url != url_before:
+                    return "success", ""
+                if await detect_form_fields(page) >= 2:
+                    return "failed", "form still present after submit (likely rejected)"
+            except Exception:
+                pass
 
     except Exception:
         pass
@@ -2734,15 +2814,20 @@ async def signup_worker(worker_id: int, queue: asyncio.Queue, config: dict, brow
         # ─────────────────────────────────────────────────────────────────
 
         try:
-            # Hard 90-second cap per site — if ANYTHING freezes (autocomplete,
-            # stuck network request, infinite spinner) the worker moves on.
+            # Hard per-site cap — if ANYTHING freezes (autocomplete, stuck network
+            # request, infinite spinner) the worker moves on. Must clear the full
+            # successful captcha path; in interactive modes it must also clear the
+            # human wait so we don't kill a site the operator is actively solving.
+            hard_cap = PER_SITE_HARD_CAP_SEC
+            if MANUAL_MODE:
+                hard_cap = max(hard_cap, MANUAL_WAIT_SECONDS + 30, captcha_timeout + 30)
             status, error = await asyncio.wait_for(
                 process_entry(page, row, config, worker_id, dry_run, capsolver_key, captcha_timeout),
-                timeout=60
+                timeout=hard_cap
             )
         except asyncio.TimeoutError:
-            status, error = "timeout", "site exceeded 60s hard limit — skipped"
-            logger.warning(f"[W{worker_id}] ⏰ HARD TIMEOUT — {brand} exceeded 60s, moving on")
+            status, error = "timeout", f"site exceeded {hard_cap}s hard limit — skipped"
+            logger.warning(f"[W{worker_id}] ⏰ HARD TIMEOUT — {brand} exceeded {hard_cap}s, moving on")
             # Navigate away to reset the page state before next site.
             # If this fails with a "closed" error the page is dead —
             # flag it so the liveness check on the next iteration rebuilds.

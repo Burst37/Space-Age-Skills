@@ -104,6 +104,33 @@ python run_compare.py
 
 ---
 
+## 3b. Reliability fixes for the rest of the buckets
+
+Recognition addresses the "no form fields" bucket. These changes go after the
+remaining losses so the *real* signup rate is as high as it can be:
+
+- **Timeout cap reconciled (the 19.8% timeout bucket).** The outer watchdog was
+  `timeout=60` while the captcha budget was 120s and the full CapSolver + fill +
+  submit path needs ~80–100s — so every captcha site and every slow-but-valid
+  site was killed as a "timeout" before it could finish. Raised to a named
+  `PER_SITE_HARD_CAP_SEC = 110` (interactive modes get extra headroom so the
+  operator's own captcha solving isn't cut off). Non-captcha sites finish in
+  30–50s and are unaffected — this only stops killing the winnable slow ones.
+- **CapSolver wait 20s → 40s.** Hard reCAPTCHA v2 image challenges routinely need
+  >20s; the old cap turned solvable captchas into `captcha_failed`. The 110s
+  per-site cap absorbs the extra time.
+- **Batch manual-captcha wait bounded to 12s.** In headless batch there's no human
+  to solve what CapSolver couldn't, so the 120s manual fallback just burned the
+  cap. Interactive (`--manual`) runs still get the full wait.
+- **Submit hardened.** Added a shadow-DOM form-submit fallback and an Enter-key
+  last resort (many single-field email joins submit on Enter), plus a **second-
+  chance submit**: if the form is still present, retry once (Enter + click) and
+  re-check for a success signal before calling it a failure. This targets the
+  "submit button not found" and "form still present after submit" losses.
+
+Success detection keeps its existing conservative keyword/redirect logic, and the
+"already have an account" case is still counted as a win (the client can use it).
+
 ## 4. Files
 
 - `recognition.py` — the new engine (imported by the bot; falls back gracefully).
