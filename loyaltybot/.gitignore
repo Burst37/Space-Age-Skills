@@ -1,0 +1,10 @@
+# NEVER commit client PII or secrets
+config_*.json
+config.json
+*.client.json
+results*.csv
+signup-results*.csv
+dead-urls.json
+.env
+__pycache__/
+*.pyc
