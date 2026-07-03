@@ -53,11 +53,23 @@ Result: fully-correct fillable forms **OLD 4/9 → NEW 9/9**; the junk page is
 skipped instead of failing. See `REPORT.md` for the full diagnosis (including
 why 54% of the old failure CSV was an already-fixed crash, not recognition).
 
+## Deploy to a VPS
+
+```bash
+cd deploy && bash setup-vps.sh            # or: bash setup-vps.sh --camoufox
+```
+
+See `deploy/DEPLOY.md` for the full walkthrough (config, service, workers).
+Enable the stealth browser with `LB_BROWSER=camoufox` (or `--browser camoufox`);
+it falls back to Chromium if Camoufox isn't installed. The `camoufox` skill has
+an installer and a bot-detection smoke test — run that first.
+
 ## Files
 
 | file | purpose |
 |---|---|
-| `auto-signup.py` | production bot (patched; `--report` prints the rate breakdown) |
+| `auto-signup.py` | production bot (patched; `--report` prints the rate breakdown, `--browser` picks the backend) |
+| `deploy/` | VPS setup kit — `setup-vps.sh`, `requirements.txt`, `.env.example`, `config.example.json`, `run.sh`, `loyaltybot.service`, `DEPLOY.md` |
 | `recognition.py` | new label-aware engine + junk classifier |
 | `old_engine.py` | extracted legacy engine — baseline for the harness |
 | `run_compare.py` | old-vs-new fixture harness |

@@ -2933,6 +2933,51 @@ async def health_worker(worker_id: int, queue: asyncio.Queue, browser, stats: di
 
 
 # ─────────────────────────────────────────────
+#  OPTIONAL STEALTH BROWSER BACKEND (Camoufox)
+# ─────────────────────────────────────────────
+# Camoufox is an anti-detect Firefox fork. It's opt-in (LB_BROWSER=camoufox or
+# --browser camoufox). If the package/browser isn't installed, or a launch
+# fails, we return None and the caller transparently falls back to Chromium — a
+# run never hard-fails just because Camoufox is missing.
+_camoufox_managers = []  # keep AsyncCamoufox context managers alive until shutdown
+
+
+async def _launch_camoufox_browser(headless: bool):
+    """Launch a Camoufox stealth browser; return a Playwright Browser, or None."""
+    try:
+        from camoufox.async_api import AsyncCamoufox
+    except ImportError:
+        logger.warning("LB_BROWSER=camoufox but the 'camoufox' package isn't installed. "
+                       "Install: pip install camoufox[geoip] && python -m camoufox fetch. "
+                       "Falling back to Chromium for this run.")
+        return None
+    try:
+        cm = AsyncCamoufox(
+            headless=headless,
+            humanize=True,               # human-like cursor motion
+            os=("windows", "macos"),     # randomize the spoofed platform per launch
+            locale="en-US",
+            geoip=True,                  # align timezone/locale with the exit IP
+        )
+        browser = await cm.__aenter__()  # AsyncCamoufox yields a Playwright Browser
+        _camoufox_managers.append(cm)
+        logger.info("🦊 Camoufox stealth browser launched")
+        return browser
+    except Exception as e:
+        logger.error(f"Camoufox launch failed ({e}) — falling back to Chromium.")
+        return None
+
+
+async def _close_camoufox_managers():
+    for cm in _camoufox_managers:
+        try:
+            await cm.__aexit__(None, None, None)
+        except Exception:
+            pass
+    _camoufox_managers.clear()
+
+
+# ─────────────────────────────────────────────
 #  MAIN MODES
 # ─────────────────────────────────────────────
 
@@ -3056,6 +3101,11 @@ async def run_signups(args: argparse.Namespace) -> None:
         _headless_mode = args.headless
 
         async def launch_browser():
+            # Opt-in stealth backend. Falls back to Chromium if unavailable.
+            if getattr(args, "browser", "chromium") == "camoufox":
+                cam = await _launch_camoufox_browser(args.headless)
+                if cam is not None:
+                    return cam
             return await p.chromium.launch(
                 headless=args.headless,
                 args=[
@@ -3106,6 +3156,7 @@ async def run_signups(args: argparse.Namespace) -> None:
                 await b.close()
             except Exception:
                 pass
+        await _close_camoufox_managers()  # tidy Camoufox temp profiles, if any
 
     # Mark progress as finished
     write_progress(False, stats)
@@ -3293,6 +3344,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--delay", type=float, default=DEFAULT_DELAY_SECONDS)
     parser.add_argument("--captcha-timeout", type=int, default=CAPTCHA_TIMEOUT_SEC)
     parser.add_argument("--headless", type=lambda v: v.lower() != "false", default=False)
+    parser.add_argument("--browser", choices=["chromium", "camoufox"],
+                        default=os.environ.get("LB_BROWSER", "chromium"),
+                        help="Browser backend. 'camoufox' = stealth Firefox "
+                             "(needs: pip install camoufox[geoip] && python -m camoufox fetch). "
+                             "Falls back to Chromium if unavailable.")
     # Per-client overrides (used by dashboard server for multi-client runs)
     parser.add_argument("--config",   type=str, default=None, help="Path to client config.json")
     parser.add_argument("--progress", type=str, default=None, help="Path to progress.json output")
