@@ -87,6 +87,40 @@ sudo systemctl start loyaltybot
 journalctl -u loyaltybot -f
 ```
 
+### Run on a schedule (systemd timer)
+
+Two timers, both optional and independent:
+
+| timer | what it runs | when |
+|---|---|---|
+| `loyaltybot.timer` | normal batch (skips already-successful URLs automatically) | nightly, 02:00 |
+| `loyaltybot-retry.timer` | `--retry` — only sites that previously failed | weekly, Sun 04:00 |
+
+Because the bot's default mode already filters out URLs it has succeeded on
+before, the nightly timer just makes steady incremental progress through the
+master CSV run after run — nothing to reset between firings. The weekly retry
+pass catches sites that failed transiently or that a later recognition fix
+now handles.
+
+```bash
+sudo cp deploy/loyaltybot.service deploy/loyaltybot.timer \
+       deploy/loyaltybot-retry.service deploy/loyaltybot-retry.timer \
+       /etc/systemd/system/
+sudo $EDITOR /etc/systemd/system/loyaltybot.service          # set User=, paths
+sudo $EDITOR /etc/systemd/system/loyaltybot-retry.service     # same
+sudo systemctl daemon-reload
+sudo systemctl enable --now loyaltybot.timer
+sudo systemctl enable --now loyaltybot-retry.timer
+
+systemctl list-timers 'loyaltybot*'      # confirm next-run times
+journalctl -u loyaltybot -f              # follow a firing's log
+```
+
+Adjust the schedule by editing `OnCalendar=` in the `.timer` file, then
+`sudo systemctl daemon-reload && sudo systemctl restart loyaltybot.timer`.
+To run a scheduled job immediately without waiting for its next firing:
+`sudo systemctl start loyaltybot.service` (bypasses the timer, runs once now).
+
 ---
 
 ## Choosing the browser backend

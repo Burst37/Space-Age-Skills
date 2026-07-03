@@ -69,7 +69,7 @@ an installer and a bot-detection smoke test — run that first.
 | file | purpose |
 |---|---|
 | `auto-signup.py` | production bot (patched; `--report` prints the rate breakdown, `--browser` picks the backend) |
-| `deploy/` | VPS setup kit — `setup-vps.sh`, `requirements.txt`, `.env.example`, `config.example.json`, `run.sh`, `loyaltybot.service`, `DEPLOY.md` |
+| `deploy/` | VPS setup kit — `setup-vps.sh`, `requirements.txt`, `.env.example`, `config.example.json`, `run.sh`, `loyaltybot.service`/`.timer` (nightly), `loyaltybot-retry.service`/`.timer` (weekly retry), `DEPLOY.md` |
 | `recognition.py` | new label-aware engine + junk classifier |
 | `old_engine.py` | extracted legacy engine — baseline for the harness |
 | `run_compare.py` | old-vs-new fixture harness |

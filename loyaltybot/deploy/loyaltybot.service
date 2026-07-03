@@ -8,7 +8,7 @@
 #   journalctl -u loyaltybot -f              # follow the log
 #
 # This is Type=oneshot: it runs a single batch and exits. To run on a schedule,
-# pair it with a systemd timer, or just launch run.sh from cron/tmux.
+# pair it with loyaltybot.timer (see that file) instead of starting it directly.
 
 [Unit]
 Description=LoyaltyBot auto form-filler batch
