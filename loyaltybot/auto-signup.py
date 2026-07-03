@@ -3184,8 +3184,94 @@ async def run_health_check(args: argparse.Namespace) -> None:
         print(f"{'='*60}\n")
 
 
+def run_report(args: argparse.Namespace) -> None:
+    """Read a results CSV and print the bucket breakdown, with the headline
+    *fillable-only* success rate (junk + dead sites excluded from the
+    denominator, matching how the 80-90% target is defined). No PII is printed —
+    only counts and status/reason buckets."""
+    path = Path(args.results) if args.results else RESULTS_LOG_PATH
+    if not path.exists():
+        print(f"\nNo results CSV at {path} — run a batch first (or pass --results PATH).\n")
+        return
+
+    rows = []
+    with open(path, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            rows.append(row)
+    if not rows:
+        print(f"\n{path} is empty.\n")
+        return
+
+    def bucket_fail(err: str) -> str:
+        e = (err or "").lower()
+        if "no form fields" in e:              return "no form fields (recognition)"
+        if "form still present" in e or "error text on form" in e:
+            return "form still present (rejected)"
+        if "submit button not found" in e:     return "submit button not found"
+        if "token injection" in e or "capsolver" in e:
+            return "captcha token failed"
+        return "other"
+
+    def bucket_skip(err: str) -> str:
+        e = (err or "").lower()
+        if "does not resolve" in e or "dead url" in e or "invalid url" in e:
+            return "dead / invalid URL"
+        if "permanently failed" in e:          return "permanently failed (prior run)"
+        return "junk / not a fillable form"
+
+    from collections import Counter
+    status_ct   = Counter()
+    fail_reason = Counter()
+    skip_reason = Counter()
+    for r in rows:
+        st = (r.get("status") or "").strip().lower()
+        err = r.get("error") or ""
+        status_ct[st] += 1
+        if st == "failed":
+            fail_reason[bucket_fail(err)] += 1
+        elif st == "skipped":
+            skip_reason[bucket_skip(err)] += 1
+
+    total    = len(rows)
+    success  = status_ct.get("success", 0)
+    skipped  = status_ct.get("skipped", 0)
+    captcha  = status_ct.get("captcha_failed", 0) + status_ct.get("captcha_skipped", 0)
+    timeout  = status_ct.get("timeout", 0)
+    failed   = status_ct.get("failed", 0)
+    fillable = total - skipped          # denominator: only real signup forms
+
+    bar = "=" * 60
+    print(f"\n{bar}\n  LOYALTYBOT RUN REPORT — {path.name}\n{bar}")
+    print(f"  Total rows processed : {total}")
+    print(f"  Skipped (junk/dead)  : {skipped}   (excluded from rate)")
+    print(f"  Fillable attempts    : {fillable}")
+    print(f"{'-'*60}")
+    print(f"  Success              : {success}")
+    print(f"  Failed               : {failed}")
+    print(f"  CAPTCHA unsolved     : {captcha}")
+    print(f"  Timeout              : {timeout}")
+    print(f"{'-'*60}")
+    if fillable > 0:
+        print(f"  >> FILLABLE-ONLY SUCCESS RATE : {success/fillable*100:5.1f}%  ({success}/{fillable})")
+    else:
+        print(f"  >> FILLABLE-ONLY SUCCESS RATE : n/a (no fillable attempts)")
+    print(f"     (raw over all rows          : {success/total*100:5.1f}%  ({success}/{total}))")
+
+    if fail_reason:
+        print(f"{'-'*60}\n  Failure reasons:")
+        for reason, n in fail_reason.most_common():
+            print(f"    {n:>6}  {reason}")
+    if skip_reason:
+        print(f"{'-'*60}\n  Skip reasons:")
+        for reason, n in skip_reason.most_common():
+            print(f"    {n:>6}  {reason}")
+    print(f"{bar}\n")
+
+
 async def main(args: argparse.Namespace) -> None:
-    if args.health_check:
+    if args.report:
+        run_report(args)
+    elif args.health_check:
         await run_health_check(args)
     else:
         await run_signups(args)
@@ -3197,6 +3283,8 @@ def parse_args() -> argparse.Namespace:
                         help="Manual Mode: bot waits for you to navigate to signup form, then auto-fills and submits")
     parser.add_argument("--retry", action="store_true", help="Re-run only failed sites")
     parser.add_argument("--health-check", action="store_true", help="Scan URLs for health")
+    parser.add_argument("--report", action="store_true",
+                        help="Read the results CSV and print the bucket breakdown + fillable-only success rate (no run)")
     parser.add_argument("--dry-run", action="store_true", help="Fill forms, don't submit")
     parser.add_argument("--no-capsolver", action="store_true", help="Disable CapSolver (manual CAPTCHA mode)")
     parser.add_argument("--workers", type=int, default=DEFAULT_WORKERS)

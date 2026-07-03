@@ -35,6 +35,20 @@ pip install playwright
 python run_compare.py     # old vs new on 10 fixtures
 ```
 
+## Measure a real run
+
+After any batch, print the bucket breakdown and the **fillable-only** success
+rate (junk/dead sites excluded from the denominator, matching the 80–90%
+target). No run, no PII — just counts:
+
+```bash
+python auto-signup.py --report                 # reads the default results CSV
+python auto-signup.py --report --results PATH  # or a specific one
+```
+
+Watch `no form fields (recognition)` and `timeout` fall while the fillable-only
+rate rises.
+
 Result: fully-correct fillable forms **OLD 4/9 → NEW 9/9**; the junk page is
 skipped instead of failing. See `REPORT.md` for the full diagnosis (including
 why 54% of the old failure CSV was an already-fixed crash, not recognition).
@@ -43,7 +57,7 @@ why 54% of the old failure CSV was an already-fixed crash, not recognition).
 
 | file | purpose |
 |---|---|
-| `auto-signup.py` | production bot (patched) |
+| `auto-signup.py` | production bot (patched; `--report` prints the rate breakdown) |
 | `recognition.py` | new label-aware engine + junk classifier |
 | `old_engine.py` | extracted legacy engine — baseline for the harness |
 | `run_compare.py` | old-vs-new fixture harness |
