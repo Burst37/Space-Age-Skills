@@ -1,3 +1,9 @@
+---
+name: matts-peeker
+description: Analyze a video (URL or local file) by extracting frames at 1Hz plus its transcript, and produce a structured report answering a specific question about it. TRIGGER when the user wants to analyze, review, break down, or ask questions about the content of a video — competitor ad teardown, tutorial breakdown, "what happens in this video", frame-by-frame analysis. Phrases: 'peek this video', 'analyze this video', 'break down this video', 'what happens at timestamp X', 'review this YouTube video'.
+version: 1.0.0
+---
+
 # /peek Skill Overview
 
 **Matt's Peeker** is a video analysis tool that extracts frames and transcripts, then generates structured output for follow-up work.

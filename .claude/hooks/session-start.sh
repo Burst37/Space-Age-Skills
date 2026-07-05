@@ -17,7 +17,12 @@ Before doing ANYTHING else, you must:
    - Search parentId = '1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU' for title = '${TODAY}.md'
    - Read it with mcp__Google_Drive__read_file_content
    - If not found, get the most recent file in that folder and read it
-2. Load Tier 0 skills: SpaceAge_Orchestrator_v2, karpathy-guidelines, icm-workspace-architect, sa-obsidian-vault-ops
+2. Skills auto-trigger from their SKILL.md description/TRIGGER phrases — every skill in
+   skills/ and .claude/skills/ is discoverable this session (see the skills list below).
+   Don't blanket-load them; invoke only the ones matching the current task (e.g. editing a
+   video → video-edit, a scroll-driven client site → cinematic-website-prompts, an Obsidian
+   vault task → sa-obsidian-vault-ops). Always-relevant regardless of task: sa-obsidian-vault-ops
+   (session memory lives in the Drive-backed vault).
 3. Identify project type and load Tier 2 stack from SESSION_INIT.md
 
 INFRA QUICK REF:
@@ -43,18 +48,24 @@ export SA_GITHUB_USER="Burst37"
 export SA_SKILLS_REPO="Burst37/Space-Age-Skills"
 EOF
 
-# Sync skills (after context emit — non-blocking for Claude)
-SKILLS_SRC="$CLAUDE_PROJECT_DIR/.claude/skills"
+# Sync skills (after context emit — non-blocking for Claude).
+# Two sources feed the same destination: .claude/skills (project-local, e.g. installed
+# Obsidian sub-skills) and the top-level skills/ library (the canonical Space-Age-Skills
+# catalog). Adding a skill to either directory is enough to make it auto-discoverable in
+# every future session — no manual duplication needed.
+SKILLS_SRCS=("$CLAUDE_PROJECT_DIR/.claude/skills" "$CLAUDE_PROJECT_DIR/skills")
 SKILLS_DST="$HOME/.claude/skills"
 
-if [ -d "$SKILLS_SRC" ]; then
-  mkdir -p "$SKILLS_DST"
-  for skill_dir in "$SKILLS_SRC"/*/; do
-    skill_name=$(basename "$skill_dir")
-    rm -rf "$SKILLS_DST/$skill_name"
-    cp -r "$skill_dir" "$SKILLS_DST/$skill_name"
-  done
-fi
+mkdir -p "$SKILLS_DST"
+for SKILLS_SRC in "${SKILLS_SRCS[@]}"; do
+  if [ -d "$SKILLS_SRC" ]; then
+    for skill_dir in "$SKILLS_SRC"/*/; do
+      skill_name=$(basename "$skill_dir")
+      rm -rf "$SKILLS_DST/$skill_name"
+      cp -r "$skill_dir" "$SKILLS_DST/$skill_name"
+    done
+  fi
+done
 
 # npm install last — slow on cold cache, runs after context already injected
 cd "$CLAUDE_PROJECT_DIR"
