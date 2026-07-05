@@ -1,0 +1,627 @@
+{
+ "fps": 30,
+ "width": 1920,
+ "height": 1080,
+ "durationRange": [
+  90,
+  360
+ ],
+ "maxScenes": 9,
+ "palette": [
+  "#0F121A",
+  "#1E2434",
+  "#343E5B",
+  "#E9ECED",
+  "#D2D8DA",
+  "#B5BFC2",
+  "#5A6068",
+  "#CFFF05",
+  "#FFFFFF"
+ ],
+ "vizzes": {
+  "hero": {
+   "useWhen": "A title / opening statement or a big claim. The hook.",
+   "framed": false,
+   "move": "push-in",
+   "required": [
+    "eyebrow",
+    "headlineWords"
+   ],
+   "example": {
+    "eyebrow": "BuildLoop \u2014 Fig. 01",
+    "headlineWords": [
+     "EVERY",
+     "CONCEPT,",
+     "MADE",
+     "VISUAL."
+    ],
+    "markIndex": 3,
+    "counterpoint": "On brand, built live.",
+    "buttonLabel": "Press play \u2192",
+    "bg": "grid-dark"
+   }
+  },
+  "network": {
+   "useWhen": "A one-to-many system, orchestration, a hub coordinating parts (agents, integrations, channels).",
+   "framed": false,
+   "move": "reveal-out",
+   "required": [
+    "eyebrow",
+    "hub",
+    "nodes"
+   ],
+   "example": {
+    "eyebrow": "Your agents, one loop",
+    "hub": "Command",
+    "nodes": [
+     "INBOX",
+     "CONTENT",
+     "SALES",
+     "OPS"
+    ],
+    "bg": "grid-dark"
+   }
+  },
+  "lineChart": {
+   "useWhen": "A value changing over time \u2014 growth, a trend, a metric climbing. The headline is a running peak (never ticks backward).",
+   "framed": false,
+   "move": "track-up",
+   "required": [
+    "eyebrow",
+    "title",
+    "points",
+    "xLabels",
+    "yMax"
+   ],
+   "rules": [
+    "points.length === xLabels.length",
+    "yMax >= max(points)"
+   ],
+   "example": {
+    "eyebrow": "Revenue \u00b7 last 6 months",
+    "title": "Monthly recurring revenue",
+    "points": [
+     11,
+     14,
+     21,
+     26,
+     33,
+     46
+    ],
+    "xLabels": [
+     "JAN",
+     "FEB",
+     "MAR",
+     "APR",
+     "MAY",
+     "JUN"
+    ],
+    "yMax": 48,
+    "prefix": "\u20ac",
+    "suffix": "k",
+    "bg": "grid-light"
+   }
+  },
+  "barChart": {
+   "useWhen": "A ranked comparison across categories. COMPARISON: all bars stay framed, never zoom into one.",
+   "framed": true,
+   "move": "dolly",
+   "required": [
+    "eyebrow",
+    "bars"
+   ],
+   "example": {
+    "eyebrow": "Hours saved / week",
+    "bars": [
+     {
+      "label": "EMAIL",
+      "value": 4
+     },
+     {
+      "label": "ADMIN",
+      "value": 12
+     },
+     {
+      "label": "SALES",
+      "value": 6
+     }
+    ],
+    "bg": "grid-light"
+   }
+  },
+  "kpiStats": {
+   "useWhen": "2-4 punchy headline numbers shown together. Each counts up (monotonic).",
+   "framed": true,
+   "move": "dolly",
+   "required": [
+    "eyebrow",
+    "stats"
+   ],
+   "example": {
+    "eyebrow": "Make the numbers land",
+    "stats": [
+     {
+      "value": 4000,
+      "suffix": "+",
+      "label": "builders shipping"
+     },
+     {
+      "value": 55,
+      "suffix": " min",
+      "label": "to first ship"
+     }
+    ],
+    "bg": "grid-dark"
+   }
+  },
+  "layerStack": {
+   "useWhen": "An architecture / layered system \u2014 what sits on what (interface \u2192 agents \u2192 memory \u2192 data).",
+   "framed": false,
+   "move": "orbit-up",
+   "required": [
+    "eyebrow",
+    "layers"
+   ],
+   "example": {
+    "eyebrow": "How the system stacks up",
+    "layers": [
+     {
+      "tag": "02",
+      "name": "AGENTS",
+      "sub": "the workers"
+     },
+     {
+      "tag": "01",
+      "name": "DATA",
+      "sub": "the source of truth"
+     }
+    ],
+    "bg": "grid-dark"
+   }
+  },
+  "processFlow": {
+   "useWhen": "A sequence of steps / a roadmap / a numbered list of stages (capture \u2192 automate \u2192 ship; ignore \u2192 learn \u2192 earn). Steps build left-to-right, all stay framed.",
+   "framed": true,
+   "move": "push-in",
+   "required": [
+    "eyebrow",
+    "steps"
+   ],
+   "example": {
+    "eyebrow": "What you get here",
+    "steps": [
+     {
+      "n": "01",
+      "label": "WHAT TO IGNORE"
+     },
+     {
+      "n": "02",
+      "label": "WHAT TO LEARN"
+     },
+     {
+      "n": "03",
+      "label": "TURN AI INTO INCOME"
+     }
+    ],
+    "bg": "grid-dark"
+   }
+  },
+  "comparison": {
+   "useWhen": "Before/after or A-vs-B. COMPARISON: both sides stay framed the whole time; NO camera zoom (structurally impossible here).",
+   "framed": true,
+   "move": "none",
+   "required": [
+    "left",
+    "right"
+   ],
+   "example": {
+    "left": {
+     "label": "MANUAL",
+     "stat": "8 hrs",
+     "sub": "per task, every week"
+    },
+    "right": {
+     "label": "AUTOMATED",
+     "stat": "12 min",
+     "sub": "set once, runs forever"
+    }
+   }
+  },
+  "loop": {
+   "useWhen": "a self-running cycle / 'build loops, don't prompt'",
+   "framed": false,
+   "move": "push-in",
+   "required": [
+    "eyebrow",
+    "label"
+   ],
+   "example": {
+    "eyebrow": "BuildLoop \u00b7 the loop era",
+    "label": "AGENT LOOP",
+    "caption": "you write the loop once. it prompts Claude, ships, repeats.",
+    "bg": "grid-dark"
+   }
+  },
+  "heatmap": {
+   "useWhen": "volume + reliability of many runs (run-density grid)",
+   "framed": false,
+   "move": "stable",
+   "required": [
+    "eyebrow",
+    "total"
+   ],
+   "example": {
+    "eyebrow": "7 days of the system running",
+    "total": 15380,
+    "unit": "agent runs",
+    "successPct": 99,
+    "bg": "grid-dark"
+   }
+  },
+  "strikeList": {
+   "useWhen": "cross items out one by one ('you dont need X' / 'replaced my team')",
+   "framed": false,
+   "move": "stable",
+   "required": [
+    "eyebrow",
+    "items"
+   ],
+   "example": {
+    "eyebrow": "I replaced my entire team",
+    "items": [
+     "MY ASSISTANT",
+     "MY BOOKKEEPER",
+     "MY ADS MANAGER"
+    ],
+    "replacedBy": "CLAUDE",
+    "bg": "grid-dark"
+   }
+  },
+  "dualLine": {
+   "useWhen": "two series over time, the GAP is the point (A lime vs B steel)",
+   "framed": true,
+   "move": "track-up",
+   "required": [
+    "eyebrow",
+    "title",
+    "a",
+    "b",
+    "xLabels",
+    "yMax"
+   ],
+   "example": {
+    "eyebrow": "Momentum up, revenue flat",
+    "title": "YouTube views vs revenue",
+    "a": {
+     "label": "VIEWS",
+     "points": [
+      20,
+      28,
+      35,
+      52,
+      70,
+      88
+     ]
+    },
+    "b": {
+     "label": "REVENUE",
+     "points": [
+      18,
+      19,
+      17,
+      20,
+      19,
+      18
+     ]
+    },
+    "xLabels": [
+     "JAN",
+     "FEB",
+     "MAR",
+     "APR",
+     "MAY",
+     "JUN"
+    ],
+    "yMax": 100,
+    "bg": "grid-light"
+   }
+  },
+  "sourceHeadline": {
+   "useWhen": "cite a real claim as authority (newspaper receipt, phrase highlighted)",
+   "framed": false,
+   "move": "push-in",
+   "required": [
+    "publication",
+    "headline"
+   ],
+   "example": {
+    "publication": "The Verge",
+    "date": "DEC 2024",
+    "headline": "Microsoft's CEO says SaaS is dead",
+    "highlight": "SaaS is dead",
+    "dek": "Three words that broke the internet.",
+    "byline": "by the loop era",
+    "bg": "grid-light"
+   }
+  },
+  "strikeOverlay": {
+   "useWhen": "OVERLAY beside the speaker: cross items out, then a payoff",
+   "overlay": true,
+   "framed": false,
+   "required": [
+    "items"
+   ],
+   "example": {
+    "eyebrow": "the old way",
+    "items": [
+     "MOTION DESIGNER",
+     "AFTER EFFECTS",
+     "CODING SKILLS"
+    ],
+    "replacedBy": "ONE SKILL",
+    "anchor": "left"
+   }
+  },
+  "statBadge": {
+   "useWhen": "OVERLAY: a floating corner stat callout over footage",
+   "overlay": true,
+   "framed": false,
+   "required": [
+    "value",
+    "label"
+   ],
+   "example": {
+    "kicker": "what i used to pay",
+    "value": "$2,000",
+    "label": "per month \u00b7 editor",
+    "anchor": "top-right"
+   }
+  },
+  "lowerThird": {
+   "useWhen": "OVERLAY: clean title/name bar over the speaker",
+   "overlay": true,
+   "framed": false,
+   "required": [
+    "title"
+   ],
+   "example": {
+    "kicker": "BuildLoop",
+    "title": "I replaced my whole team",
+    "subtitle": "one operator \u00b7 zero hires",
+    "anchor": "bottom-left"
+   }
+  },
+  "whileYouSleep": {
+   "useWhen": "work done overnight / 'before I wake up' (moon->sun + tasks check off)",
+   "framed": false,
+   "move": "push-in",
+   "required": [
+    "eyebrow",
+    "tasks"
+   ],
+   "example": {
+    "eyebrow": "Claude works the night shift",
+    "tasks": [
+     "Fixed the landing page",
+     "Cleared the inbox",
+     "Shipped the edit"
+    ],
+    "label": "you wake up to done",
+    "bg": "grid-dark"
+   }
+  },
+  "collapse": {
+   "useWhen": "something built up then breaks (vibe-coding cliff, over-engineering)",
+   "framed": false,
+   "move": "push-in",
+   "required": [
+    "eyebrow",
+    "label"
+   ],
+   "example": {
+    "eyebrow": "The vibe-coding cliff",
+    "label": "200 PROMPTS DEEP",
+    "sub": "2 hours became 2 days",
+    "bg": "grid-dark"
+   }
+  },
+  "brainBuild": {
+   "useWhen": "parts wiring into a central system (context engineering = a brain)",
+   "framed": false,
+   "move": "reveal-out",
+   "required": [
+    "eyebrow",
+    "center",
+    "files"
+   ],
+   "example": {
+    "eyebrow": "Context engineering",
+    "center": "BUSINESS BRAIN",
+    "files": [
+     "MEMORY.md",
+     "KNOWLEDGE",
+     "ME-CONTEXT",
+     "STORY BANK"
+    ],
+    "bg": "grid-dark"
+   }
+  },
+  "grindClock": {
+   "useWhen": "volume of grind / 'busier not freer' (clock ring + counter)",
+   "framed": false,
+   "move": "stable",
+   "required": [
+    "eyebrow",
+    "total"
+   ],
+   "example": {
+    "eyebrow": "AI made me busier, not freer",
+    "total": 1880,
+    "afterMidnight": 77,
+    "label": "Claude sessions",
+    "bg": "grid-dark"
+   }
+  },
+  "orchestra": {
+   "useWhen": "scattered agents wired into sync ('orchestration > agent count')",
+   "framed": false,
+   "move": "reveal-out",
+   "required": [
+    "eyebrow",
+    "hub"
+   ],
+   "example": {
+    "eyebrow": "Orchestration beats agent count",
+    "hub": "ORCHESTRATOR",
+    "agents": 12,
+    "caption": "12 agents \u00b7 half work alone",
+    "bg": "grid-dark"
+   }
+  },
+  "streamsToOne": {
+   "useWhen": "many inputs into one ('5 businesses, one window')",
+   "framed": false,
+   "move": "push-in",
+   "required": [
+    "eyebrow",
+    "streams",
+    "target"
+   ],
+   "example": {
+    "eyebrow": "Five businesses, one window",
+    "streams": [
+     "CONTENT",
+     "AGENCY",
+     "EMAIL",
+     "DATA"
+    ],
+    "target": "ONE CLAUDE",
+    "bg": "grid-dark"
+   }
+  },
+  "priceDrop": {
+   "useWhen": "a cost collapsing ($X -> $0)",
+   "framed": false,
+   "move": "push-in",
+   "required": [
+    "eyebrow",
+    "from",
+    "to"
+   ],
+   "example": {
+    "eyebrow": "The receipt",
+    "from": "$2,000",
+    "to": "$0",
+    "fromLabel": "human editor / mo",
+    "toLabel": "a Claude skill",
+    "bg": "grid-dark"
+   }
+  },
+  "automationDead": {
+   "useWhen": "X is dead -> Y (stamp + payoff)",
+   "framed": false,
+   "move": "push-in",
+   "required": [
+    "eyebrow",
+    "dead",
+    "alive"
+   ],
+   "example": {
+    "eyebrow": "Two years ago I wired n8n",
+    "dead": "AUTOMATION",
+    "alive": "LOOPS",
+    "stamp": "DEAD",
+    "bg": "grid-dark"
+   }
+  },
+  "assemblyLine": {
+   "useWhen": "a pipeline of stages (cut -> b-roll -> finish)",
+   "framed": false,
+   "move": "push-in",
+   "required": [
+    "eyebrow",
+    "stations"
+   ],
+   "example": {
+    "eyebrow": "The editing system",
+    "stations": [
+     "THE CUT",
+     "THE B-ROLL",
+     "THE FINISH"
+    ],
+    "bg": "grid-dark"
+   }
+  },
+  "scanResolve": {
+   "useWhen": "resolving/scanning many items (scan line lights a grid)",
+   "framed": false,
+   "move": "stable",
+   "required": [
+    "eyebrow",
+    "total"
+   ],
+   "example": {
+    "eyebrow": "Apify found my whole audience",
+    "total": 4000,
+    "label": "builders resolved",
+    "bg": "grid-dark"
+   }
+  },
+  "whackAMole": {
+   "useWhen": "fix one, another breaks",
+   "framed": false,
+   "move": "push-in",
+   "required": [
+    "eyebrow"
+   ],
+   "example": {
+    "eyebrow": "Vibe coding maintenance",
+    "label": "fix one \u2192 another breaks",
+    "bg": "grid-dark"
+   }
+  },
+  "keywordPop": {
+   "useWhen": "OVERLAY: a word pops beside the speaker (marker + glow)",
+   "overlay": true,
+   "framed": false,
+   "required": [
+    "word"
+   ],
+   "example": {
+    "word": "LOOPS",
+    "sub": "not prompts",
+    "anchor": "left"
+   }
+  },
+  "cornerCounter": {
+   "useWhen": "OVERLAY: a live counter in a corner over footage",
+   "overlay": true,
+   "framed": false,
+   "required": [
+    "value",
+    "label"
+   ],
+   "example": {
+    "value": 15380,
+    "label": "agent runs",
+    "anchor": "top-right"
+   }
+  },
+  "runawayMeter": {
+   "useWhen": "a cost/number that SILENTLY climbs then explodes (leaked-key bill, runaway spend) \u2014 accelerating counter + daily bars that stay flat then blow up",
+   "framed": false,
+   "move": "stable",
+   "required": [
+    "total"
+   ],
+   "example": {
+    "total": 2500,
+    "currency": "\u20ac",
+    "headline": "THE METER KEPT RUNNING",
+    "footer": "7 DAYS IN JAPAN \u00b7 I NEVER CHECKED",
+    "days": 7,
+    "bg": "grid-dark"
+   }
+  }
+ }
+}
