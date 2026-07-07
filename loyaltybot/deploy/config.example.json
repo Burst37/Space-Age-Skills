@@ -1,0 +1,23 @@
+{
+  "_comment": "Copy to loyaltybot/config.json and fill with the CLIENT'S real data. This file (config.json / config_*.json) is git-ignored and must NEVER be committed — it holds live PII and the CapSolver key.",
+
+  "first_name": "Jane",
+  "last_name": "Doe",
+  "email": "jane.doe@example.com",
+  "phone": "5555550123",
+  "username": "janedoe",
+  "password": "CHANGE_ME",
+  "dob": "1990-01-15",
+
+  "address": {
+    "street": "123 Main St",
+    "city": "Anytown",
+    "state": "MO",
+    "zip": "63101"
+  },
+
+  "employment": {},
+  "education": {},
+
+  "capsolver_api_key": "CAP-XXXXXXXXXXXXXXXXXXXXXXXX"
+}
