@@ -16,6 +16,7 @@ Before touching ANY task, run this checklist in order:
 2. `karpathy-guidelines`
 3. `icm-workspace-architect`
 4. `sa-obsidian-vault-ops`
+5. `animation-vocabulary`
 
 ### 3. Identify Project Type → Load Tier 2 Stack
 See SESSION_INIT.md in Google Drive for full routing matrix.
@@ -53,6 +54,7 @@ See SESSION_INIT.md in Google Drive for full routing matrix.
 6. **LoyaltyBot** — standalone product, zero connection to website pipeline
 7. **Encore logo** — always upper left chest in generated images
 8. **Obsidian vault** — lives on Windows machine, NOT on VPS. Google Drive is the memory layer.
+9. **Animation naming** — use `animation-vocabulary` when a user describes a motion effect but needs the proper UI/animation term.
 
 ## SESSION END CHECKLIST
 
