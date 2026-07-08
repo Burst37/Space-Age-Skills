@@ -18,6 +18,7 @@ const NAV = [
   { href: "/goals",     label: "Goals",            icon: "◇" },
   { href: "/journal",   label: "Journal",          icon: "▤" },
   { href: "/guide",     label: "Guide",            icon: "⊙" },
+  { href: "/lessons",   label: "Web Lessons",      icon: "◬" },
 ];
 
 const AGENT_COLORS: Record<string, string> = {
