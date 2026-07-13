@@ -1,65 +1,97 @@
 # CLAUDE.md — Space Age AI Solutions
-## Load This First. Every Session. No Exceptions.
 
-## RULE #1 — SESSION START PROTOCOL
+## Prime Directive
+Ship usable work. Do not lecture. Do not stall. Inspect first, act second, verify before claiming completion.
 
-Before touching ANY task, run this checklist in order:
+## Session Start Protocol
 
-### 1. Read Session Memory from Google Drive
-- Search `parentId = '1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU'` for today's `YYYY-MM-DD.md`
-- If found, read it — load all context, pending tasks, key IDs
-- If not found, read the most recent file in that folder
-- This is non-negotiable. Do not skip it.
+Before any substantive task:
 
-### 2. Load Tier 0 Skills (Every Session)
-1. `SpaceAge_Orchestrator_v2`
-2. `karpathy-guidelines`
-3. `icm-workspace-architect`
-4. `sa-obsidian-vault-ops`
-5. `animation-vocabulary`
+1. **Load memory**
+   - Read today’s `SESSION_MEMORY/YYYY-MM-DD.md` from Google Drive folder `1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU`.
+   - If today’s note does not exist, read the most recent session memory file.
+   - Use memory silently unless the user asks for a recap.
 
-### 3. Identify Project Type → Load Tier 2 Stack
-See SESSION_INIT.md in Google Drive for full routing matrix.
+2. **Load core skills**
+   - `SpaceAge_Orchestrator_v2`
+   - `karpathy-guidelines`
+   - `icm-workspace-architect`
+   - `sa-obsidian-vault-ops`
+   - `animation-vocabulary`
 
-### 4. Run Session Start Checklist
-- [ ] Drive memory read — today's note loaded
-- [ ] Tier 0 skills loaded
-- [ ] Project type identified → Tier 2 stack loaded
-- [ ] VPS .env integrity confirmed if needed
-- [ ] Model routing confirmed (claude-opus-4-8 for heavy tasks)
-- [ ] MCP > CLI > SDK > raw key priority confirmed
+3. **Route the project**
+   - Identify the task type: website, AI agent, skill, prompt system, design system, repo automation, deployment, or research.
+   - Load the matching Tier 2 skill stack from `SESSION_INIT.md`.
+   - If `SESSION_INIT.md` is unavailable, continue best-effort and state what could not be loaded.
 
----
+4. **Confirm execution mode**
+   - Prefer MCP tools first.
+   - Use CLI second.
+   - Use SDK/API only when MCP or CLI is unavailable.
+   - Never request credentials before checking known memory locations.
 
-## QUICK REFERENCE — INFRA
+## Operating Rules
+
+- Give the user the finished artifact, not a speech about what could be done.
+- Ask questions only when blocked.
+- Preserve explicit constraints: repo, branch, file path, model, budget, aspect ratio, token limit, platform, and output format.
+- If a user corrects direction, apply the correction immediately.
+- Do not modify router/session files unless the user explicitly asks.
+- Do not claim a repo/file/tool was checked unless it was actually checked.
+- Do not claim a task is done until the result is verified.
+
+## Development Workflow
+
+For non-trivial code or repo work:
+
+1. Inspect the current file/repo state.
+2. Identify the smallest safe change.
+3. Apply the change.
+4. Verify the result.
+5. Report:
+   - changed files
+   - commit hash or file path
+   - what was verified
+   - anything still unresolved
+
+## Skill Rules
+
+- Skill folders use lowercase hyphenated names only.
+- No `SA-` prefix on skill folders.
+- Clone skills into `.claude/skills/<skill-name>/`.
+- Preserve upstream `SKILL.md` metadata.
+- Include companion docs when the skill references them.
+- Do not add skills to `CLAUDE.md` unless explicitly asked.
+- If a skill already exists, update it only when the user asks to refresh or overwrite.
+
+## Infrastructure Reference
 
 | Key | Value |
-|-----|-------|
-| VPS | 146.190.78.120 |
-| GitHub | Burst37 |
-| Skills Repo | Burst37/Space-Age-Skills |
-| Skills Drive Folder | 1XWYm8AhG83vMn1p3RpM1UAkmiKcsnoC9 |
-| SESSION_MEMORY Folder | 1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU |
-| Vercel Team | team_b7Ju9bt8GNoiLnMor6ieC8J7 |
-| Agent Dashboard | http://146.190.78.120:3000 |
-| API Proxy | http://146.190.78.120:3400 |
+|---|---|
+| GitHub User | `Burst37` |
+| Skills Repo | `Burst37/Space-Age-Skills` |
+| Skills Drive Folder | `1XWYm8AhG83vMn1p3RpM1UAkmiKcsnoC9` |
+| Session Memory Folder | `1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU` |
+| VPS | `146.190.78.120` |
+| Agent Dashboard | `http://146.190.78.120:3000` |
+| API Proxy | `http://146.190.78.120:3400` |
 
-## ANTI-FORGETTING RULES
+## Anti-Forgetting Rules
 
-1. **CapSolver key** — check Drive/Obsidian LoyaltyBot note before asking
-2. **Vercel** — use MCP or CLI, never ask for token
-3. **GitHub** — use gh CLI or GitHub MCP
-4. **Model** — claude-opus-4-8 for heavy tasks. Never deepseek-chat or deepseek-reasoner
-5. **Skill folder naming** — lowercase-hyphen only, NO SA- prefix
-6. **LoyaltyBot** — standalone product, zero connection to website pipeline
-7. **Encore logo** — always upper left chest in generated images
-8. **Obsidian vault** — lives on Windows machine, NOT on VPS. Google Drive is the memory layer.
-9. **Animation naming** — use `animation-vocabulary` when a user describes a motion effect but needs the proper UI/animation term.
+- CapSolver key: check Drive/Obsidian LoyaltyBot note before asking.
+- Vercel: use MCP or CLI before asking for a token.
+- GitHub: use MCP/connector/CLI before asking for access.
+- Heavy reasoning/code tasks: prefer the strongest available Claude model.
+- LoyaltyBot is standalone and must not be mixed into the website pipeline.
+- Encore logo placement in generated images: upper left chest.
+- Obsidian vault lives on the Windows machine; Google Drive is the memory layer.
+- Use `animation-vocabulary` only when naming/describing UI motion terms.
 
-## SESSION END CHECKLIST
+## Session End Checklist
 
-Before closing any session:
-- [ ] Write completed work + pending tasks to Drive SESSION_MEMORY/YYYY-MM-DD.md
-- [ ] Log any credentials that exist (names only, never values)
-- [ ] Push any code changes to relevant repo
-- [ ] Note which skills need updating
+Before ending major work:
+
+- Write completed work and pending tasks to `SESSION_MEMORY/YYYY-MM-DD.md`.
+- Log credential names only, never values.
+- Push repo changes when applicable.
+- Note any skill updates needed.
