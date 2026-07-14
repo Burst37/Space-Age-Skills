@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  ci:
+    name: Lint, Type Check, Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+
+      - name: Scan for hidden characters
+        run: node scripts/scan-hidden-chars.mjs
+
+      - name: Check formatting
+        run: pnpm prettier --check "src/**/*.ts"
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Type check
+        run: pnpm type-check
+
+      - name: Test
+        run: pnpm test

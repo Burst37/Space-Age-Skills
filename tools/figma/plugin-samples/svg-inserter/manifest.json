@@ -1,0 +1,30 @@
+{
+  "name": "SVG Inserter",
+  "id": "994353700568293385",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma", "figjam"],
+  "parameters": [
+    {
+      "name": "Icon name",
+      "key": "icon",
+      "description": "enter the name of the icon you want to insert"
+    },
+    {
+      "name": "Size",
+      "key": "size",
+      "description": "enter the size of the icon you want to insert",
+      "allowFreeform": true
+    },
+    {
+      "name": "Color",
+      "key": "color",
+      "description": "enter the color of the icon you want to insert",
+      "optional": true
+    }
+  ],
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  },
+  "documentAccess": "dynamic-page"
+}

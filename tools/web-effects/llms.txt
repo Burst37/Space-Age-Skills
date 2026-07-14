@@ -1,0 +1,39 @@
+# Web Effects — LLM Skills Index
+
+This directory contains animation and scroll-effects skills for AI coding agents.
+
+## Skills
+
+### GSAP (GreenSock Animation Platform)
+- gsap/skills/gsap-core/SKILL.md — Core tweens, easing, stagger, matchMedia
+- gsap/skills/gsap-timeline/SKILL.md — Timeline sequencing, labels, position parameter
+- gsap/skills/gsap-scrolltrigger/SKILL.md — Scroll-linked animation, scrub, pin, snap
+- gsap/skills/gsap-plugins/SKILL.md — Flip, Draggable, MorphSVG, SplitText, DrawSVG, Physics2D
+- gsap/skills/gsap-react/SKILL.md — useGSAP hook, gsap.context(), React cleanup
+- gsap/skills/gsap-performance/SKILL.md — GPU compositing, will-change, profiling
+- gsap/skills/gsap-utils/SKILL.md — gsap.utils helpers
+- gsap/skills/gsap-supercharged/SKILL.md — Cinematic scroll storytelling, advanced patterns
+
+### ScrollReveal
+- scrollreveal/skills/scrollreveal-core/SKILL.md — Core reveal() API, all config options
+- scrollreveal/skills/scrollreveal-advanced/SKILL.md — Orchestration, dynamic content, Next.js
+
+### Trigger.js
+- triggerjs/skills/triggerjs-core/SKILL.md — CSS variable scroll binding, tg-* attributes
+
+### WOW.js
+- wow/skills/wow-core/SKILL.md — Animate.css on scroll, init(), data-wow-* attributes
+
+### React Reveal
+- react-reveal/skills/react-reveal-core/SKILL.md — Declarative React scroll animation components
+
+## Master Index
+- SKILL.md — Library selector, decision tree, comparison matrix
+
+## Sources
+- gsap/src/ — GSAP 3 source (Greensock)
+- gsap/dist/ — GSAP 3 distribution builds + all plugins
+- scrollreveal/src/ — ScrollReveal source
+- triggerjs/src/ — Trigger.js source
+- wow/src/ — WOW.js source
+- react-reveal/src/ — React Reveal source

@@ -1,0 +1,13 @@
+{
+  "name": "Metacards",
+  "id": "1010531604887911850",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma", "figjam"],
+  "ui": "ui.html",
+  "networkAccess": {
+    "allowedDomains": ["*"],
+    "reasoning": "Metacards loads data from the user-provided URLs so needs to be able access any URL that the user may provide."
+  },
+  "documentAccess": "dynamic-page"
+}
