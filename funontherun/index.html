@@ -1,0 +1,2379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun on the Run — Redefine the Way You Connect</title>
+    <meta name="description" content="Fun on the Run connects you with real people doing the things you love — right in your city, right now. Join the beta.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* =====================
+           CSS CUSTOM PROPERTIES
+        ===================== */
+        :root {
+            --purple:       #7C3AED;
+            --purple-dark:  #4C1D95;
+            --purple-light: #A78BFA;
+            --orange:       #F97316;
+            --orange-light: #FB923C;
+            --bg:           #07070F;
+            --surface:      #0F0F1A;
+            --surface-2:    #16162A;
+            --text:         #F9FAFB;
+            --text-muted:   #6B7280;
+            --border:       rgba(124,58,237,0.2);
+            --radius:       20px;
+        }
+
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1,h2,h3,h4,h5 { font-family: 'Syne', sans-serif; }
+
+        a { text-decoration: none; color: inherit; }
+        img { display: block; max-width: 100%; }
+
+        /* =====================
+           PRELOADER
+        ===================== */
+        #preloader {
+            position: fixed; inset: 0;
+            background: var(--bg);
+            z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 20px;
+        }
+
+        .preloader-track {
+            width: 280px; height: 80px;
+            position: relative; overflow: hidden;
+        }
+
+        .preloader-f {
+            position: absolute;
+            font-family: 'Syne', sans-serif;
+            font-size: 80px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--purple-light), var(--orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: runThrough 1.8s cubic-bezier(0.4,0,0.2,1) forwards;
+            white-space: nowrap;
+        }
+
+        @keyframes runThrough {
+            0%   { left: -120px; opacity: 0; transform: scaleX(1.3); }
+            20%  { opacity: 1; }
+            50%  { left: 100px; transform: scaleX(1); opacity: 1; }
+            80%  { opacity: 1; }
+            100% { left: 320px; opacity: 0; transform: scaleX(1.2); }
+        }
+
+        .preloader-bar {
+            width: 200px; height: 2px;
+            background: rgba(124,58,237,0.2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .preloader-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--purple), var(--orange));
+            border-radius: 2px;
+            animation: fillBar 1.8s ease forwards;
+        }
+
+        @keyframes fillBar {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        /* =====================
+           NAVIGATION
+        ===================== */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0;
+            z-index: 1000;
+            padding: 24px 48px;
+            display: flex; align-items: center; justify-content: space-between;
+            transition: all 0.4s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(7,7,15,0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 48px;
+        }
+
+        .nav-logo {
+            display: flex; align-items: center; gap: 10px;
+            font-family: 'Syne', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .logo-icon {
+            width: 38px; height: 38px;
+            background: linear-gradient(135deg, var(--purple), var(--orange));
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; font-weight: 900;
+            color: white;
+            animation: logoWiggle 4s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes logoWiggle {
+            0%,100% { transform: rotate(0deg) translateY(0); }
+            20%     { transform: rotate(-8deg) translateY(-2px); }
+            40%     { transform: rotate(8deg) translateY(-3px); }
+            60%     { transform: rotate(-4deg) translateY(-1px); }
+            80%     { transform: rotate(0deg) translateY(0); }
+        }
+
+        .logo-text {
+            background: linear-gradient(135deg, var(--purple-light), var(--orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex; align-items: center; gap: 36px;
+        }
+
+        .nav-links a {
+            font-size: 14px; font-weight: 500;
+            color: rgba(249,250,251,0.65);
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute; bottom: -4px; left: 0;
+            width: 0; height: 2px;
+            background: linear-gradient(90deg, var(--purple), var(--orange));
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover { color: var(--text); }
+        .nav-links a:hover::after { width: 100%; }
+
+        .nav-cta {
+            background: linear-gradient(135deg, var(--purple), var(--orange)) !important;
+            color: white !important;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            transition: transform 0.3s, box-shadow 0.3s !important;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(124,58,237,0.45) !important;
+        }
+
+        .nav-cta::after { display: none !important; }
+
+        .hamburger {
+            display: none; flex-direction: column; gap: 5px;
+            cursor: pointer; padding: 4px;
+            background: none; border: none;
+        }
+
+        .hamburger span {
+            width: 22px; height: 2px;
+            background: var(--text); border-radius: 2px;
+            transition: all 0.3s;
+            display: block;
+        }
+
+        /* Mobile overlay menu */
+        .mobile-menu {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(7,7,15,0.97);
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 36px;
+        }
+
+        .mobile-menu.open { display: flex; }
+
+        .mobile-menu a {
+            font-family: 'Syne', sans-serif;
+            font-size: 28px; font-weight: 800;
+            color: var(--text);
+            transition: color 0.3s;
+        }
+
+        .mobile-menu a:hover { color: var(--purple-light); }
+
+        .mobile-close {
+            position: absolute; top: 24px; right: 24px;
+            background: none; border: none;
+            color: var(--text); font-size: 28px;
+            cursor: pointer; line-height: 1;
+        }
+
+        /* =====================
+           REUSABLE
+        ===================== */
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--purple-light) 0%, var(--orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 11px; font-weight: 700;
+            letter-spacing: 0.18em; text-transform: uppercase;
+            color: var(--orange);
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            font-size: clamp(34px, 4.5vw, 58px);
+            font-weight: 800;
+            line-height: 1.08;
+            letter-spacing: -0.025em;
+            margin-bottom: 18px;
+        }
+
+        .section-sub {
+            font-size: 17px;
+            color: rgba(249,250,251,0.58);
+            line-height: 1.7;
+            max-width: 540px;
+        }
+
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(135deg, var(--purple), var(--orange));
+            color: white;
+            padding: 15px 32px;
+            border-radius: 50px;
+            font-size: 15px; font-weight: 700;
+            border: none; cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            white-space: nowrap;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 48px rgba(124,58,237,0.5);
+        }
+
+        .btn-outline {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: transparent;
+            color: var(--text);
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-size: 15px; font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.18);
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.35);
+            transform: translateY(-3px);
+        }
+
+        /* =====================
+           FADE-IN OBSERVER
+        ===================== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(36px);
+            transition: opacity 0.75s ease, transform 0.75s ease;
+        }
+
+        .reveal.d1 { transition-delay: 0.1s; }
+        .reveal.d2 { transition-delay: 0.2s; }
+        .reveal.d3 { transition-delay: 0.3s; }
+        .reveal.d4 { transition-delay: 0.4s; }
+        .reveal.d5 { transition-delay: 0.5s; }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =====================
+           HERO
+        ===================== */
+        #hero {
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
+            padding: 120px 48px 80px;
+        }
+
+        /* Gradient orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+        }
+
+        .orb-purple {
+            width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(124,58,237,0.25), transparent 70%);
+            top: -200px; right: -200px;
+            animation: orbFloat 12s ease-in-out infinite;
+        }
+
+        .orb-orange {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(249,115,22,0.18), transparent 70%);
+            bottom: -100px; left: -100px;
+            animation: orbFloat 15s ease-in-out infinite reverse;
+        }
+
+        @keyframes orbFloat {
+            0%,100% { transform: scale(1) translate(0,0); }
+            50%      { transform: scale(1.15) translate(20px,-20px); }
+        }
+
+        /* Geo particle canvas */
+        #geoCanvas {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .hero-inner {
+            position: relative; z-index: 1;
+            text-align: center;
+            max-width: 960px;
+        }
+
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(124,58,237,0.12);
+            border: 1px solid rgba(124,58,237,0.28);
+            border-radius: 50px;
+            padding: 8px 18px;
+            font-size: 13px; font-weight: 500;
+            color: var(--purple-light);
+            margin-bottom: 32px;
+            opacity: 0;
+            animation: fadeSlideUp 0.7s ease 2s forwards;
+        }
+
+        .badge-dot {
+            width: 7px; height: 7px;
+            background: var(--orange);
+            border-radius: 50%;
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseDot {
+            0%,100% { opacity: 1; transform: scale(1); }
+            50%      { opacity: 0.4; transform: scale(0.8); }
+        }
+
+        .hero-title {
+            font-size: clamp(46px, 7.5vw, 100px);
+            font-weight: 900;
+            line-height: 1.03;
+            letter-spacing: -0.035em;
+            margin-bottom: 28px;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease 2.2s forwards;
+        }
+
+        .hero-sub {
+            font-size: clamp(16px, 2vw, 20px);
+            color: rgba(249,250,251,0.58);
+            max-width: 560px;
+            margin: 0 auto 44px;
+            line-height: 1.65;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease 2.4s forwards;
+        }
+
+        .hero-ctas {
+            display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease 2.6s forwards;
+        }
+
+        .hero-stats {
+            display: flex; gap: 56px; justify-content: center;
+            margin-top: 72px;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease 2.8s forwards;
+        }
+
+        .hero-stat-num {
+            font-family: 'Syne', sans-serif;
+            font-size: 30px; font-weight: 800;
+            background: linear-gradient(135deg, var(--purple-light), var(--orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-stat-label {
+            font-size: 12px; color: var(--text-muted);
+            margin-top: 4px; font-weight: 500;
+            letter-spacing: 0.04em;
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .scroll-cue {
+            position: absolute; bottom: 36px; left: 50%;
+            transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            color: var(--text-muted); font-size: 11px; font-weight: 600;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            opacity: 0;
+            animation: fadeIn 1s ease 3.2s forwards, scrollBob 2.5s ease-in-out 3.2s infinite;
+        }
+
+        .scroll-line {
+            width: 1px; height: 44px;
+            background: linear-gradient(to bottom, rgba(124,58,237,0.8), transparent);
+        }
+
+        @keyframes scrollBob {
+            0%,100% { transform: translateX(-50%) translateY(0); }
+            50%      { transform: translateX(-50%) translateY(8px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 0.6; }
+        }
+
+        /* =====================
+           MARQUEE STRIP
+        ===================== */
+        .marquee-strip {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 18px 0;
+            overflow: hidden;
+        }
+
+        .marquee-track {
+            display: flex; gap: 64px;
+            width: max-content;
+            animation: marquee 20s linear infinite;
+        }
+
+        .marquee-item {
+            display: flex; align-items: center; gap: 12px;
+            font-size: 14px; font-weight: 600;
+            color: rgba(249,250,251,0.5);
+            white-space: nowrap;
+        }
+
+        .marquee-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple), var(--orange));
+            flex-shrink: 0;
+        }
+
+        @keyframes marquee {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* =====================
+           FEATURES SECTION
+        ===================== */
+        #features {
+            padding: 120px 48px;
+            background: var(--surface);
+        }
+
+        .features-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 64px;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 36px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.4s, transform 0.4s, box-shadow 0.4s;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(124,58,237,0.55);
+            transform: translateY(-8px);
+            box-shadow: 0 24px 80px rgba(124,58,237,0.18);
+        }
+
+        .feature-icon {
+            width: 60px; height: 60px;
+            background: linear-gradient(135deg, rgba(124,58,237,0.25), rgba(249,115,22,0.15));
+            border: 1px solid rgba(124,58,237,0.3);
+            border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px;
+            margin-bottom: 24px;
+            transition: transform 0.4s, background 0.4s;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.12) rotate(-6deg);
+            background: linear-gradient(135deg, rgba(124,58,237,0.4), rgba(249,115,22,0.25));
+        }
+
+        .feature-card h3 {
+            font-size: 20px; font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .feature-card > p {
+            font-size: 14px;
+            color: rgba(249,250,251,0.52);
+            line-height: 1.65;
+        }
+
+        /* Hover reveal overlay */
+        .feature-hover {
+            position: absolute; inset: 0;
+            background: linear-gradient(140deg, rgba(76,29,149,0.97), rgba(124,58,237,0.93));
+            border-radius: 24px;
+            padding: 36px;
+            display: flex; flex-direction: column; justify-content: center;
+            opacity: 0; transform: translateY(16px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none;
+        }
+
+        .feature-card:hover .feature-hover {
+            opacity: 1; transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .feature-hover h4 {
+            font-size: 22px; font-weight: 800;
+            color: white; margin-bottom: 12px;
+        }
+
+        .feature-hover p {
+            font-size: 15px;
+            color: rgba(255,255,255,0.82);
+            line-height: 1.65;
+        }
+
+        .feature-hover .more {
+            margin-top: 20px;
+            display: inline-flex; align-items: center; gap: 6px;
+            color: var(--orange-light);
+            font-size: 14px; font-weight: 700;
+        }
+
+        /* =====================
+           HOW IT WORKS
+        ===================== */
+        #how-it-works {
+            padding: 120px 48px;
+            background: var(--bg);
+        }
+
+        .hiw-header { margin-bottom: 72px; }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            position: relative;
+        }
+
+        /* Connecting line */
+        .steps-grid::before {
+            content: '';
+            position: absolute;
+            top: 48px; left: 12%; right: 12%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--purple), var(--orange), transparent);
+            opacity: 0.3;
+        }
+
+        .step-card {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .step-num {
+            font-family: 'Syne', sans-serif;
+            font-size: 13px; font-weight: 700;
+            letter-spacing: 0.12em;
+            color: var(--orange);
+            margin-bottom: 20px;
+        }
+
+        .step-phone {
+            background: var(--surface-2);
+            border: 1.5px solid rgba(124,58,237,0.3);
+            border-radius: 28px;
+            padding: 12px;
+            margin-bottom: 24px;
+            aspect-ratio: 9/16;
+            max-height: 210px;
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-screen {
+            width: 100%; height: 100%;
+            border-radius: 18px;
+            background: linear-gradient(160deg, #1a1030, #0e0a22);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 8px;
+            font-size: 36px;
+        }
+
+        .step-screen-label {
+            font-size: 11px; font-weight: 600;
+            color: rgba(167,139,250,0.8);
+            letter-spacing: 0.06em;
+        }
+
+        .step-card h3 {
+            font-size: 18px; font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .step-card p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* =====================
+           APP PREVIEW
+        ===================== */
+        #app-preview {
+            padding: 120px 48px;
+            background: var(--surface);
+            text-align: center;
+        }
+
+        .app-preview-header { margin-bottom: 72px; }
+
+        .devices-row {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 20px;
+            perspective: 1200px;
+        }
+
+        .device {
+            background: #12122A;
+            border: 2px solid rgba(124,58,237,0.3);
+            border-radius: 44px;
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.5s;
+            cursor: pointer;
+        }
+
+        .device:hover { transform: translateY(-20px) rotateY(-6deg); }
+
+        .device.hero-device {
+            transform: scale(1.08);
+            border-color: var(--purple);
+            box-shadow: 0 40px 100px rgba(124,58,237,0.35), 0 0 0 1px rgba(249,115,22,0.2);
+            z-index: 2;
+        }
+
+        .device.hero-device:hover {
+            transform: scale(1.08) translateY(-20px);
+        }
+
+        .device-screen {
+            width: 220px; height: 476px;
+            background: linear-gradient(180deg, #0d0d28 0%, #160828 50%, #0a0a1e 100%);
+            overflow: hidden; display: flex; flex-direction: column;
+        }
+
+        .device-screen.sm {
+            width: 190px; height: 390px;
+        }
+
+        /* Screen content */
+        .ds-top-bar {
+            padding: 14px 16px 10px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .ds-title {
+            font-size: 14px; font-weight: 800; color: white;
+        }
+
+        .ds-sub {
+            font-size: 10px; color: rgba(255,255,255,0.45); margin-bottom: 2px;
+        }
+
+        .ds-avatar {
+            width: 30px; height: 30px; border-radius: 50%;
+        }
+
+        .ds-map {
+            margin: 0 12px 12px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #1a1a40, #231040);
+            height: 130px;
+            position: relative; overflow: hidden;
+        }
+
+        .map-grid {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(124,58,237,0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(124,58,237,0.08) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .map-pin {
+            position: absolute;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+        }
+
+        .map-pin.orange { background: var(--orange); box-shadow: 0 0 14px var(--orange); }
+        .map-pin.purple { background: var(--purple-light); box-shadow: 0 0 14px var(--purple-light); }
+
+        .map-pulse-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid rgba(249,115,22,0.5);
+            animation: pRing 2.2s ease-out infinite;
+        }
+
+        @keyframes pRing {
+            0%   { width: 10px; height: 10px; opacity: 0.8; }
+            100% { width: 70px; height: 70px; opacity: 0; margin: -30px 0 0 -30px; }
+        }
+
+        .ds-list {
+            padding: 0 12px;
+            display: flex; flex-direction: column; gap: 7px;
+            flex: 1;
+        }
+
+        .ds-row {
+            background: rgba(124,58,237,0.12);
+            border-radius: 10px;
+            padding: 9px 11px;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .ds-row.highlight {
+            background: linear-gradient(135deg, rgba(124,58,237,0.28), rgba(249,115,22,0.12));
+            border: 1px solid rgba(124,58,237,0.35);
+        }
+
+        .ds-emoji { font-size: 14px; }
+
+        .ds-info { flex: 1; }
+
+        .ds-name {
+            font-size: 10px; font-weight: 700; color: white;
+        }
+
+        .ds-meta {
+            font-size: 9px; color: rgba(255,255,255,0.4);
+        }
+
+        .ds-meta.live { color: rgba(249,115,22,0.9); }
+
+        .ds-btn {
+            background: linear-gradient(135deg, var(--purple), var(--orange));
+            border-radius: 7px;
+            padding: 4px 9px;
+            font-size: 9px; font-weight: 800;
+            color: white; white-space: nowrap;
+        }
+
+        /* =====================
+           FOUNDER SECTION
+        ===================== */
+        #founder {
+            padding: 120px 48px;
+            background: var(--bg);
+        }
+
+        .founder-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .founder-visual {
+            position: relative;
+        }
+
+        .founder-photo {
+            width: 100%;
+            aspect-ratio: 4/5;
+            border-radius: 28px;
+            background: linear-gradient(160deg, var(--surface-2), var(--purple-dark));
+            border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .founder-photo::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(76,29,149,0.5), transparent 60%);
+        }
+
+        .founder-badge {
+            position: absolute;
+            bottom: -20px; right: -20px;
+            background: linear-gradient(135deg, var(--purple), var(--orange));
+            border-radius: 20px;
+            padding: 20px 24px;
+        }
+
+        .founder-badge strong {
+            font-family: 'Syne', sans-serif;
+            font-size: 18px; font-weight: 800;
+            display: block; color: white;
+        }
+
+        .founder-badge span {
+            font-size: 12px;
+            color: rgba(255,255,255,0.75);
+        }
+
+        .founder-text blockquote {
+            font-size: 22px; font-weight: 600;
+            line-height: 1.45;
+            color: var(--text);
+            padding-left: 24px;
+            border-left: 3px solid var(--orange);
+            margin: 28px 0;
+            font-style: italic;
+        }
+
+        .founder-text p {
+            font-size: 16px;
+            color: rgba(249,250,251,0.62);
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .timeline {
+            margin-top: 40px;
+            display: flex; flex-direction: column; gap: 20px;
+        }
+
+        .tl-item {
+            display: flex; gap: 16px; align-items: flex-start;
+            opacity: 0; transform: translateX(-20px);
+        }
+
+        .tl-dot {
+            width: 12px; height: 12px; min-width: 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple), var(--orange));
+            margin-top: 5px;
+            position: relative;
+        }
+
+        .tl-dot::after {
+            content: '';
+            position: absolute; inset: -5px;
+            border-radius: 50%;
+            border: 1px solid rgba(124,58,237,0.35);
+        }
+
+        .tl-year {
+            font-size: 12px; font-weight: 700;
+            color: var(--purple-light);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .tl-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.55;
+        }
+
+        /* =====================
+           SOCIAL PROOF
+        ===================== */
+        #social-proof {
+            padding: 120px 0;
+            background: var(--surface);
+            overflow: hidden;
+        }
+
+        .sp-header {
+            padding: 0 48px;
+            margin-bottom: 60px;
+        }
+
+        .testimonials-wrap { overflow: hidden; }
+
+        .testimonials-track {
+            display: flex; gap: 20px;
+            width: max-content;
+            animation: autoScroll 35s linear infinite;
+        }
+
+        .testimonials-track:hover { animation-play-state: paused; }
+
+        @keyframes autoScroll {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .t-card {
+            width: 340px; flex-shrink: 0;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            transition: border-color 0.3s, transform 0.3s;
+            cursor: default;
+        }
+
+        .t-card:hover {
+            border-color: rgba(124,58,237,0.45);
+            transform: translateY(-6px);
+        }
+
+        .t-stars { color: var(--orange); font-size: 13px; letter-spacing: 3px; margin-bottom: 14px; }
+
+        .t-text {
+            font-size: 15px;
+            color: rgba(249,250,251,0.72);
+            line-height: 1.65;
+            margin-bottom: 22px;
+            font-style: italic;
+        }
+
+        .t-author { display: flex; align-items: center; gap: 12px; }
+
+        .t-avatar {
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 17px; color: white;
+        }
+
+        .t-name { font-size: 15px; font-weight: 700; }
+        .t-role { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+        /* Stats counter */
+        .stats-bar {
+            display: flex; gap: 0;
+            margin: 72px 48px 0;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+        }
+
+        .stat-block {
+            flex: 1;
+            padding: 36px 32px;
+            text-align: center;
+            border-right: 1px solid var(--border);
+        }
+
+        .stat-block:last-child { border-right: none; }
+
+        .stat-num {
+            font-family: 'Syne', sans-serif;
+            font-size: 44px; font-weight: 900;
+            background: linear-gradient(135deg, var(--purple-light), var(--orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 13px; color: var(--text-muted);
+            margin-top: 8px; font-weight: 500;
+        }
+
+        /* =====================
+           VENDOR SECTION
+        ===================== */
+        #vendors {
+            padding: 120px 48px;
+            background: #060610;
+            border-top: 1px solid rgba(124,58,237,0.12);
+        }
+
+        .vendor-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: start;
+            margin-top: 64px;
+        }
+
+        .vendor-benefits { display: flex; flex-direction: column; gap: 16px; }
+
+        .vb-item {
+            display: flex; gap: 16px; align-items: flex-start;
+            background: rgba(249,115,22,0.04);
+            border: 1px solid rgba(249,115,22,0.12);
+            border-radius: 18px;
+            padding: 22px;
+            transition: all 0.3s;
+        }
+
+        .vb-item:hover {
+            background: rgba(249,115,22,0.08);
+            border-color: rgba(249,115,22,0.3);
+            transform: translateX(6px);
+        }
+
+        .vb-icon {
+            width: 46px; height: 46px; min-width: 46px;
+            background: rgba(249,115,22,0.12);
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+        }
+
+        .vb-item h4 { font-size: 16px; font-weight: 700; margin-bottom: 5px; }
+        .vb-item p  { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+
+        /* Performance card */
+        .perf-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 36px;
+        }
+
+        .perf-card h3 {
+            font-size: 20px; font-weight: 800;
+            margin-bottom: 32px;
+        }
+
+        .perf-row { margin-bottom: 24px; }
+        .perf-row:last-of-type { margin-bottom: 0; }
+
+        .perf-label {
+            display: flex; justify-content: space-between;
+            font-size: 13px; margin-bottom: 8px;
+        }
+
+        .perf-label span:first-child { color: rgba(249,250,251,0.6); }
+        .perf-val { color: var(--orange-light); font-weight: 700; }
+
+        .perf-track {
+            background: rgba(255,255,255,0.06);
+            border-radius: 100px; height: 6px;
+            overflow: hidden;
+        }
+
+        .perf-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--purple), var(--orange));
+            border-radius: 100px;
+            width: 0;
+            transition: width 1.4s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        /* =====================
+           CTA SECTION
+        ===================== */
+        #cta {
+            padding: 120px 48px;
+            background: var(--bg);
+        }
+
+        .cta-box {
+            max-width: 800px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, rgba(76,29,149,0.35), rgba(124,58,237,0.15));
+            border: 1px solid rgba(124,58,237,0.3);
+            border-radius: 36px;
+            padding: 88px 64px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-box::before {
+            content: '';
+            position: absolute;
+            width: 600px; height: 600px;
+            top: -300px; left: 50%;
+            transform: translateX(-50%);
+            background: radial-gradient(circle, rgba(124,58,237,0.18), transparent 65%);
+            pointer-events: none;
+        }
+
+        .cta-box h2 {
+            font-size: clamp(36px, 5vw, 64px);
+            font-weight: 900;
+            margin-bottom: 18px;
+            position: relative; z-index: 1;
+        }
+
+        .cta-box > p {
+            font-size: 17px;
+            color: rgba(249,250,251,0.58);
+            max-width: 460px;
+            margin: 0 auto 40px;
+            line-height: 1.65;
+            position: relative; z-index: 1;
+        }
+
+        .email-row {
+            display: flex; gap: 12px;
+            max-width: 460px;
+            margin: 0 auto;
+            position: relative; z-index: 1;
+        }
+
+        .email-field {
+            flex: 1;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 50px;
+            padding: 14px 22px;
+            color: var(--text);
+            font-size: 15px; font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .email-field:focus { border-color: var(--purple); }
+        .email-field::placeholder { color: rgba(255,255,255,0.3); }
+
+        .cta-note {
+            margin-top: 14px;
+            font-size: 12px;
+            color: rgba(249,250,251,0.28);
+            position: relative; z-index: 1;
+        }
+
+        /* =====================
+           FOOTER
+        ===================== */
+        footer {
+            background: #050509;
+            border-top: 1px solid rgba(124,58,237,0.12);
+            padding: 72px 48px 44px;
+        }
+
+        .footer-grid {
+            max-width: 1200px; margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 48px;
+            padding-bottom: 52px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .footer-brand > p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.75;
+            margin: 18px 0 26px;
+            max-width: 280px;
+        }
+
+        .socials { display: flex; gap: 10px; }
+
+        .social-btn {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 700; color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .social-btn:hover {
+            background: linear-gradient(135deg, var(--purple), var(--orange));
+            border-color: transparent;
+            transform: translateY(-4px);
+        }
+
+        .footer-col h5 {
+            font-size: 11px; font-weight: 700;
+            letter-spacing: 0.14em; text-transform: uppercase;
+            color: rgba(249,250,251,0.35);
+            margin-bottom: 18px;
+        }
+
+        .footer-col a {
+            display: block;
+            font-size: 14px;
+            color: rgba(249,250,251,0.58);
+            margin-bottom: 12px;
+            transition: color 0.3s;
+        }
+
+        .footer-col a:hover { color: var(--purple-light); }
+
+        .footer-bottom {
+            max-width: 1200px; margin: 32px auto 0;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 13px; color: var(--text-muted);
+        }
+
+        /* =====================
+           CUSTOM CURSOR
+        ===================== */
+        .cursor {
+            position: fixed;
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            border: 2px solid rgba(124,58,237,0.7);
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background 0.3s, border-color 0.3s;
+            mix-blend-mode: screen;
+        }
+
+        .cursor.hovering {
+            width: 44px; height: 44px;
+            background: rgba(124,58,237,0.15);
+            border-color: var(--orange);
+        }
+
+        /* =====================
+           RESPONSIVE
+        ===================== */
+        @media (max-width: 1024px) {
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .steps-grid { grid-template-columns: repeat(2, 1fr); }
+            .steps-grid::before { display: none; }
+            .founder-layout { grid-template-columns: 1fr; gap: 48px; }
+            .vendor-layout { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 16px 24px; }
+            nav.scrolled { padding: 12px 24px; }
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
+
+            #hero { padding: 100px 24px 64px; }
+            #features, #how-it-works, #app-preview,
+            #founder, #vendors, #cta { padding: 80px 24px; }
+            #social-proof { padding: 80px 0; }
+            .sp-header { padding: 0 24px; }
+            .stats-bar { margin: 48px 24px 0; }
+
+            .features-grid { grid-template-columns: 1fr; }
+            .hero-stats { gap: 24px; flex-wrap: wrap; justify-content: center; }
+            .devices-row .device:not(.hero-device) { display: none; }
+            .device.hero-device { transform: none; }
+            .email-row { flex-direction: column; }
+            .cta-box { padding: 56px 28px; }
+            .footer-grid { grid-template-columns: 1fr; gap: 36px; }
+            .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+            .stats-bar { flex-wrap: wrap; }
+            .stat-block { border-right: none; border-bottom: 1px solid var(--border); }
+            .stat-block:last-child { border-bottom: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================
+     PRELOADER
+============================= -->
+<div id="preloader">
+    <div class="preloader-track">
+        <div class="preloader-f">F&nbsp;&nbsp;Fun on the Run</div>
+    </div>
+    <div class="preloader-bar">
+        <div class="preloader-fill"></div>
+    </div>
+</div>
+
+<!-- ============================
+     CUSTOM CURSOR
+============================= -->
+<div class="cursor" id="cursor"></div>
+
+<!-- ============================
+     MOBILE MENU
+============================= -->
+<div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-close" onclick="closeMobileMenu()">&#215;</button>
+    <a href="#features" onclick="closeMobileMenu()">Features</a>
+    <a href="#how-it-works" onclick="closeMobileMenu()">How It Works</a>
+    <a href="#founder" onclick="closeMobileMenu()">Our Story</a>
+    <a href="#vendors" onclick="closeMobileMenu()">Vendors</a>
+    <a href="#cta" onclick="closeMobileMenu()" style="background:linear-gradient(135deg,#7C3AED,#F97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Join Beta →</a>
+</div>
+
+<!-- ============================
+     NAVIGATION
+============================= -->
+<nav id="navbar">
+    <a href="#hero" class="nav-logo">
+        <div class="logo-icon">F</div>
+        <span class="logo-text">Fun on the Run</span>
+    </a>
+
+    <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#founder">Our Story</a></li>
+        <li><a href="#vendors">Vendors</a></li>
+        <li><a href="#cta" class="nav-cta">Join Beta</a></li>
+    </ul>
+
+    <button class="hamburger" onclick="openMobileMenu()" aria-label="Open menu">
+        <span></span><span></span><span></span>
+    </button>
+</nav>
+
+<!-- ============================
+     HERO
+============================= -->
+<section id="hero">
+    <div class="orb orb-purple"></div>
+    <div class="orb orb-orange"></div>
+    <canvas id="geoCanvas"></canvas>
+
+    <div class="hero-inner">
+        <div class="hero-badge">
+            <span class="badge-dot"></span>
+            Now in Beta &mdash; Limited Early Access
+        </div>
+
+        <h1 class="hero-title">
+            Where Shared Interests<br>
+            Turn <span class="gradient-text">Strangers</span><br>
+            Into <span class="gradient-text">Your Squad</span>
+        </h1>
+
+        <p class="hero-sub">
+            Fun on the Run connects you with real people doing the things you love &mdash; right in your city, right now. Activity-based. Human-first.
+        </p>
+
+        <div class="hero-ctas">
+            <a href="#cta" class="btn-primary">Join the Beta &mdash; It's Free &nbsp;&#8594;</a>
+            <a href="#how-it-works" class="btn-outline">See How It Works</a>
+        </div>
+
+        <div class="hero-stats">
+            <div>
+                <div class="hero-stat-num">4.9&#9733;</div>
+                <div class="hero-stat-label">Early Rating</div>
+            </div>
+            <div>
+                <div class="hero-stat-num">2K+</div>
+                <div class="hero-stat-label">Beta Waitlist</div>
+            </div>
+            <div>
+                <div class="hero-stat-num">50+</div>
+                <div class="hero-stat-label">Activity Types</div>
+            </div>
+            <div>
+                <div class="hero-stat-num">Free</div>
+                <div class="hero-stat-label">Always</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="scroll-cue">
+        <div class="scroll-line"></div>
+        Scroll
+    </div>
+</section>
+
+<!-- ============================
+     MARQUEE STRIP
+============================= -->
+<div class="marquee-strip">
+    <div class="marquee-track" id="marqueeTrack">
+        <span class="marquee-item"><span class="marquee-dot"></span>Activity Discovery</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Geo-Mapping AI</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Push Alerts</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Verified Profiles</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Video Connect</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Community Building</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Vendor Network</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Mental Wellness</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Real Friendships</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Privacy First</span>
+        <!-- duplicate for seamless loop -->
+        <span class="marquee-item"><span class="marquee-dot"></span>Activity Discovery</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Geo-Mapping AI</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Push Alerts</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Verified Profiles</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Video Connect</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Community Building</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Vendor Network</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Mental Wellness</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Real Friendships</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Privacy First</span>
+    </div>
+</div>
+
+<!-- ============================
+     FEATURES
+============================= -->
+<section id="features">
+    <div class="container">
+        <div class="features-header">
+            <div class="reveal">
+                <span class="section-label">Why FOTR</span>
+                <h2 class="section-title">Built for Real Life.<br>Not Just the Feed.</h2>
+            </div>
+            <p class="section-sub reveal d2">Every feature is designed to get you off your screen and into an adventure with real people who share your energy.</p>
+        </div>
+
+        <div class="features-grid">
+
+            <div class="feature-card reveal">
+                <div class="feature-icon">&#128205;</div>
+                <h3>Geo-Powered Discovery</h3>
+                <p>AI + geo-mapping surfaces activities near you in real time. No algorithm, no ads &mdash; just what's happening around you right now.</p>
+                <div class="feature-hover">
+                    <h4>See What's Happening Now</h4>
+                    <p>Our predictive AI maps local activity clusters and suggests groups that match your interests and location &mdash; before you even search.</p>
+                    <span class="more">Explore Feature &#8594;</span>
+                </div>
+            </div>
+
+            <div class="feature-card reveal d1">
+                <div class="feature-icon">&#128276;</div>
+                <h3>Push Alert Network</h3>
+                <p>Instant notifications when activities matching your interests pop up nearby. Never miss a pickup game or spontaneous hike again.</p>
+                <div class="feature-hover">
+                    <h4>Right Place, Right Time</h4>
+                    <p>Smart push alerts filter by your interests, distance, and real-time availability. Every notification is actually worth opening.</p>
+                    <span class="more">Explore Feature &#8594;</span>
+                </div>
+            </div>
+
+            <div class="feature-card reveal d2">
+                <div class="feature-icon">&#9989;</div>
+                <h3>Verified Profiles</h3>
+                <p>Every member is verified. Real names, real accountability &mdash; so you can focus on having fun, not wondering who's on the other end.</p>
+                <div class="feature-hover">
+                    <h4>Trust Built In From Day One</h4>
+                    <p>Multi-step verification, privacy controls, block &amp; report tools, and a dedicated safety team &mdash; connect with genuine confidence.</p>
+                    <span class="more">Explore Feature &#8594;</span>
+                </div>
+            </div>
+
+            <div class="feature-card reveal d1">
+                <div class="feature-icon">&#127919;</div>
+                <h3>Interest Matching</h3>
+                <p>Select your interests once. FOTR continuously surfaces groups and events aligned with what you actually love to do.</p>
+                <div class="feature-hover">
+                    <h4>Your Vibe, Your Tribe</h4>
+                    <p>From hiking and basketball to cooking classes and board game nights &mdash; find your people across 50+ activity categories.</p>
+                    <span class="more">Explore Feature &#8594;</span>
+                </div>
+            </div>
+
+            <div class="feature-card reveal d2">
+                <div class="feature-icon">&#127916;</div>
+                <h3>Video Connect</h3>
+                <p>Meet before you meet. Quick in-app video lets you vibe-check a group before you show up &mdash; less awkward first encounters, more genuine connections.</p>
+                <div class="feature-hover">
+                    <h4>The Pre-Meet That Changes Everything</h4>
+                    <p>Spend 60 seconds on video with a group before committing. It eliminates 90% of the social anxiety of meeting strangers in person.</p>
+                    <span class="more">Explore Feature &#8594;</span>
+                </div>
+            </div>
+
+            <div class="feature-card reveal d3">
+                <div class="feature-icon">&#127917;</div>
+                <h3>Vendor Perks</h3>
+                <p>Exclusive deals from local businesses that support your active lifestyle &mdash; restaurants, gyms, studios, and more.</p>
+                <div class="feature-hover">
+                    <h4>Community-Backed Rewards</h4>
+                    <p>Local vendors sponsor activities and offer perks to active FOTR members. Your social life pays for itself.</p>
+                    <span class="more">Explore Feature &#8594;</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ============================
+     HOW IT WORKS
+============================= -->
+<section id="how-it-works">
+    <div class="container">
+        <div class="hiw-header text-center reveal" style="text-align:center;">
+            <span class="section-label">Getting Started</span>
+            <h2 class="section-title">Four Steps to<br><span class="gradient-text">Your Next Adventure</span></h2>
+        </div>
+
+        <div class="steps-grid" id="stepsGrid">
+
+            <div class="step-card">
+                <div class="step-num">STEP 01</div>
+                <div class="step-phone">
+                    <div class="step-screen">
+                        <span>&#128100;</span>
+                        <span class="step-screen-label">Create Profile</span>
+                    </div>
+                </div>
+                <h3>Download &amp; Set Up</h3>
+                <p>Create your profile in under 2 minutes. Verify your identity and you're ready to roll.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-num">STEP 02</div>
+                <div class="step-phone">
+                    <div class="step-screen">
+                        <span>&#127919;</span>
+                        <span class="step-screen-label">Pick Interests</span>
+                    </div>
+                </div>
+                <h3>Select Your Interests</h3>
+                <p>Choose from 50+ activity categories. The more you pick, the better your matches get.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-num">STEP 03</div>
+                <div class="step-phone">
+                    <div class="step-screen">
+                        <span>&#128205;</span>
+                        <span class="step-screen-label">Discover Nearby</span>
+                    </div>
+                </div>
+                <h3>Discover &amp; Connect</h3>
+                <p>See who's active near you. Join now or schedule for later &mdash; on your terms.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-num">STEP 04</div>
+                <div class="step-phone">
+                    <div class="step-screen">
+                        <span>&#127881;</span>
+                        <span class="step-screen-label">Have Fun!</span>
+                    </div>
+                </div>
+                <h3>Show Up &amp; Build</h3>
+                <p>Show up, connect, repeat. Build real friendships that outlast any algorithm.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ============================
+     APP PREVIEW
+============================= -->
+<section id="app-preview">
+    <div class="container">
+        <div class="app-preview-header reveal">
+            <span class="section-label">The App</span>
+            <h2 class="section-title">See It in Action</h2>
+            <p class="section-sub" style="margin:0 auto;">Clean, fast, designed to get you out the door &mdash; not glued to a screen.</p>
+        </div>
+
+        <div class="devices-row">
+
+            <!-- Left device -->
+            <div class="device reveal d1">
+                <div class="device-screen sm">
+                    <div class="ds-top-bar">
+                        <div>
+                            <div class="ds-sub">Good evening &#128075;</div>
+                            <div class="ds-title">Explore</div>
+                        </div>
+                        <div class="ds-avatar" style="background:linear-gradient(135deg,#7C3AED,#F97316);border-radius:50%;"></div>
+                    </div>
+                    <div class="ds-list">
+                        <div class="ds-row">
+                            <span class="ds-emoji">&#9917;</span>
+                            <div class="ds-info">
+                                <div class="ds-name">Pickup Soccer</div>
+                                <div class="ds-meta">0.3 mi &bull; 6 going</div>
+                            </div>
+                            <div class="ds-btn">Join</div>
+                        </div>
+                        <div class="ds-row">
+                            <span class="ds-emoji">&#129340;</span>
+                            <div class="ds-info">
+                                <div class="ds-name">Yoga in the Park</div>
+                                <div class="ds-meta">0.8 mi &bull; 12 going</div>
+                            </div>
+                            <div class="ds-btn">Join</div>
+                        </div>
+                        <div class="ds-row">
+                            <span class="ds-emoji">&#127912;</span>
+                            <div class="ds-info">
+                                <div class="ds-name">Art Meetup</div>
+                                <div class="ds-meta">1.2 mi &bull; 4 going</div>
+                            </div>
+                            <div class="ds-btn">Join</div>
+                        </div>
+                        <div class="ds-row">
+                            <span class="ds-emoji">&#127925;</span>
+                            <div class="ds-info">
+                                <div class="ds-name">Jazz Night</div>
+                                <div class="ds-meta">1.5 mi &bull; Fri 8 PM</div>
+                            </div>
+                            <div class="ds-btn">RSVP</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center hero device -->
+            <div class="device hero-device reveal">
+                <div class="device-screen">
+                    <div class="ds-top-bar">
+                        <div>
+                            <div class="ds-sub">Near you now</div>
+                            <div class="ds-title">Activity Map</div>
+                        </div>
+                        <div class="ds-avatar" style="background:linear-gradient(135deg,#F97316,#7C3AED);border-radius:50%;"></div>
+                    </div>
+                    <div class="ds-map">
+                        <div class="map-grid"></div>
+                        <!-- Map pins -->
+                        <div class="map-pin orange" style="top:42%;left:48%;"></div>
+                        <div class="map-pulse-ring" style="top:42%;left:48%;"></div>
+                        <div class="map-pin purple" style="top:22%;left:28%;"></div>
+                        <div class="map-pin purple" style="top:62%;left:68%;"></div>
+                        <div class="map-pin" style="top:35%;left:72%;background:#10B981;box-shadow:0 0 12px #10B981;"></div>
+                        <div style="position:absolute;bottom:10px;left:10px;right:10px;background:rgba(0,0,0,0.6);border-radius:8px;padding:7px 10px;font-size:10px;color:rgba(255,255,255,0.85);">
+                            &#128994; 4 activities within 1 mile
+                        </div>
+                    </div>
+                    <div class="ds-list">
+                        <div class="ds-row highlight">
+                            <span class="ds-emoji">&#127936;</span>
+                            <div class="ds-info">
+                                <div class="ds-name" style="color:#FB923C;">Basketball &mdash; NOW</div>
+                                <div class="ds-meta live">0.1 mi &bull; 9 going &bull; Open</div>
+                            </div>
+                            <div class="ds-btn">Join!</div>
+                        </div>
+                        <div class="ds-row">
+                            <span class="ds-emoji">&#128692;</span>
+                            <div class="ds-info">
+                                <div class="ds-name">Group Ride</div>
+                                <div class="ds-meta">Tomorrow &bull; 7 AM</div>
+                            </div>
+                            <div class="ds-btn">RSVP</div>
+                        </div>
+                        <div class="ds-row">
+                            <span class="ds-emoji">&#127829;</span>
+                            <div class="ds-info">
+                                <div class="ds-name">Pizza + Board Games</div>
+                                <div class="ds-meta">Fri 7 PM &bull; 5 spots</div>
+                            </div>
+                            <div class="ds-btn">RSVP</div>
+                        </div>
+                        <div class="ds-row">
+                            <span class="ds-emoji">&#127940;</span>
+                            <div class="ds-info">
+                                <div class="ds-name">Morning Hike</div>
+                                <div class="ds-meta">Sat 6 AM &bull; 8 going</div>
+                            </div>
+                            <div class="ds-btn">Join</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right device -->
+            <div class="device reveal d2">
+                <div class="device-screen sm">
+                    <div class="ds-top-bar">
+                        <div>
+                            <div class="ds-sub">Your network</div>
+                            <div class="ds-title">My Squad</div>
+                        </div>
+                        <div class="ds-avatar" style="background:linear-gradient(135deg,#A78BFA,#F97316);border-radius:50%;"></div>
+                    </div>
+                    <div class="ds-list">
+                        <div class="ds-row">
+                            <span class="ds-emoji">&#128100;</span>
+                            <div class="ds-info">
+                                <div class="ds-name">Marcus K.</div>
+                                <div class="ds-meta live">&#9679; Active now</div>
+                            </div>
+                            <div class="ds-btn">Chat</div>
+                        </div>
+                        <div class="ds-row">
+                            <span class="ds-emoji">&#128100;</span>
+                            <div class="ds-info">
+                                <div class="ds-name">Priya S.</div>
+                                <div class="ds-meta">Yoga &bull; 2h ago</div>
+                            </div>
+                            <div class="ds-btn">View</div>
+                        </div>
+                        <div class="ds-row">
+                            <span class="ds-emoji">&#128100;</span>
+                            <div class="ds-info">
+                                <div class="ds-name">Jordan M.</div>
+                                <div class="ds-meta">Basketball &bull; 4h ago</div>
+                            </div>
+                            <div class="ds-btn">View</div>
+                        </div>
+                        <div class="ds-row">
+                            <span class="ds-emoji">&#128100;</span>
+                            <div class="ds-info">
+                                <div class="ds-name">Alex R.</div>
+                                <div class="ds-meta">Hiking &bull; Yesterday</div>
+                            </div>
+                            <div class="ds-btn">View</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ============================
+     FOUNDER STORY
+============================= -->
+<section id="founder">
+    <div class="container">
+        <div class="founder-layout">
+
+            <div class="founder-visual reveal">
+                <div class="founder-photo">
+                    &#127939;
+                </div>
+                <div class="founder-badge">
+                    <strong>Danny Bush</strong>
+                    <span>Founder &amp; CEO &bull; 15+ yrs in Tech</span>
+                </div>
+            </div>
+
+            <div class="founder-text reveal d2">
+                <span class="section-label">Our Story</span>
+                <h2 class="section-title">Born From a Storm.<br><span class="gradient-text">Built for Connection.</span></h2>
+
+                <blockquote>
+                    &ldquo;After Katrina, I watched communities rebuild &mdash; not through apps, but through people simply showing up for each other.&rdquo;
+                </blockquote>
+
+                <p>Hurricane Katrina didn't just destroy buildings &mdash; it scattered communities. Watching people find strength through shared experience planted a seed that 15 years of building technology would eventually grow into Fun on the Run.</p>
+
+                <p>The idea is simple but rare: what if an app actually got people off their phones and into the same room? Not to follow each other &mdash; but to do things together.</p>
+
+                <div class="timeline" id="founderTimeline">
+                    <div class="tl-item">
+                        <div class="tl-dot"></div>
+                        <div>
+                            <div class="tl-year">2005</div>
+                            <div class="tl-desc">Hurricane Katrina &mdash; the moment that changed everything</div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-dot"></div>
+                        <div>
+                            <div class="tl-year">2005 &mdash; 2020</div>
+                            <div class="tl-desc">15 years in tech, watching social media isolate instead of connect</div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-dot"></div>
+                        <div>
+                            <div class="tl-year">2020</div>
+                            <div class="tl-desc">The pandemic made the loneliness crisis impossible to ignore &mdash; FOTR was born</div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-dot"></div>
+                        <div>
+                            <div class="tl-year">Now</div>
+                            <div class="tl-desc">Beta launching &mdash; be among the first to redefine how you connect</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ============================
+     SOCIAL PROOF
+============================= -->
+<section id="social-proof">
+    <div class="sp-header reveal">
+        <span class="section-label">Early Adopters</span>
+        <h2 class="section-title">Real People.<br><span class="gradient-text">Real Connections.</span></h2>
+    </div>
+
+    <div class="testimonials-wrap">
+        <div class="testimonials-track">
+            <div class="t-card">
+                <div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <p class="t-text">&ldquo;I moved to a new city 3 months ago. Within a week I had a regular pickup basketball crew. This app is the real deal.&rdquo;</p>
+                <div class="t-author">
+                    <div class="t-avatar" style="background:linear-gradient(135deg,#7C3AED,#F97316);">M</div>
+                    <div><div class="t-name">Marcus T.</div><div class="t-role">Early Beta &bull; Chicago</div></div>
+                </div>
+            </div>
+            <div class="t-card">
+                <div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <p class="t-text">&ldquo;As an introvert, the activity focus removes all the awkwardness. You already have something in common before you even meet.&rdquo;</p>
+                <div class="t-author">
+                    <div class="t-avatar" style="background:linear-gradient(135deg,#F97316,#7C3AED);">P</div>
+                    <div><div class="t-name">Priya S.</div><div class="t-role">Early Beta &bull; Atlanta</div></div>
+                </div>
+            </div>
+            <div class="t-card">
+                <div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <p class="t-text">&ldquo;Our volunteer group grew 3x after joining FOTR. The geo-alerts bring in people who are genuinely nearby and ready to show up.&rdquo;</p>
+                <div class="t-author">
+                    <div class="t-avatar" style="background:linear-gradient(135deg,#A78BFA,#F97316);">S</div>
+                    <div><div class="t-name">Sophia T.</div><div class="t-role">Nonprofit Manager &bull; Houston</div></div>
+                </div>
+            </div>
+            <div class="t-card">
+                <div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <p class="t-text">&ldquo;Got a push alert for a volleyball game 5 mins away on a random Tuesday. Went. Made four new friends. That's the whole pitch right there.&rdquo;</p>
+                <div class="t-author">
+                    <div class="t-avatar" style="background:linear-gradient(135deg,#7C3AED,#A78BFA);">J</div>
+                    <div><div class="t-name">Jordan K.</div><div class="t-role">Early Beta &bull; Miami</div></div>
+                </div>
+            </div>
+            <div class="t-card">
+                <div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <p class="t-text">&ldquo;Social media is about performance. FOTR is about actually doing things. My mental health has genuinely improved since I started using it.&rdquo;</p>
+                <div class="t-author">
+                    <div class="t-avatar" style="background:linear-gradient(135deg,#F97316,#A78BFA);">A</div>
+                    <div><div class="t-name">Alex R.</div><div class="t-role">Early Beta &bull; Dallas</div></div>
+                </div>
+            </div>
+            <div class="t-card">
+                <div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <p class="t-text">&ldquo;As an entrepreneur, community is everything. FOTR helped me build local partnerships I never would have found any other way.&rdquo;</p>
+                <div class="t-author">
+                    <div class="t-avatar" style="background:linear-gradient(135deg,#10B981,#7C3AED);">D</div>
+                    <div><div class="t-name">Devon W.</div><div class="t-role">Entrepreneur &bull; Los Angeles</div></div>
+                </div>
+            </div>
+            <!-- Duplicate set for seamless loop -->
+            <div class="t-card">
+                <div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <p class="t-text">&ldquo;I moved to a new city 3 months ago. Within a week I had a regular pickup basketball crew. This app is the real deal.&rdquo;</p>
+                <div class="t-author">
+                    <div class="t-avatar" style="background:linear-gradient(135deg,#7C3AED,#F97316);">M</div>
+                    <div><div class="t-name">Marcus T.</div><div class="t-role">Early Beta &bull; Chicago</div></div>
+                </div>
+            </div>
+            <div class="t-card">
+                <div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <p class="t-text">&ldquo;As an introvert, the activity focus removes all the awkwardness. You already have something in common before you even meet.&rdquo;</p>
+                <div class="t-author">
+                    <div class="t-avatar" style="background:linear-gradient(135deg,#F97316,#7C3AED);">P</div>
+                    <div><div class="t-name">Priya S.</div><div class="t-role">Early Beta &bull; Atlanta</div></div>
+                </div>
+            </div>
+            <div class="t-card">
+                <div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <p class="t-text">&ldquo;Our volunteer group grew 3x after joining FOTR. The geo-alerts bring in people who are genuinely nearby and ready to show up.&rdquo;</p>
+                <div class="t-author">
+                    <div class="t-avatar" style="background:linear-gradient(135deg,#A78BFA,#F97316);">S</div>
+                    <div><div class="t-name">Sophia T.</div><div class="t-role">Nonprofit Manager &bull; Houston</div></div>
+                </div>
+            </div>
+            <div class="t-card">
+                <div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <p class="t-text">&ldquo;Got a push alert for a volleyball game 5 mins away on a random Tuesday. Went. Made four new friends. That's the whole pitch right there.&rdquo;</p>
+                <div class="t-author">
+                    <div class="t-avatar" style="background:linear-gradient(135deg,#7C3AED,#A78BFA);">J</div>
+                    <div><div class="t-name">Jordan K.</div><div class="t-role">Early Beta &bull; Miami</div></div>
+                </div>
+            </div>
+            <div class="t-card">
+                <div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <p class="t-text">&ldquo;Social media is about performance. FOTR is about actually doing things. My mental health has genuinely improved since I started using it.&rdquo;</p>
+                <div class="t-author">
+                    <div class="t-avatar" style="background:linear-gradient(135deg,#F97316,#A78BFA);">A</div>
+                    <div><div class="t-name">Alex R.</div><div class="t-role">Early Beta &bull; Dallas</div></div>
+                </div>
+            </div>
+            <div class="t-card">
+                <div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <p class="t-text">&ldquo;As an entrepreneur, community is everything. FOTR helped me build local partnerships I never would have found any other way.&rdquo;</p>
+                <div class="t-author">
+                    <div class="t-avatar" style="background:linear-gradient(135deg,#10B981,#7C3AED);">D</div>
+                    <div><div class="t-name">Devon W.</div><div class="t-role">Entrepreneur &bull; Los Angeles</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-bar reveal">
+        <div class="stat-block">
+            <div class="stat-num" data-target="2847" data-suffix="">0</div>
+            <div class="stat-label">Beta Waitlist</div>
+        </div>
+        <div class="stat-block">
+            <div class="stat-num" data-target="50" data-suffix="+">0+</div>
+            <div class="stat-label">Activity Types</div>
+        </div>
+        <div class="stat-block">
+            <div class="stat-num" data-target="12" data-suffix="">0</div>
+            <div class="stat-label">Launch Cities</div>
+        </div>
+        <div class="stat-block">
+            <div class="stat-num">4.9&#9733;</div>
+            <div class="stat-label">Early Rating</div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================
+     VENDORS
+============================= -->
+<section id="vendors">
+    <div class="container">
+        <div class="reveal">
+            <span class="section-label" style="color:var(--orange);">For Businesses</span>
+            <h2 class="section-title">Reach Your People.<br><span class="gradient-text">Where They're Active.</span></h2>
+            <p class="section-sub">Put your brand directly in front of engaged, active community members &mdash; in the exact moment they're planning activities.</p>
+        </div>
+
+        <div class="vendor-layout">
+
+            <div class="vendor-benefits reveal">
+                <div class="vb-item">
+                    <div class="vb-icon">&#128226;</div>
+                    <div>
+                        <h4>Activity-Based Marketing</h4>
+                        <p>Sponsor specific activity types. Your yoga studio appears when users join yoga groups nearby.</p>
+                    </div>
+                </div>
+                <div class="vb-item">
+                    <div class="vb-icon">&#9889;</div>
+                    <div>
+                        <h4>Instant Push Promotions</h4>
+                        <p>Send real-time offers to nearby active users. Fill slow hours with targeted alerts that actually convert.</p>
+                    </div>
+                </div>
+                <div class="vb-item">
+                    <div class="vb-icon">&#127914;</div>
+                    <div>
+                        <h4>Pop-Up &amp; Event Hosting</h4>
+                        <p>Create branded activities. Host events that build authentic loyalty &mdash; not just impressions.</p>
+                    </div>
+                </div>
+                <div class="vb-item">
+                    <div class="vb-icon">&#128202;</div>
+                    <div>
+                        <h4>Real-Time Analytics</h4>
+                        <p>See who's engaging, where, and when. Data that connects directly to foot traffic and sales.</p>
+                    </div>
+                </div>
+                <div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;">
+                    <a href="mailto:info@funontherun.co" class="btn-primary">Become a Vendor &nbsp;&#8594;</a>
+                    <a href="mailto:info@funontherun.co" class="btn-outline">Schedule a Call</a>
+                </div>
+            </div>
+
+            <div class="perf-card reveal d2" id="perfCard">
+                <h3>Vendor Performance Metrics</h3>
+
+                <div class="perf-row">
+                    <div class="perf-label"><span>Community Reach</span><span class="perf-val">87%</span></div>
+                    <div class="perf-track"><div class="perf-fill" data-w="87"></div></div>
+                </div>
+                <div class="perf-row">
+                    <div class="perf-label"><span>Engagement Rate</span><span class="perf-val">73%</span></div>
+                    <div class="perf-track"><div class="perf-fill" data-w="73"></div></div>
+                </div>
+                <div class="perf-row">
+                    <div class="perf-label"><span>Repeat Customers</span><span class="perf-val">91%</span></div>
+                    <div class="perf-track"><div class="perf-fill" data-w="91"></div></div>
+                </div>
+                <div class="perf-row">
+                    <div class="perf-label"><span>Local Brand Awareness</span><span class="perf-val">95%</span></div>
+                    <div class="perf-track"><div class="perf-fill" data-w="95"></div></div>
+                </div>
+
+                <div style="margin-top:32px;padding-top:28px;border-top:1px solid var(--border);text-align:center;">
+                    <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Interested in investing in FOTR?</p>
+                    <a href="mailto:info@funontherun.co" class="btn-outline" style="font-size:13px;padding:10px 24px;">Request Investor Deck &nbsp;&#8594;</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ============================
+     CTA
+============================= -->
+<section id="cta">
+    <div class="container">
+        <div class="cta-box reveal">
+            <span class="section-label">Limited Beta Access</span>
+            <h2>Ready to Find<br><span class="gradient-text">Your People?</span></h2>
+            <p>Join thousands already on the waitlist. Early adopters get priority access, free premium features, and founding member status &mdash; forever.</p>
+
+            <div class="email-row">
+                <input type="email" class="email-field" id="emailField" placeholder="Enter your email address">
+                <button class="btn-primary" id="signupBtn" onclick="handleSignup()">Join Beta &nbsp;&#8594;</button>
+            </div>
+            <p class="cta-note">Free forever &bull; No credit card &bull; Unsubscribe anytime</p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================
+     FOOTER
+============================= -->
+<footer>
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <a href="#hero" class="nav-logo" style="display:inline-flex;">
+                <div class="logo-icon">F</div>
+                <span class="logo-text">Fun on the Run</span>
+            </a>
+            <p>Redefine the way you connect. Built for people who believe real friendships start with real activities &mdash; not scroll sessions.</p>
+            <div class="socials">
+                <a href="https://facebook.com" class="social-btn" target="_blank" rel="noopener">f</a>
+                <a href="https://instagram.com" class="social-btn" target="_blank" rel="noopener">ig</a>
+                <a href="#" class="social-btn">tw</a>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h5>Product</h5>
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#app-preview">The App</a>
+            <a href="#cta">Join Beta</a>
+        </div>
+
+        <div class="footer-col">
+            <h5>Company</h5>
+            <a href="#founder">Our Story</a>
+            <a href="#vendors">Vendors</a>
+            <a href="/blog">Blog</a>
+            <a href="mailto:info@funontherun.co">Contact</a>
+        </div>
+
+        <div class="footer-col">
+            <h5>Legal</h5>
+            <a href="/privacy-policy">Privacy Policy</a>
+            <a href="/terms-and-conditions">Terms &amp; Conditions</a>
+            <a href="mailto:info@funontherun.co">Support</a>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <span>&copy; 2025 Fun on the Run. All rights reserved.</span>
+        <span>Made with purpose by Danny Bush &nbsp;&#127939;</span>
+    </div>
+</footer>
+
+<!-- ============================
+     JAVASCRIPT
+============================= -->
+<script>
+(function(){
+    'use strict';
+
+    // ── PRELOADER ──────────────────────────────────────────
+    window.addEventListener('load', function(){
+        setTimeout(function(){
+            var pre = document.getElementById('preloader');
+            pre.style.transition = 'opacity 0.6s ease';
+            pre.style.opacity = '0';
+            setTimeout(function(){ pre.style.display = 'none'; }, 600);
+        }, 2000);
+    });
+
+    // ── CUSTOM CURSOR ──────────────────────────────────────
+    var cursor = document.getElementById('cursor');
+    if (window.innerWidth > 768 && cursor) {
+        document.addEventListener('mousemove', function(e){
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top  = e.clientY + 'px';
+        });
+        var hoverEls = document.querySelectorAll('a, button, .feature-card, .device, .t-card, .vb-item');
+        hoverEls.forEach(function(el){
+            el.addEventListener('mouseenter', function(){ cursor.classList.add('hovering'); });
+            el.addEventListener('mouseleave', function(){ cursor.classList.remove('hovering'); });
+        });
+    } else if (cursor) {
+        cursor.style.display = 'none';
+    }
+
+    // ── NAVBAR SCROLL ──────────────────────────────────────
+    var navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', function(){
+        if (window.scrollY > 60) navbar.classList.add('scrolled');
+        else navbar.classList.remove('scrolled');
+    }, { passive: true });
+
+    // ── MOBILE MENU ────────────────────────────────────────
+    window.openMobileMenu = function(){
+        document.getElementById('mobileMenu').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    };
+    window.closeMobileMenu = function(){
+        document.getElementById('mobileMenu').classList.remove('open');
+        document.body.style.overflow = '';
+    };
+
+    // ── GEO CANVAS ────────────────────────────────────────
+    var canvas = document.getElementById('geoCanvas');
+    if (canvas) {
+        var ctx = canvas.getContext('2d');
+        var dots = [];
+        var W, H;
+
+        function resize(){
+            W = canvas.width  = canvas.offsetWidth;
+            H = canvas.height = canvas.offsetHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize, { passive: true });
+
+        var N = 60;
+        for (var i = 0; i < N; i++) {
+            dots.push({
+                x: Math.random() * W,
+                y: Math.random() * H,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4,
+                r: 2 + Math.random() * 2
+            });
+        }
+
+        function drawGeo(){
+            ctx.clearRect(0, 0, W, H);
+            // Update positions
+            dots.forEach(function(d){
+                d.x += d.vx;
+                d.y += d.vy;
+                if (d.x < 0 || d.x > W) d.vx *= -1;
+                if (d.y < 0 || d.y > H) d.vy *= -1;
+            });
+            // Draw connections
+            for (var a = 0; a < dots.length; a++) {
+                for (var b = a + 1; b < dots.length; b++) {
+                    var dx = dots[a].x - dots[b].x;
+                    var dy = dots[a].y - dots[b].y;
+                    var dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < 160) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = 'rgba(124,58,237,' + (0.15 * (1 - dist/160)) + ')';
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(dots[a].x, dots[a].y);
+                        ctx.lineTo(dots[b].x, dots[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            // Draw dots
+            dots.forEach(function(d){
+                ctx.beginPath();
+                ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(167,139,250,0.6)';
+                ctx.fill();
+            });
+            requestAnimationFrame(drawGeo);
+        }
+        drawGeo();
+    }
+
+    // ── INTERSECTION OBSERVER — REVEAL ─────────────────────
+    var revealObs = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                revealObs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(function(el){ revealObs.observe(el); });
+
+    // ── STEPS STAGGER ─────────────────────────────────────
+    var stepsObs = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+            if (entry.isIntersecting) {
+                var cards = document.querySelectorAll('.step-card');
+                cards.forEach(function(card, i){
+                    setTimeout(function(){
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                        card.style.transition = 'opacity 0.65s ease, transform 0.65s ease';
+                    }, i * 140);
+                });
+                stepsObs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
+
+    var stepsGrid = document.getElementById('stepsGrid');
+    if (stepsGrid) stepsObs.observe(stepsGrid);
+
+    // ── TIMELINE STAGGER ──────────────────────────────────
+    var tlObs = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+            if (entry.isIntersecting) {
+                var items = document.querySelectorAll('.tl-item');
+                items.forEach(function(item, i){
+                    setTimeout(function(){
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateX(0)';
+                        item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                    }, i * 200);
+                });
+                tlObs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.3 });
+
+    var tl = document.getElementById('founderTimeline');
+    if (tl) tlObs.observe(tl);
+
+    // ── STAT COUNTERS ─────────────────────────────────────
+    var countObs = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+            if (entry.isIntersecting) {
+                entry.target.querySelectorAll('[data-target]').forEach(function(el){
+                    var target = parseInt(el.dataset.target);
+                    var suffix = el.dataset.suffix || '';
+                    var start = 0;
+                    var dur = 1800;
+                    var step = target / (dur / 16);
+                    var timer = setInterval(function(){
+                        start += step;
+                        if (start >= target) { start = target; clearInterval(timer); }
+                        el.textContent = Math.floor(start).toLocaleString() + suffix;
+                    }, 16);
+                });
+                countObs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    var statsBar = document.querySelector('.stats-bar');
+    if (statsBar) countObs.observe(statsBar);
+
+    // ── PERF BARS ─────────────────────────────────────────
+    var perfObs = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+            if (entry.isIntersecting) {
+                entry.target.querySelectorAll('.perf-fill').forEach(function(bar){
+                    setTimeout(function(){
+                        bar.style.width = bar.dataset.w + '%';
+                    }, 300);
+                });
+                perfObs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.4 });
+
+    var pc = document.getElementById('perfCard');
+    if (pc) perfObs.observe(pc);
+
+    // ── EMAIL SIGNUP ──────────────────────────────────────
+    window.handleSignup = function(){
+        var field = document.getElementById('emailField');
+        var btn   = document.getElementById('signupBtn');
+        var email = field.value.trim();
+        if (!email || !email.includes('@') || !email.includes('.')) {
+            field.style.borderColor = 'var(--orange)';
+            field.style.animation = 'shake 0.4s ease';
+            return;
+        }
+        btn.textContent = '&#10003; You\'re on the list!';
+        btn.style.background = 'linear-gradient(135deg,#10B981,#059669)';
+        btn.disabled = true;
+        field.value = '';
+        field.placeholder = 'Welcome to Fun on the Run! &#127939;';
+        field.style.borderColor = '#10B981';
+        // TODO: wire to actual API / Google Form / Mailchimp
+        console.log('Beta signup:', email);
+    };
+
+    // Enter key on email field
+    var ef = document.getElementById('emailField');
+    if (ef) ef.addEventListener('keydown', function(e){ if (e.key === 'Enter') window.handleSignup(); });
+
+})();
+</script>
+
+</body>
+</html>
