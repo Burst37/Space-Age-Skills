@@ -49,7 +49,7 @@ See SESSION_INIT.md in Google Drive for full routing matrix.
 1. **CapSolver key** — check Drive/Obsidian LoyaltyBot note before asking
 2. **Vercel** — use MCP or CLI, never ask for token
 3. **GitHub** — use gh CLI or GitHub MCP
-4. **Model** — claude-opus-4-8 for heavy tasks. Never deepseek-chat or deepseek-reasoner
+4. **Model** — claude-opus-4-8 for heavy tasks. deepseek-chat/deepseek-reasoner are allowed *only* via the DeepSeek Harness (`dsh`, vendored in `Burst37/web-agent:vendor/deepseek-harness`) as a cheap/bulk lane — never as the main-pipeline model in Claude Code itself
 5. **Skill folder naming** — lowercase-hyphen only, NO SA- prefix
 6. **LoyaltyBot** — standalone product, zero connection to website pipeline
 7. **Encore logo** — always upper left chest in generated images
