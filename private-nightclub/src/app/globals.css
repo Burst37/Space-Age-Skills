@@ -1,0 +1,217 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --black: #030303;
+  --soft-black: #0a0a0a;
+  --gold: #c9a24d;
+  --champagne: #f4d78f;
+  --cream: #f7efe0;
+  --smoke: rgba(255, 255, 255, 0.08);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background: var(--black);
+    color: var(--cream);
+    font-family: var(--font-sans), system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: rgba(201, 162, 77, 0.3);
+    color: var(--cream);
+  }
+
+  /* Subtle gold-on-dark scrollbar to stay on brand. */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #050505;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2a2418;
+    border-radius: 0;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3a3120;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  /* Hairline gold rule used across sections instead of heavy borders. */
+  .hairline {
+    border-color: rgba(201, 162, 77, 0.22);
+  }
+
+  .gold-text {
+    background: linear-gradient(100deg, #b8923f, #f4d78f 45%, #c9a24d);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  .display {
+    font-family: var(--font-display), Georgia, serif;
+    font-weight: 500;
+    line-height: 0.92;
+    letter-spacing: -0.01em;
+  }
+
+  /* Heavy condensed face for the full-screen hero wordmark. */
+  .font-condensed {
+    font-family: var(--font-condensed), "Arial Narrow", sans-serif;
+    font-weight: 400;
+  }
+
+  /* SVG hero wordmark: translucent amber "liquid glass" — the video shows
+     through each letter with an amber tint and a gold rim. Each line is
+     stretched to the full width via textLength, so PRIVATE and NIGHTCLUB are
+     equal width and reach both edges. non-scaling-stroke keeps the rim an even
+     pixel weight even though the text is non-uniformly scaled to fill the view.
+     Fill is set per-element (the amber gradient) so it isn't declared here. */
+  .hero-word {
+    font-family: var(--font-condensed), "Arial Narrow", sans-serif;
+    font-size: 55px;
+    stroke: rgba(201, 162, 77, 0.95);
+    stroke-width: 2px;
+    vector-effect: non-scaling-stroke;
+    paint-order: stroke;
+    filter: drop-shadow(0 0 18px rgba(201, 162, 77, 0.3));
+  }
+  @media (min-width: 1024px) {
+    .hero-word {
+      stroke-width: 3px;
+    }
+  }
+  /* The sweeping glass highlight layered over the amber fill — no rim, screen
+     blend so it reads as light catching the glass. */
+  .hero-sheen {
+    stroke: none;
+    filter: none;
+    mix-blend-mode: screen;
+  }
+
+  /* Outlined gold display type with a soft neon glow (reference hero look).
+     The stroke scales up with the type so the giant hero letters read as a
+     clean rim, not a hairline. */
+  .text-outline-gold {
+    color: transparent;
+    -webkit-text-stroke: 2px rgba(201, 162, 77, 0.95);
+    text-shadow: 0 0 26px rgba(201, 162, 77, 0.3);
+  }
+  @media (min-width: 1024px) {
+    .text-outline-gold {
+      -webkit-text-stroke-width: 3px;
+    }
+  }
+
+  /* Transparent amber "liquid glass" jumbo type: the footage shows through the
+     glyphs with an amber tint, a glass rim, depth shadow, and a slow refraction
+     sheen. Background-clip paints the translucent amber gradient into the text;
+     because it is semi-transparent the video behind reads through the letters. */
+  .liquid-amber {
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    background-image:
+      linear-gradient(
+        115deg,
+        transparent 38%,
+        rgba(255, 255, 255, 0.5) 50%,
+        transparent 62%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(247, 239, 224, 0.34) 0%,
+        rgba(244, 215, 143, 0.26) 40%,
+        rgba(201, 162, 77, 0.24) 72%,
+        rgba(184, 146, 63, 0.34) 100%
+      );
+    background-size: 300% 100%, 100% 100%;
+    background-position: 150% 0, 0 0;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-stroke: 1px rgba(244, 215, 143, 0.55);
+    filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.22))
+      drop-shadow(0 22px 46px rgba(0, 0, 0, 0.55));
+    animation: amber-sheen 7s ease-in-out infinite;
+  }
+  @media (min-width: 1024px) {
+    .liquid-amber {
+      -webkit-text-stroke-width: 1.5px;
+    }
+  }
+}
+
+@keyframes amber-sheen {
+  0% {
+    background-position: 150% 0, 0 0;
+  }
+  100% {
+    background-position: -150% 0, 0 0;
+  }
+}
+
+/* Film-grain + vignette atmosphere layer for dark sections. */
+.atmosphere::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 80% at 50% 0%, transparent 55%, rgba(0, 0, 0, 0.55) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+/* Section background depth — radial gold glow over near-black so sections read
+   rich, not flat. Two variants alternate down the page (glow from top vs.
+   bottom). Pair with .atmosphere for grain. */
+.lux-bg {
+  background-color: #060503;
+  background-image:
+    radial-gradient(95% 70% at 50% -12%, rgba(201, 162, 77, 0.2), transparent 60%),
+    radial-gradient(60% 50% at 100% 0%, rgba(184, 146, 63, 0.12), transparent 55%),
+    linear-gradient(180deg, rgba(201, 162, 77, 0.06), transparent 28%);
+}
+.lux-bg-alt {
+  background-color: #080604;
+  background-image:
+    radial-gradient(90% 70% at 50% 112%, rgba(201, 162, 77, 0.17), transparent 60%),
+    radial-gradient(55% 45% at 0% 100%, rgba(184, 146, 63, 0.11), transparent 55%),
+    linear-gradient(0deg, rgba(201, 162, 77, 0.05), transparent 30%);
+}
+
+/* Reduced-motion mandate (design-motion-principles). Kills transforms and
+   long transitions while keeping content fully visible. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  /* Elements that GSAP would have revealed must never get stuck hidden. */
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

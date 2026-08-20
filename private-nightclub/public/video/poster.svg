@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1470" height="630" viewBox="0 0 1470 630" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="38%" r="70%">
+      <stop offset="0%" stop-color="#1a140a"/>
+      <stop offset="42%" stop-color="#0a0805"/>
+      <stop offset="100%" stop-color="#030303"/>
+    </radialGradient>
+    <linearGradient id="floor" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#000000"/>
+      <stop offset="100%" stop-color="#030303" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="spark" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f4d78f"/>
+      <stop offset="55%" stop-color="#c9a24d" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#c9a24d" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1470" height="630" fill="url(#glow)"/>
+  <g opacity="0.5">
+    <circle cx="540" cy="250" r="120" fill="url(#spark)"/>
+    <circle cx="930" cy="280" r="150" fill="url(#spark)"/>
+    <circle cx="735" cy="210" r="90" fill="url(#spark)" opacity="0.8"/>
+  </g>
+  <rect y="430" width="1470" height="200" fill="url(#floor)"/>
+</svg>
