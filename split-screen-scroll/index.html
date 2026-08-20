@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kendall</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- Reusable split-screen layout shell -->
+  <div class="shell">
+    <!-- Persistent header above both panels -->
+    <header class="header">
+      <a class="brand" href="index.html" aria-label="Kendall — home">KENDALL</a>
+      <button class="menu" type="button" aria-label="Open menu" aria-expanded="false">MENU</button>
+    </header>
+
+    <div class="split">
+      <!-- LEFT PANEL — project names -->
+      <section class="panel panel--left" aria-label="Projects">
+        <div class="names" id="names" aria-live="polite"></div>
+        <!-- Static hairlines that frame the centered, active project -->
+        <span class="hairline hairline--top"></span>
+        <span class="hairline hairline--bottom"></span>
+      </section>
+
+      <!-- RIGHT PANEL — project thumbnails -->
+      <section class="panel panel--right" aria-label="Project images">
+        <div class="carousel" id="carousel"></div>
+      </section>
+    </div>
+
+    <!-- PROJECT PAGE — white block reveals over the left half; the
+         right half is the shared thumbnail image expanded to full height. -->
+    <div class="project-page" id="projectPage" aria-hidden="true">
+      <div class="project-page__inner">
+        <article class="proj-section">
+          <h2 class="proj-section__head">The Concept</h2>
+          <p class="proj-section__body">This project began as a study in quiet light and restraint. The aim was to let the subject breathe within the frame, with nothing competing for attention, so every choice served a sense of calm and intention.</p>
+        </article>
+        <article class="proj-section">
+          <h2 class="proj-section__head">Art Direction</h2>
+          <p class="proj-section__body">The palette was kept warm and muted, built around natural materials and soft neutral tones. Styling was stripped back to the essentials, leaving a result that feels understated, considered, and unhurried.</p>
+        </article>
+        <article class="proj-section">
+          <h2 class="proj-section__head">Photography</h2>
+          <p class="proj-section__body">Shot entirely in available daylight, the series favours soft shadows and gentle contrast. The compositions stay simple and centred, giving each image room to settle and a tone that feels intimate without ever appearing staged.</p>
+        </article>
+      </div>
+    </div>
+
+    <!-- PROJECT VIEW — paging layer for the further project pages,
+         built on demand by the script. -->
+    <div class="pv" id="pv" aria-hidden="true"></div>
+
+    <!-- MENU — white panel sliding down over the right half only. -->
+    <div class="menu-panel" id="menuPanel" aria-hidden="true">
+      <nav class="menu-nav">
+        <a class="menu-item">Home</a>
+        <a class="menu-item">About</a>
+        <a class="menu-item">Projects</a>
+        <a class="menu-item">Contact</a>
+      </nav>
+      <div class="menu-studio">
+        <span class="menu-studio__label">Kendall Studios</span>
+        <p class="menu-studio__body">Kendall Studios is a photography practice working across portraiture, editorial, and art direction, making quiet, considered images built on natural light and a careful eye for detail.</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
