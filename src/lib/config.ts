@@ -1,97 +1,184 @@
-import { execSync } from "child_process";
-import path from "path";
-import fs from "fs";
+// Single source of truth for paths + config.
+// Load order:
+//   1. Environment variables (highest priority)
+//   2. ~/.agentic-os/config.json (user override)
+//   3. Auto-detect (via `which`) for CLIs
+//   4. Sensible defaults
+//
+// This is what makes the project portable. AIPB members run `npm run setup` or
+// drop a config.json with their paths; the dashboard adapts.
 
-function which(bin: string): string | null {
+import { readFileSync, existsSync } from "node:fs";
+import { execSync } from "node:child_process";
+import path from "node:path";
+import os from "node:os";
+
+export interface AgenticConfig {
+  // CLI binary paths
+  claude: string | null;
+  openclaw: string | null;
+  hermes: string | null;
+  gemini: string | null;
+  antigravity: string | null;
+  codex: string | null;
+  kimi: string | null; // Kimi Code CLI (Kimi K2.7) — installs to ~/.kimi-code/bin
+  grok: string | null; // Grok Build CLI (xAI grok-build-0.1) — installs to ~/.grok/bin
+  ruflo: string | null;
+  ant: string | null; // Claude Platform CLI (`ant`) — note: collides with Apache Ant
+  nlmBin: string | null; // NotebookLM MCP server binary (`notebooklm-mcp`)
+
+  // Obsidian vault root (where Agentic OS writes goals, journal, memories)
+  vaultRoot: string | null;
+
+  // Display name for the human user (shown in the Agent Room etc.). Defaults to a
+  // generic "You" so a fresh install is never personalised to someone else — set
+  // "userName" in ~/.agentic-os/config.json (or AGENTIC_OS_USER_NAME) to use your name.
+  userName: string;
+
+  // Per-agent log directories (for the Activity Stream tile)
+  openclawLogs: string;
+  hermesLogs: string;
+
+  // OpenClaw default agent id (for chat)
+  openclawAgent: string;
+
+  // Goal categories shown in the dropdown
+  goalCategories: string[];
+
+  // Display
+  locationLabel: string; // e.g. "Bangkok"
+}
+
+function which(cmd: string): string | null {
   try {
-    return execSync(`which ${bin}`, { stdio: ["pipe", "pipe", "pipe"] })
-      .toString()
-      .trim() || null;
-  } catch {
-    return null;
-  }
+    const out = execSync(`command -v ${cmd}`, { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+    return out.trim() || null;
+  } catch { return null; }
 }
 
-function expandHome(p: string): string {
-  if (p.startsWith("~")) return path.join(process.env.HOME || "/root", p.slice(1));
-  return p;
-}
-
-function findVault(): string {
-  const env = process.env.AGENTIC_OS_VAULT;
-  if (env) return expandHome(env);
-  const candidates = [
-    "~/Documents/Obsidian Vault",
-    "~/Obsidian",
-    "~/Obsidian Vault",
-    "~/vault",
+// The Next.js server's PATH can be minimal (no ~/.local/bin), so `which` may miss
+// a real install. Check the common locations the notebooklm-mcp CLI lands in.
+function nlmBinGuess(): string | null {
+  const guesses = [
+    path.join(os.homedir(), ".local", "bin", "notebooklm-mcp"),
+    "/opt/homebrew/bin/notebooklm-mcp",
+    "/usr/local/bin/notebooklm-mcp",
   ];
-  for (const c of candidates) {
-    const p = expandHome(c);
-    if (fs.existsSync(p)) return p;
-  }
-  return expandHome("~/Obsidian Vault");
+  for (const g of guesses) if (existsSync(g)) return g;
+  return null;
 }
 
-export const config = {
-  // ─── CLI Agents ────────────────────────────────────────────────────────────
-  claude:      process.env.AGENTIC_OS_CLAUDE_BIN      || which("claude")      || "claude",
-  hermes:      process.env.AGENTIC_OS_HERMES_BIN      || which("hermes")      || "hermes",
-  gemini:      process.env.AGENTIC_OS_GEMINI_BIN      || which("gemini")      || "gemini",
-  antigravity: process.env.AGENTIC_OS_ANTIGRAVITY_BIN || which("agy")         || "agy",
-  codex:       process.env.AGENTIC_OS_CODEX_BIN       || which("codex")       || "codex",
-  openclaw:    process.env.AGENTIC_OS_OPENCLAW_BIN    || which("openclaw")    || "openclaw",
+// Kimi Code installs to ~/.kimi-code/bin/kimi, which the Next server's PATH
+// usually doesn't include, so `which kimi` misses it. Check the install location.
+function kimiBinGuess(): string | null {
+  const guesses = [
+    path.join(os.homedir(), ".kimi-code", "bin", "kimi"),
+    path.join(os.homedir(), ".local", "bin", "kimi"),
+    "/opt/homebrew/bin/kimi",
+    "/usr/local/bin/kimi",
+  ];
+  for (const g of guesses) if (existsSync(g)) return g;
+  return null;
+}
 
-  // ─── API Agents (OpenRouter) ──────────────────────────────────────────────
-  openrouterApiKey:  process.env.OPENROUTER_API_KEY || "",
-  deepseekApiKey:    process.env.DEEPSEEK_API_KEY   || "",
-  geminiApiKey:      process.env.GEMINI_API_KEY     || "",
-  openaiApiKey:      process.env.OPENAI_API_KEY     || "",
-  minimaxApiKey:     process.env.MINIMAX_API_KEY    || "",
+// Grok Build CLI installs to ~/.grok/bin/grok (symlinked into ~/.local/bin), which
+// the Next server's PATH usually doesn't include, so `which grok` misses it.
+function grokBinGuess(): string | null {
+  const guesses = [
+    path.join(os.homedir(), ".grok", "bin", "grok"),
+    path.join(os.homedir(), ".local", "bin", "grok"),
+    "/opt/homebrew/bin/grok",
+    "/usr/local/bin/grok",
+  ];
+  for (const g of guesses) if (existsSync(g)) return g;
+  return null;
+}
 
-  // ─── VPS / SSH ────────────────────────────────────────────────────────────
-  vpsHost:    process.env.VPS_HOST     || "146.190.78.120",
-  vpsUser:    process.env.VPS_USER     || "root",
-  vpsPort:    parseInt(process.env.VPS_PORT || "22", 10),
-  vpsKeyPath: expandHome(process.env.VPS_KEY_PATH || "~/.ssh/id_rsa"),
+function loadFileConfig(): Partial<AgenticConfig> {
+  const candidates = [
+    process.env.AGENTIC_OS_CONFIG,
+    path.join(os.homedir(), ".agentic-os", "config.json"),
+    path.join(process.cwd(), "agentic-os.config.json"),
+  ].filter(Boolean) as string[];
 
-  // ─── Obsidian ─────────────────────────────────────────────────────────────
-  vaultRoot:        findVault(),
-  vaultName:        process.env.OBSIDIAN_VAULT_NAME || "Space Age",
-  openclawAgent:    process.env.AGENTIC_OS_OPENCLAW_AGENT || "main",
-  goalCategories:   ["Pipeline", "Clients", "Content", "Dev", "Health", "Finance"],
-  locationLabel:    process.env.AGENTIC_OS_LOCATION || "Dallas",
+  for (const p of candidates) {
+    if (!existsSync(p)) continue;
+    try {
+      return JSON.parse(readFileSync(p, "utf8"));
+    } catch { /* ignore malformed */ }
+  }
+  return {};
+}
 
-  // ─── Model routing ────────────────────────────────────────────────────────
-  apiAgents: {
-    deepseek: {
-      id: "deepseek",
-      label: "DeepSeek V4 Pro",
-      model: "deepseek/deepseek-prover-v2",
-      baseUrl: "https://api.deepseek.com/v1",
-      keyEnv: "DEEPSEEK_API_KEY",
-      color: "#7DF9FF",
-      use: "Primary coding — 1.6T params, 1M context",
-    },
-    minimax: {
-      id: "minimax",
-      label: "Minimax 2.7",
-      model: "minimax/minimax-text-01",
-      baseUrl: "https://openrouter.ai/api/v1",
-      keyEnv: "OPENROUTER_API_KEY",
-      color: "#A855F7",
-      use: "Long-context, creative tasks",
-    },
-    gemma: {
-      id: "gemma",
-      label: "Gemma 3",
-      model: "google/gemma-3-27b-it",
-      baseUrl: "https://openrouter.ai/api/v1",
-      keyEnv: "OPENROUTER_API_KEY",
-      color: "#00ff88",
-      use: "Fast, cheap — batch tasks",
-    },
-  },
-} as const;
+const fileCfg = loadFileConfig();
 
-export type ApiAgentId = keyof typeof config.apiAgents;
+function defaultVault(): string | null {
+  const fromFile = fileCfg.vaultRoot;
+  if (typeof fromFile === "string" && existsSync(fromFile)) return fromFile;
+  const fromEnv = process.env.AGENTIC_OS_VAULT;
+  if (fromEnv && existsSync(fromEnv)) return fromEnv;
+  // Common defaults to try
+  const guesses = [
+    path.join(os.homedir(), "Documents", "Obsidian Vault"),
+    path.join(os.homedir(), "Obsidian"),
+    path.join(os.homedir(), "Obsidian Vault"),
+  ];
+  for (const g of guesses) if (existsSync(g)) return g;
+  return null;
+}
+
+export const config: AgenticConfig = {
+  claude:   process.env.AGENTIC_OS_CLAUDE_BIN   ?? fileCfg.claude   ?? which("claude"),
+  openclaw: process.env.AGENTIC_OS_OPENCLAW_BIN ?? fileCfg.openclaw ?? which("openclaw"),
+  hermes:   process.env.AGENTIC_OS_HERMES_BIN   ?? fileCfg.hermes   ?? which("hermes"),
+  gemini:   process.env.AGENTIC_OS_GEMINI_BIN   ?? fileCfg.gemini   ?? which("gemini"),
+  // Antigravity CLI (the "agy" binary — Gemini CLI's successor). Gemini CLI was
+  // retired 2026-06-18 for free/Pro/Ultra users, so Antigravity is the path forward.
+  antigravity: process.env.AGENTIC_OS_ANTIGRAVITY_BIN ?? fileCfg.antigravity ?? which("agy"),
+  // Codex CLI (OpenAI's coding agent). Used for chat + Goal Mode + reviewing past sessions.
+  codex: process.env.AGENTIC_OS_CODEX_BIN ?? fileCfg.codex ?? which("codex"),
+  // Kimi Code CLI (Kimi K2.7 "K2.7 Code"). Powers the Kimi chat + workspace + previews.
+  kimi: process.env.AGENTIC_OS_KIMI_BIN ?? fileCfg.kimi ?? which("kimi") ?? kimiBinGuess(),
+  grok: process.env.AGENTIC_OS_GROK_BIN ?? fileCfg.grok ?? which("grok") ?? grokBinGuess(),
+  // Ruflo (ruvnet/ruflo) — multi-agent swarm orchestration. Powers the Swarm tab.
+  ruflo: process.env.AGENTIC_OS_RUFLO_BIN ?? fileCfg.ruflo ?? which("ruflo"),
+  // Claude Platform CLI (`ant`) — powers the Claude → Ant CLI / Agents tabs.
+  ant: process.env.AGENTIC_OS_ANT_BIN ?? fileCfg.ant ?? which("ant"),
+  // NotebookLM MCP server (jacob-bd/notebooklm-mcp-cli → `notebooklm-mcp`).
+  // Resolves to EACH user's own install — never a hardcoded path.
+  nlmBin: process.env.AGENTIC_OS_NLM_MCP_BIN ?? fileCfg.nlmBin ?? which("notebooklm-mcp") ?? nlmBinGuess(),
+
+  vaultRoot: defaultVault(),
+
+  userName: process.env.AGENTIC_OS_USER_NAME ?? fileCfg.userName ?? "You",
+
+  openclawLogs:
+    process.env.AGENTIC_OS_OPENCLAW_LOGS
+    ?? fileCfg.openclawLogs
+    ?? path.join(os.homedir(), ".openclaw", "logs"),
+  hermesLogs:
+    process.env.AGENTIC_OS_HERMES_LOGS
+    ?? fileCfg.hermesLogs
+    ?? path.join(os.homedir(), ".hermes", "cache"),
+
+  openclawAgent: process.env.AGENTIC_OS_OPENCLAW_AGENT ?? fileCfg.openclawAgent ?? "main",
+
+  goalCategories: fileCfg.goalCategories ?? [
+    "Health", "Personal", "Work", "Learning", "Side Project",
+  ],
+
+  locationLabel: process.env.AGENTIC_OS_LOCATION ?? fileCfg.locationLabel ?? "Local",
+};
+
+export function isAgentInstalled(agent: "claude" | "openclaw" | "hermes" | "gemini" | "antigravity" | "codex" | "kimi"): boolean {
+  return Boolean(config[agent]);
+}
+
+// The Claude model the dashboard pins for the real `claude` CLI (Claude agent
+// chat + SEO generation). Single source of truth so a model bump is a one-line
+// change. Override with AGENTIC_OS_CLAUDE_MODEL if you want a different one.
+// `claude-opus-4-8` = Claude Opus 4.8 (verified to resolve on the claude CLI).
+export const CLAUDE_MODEL: string =
+  process.env.AGENTIC_OS_CLAUDE_MODEL
+  ?? (fileCfg as { claudeModel?: string }).claudeModel
+  ?? "claude-opus-4-8";

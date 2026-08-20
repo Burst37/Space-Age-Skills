@@ -1,4 +1,9 @@
-import UnifiedChat from "@/components/UnifiedChat";
+import CodexView from "@/components/CodexView";
+
 export default function CodexRoute() {
-  return <UnifiedChat defaultAgent="codex" />;
+  return (
+    <div className="flex flex-col h-[calc(100vh-180px)]">
+      <CodexView />
+    </div>
+  );
 }

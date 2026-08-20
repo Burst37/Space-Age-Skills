@@ -1,24 +1,36 @@
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Shell from "@/components/Shell";
 
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+
 export const metadata: Metadata = {
-  title: "Space Age Agent OS",
-  description: "Mission Control — All agents. One dashboard. Zero data leaves.",
+  title: "Agentic OS — Mission Control",
+  description: "Your command center for Claude, OpenClaw, Hermes",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <head>
-        {/* VL-01 Standard: Fontsource CDN only — no Google Fonts */}
-        <link href="https://cdn.jsdelivr.net/npm/@fontsource/orbitron@5.0.20/index.css" rel="stylesheet" />
-        <link href="https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5.0.18/index.css" rel="stylesheet" />
-        <link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.1.0/index.css" rel="stylesheet" />
-        <link href="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css" rel="stylesheet" />
+        {/*
+          Midnight Aubergine design system — three voices:
+          Bricolage Grotesque (display) · Manrope (body) · Caveat (hand-script
+          numerals/emphasis) · JetBrains Mono (code).
+        */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Caveat:wght@400;500;600&display=swap"
+        />
       </head>
-      <body>
-        <Shell>{children}</Shell>
+      <body className="min-h-full">
+        <div className="relative z-10">
+          <Shell>{children}</Shell>
+        </div>
       </body>
     </html>
   );

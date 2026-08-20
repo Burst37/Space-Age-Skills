@@ -1,4 +1,5 @@
-import MissionControl from "@/components/MissionControl";
-export default function Home() {
-  return <MissionControl />;
+import Overview from "@/components/Overview";
+
+export default function Page() {
+  return <Overview />;
 }
