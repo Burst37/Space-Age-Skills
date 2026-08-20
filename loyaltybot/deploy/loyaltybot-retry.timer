@@ -1,0 +1,19 @@
+# Weekly companion to loyaltybot.timer — re-attempts only sites that failed
+# in prior runs (auto-signup.py --retry).
+#
+# Install:
+#   sudo cp loyaltybot-retry.service loyaltybot-retry.timer /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now loyaltybot-retry.timer
+#   systemctl list-timers loyaltybot-retry.timer
+
+[Unit]
+Description=Run LoyaltyBot retry pass weekly
+
+[Timer]
+OnCalendar=Sun *-*-* 04:00:00
+RandomizedDelaySec=1800
+Persistent=true
+
+[Install]
+WantedBy=timers.target

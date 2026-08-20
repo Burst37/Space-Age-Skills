@@ -1,0 +1,28 @@
+# Pairs with loyaltybot.service — runs a batch on a nightly schedule.
+#
+# The bot's default (non-retry) mode already skips URLs that succeeded in a
+# prior run (see auto-signup.py: "already-successful" filter), so each nightly
+# firing just keeps making incremental progress through the master CSV — no
+# duplicate signups, no manual bookkeeping needed between runs.
+#
+# Install:
+#   sudo cp loyaltybot.service loyaltybot.timer /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now loyaltybot.timer
+#   systemctl list-timers loyaltybot.timer      # confirm next run time
+#   journalctl -u loyaltybot -f                 # follow the next firing's log
+#
+# Change the schedule by editing OnCalendar= below, then:
+#   sudo systemctl daemon-reload && sudo systemctl restart loyaltybot.timer
+
+[Unit]
+Description=Run LoyaltyBot nightly
+
+[Timer]
+OnCalendar=*-*-* 02:00:00
+RandomizedDelaySec=1800
+# If the VPS was off/asleep at 02:00, run once on next boot instead of skipping.
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,82 @@
+# LoyaltyBot — auto form filler
+
+Automates signing a client up for many programs — **catalogs, loyalty / rewards,
+sweepstakes, soft-pull credit** — far faster than filling them by hand. That is
+the whole job.
+
+## What changed
+
+The old engine recognized fields only by `name` / `id` / `placeholder` /
+`autocomplete`, so any form that labeled its fields in the `<label>` text (very
+common on catalog / loyalty / sweepstakes sites) went unrecognized — the bot
+"just sat there." It also had no consent-checkbox or split-DOB handling and
+counted junk pages (auto clubs, phone-only, app-only) as failures.
+
+**`recognition.py`** replaces the recognition brain:
+
+- Reads each field's **resolved `<label>` text** + all attributes (pierces
+  **shadow DOM**), so label-only forms fill correctly.
+- Iterates **all** matches (fixes the hidden-decoy `.first` bug), skips
+  hidden/disabled fields.
+- Handles **required consent checkboxes**, **split month/day/year DOB**, and
+  fuzzy `<select>` options.
+- **Junk classifier** cleanly **skips** non-fillable pages (phone-only,
+  app-only, non-signup) with a reason, so they don't count against the
+  fillable-only success rate.
+
+It is wired into `auto-signup.py` → `process_entry` as the primary pass, ahead
+of the legacy selector/shadow/brute-force passes (kept as fallback). If
+`recognition.py` is missing, the bot falls back to the old engine.
+
+## Prove it
+
+```bash
+pip install playwright
+python run_compare.py     # old vs new on 10 fixtures
+```
+
+## Measure a real run
+
+After any batch, print the bucket breakdown and the **fillable-only** success
+rate (junk/dead sites excluded from the denominator, matching the 80–90%
+target). No run, no PII — just counts:
+
+```bash
+python auto-signup.py --report                 # reads the default results CSV
+python auto-signup.py --report --results PATH  # or a specific one
+```
+
+Watch `no form fields (recognition)` and `timeout` fall while the fillable-only
+rate rises.
+
+Result: fully-correct fillable forms **OLD 4/9 → NEW 9/9**; the junk page is
+skipped instead of failing. See `REPORT.md` for the full diagnosis (including
+why 54% of the old failure CSV was an already-fixed crash, not recognition).
+
+## Deploy to a VPS
+
+```bash
+cd deploy && bash setup-vps.sh            # or: bash setup-vps.sh --camoufox
+```
+
+See `deploy/DEPLOY.md` for the full walkthrough (config, service, workers).
+Enable the stealth browser with `LB_BROWSER=camoufox` (or `--browser camoufox`);
+it falls back to Chromium if Camoufox isn't installed. The `camoufox` skill has
+an installer and a bot-detection smoke test — run that first.
+
+## Files
+
+| file | purpose |
+|---|---|
+| `auto-signup.py` | production bot (patched; `--report` prints the rate breakdown, `--browser` picks the backend) |
+| `deploy/` | VPS setup kit — `setup-vps.sh`, `requirements.txt`, `.env.example`, `config.example.json`, `run.sh`, `loyaltybot.service`/`.timer` (nightly), `loyaltybot-retry.service`/`.timer` (weekly retry), `DEPLOY.md` |
+| `recognition.py` | new label-aware engine + junk classifier |
+| `old_engine.py` | extracted legacy engine — baseline for the harness |
+| `run_compare.py` | old-vs-new fixture harness |
+| `fixtures/` | 10 synthetic forms + expected fills (`build.py`, `manifest.json`) |
+| `REPORT.md` | diagnosis + proof |
+
+## Never commit
+
+Real client config (`config_*.json`), run results (`results*.csv`),
+`dead-urls.json`, CapSolver key, or any client PII. See `.gitignore`.
