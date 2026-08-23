@@ -12,7 +12,7 @@
 // Missing/failed BGM never blocks a render.
 
 import { spawn, spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, openSync, closeSync } from "node:fs";
+import { existsSync, mkdirSync, openSync, closeSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { downloadTo, searchSounds } from "./heygen.mjs";
 
@@ -105,6 +105,10 @@ export function generateBgmDetached({
   const rel = "assets/bgm/track.wav";
   const abs = join(hyperframesDir, rel);
   mkdirSync(join(hyperframesDir, "assets", "bgm"), { recursive: true });
+  // wait-bgm.mjs treats mere existence of `abs` as "ready" — clear any stale
+  // track from a previous run before spawning, so it can't be mistaken for
+  // this run's (not-yet-written) output.
+  if (existsSync(abs)) rmSync(abs, { force: true });
   const log = join(hyperframesDir, "assets", "bgm", `bgm-${Date.now()}.log`);
   const targetS = Math.max(1, durationS);
   const baseMeta = { path: rel, mode: null, volume: hasVoice ? 0.8 : 0.9, pending: true };

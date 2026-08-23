@@ -41,6 +41,17 @@ const prRef = flag("pr", null);
 if (!prRef) die('--pr "<url | owner/repo#N | N>" is required');
 const outDir = resolve(flag("out-dir", "./capture"));
 
+// gh's positional PR argument only understands <number> | <url> | <branch> —
+// passing "owner/repo#N" straight through makes gh read it as a branch name in
+// the current repo and fail. Split it into the number plus `--repo owner/repo`,
+// which is gh's documented way to target another repo.
+function splitPrRef(ref) {
+  const m = /^([^/\s#]+\/[^/\s#]+)#(\d+)$/.exec(ref);
+  if (m) return { arg: m[2], repoArgs: ["--repo", m[1]] };
+  return { arg: ref, repoArgs: [] };
+}
+const { arg: prArg, repoArgs } = splitPrRef(prRef);
+
 // Run gh, capture stdout. Returns { ok, stdout, stderr } — never throws (callers
 // decide whether a failure is fatal). 64 MB buffer covers large diffs / file lists.
 function ghTry(args) {
@@ -84,7 +95,7 @@ const FIELDS = [
   "mergedBy",
 ].join(",");
 
-const view = ghTry(["pr", "view", prRef, "--json", FIELDS]);
+const view = ghTry(["pr", "view", prArg, ...repoArgs, "--json", FIELDS]);
 if (!view.ok) die(`gh pr view "${prRef}" failed (auth / not found / private?):\n${view.stderr}`);
 
 let pr;
@@ -141,7 +152,7 @@ mkdirSync(outDir, { recursive: true });
 const prJsonPath = join(outDir, "pr.json");
 writeFileSync(prJsonPath, JSON.stringify(pr, null, 2) + "\n");
 
-const diff = ghTry(["pr", "diff", prRef]);
+const diff = ghTry(["pr", "diff", prArg, ...repoArgs]);
 const diffPath = join(outDir, "diff.patch");
 if (diff.ok) {
   writeFileSync(diffPath, diff.stdout);

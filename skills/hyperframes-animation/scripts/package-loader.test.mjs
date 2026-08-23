@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { copyFileSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -23,15 +23,41 @@ test("hyperframesPackageSpec: env override wins", async () => {
 });
 
 // (b) resolvable version (in-repo) pins the bundled hyperframes/@hyperframes/cli version.
-test("hyperframesPackageSpec: resolvable in-repo version pins it", async () => {
-  const prev = process.env[ENV];
-  delete process.env[ENV];
+// The loader walks ancestor package.json files looking for one named "hyperframes"
+// (or "@hyperframes/cli") — that's only true inside the original hyperframes
+// monorepo checkout, not a repo that vendors this skill under a different root
+// manifest name. So, same as test (c), build an isolated fixture with its own
+// matching ancestor manifest rather than relying on this checkout's actual tree.
+test("hyperframesPackageSpec: resolvable in-repo version pins it", () => {
+  const dir = mkdtempSync(join(tmpdir(), "hf-pkgloader-pinned-"));
   try {
-    const { hyperframesPackageSpec } = await import("./package-loader.mjs");
-    const spec = hyperframesPackageSpec("@hyperframes/producer");
-    assert.match(spec, /^@hyperframes\/producer@\d+\.\d+\.\d+/);
+    writeFileSync(
+      join(dir, "package.json"),
+      JSON.stringify({ name: "hyperframes", version: "1.2.3" }) + "\n",
+    );
+    const scriptsDir = join(dir, "scripts");
+    mkdirSync(scriptsDir);
+    copyFileSync(join(HERE, "package-loader.mjs"), join(scriptsDir, "package-loader.mjs"));
+    const probe = join(scriptsDir, "probe.mjs");
+    writeFileSync(
+      probe,
+      [
+        'import { hyperframesPackageSpec } from "./package-loader.mjs";',
+        'process.stdout.write(hyperframesPackageSpec("@hyperframes/producer"));',
+        "",
+      ].join("\n"),
+    );
+    const childEnv = { ...process.env };
+    delete childEnv[ENV];
+    const res = spawnSync(process.execPath, [probe], {
+      cwd: scriptsDir,
+      encoding: "utf8",
+      env: childEnv,
+    });
+    assert.equal(res.status, 0, res.stderr);
+    assert.equal(res.stdout.trim(), "@hyperframes/producer@1.2.3");
   } finally {
-    if (prev !== undefined) process.env[ENV] = prev;
+    rmSync(dir, { recursive: true, force: true });
   }
 });
 

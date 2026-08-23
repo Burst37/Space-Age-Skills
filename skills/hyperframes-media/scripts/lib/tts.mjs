@@ -62,13 +62,27 @@ export async function resolveVoiceId({ provider, userVoice, lang = "en" }) {
   // "first English voice the API returns" drifts whenever HeyGen re-sorts the
   // public catalog. Marcia (mature, low female). Override with --voice / request.voice.
   if (lang === "en") return "05f19352e8f74b0392a8f411eba40de1"; // Marcia · English · female
-  // Non-English: no fixed default — fall back to the first matching catalog voice.
+  // Non-English: match the requested language. HeyGen's public catalog exposes
+  // `language` as an English name (e.g. "Spanish"), not the ISO code `lang`
+  // carries, so map the common codes before comparing.
+  const LANGUAGE_NAMES = {
+    es: "Spanish", fr: "French", de: "German", it: "Italian", pt: "Portuguese",
+    ja: "Japanese", ko: "Korean", zh: "Chinese", hi: "Hindi", ar: "Arabic",
+    ru: "Russian", nl: "Dutch", pl: "Polish", tr: "Turkish", vi: "Vietnamese",
+    id: "Indonesian", th: "Thai", sv: "Swedish", da: "Danish", fi: "Finnish",
+    no: "Norwegian", el: "Greek", he: "Hebrew", cs: "Czech", ro: "Romanian",
+    hu: "Hungarian", uk: "Ukrainian",
+  };
+  const wantedName = (LANGUAGE_NAMES[lang.toLowerCase()] || lang).toLowerCase();
   const payload = await heygenJSON(`/voices?engine=starfish&type=public&limit=50`, {
     headers: heygenAuthHeaders(),
   });
   const voices = payload.data ?? payload.voices ?? [];
-  const pick = voices.find((v) => v.language === "English") ?? voices[0];
-  if (!pick) throw new Error("no public starfish voice to default to — pass --voice");
+  const pick = voices.find((v) => (v.language ?? "").toLowerCase() === wantedName);
+  if (!pick)
+    throw new Error(
+      `no public starfish voice found for language "${lang}" — pass --voice explicitly`,
+    );
   return pick.voice_id;
 }
 
