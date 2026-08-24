@@ -52,6 +52,10 @@ load `cinematic-website-builder` for the implementation → build per module 05.
 - **Ecommerce / DTC** — 05, 11, 14, 18, 21.
 - **Portfolio / agency** — 01, 04, 10, 13, 17, 23.
 - **Flagship / experimental** — 02, 04, 15, 17, 21 + WebGL.
+- **Medical / wellness** — 01, 06, 20. Motion 1 ceiling; calm pacing over reveals.
+- **Real estate** — 01, 03, 11, 18. Image-led, but the inquiry path never waits on motion.
+- **Nonprofit** — 01, 06, 20, 25. Proof and story; the donate path stays static.
+- **B2B industrial** — 01, 05, 06, 14, 20. Spec clarity beats atmosphere.
 
 ## Selection law
 

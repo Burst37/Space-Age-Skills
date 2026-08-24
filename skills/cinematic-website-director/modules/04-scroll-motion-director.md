@@ -31,9 +31,15 @@ Before adding any motion:
 Mostly *no* → do not animate. Question 6 answered *yes* → build the simpler one.
 
 ## Signature selection
-Choose **1–3 signature moments per page**, and exactly **one per viewport**. Everything
-else is supporting motion and must be measurably quieter — shorter, smaller amplitude,
-lower contrast.
+Choose **at most 1–3 signature moments per page**, and at most **one per viewport**.
+Everything else is supporting motion and must be measurably quieter — shorter, smaller
+amplitude, lower contrast.
+
+**This is a ceiling, not a floor.** At motion score 0–1 the correct number of signature
+moments is **zero**, and the motion map should say so. Inventing a signature to fill the
+slot is the failure this whole module exists to prevent — a trust-first site with no
+signature moment and excellent pacing outscores one with a hero animation nobody asked
+for.
 
 Name the signature moment in the DNA. If you cannot name it in one sentence, it is not a
 signature, it is decoration.

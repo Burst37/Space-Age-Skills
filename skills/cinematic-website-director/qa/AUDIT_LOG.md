@@ -37,3 +37,32 @@ Live benchmark runs (`BENCHMARK_SUITE.md`) against a target runtime. No written 
 prove visual output quality without executing representative builds. This package proves
 internal consistency, executability, economic routing, and deterministic gating — not that
 a given run wins an award. Run the 15 briefs and record results here before claiming more.
+
+---
+
+## 2026-08-24 — Benchmark run (V7.1)
+
+Full 15-brief suite executed. Results: `BENCHMARK_RUN_2026-08-24.md`.
+
+**Passed** all 10 cross-run failure signals and all 8 per-brief criteria. 15/15 briefs
+routed to the correct tier with no ±1 deviations. Max repeated hero archetype 13.3%
+(threshold 30%); max repeated font pairing 6.7% (threshold 25%); zero glassmorphism, zero
+three-card-grid-as-primary, zero "stack vertically" mobile strategies.
+
+**Executability proof:** brief 1 (HVAC, T0) built end-to-end and gated —
+`audit_build.py --tier T0` PASS, 0 blockers, 0 warnings, body contrast 15.36:1 (AAA).
+Source: `benchmark-artifacts/01-hvac/`.
+
+**Findings**
+
+| ID | Severity | Finding | Action |
+|---|---|---|---|
+| F-1 | low | `EFFECT_LIBRARY` archetype lists omitted medical/wellness, real estate, nonprofit, B2B industrial — 4 of the 15 brief types had no shortcut row | Fixed: 4 rows added |
+| F-2 | low | "Choose 1–3 signature moments" read as a floor; a careless run would invent a signature at motion ≤1 | Fixed: module 04 now states the correct count at motion 0–1 is zero |
+| F-3 | info | Dark-ground distribution 27% vs a 30% line — nearest near-miss | Recorded; measure again next run |
+| F-4 | structural | Run was executed by the package's own author — proves divergence and executability, **not quality** | Unfixable in-session. Mitigated: `FRESH_CONTEXT_JUDGE.md` added for cross-model evaluation |
+
+**Standing limitation.** No quality verdict exists yet. `FRESH_CONTEXT_JUDGE.md` carries
+three packets (skill / build / divergence spot-check) to run in Codex, Gemini, DeepSeek or
+a memoryless Claude session. Until at least Packet A and Packet B have been run and logged
+here, the honest claim is "diverges and executes," not "best in class."
