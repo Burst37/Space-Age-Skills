@@ -11,8 +11,11 @@ to providers that accept video.
 
 New in V5:
 - multimodal post-build judging (images + native video via Gemini Files API)
-- multi-model judge panels (Codex / Gemini 3.7 Flash / Kimi K3 / DeepSeek V4 Flash / Opus 5 /
-  Grok 4.6) with weighted median, majority-ship, any-seat veto, quorum and split-panel blocking
+- multi-model judge panels (GPT-5.6 Sol / Gemini 3.7 Flash / Kimi K3 / DeepSeek V4 Flash /
+  Opus 5 / Grok 4.6) with weighted median, majority-ship, any-seat veto, quorum and
+  split-panel blocking — all slugs verified against the live OpenRouter catalog
+- per-model video capability routing (Gemini + Kimi get the recording, the rest keyframes)
+- `.env` loaded automatically by every script — keys are set once, never re-entered
 - panel diversity warnings + `npm run verify:panel` seat preflight
 - scripted scroll-path video recording per viewport + ffmpeg keyframes
 - evidence adaptation per provider (video → keyframes, flagged, never silently dropped)
@@ -29,7 +32,8 @@ See `docs/SPACE_AGE_GAUNTLET_X_V5_HANDOFF.md`.
 ```bash
 npm run runner      # V5
 npm run verify:panel # check every judge seat resolves before spending anything
-npm run test:smoke  # 19 offline invariant tests, no API keys needed
+npm run doctor      # what is configured and what it costs you
+npm run test:smoke  # 22 offline invariant tests, no API keys needed
 ```
 
 Requires `ffmpeg` on PATH for keyframe sampling (absent → stills only, run continues) and

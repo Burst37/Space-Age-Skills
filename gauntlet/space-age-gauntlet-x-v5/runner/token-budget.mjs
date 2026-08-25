@@ -102,13 +102,30 @@ export function assertBudget(prompt, { maxTokens = 60000, label = "prompt" } = {
   return n;
 }
 
-/** Real pricing so the ledger stops reporting $0. USD per 1M tokens. */
+/**
+ * Real pricing so the ledger stops reporting $0. USD per 1M tokens.
+ * Per-model rates verified against the live OpenRouter catalog; `*:default` is the
+ * conservative fallback for an unlisted model. Override any of it via config.pricing.
+ */
 export const PRICE_TABLE = {
-  "openai:default": { in: 1.25, out: 10 },
-  "gemini:default": { in: 0.3, out: 2.5 },
-  "xai:default": { in: 3, out: 15 },
-  "openrouter:default": { in: 1, out: 5 },
-  "generic:default": { in: 0, out: 0 },
+  // panel seats (verified)
+  "openrouter:openai/gpt-5.6-sol":               { in: 2.0,  out: 10.0 },
+  "openrouter:openai/gpt-5.6-sol-pro":           { in: 2.0,  out: 10.0 },
+  "openrouter:moonshotai/kimi-k3":              { in: 3.0,  out: 15.0 },
+  "openrouter:deepseek/deepseek-v4-flash":      { in: 0.09, out: 0.18 },
+  "openrouter:deepseek/deepseek-v4-flash-vision-exp": { in: 0.22, out: 0.66 },
+  "openrouter:anthropic/claude-opus-5":         { in: 5.0,  out: 25.0 },
+  "openrouter:google/gemini-3.7-flash":         { in: 0.38, out: 1.88 },
+  "openrouter:x-ai/grok-4.6":                   { in: 2.0,  out: 6.0 },
+  // direct APIs
+  "gemini:gemini-3.7-flash":                    { in: 0.38, out: 1.88 },
+  "xai:grok-4.6":                               { in: 2.0,  out: 6.0 },
+  // fallbacks
+  "openai:default":     { in: 2.0,  out: 10.0 },
+  "gemini:default":     { in: 0.38, out: 1.88 },
+  "xai:default":        { in: 2.0,  out: 6.0 },
+  "openrouter:default": { in: 3.0,  out: 15.0 },
+  "generic:default":    { in: 0,    out: 0 },
 };
 
 export function estimateCost({ provider, model, usage }, table = PRICE_TABLE) {

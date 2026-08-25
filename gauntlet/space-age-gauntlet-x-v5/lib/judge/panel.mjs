@@ -1,6 +1,6 @@
 // V5 — judge panels. A single judge is one model's taste wearing a scoreboard. A panel of
 // distinct model families disagreeing is the only cheap signal we have for "is this score real".
-import { callWithFailover } from "../providers/index.mjs";
+import { callWithFailover, adaptEvidence } from "../providers/index.mjs";
 import { extractJson } from "../providers/base.mjs";
 import { j } from "../../runner/token-budget.mjs";
 
@@ -66,12 +66,15 @@ export function diversityReport(seats) {
  * excluded — it never silently becomes a zero, which would drag the median down and read as
  * a quality problem in the build.
  */
-export async function runPanel({ seats, system, prompt, images = [], video = null, maxOutputTokens, onCall = () => {} }) {
+export async function runPanel({ seats, system, prompt, images = [], video = null, frames = [], maxOutputTokens, onCall = () => {} }) {
   const results = await Promise.all(seats.map(async (seat) => {
     try {
-      const r = await callWithFailover([seat.provider], { system, prompt, images, video, model: seat.model || undefined, maxOutputTokens });
-      onCall({ seat, usage: r.usage, provider: r.provider, model: seat.model });
-      return { ...seat, ok: true, verdict: extractJson(r.text) };
+      // Each seat gets the richest evidence IT can consume: the recording if the model takes
+      // video, sampled keyframes otherwise. A blind seat never silently scores on nothing.
+      const ev = adaptEvidence(seat.provider, { images, video, frames, model: seat.model });
+      const r = await callWithFailover([seat.provider], { system, prompt, images: ev.images, video: ev.video, model: seat.model || undefined, maxOutputTokens });
+      onCall({ seat, usage: r.usage, provider: r.provider, model: seat.model, degraded: ev.degraded });
+      return { ...seat, ok: true, degraded: ev.degraded, verdict: extractJson(r.text) };
     } catch (e) {
       onCall({ seat, error: e.message });
       return { ...seat, ok: false, error: e.message?.slice(0, 200) };

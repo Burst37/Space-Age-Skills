@@ -55,7 +55,7 @@ A single judge is one model's taste wearing a scoreboard. V5 seats a panel:
 
 ```json
 "judgePanel": [
-  { "id": "codex",    "provider": "openrouter", "model": "openai/gpt-5.6-codex" },
+  { "id": "sol",      "provider": "openrouter", "model": "openai/gpt-5.6-sol" },
   { "id": "gemini",   "provider": "gemini",     "model": "gemini-3.7-flash" },
   { "id": "kimi",     "provider": "openrouter", "model": "moonshotai/kimi-k3" },
   { "id": "deepseek", "provider": "openrouter", "model": "deepseek/deepseek-v4-flash" },
@@ -84,9 +84,25 @@ model family (one opinion billed five times) or when every seat routes through o
 (one outage blinds the panel). The shipped preset deliberately puts the Gemini seat on the
 direct API for exactly that reason.
 
-`visualPanel` is separate and omits the DeepSeek and Kimi seats — a seat that cannot see the
-evidence would contribute a confident guess to the median — and leads with Gemini, the only
-adapter with native video.
+`visualPanel` omits the **DeepSeek** seat: `deepseek-v4-flash` is text-only, so it would be
+scoring evidence it cannot see. (Swap in `deepseek/deepseek-v4-flash-vision-exp` at
+$0.22/$0.66 if you want DeepSeek represented there.)
+
+**Video capability follows the model, not the transport.** OpenRouter carries both a
+video-capable Kimi K3 and a text-only DeepSeek Flash, so `supportsVideo(provider, model)`
+decides per seat. Gemini 3.7 Flash and Kimi K3 receive the actual scroll **recording**;
+Opus, Sol and Grok receive sampled keyframes and are flagged `degraded: "video->frames"`.
+
+Verified seat capabilities and live pricing (per 1M tokens):
+
+| Seat | Modalities | Context | $ in / out |
+|---|---|---|---|
+| `openai/gpt-5.6-sol` | text, image, file | 1.05M | 2.00 / 10.00 |
+| `gemini-3.7-flash` | text, image, **video**, audio | 1.05M | 0.38 / 1.88 |
+| `moonshotai/kimi-k3` | text, image, **video** | 1.05M | 3.00 / 15.00 |
+| `deepseek/deepseek-v4-flash` | text only | 1.05M | 0.09 / 0.18 |
+| `anthropic/claude-opus-5` | text, image, file | 1M | 5.00 / 25.00 |
+| `x-ai/grok-4.6` | text, image, file | 500k | 2.00 / 6.00 |
 
 Run `npm run verify:panel` before a gauntlet: it checks credentials per seat and validates
 every OpenRouter slug against the live catalog, so a bad model ID costs a second at startup
@@ -157,7 +173,7 @@ ROUND COMMIT → REPEAT / SHIP (+ optional branch push)
 ```json
 "provider": { "visual": "gemini" },
 "judgePanel": [ ... ], "visualPanel": [ ... ],
-"panelQuorum": { "judge": 4, "visual": 2 },
+"panelQuorum": { "judge": 4, "visual": 3 },
 "maxJudgeSpread": 25,
 "web": { "captureScroll": true, "scrollSteps": 8, "maxFrames": 12, "maxEvidenceImages": 10, "sendVideo": true },
 "snapshot": { "maxFiles": 80, "maxChars": 140000 },
@@ -167,6 +183,15 @@ ROUND COMMIT → REPEAT / SHIP (+ optional branch push)
 "git": { "pushOnShip": false }
 ```
 
+## API keys — set once
+
+Copy `.env.example` to `.env`, fill it in **once**. Every npm script loads it automatically
+via `--env-file-if-exists=.env`, so keys are never re-entered per run.
+
+Three keys cover the entire shipped panel:
+`OPENROUTER_API_KEY` (sol, kimi, deepseek, opus) + `GEMINI_API_KEY` (gemini + native video)
++ `XAI_API_KEY` (grok). Run `npm run doctor` to see what is configured.
+
 ## Commands
 
 ```bash
@@ -174,7 +199,8 @@ npm run runner       # V5
 npm run runner:v4    # V4, kept for comparison runs
 npm run resume
 npm run verify:panel # check every judge seat resolves before spending anything
-npm run test:smoke   # 19 offline invariant tests, no API keys
+npm run doctor       # what is configured and what it costs you
+npm run test:smoke   # 22 offline invariant tests, no API keys
 npm run health
 ```
 

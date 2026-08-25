@@ -1,6 +1,6 @@
 // V5 smoke tests — no network, no API keys. Guards the invariants V5 was built to fix.
 import assert from "node:assert/strict";
-import { adaptEvidence, callProvider } from "../lib/providers/index.mjs";
+import { adaptEvidence, callProvider, supportsVideo } from "../lib/providers/index.mjs";
 import { assertBudget, compressChecks, deltaSnapshot, createSnapshotCache, tok } from "../runner/token-budget.mjs";
 import { newLedger, recordCall, estimateCost, ledgerSummary } from "../lib/cost/ledger.mjs";
 import { builderPrompt, judgePrompt } from "../runner/prompts.mjs";
@@ -22,6 +22,31 @@ await t("non-video provider degrades to keyframes, flagged", () => {
 });
 await t("video to a text-only provider is refused, not silently dropped", async () => {
   await assert.rejects(() => callProvider("openrouter", { prompt: "x", video: { path: "v" } }), /cannot accept video/);
+});
+
+await t("video capability follows the model, not the transport", () => {
+  assert.equal(supportsVideo("openrouter", "moonshotai/kimi-k3"), true, "Kimi K3 takes video");
+  assert.equal(supportsVideo("openrouter", "deepseek/deepseek-v4-flash"), false, "DeepSeek Flash is text-only");
+  assert.equal(supportsVideo("openrouter", "anthropic/claude-opus-5"), false);
+  assert.equal(supportsVideo("gemini", ""), true);
+  // Same transport, opposite answers — the old provider-level set got this wrong.
+  assert.notEqual(supportsVideo("openrouter", "moonshotai/kimi-k3"), supportsVideo("openrouter", "deepseek/deepseek-v4-flash"));
+});
+await t("each seat gets the richest evidence it can consume", () => {
+  const kimi = adaptEvidence("openrouter", { images: ["i"], video: { path: "v" }, frames: ["f"], model: "moonshotai/kimi-k3" });
+  assert.ok(kimi.video, "video-capable seat keeps the recording");
+  const ds = adaptEvidence("openrouter", { images: ["i"], video: { path: "v" }, frames: ["f"], model: "deepseek/deepseek-v4-flash" });
+  assert.equal(ds.video, null);
+  assert.equal(ds.degraded, "video->frames");
+});
+await t("real prices are wired for every panel seat", async () => {
+  const { PRICE_TABLE, estimateCost } = await import("../runner/token-budget.mjs");
+  for (const m of ["openai/gpt-5.6-sol", "moonshotai/kimi-k3", "deepseek/deepseek-v4-flash", "anthropic/claude-opus-5"]) {
+    assert.ok(PRICE_TABLE[`openrouter:${m}`], `no price for ${m}`);
+  }
+  const cheap = estimateCost({ provider: "openrouter", model: "deepseek/deepseek-v4-flash", usage: { input_tokens: 1e6 } });
+  const dear = estimateCost({ provider: "openrouter", model: "anthropic/claude-opus-5", usage: { input_tokens: 1e6 } });
+  assert.ok(dear > cheap * 10, "per-model pricing must actually differentiate");
 });
 
 console.log("token budget");
@@ -147,6 +172,10 @@ await t("shipped preset is six distinct families, no warnings", async () => {
   const v = diversityReport(normalizeSeats(cfg.visualPanel, ["gemini"]));
   assert.ok(v.diverse);
   assert.ok(cfg.panelQuorum.judge <= d.seats);
+  assert.ok(cfg.panelQuorum.visual <= v.seats);
+  // A text-only model must never sit on the panel that scores visual evidence.
+  const visualModels = cfg.visualPanel.map((s) => s.model);
+  assert.ok(!visualModels.includes("deepseek/deepseek-v4-flash"), "text-only seat on the visual panel");
 });
 
 console.log(`\n${pass} passed, ${fail} failed`);

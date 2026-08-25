@@ -10,13 +10,22 @@ const providers={openai:callOpenAI,xai:callXAI,gemini:callGemini,openrouter:call
 // understanding — everyone else is served keyframes. Kept explicit so a text-only
 // provider fails loudly rather than silently discarding the evidence.
 export const VISION_CAPABLE=new Set(["openai","xai","gemini","openrouter","generic"]);
-export const VIDEO_CAPABLE=new Set(["gemini"]);
+
+// Video support is a property of the MODEL, not the transport: OpenRouter can carry both a
+// video-capable Kimi K3 and a text-only DeepSeek Flash. Verified against the live catalog.
+const VIDEO_MODELS=[/gemini-3\.[5-9]|gemini-[4-9]/i,/kimi-k3/i];
+export const VIDEO_CAPABLE=new Set(["gemini"]); // direct-API providers whose default model takes video
+
+export function supportsVideo(provider,model=""){
+  if(model) return VIDEO_MODELS.some(r=>r.test(model));
+  return VIDEO_CAPABLE.has(provider);
+}
 
 export async function callProvider(name,args){
   const fn=providers[name];
   if(!fn) throw new Error(`Unknown provider: ${name}`);
   if(args?.images?.length && !VISION_CAPABLE.has(name)) throw new Error(`Provider ${name} cannot accept image evidence`);
-  if(args?.video && !VIDEO_CAPABLE.has(name)) throw new Error(`Provider ${name} cannot accept video evidence`);
+  if(args?.video && !supportsVideo(name,args.model)) throw new Error(`${name}${args.model?"/"+args.model:""} cannot accept video evidence`);
   return fn(args);
 }
 
@@ -26,8 +35,8 @@ export async function callProvider(name,args){
  * the returned `degraded` flag is recorded on the round so a low motion score is
  * attributable to the adapter rather than to the build.
  */
-export function adaptEvidence(name,{images=[],video=null,frames=[]}={}){
-  if(video && VIDEO_CAPABLE.has(name)) return {images,video,degraded:false};
+export function adaptEvidence(name,{images=[],video=null,frames=[],model=""}={}){
+  if(video && supportsVideo(name,model)) return {images,video,degraded:false};
   if(video) return {images:[...images,...frames].slice(0,12),video:null,degraded:"video->frames"};
   return {images,video:null,degraded:false};
 }
@@ -54,7 +63,7 @@ export async function callWithFailover(chain,args,{retries=2,baseDelayMs=1500,on
   for(const name of chain.filter(Boolean)){
     if(!providerAvailable(name)) { tried.push({provider:name,skipped:"missing_credentials"}); continue; }
     if(args?.images?.length && !VISION_CAPABLE.has(name)) { tried.push({provider:name,skipped:"no_vision"}); continue; }
-    if(args?.video && !VIDEO_CAPABLE.has(name)) { tried.push({provider:name,skipped:"no_video"}); continue; }
+    if(args?.video && !supportsVideo(name,args.model)) { tried.push({provider:name,skipped:"no_video"}); continue; }
     for(let attempt=0;attempt<=retries;attempt++){
       try{
         const r=await callProvider(name,args);

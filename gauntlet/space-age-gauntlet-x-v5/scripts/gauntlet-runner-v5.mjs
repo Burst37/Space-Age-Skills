@@ -171,19 +171,24 @@ for (let round = startRound; round <= config.maxRounds; round++) {
   let visualVerdict = null;
   if (Array.isArray(rawWeb) && rawWeb.length && visualChain.length) {
     const packet = await buildEvidencePacket(rawWeb, config.referenceDNA, { maxImages: config.web?.maxEvidenceImages ?? 10 });
-    const target = visualChain[0];
-    const ev = adaptEvidence(target, { images: packet.images, video: config.web?.sendVideo === false ? null : packet.video, frames: packet.frames });
+    // Route by the lead seat's actual model — video support is a model property, not a
+    // transport one (OpenRouter carries both video-capable Kimi K3 and text-only DeepSeek).
+    const lead = visualSeats[0];
+    const ev = adaptEvidence(lead.provider, { images: packet.images, video: config.web?.sendVideo === false ? null : packet.video, frames: packet.frames, model: lead.model });
+    const target = lead.provider;
     if (ev.degraded) note({ type: "evidence_degraded", provider: target, mode: ev.degraded });
     const seatResults = await runPanel({
       seats: visualSeats,
       system: visualJudgeSystem(),
       prompt: visualJudgePrompt(packet),
-      images: ev.images,
-      video: ev.video,
+      images: packet.images,
+      video: config.web?.sendVideo === false ? null : packet.video,
+      frames: packet.frames,
       maxOutputTokens: config.maxOutputTokens?.visual,
-      onCall: ({ seat, usage, provider, error }) => {
+      onCall: ({ seat, usage, provider, error, degraded }) => {
         if (error) return note({ type: "visual_seat_failed", seat: seat.id, error });
-        recordCall(state.costLedger, { provider: provider || seat.provider, model: seat.model, role: "visual_judge", round, usage, estimatedUsd: estimateCost({ provider: provider || seat.provider, model: seat.model, usage }, PRICING), degraded: ev.degraded });
+        if (degraded) note({ type: "seat_evidence_degraded", seat: seat.id, model: seat.model, mode: degraded });
+        recordCall(state.costLedger, { provider: provider || seat.provider, model: seat.model, role: "visual_judge", round, usage, estimatedUsd: estimateCost({ provider: provider || seat.provider, model: seat.model, usage }, PRICING), degraded });
       },
     });
     const agg = aggregate(seatResults, ["techniqueFidelity", "originality", "visualQuality", "responsiveQuality", "motionFidelity"]);
