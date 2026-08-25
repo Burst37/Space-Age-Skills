@@ -1,28 +1,30 @@
 {
-  "_comment": "Five-family judge panel. Diversity is the point: five seats from five different labs disagree in different directions, which is the only cheap signal that a score is real rather than one model's taste. Verify IDs with `npm run verify:panel` before a run — OpenRouter slugs change.",
+  "_comment": "Six-family judge panel. Diversity is the point: seats from six different labs fail in different directions, which is the only cheap signal that a score is real rather than one model's taste. Slugs drift — run `npm run verify:panel` before every gauntlet.",
 
   "judgePanel": [
-    { "id": "opus",     "provider": "openrouter", "model": "anthropic/claude-opus-5",        "weight": 1 },
-    { "id": "gemini",   "provider": "gemini",     "model": "gemini-3.7-flash",               "weight": 1 },
-    { "id": "deepseek", "provider": "openrouter", "model": "deepseek/deepseek-chat",         "weight": 1 },
-    { "id": "kimi",     "provider": "openrouter", "model": "moonshotai/kimi-k3",             "weight": 1 },
-    { "id": "codex",    "provider": "openrouter", "model": "openai/gpt-5.6-codex",           "weight": 1 }
+    { "id": "codex",    "provider": "openrouter", "model": "openai/gpt-5.6-codex",      "weight": 1 },
+    { "id": "gemini",   "provider": "gemini",     "model": "gemini-3.7-flash",          "weight": 1 },
+    { "id": "kimi",     "provider": "openrouter", "model": "moonshotai/kimi-k3",        "weight": 1 },
+    { "id": "deepseek", "provider": "openrouter", "model": "deepseek/deepseek-v4-flash","weight": 1 },
+    { "id": "opus",     "provider": "openrouter", "model": "anthropic/claude-opus-5",   "weight": 1 },
+    { "id": "grok",     "provider": "xai",        "model": "grok-4.6",                  "weight": 1, "enabled": true }
   ],
 
   "visualPanel": [
     { "id": "gemini-vision", "provider": "gemini",     "model": "gemini-3.7-flash",        "weight": 1 },
     { "id": "opus-vision",   "provider": "openrouter", "model": "anthropic/claude-opus-5", "weight": 1 },
-    { "id": "gpt-vision",    "provider": "openrouter", "model": "openai/gpt-5.6",          "weight": 1 }
+    { "id": "grok-vision",   "provider": "xai",        "model": "grok-4.6",                "weight": 1, "enabled": true }
   ],
 
-  "panelQuorum": { "judge": 3, "visual": 2 },
+  "panelQuorum": { "judge": 4, "visual": 2 },
   "maxJudgeSpread": 25,
 
   "_notes": [
-    "gemini seat deliberately sits on the direct API, not OpenRouter — if OpenRouter has an outage the panel still reaches quorum.",
-    "visualPanel excludes text-only seats: DeepSeek and Kimi seats are omitted there because a blind seat cannot score visual evidence.",
-    "gemini leads visualPanel because it is the only adapter with native video understanding; the others receive sampled keyframes.",
-    "panelQuorum.judge=3 of 5 means two dead seats still produce a verdict, three does not.",
+    "grok seats carry `enabled` so they can be benched with one word instead of being deleted; set false to drop to a five-seat judge panel and a two-seat visual panel (lower panelQuorum.judge to 3 if you do).",
+    "gemini and grok seats sit on their direct APIs, not OpenRouter — if OpenRouter has an outage the panel still reaches quorum.",
+    "visualPanel omits the deepseek and kimi seats on purpose: a seat that cannot see the evidence would contribute a confident guess to the median.",
+    "gemini leads visualPanel because it is the only adapter with native video understanding; the other seats receive sampled keyframes and are flagged degraded.",
+    "panelQuorum.judge=4 of 6 means two dead seats still produce a verdict, three does not.",
     "maxJudgeSpread=25 blocks shipping when the panel is genuinely split rather than averaging the disagreement away."
   ]
 }

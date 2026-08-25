@@ -17,7 +17,9 @@ export const median = (xs) => {
  * direct API so an OpenRouter outage cannot blind the whole panel.
  */
 export function normalizeSeats(panel, fallbackChain) {
-  const seats = (panel || []).filter((s) => s?.provider).map((s, i) => ({
+  // `enabled: false` benches a seat without deleting it — trialling a model should not mean
+  // restructuring the panel, and a benched seat stays visible in the config as a record.
+  const seats = (panel || []).filter((s) => s?.provider && s.enabled !== false).map((s, i) => ({
     id: s.id || `seat${i + 1}`,
     provider: s.provider,
     model: s.model || "",

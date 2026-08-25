@@ -4,7 +4,7 @@ import { adaptEvidence, callProvider } from "../lib/providers/index.mjs";
 import { assertBudget, compressChecks, deltaSnapshot, createSnapshotCache, tok } from "../runner/token-budget.mjs";
 import { newLedger, recordCall, estimateCost, ledgerSummary } from "../lib/cost/ledger.mjs";
 import { builderPrompt, judgePrompt } from "../runner/prompts.mjs";
-import { aggregate, quorumMet, diversityReport, median } from "../lib/judge/panel.mjs";
+import { aggregate, quorumMet, diversityReport, median, normalizeSeats } from "../lib/judge/panel.mjs";
 
 let pass = 0, fail = 0;
 const t = async (name, fn) => { try { await fn(); console.log("  ok", name); pass++; } catch (e) { console.log("  FAIL", name, "—", e.message); fail++; } };
@@ -127,6 +127,26 @@ await t("mixed families across mixed transports passes clean", () => {
   ]);
   assert.equal(d.diverse, true);
   assert.deepEqual(d.warnings, []);
+});
+
+await t("enabled:false benches a seat without deleting it", () => {
+  const seats = normalizeSeats([
+    { id: "a", provider: "openrouter", model: "x/y" },
+    { id: "grok", provider: "xai", model: "grok-4.6", enabled: false },
+  ], ["openai"]);
+  assert.equal(seats.length, 1);
+  assert.equal(seats[0].id, "a");
+});
+await t("shipped preset is six distinct families, no warnings", async () => {
+  const fs = await import("node:fs/promises");
+  const cfg = JSON.parse(await fs.readFile(new URL("../presets/judge-panel.json", import.meta.url), "utf8"));
+  const d = diversityReport(normalizeSeats(cfg.judgePanel, ["openai"]));
+  assert.equal(d.seats, 6);
+  assert.equal(d.families.length, 6, "six seats must be six labs, not six slugs");
+  assert.deepEqual(d.warnings, []);
+  const v = diversityReport(normalizeSeats(cfg.visualPanel, ["gemini"]));
+  assert.ok(v.diverse);
+  assert.ok(cfg.panelQuorum.judge <= d.seats);
 });
 
 console.log(`\n${pass} passed, ${fail} failed`);

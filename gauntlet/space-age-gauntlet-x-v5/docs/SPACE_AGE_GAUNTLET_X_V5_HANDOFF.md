@@ -55,13 +55,17 @@ A single judge is one model's taste wearing a scoreboard. V5 seats a panel:
 
 ```json
 "judgePanel": [
-  { "id": "opus",     "provider": "openrouter", "model": "anthropic/claude-opus-5" },
+  { "id": "codex",    "provider": "openrouter", "model": "openai/gpt-5.6-codex" },
   { "id": "gemini",   "provider": "gemini",     "model": "gemini-3.7-flash" },
-  { "id": "deepseek", "provider": "openrouter", "model": "deepseek/deepseek-chat" },
   { "id": "kimi",     "provider": "openrouter", "model": "moonshotai/kimi-k3" },
-  { "id": "codex",    "provider": "openrouter", "model": "openai/gpt-5.6-codex" }
+  { "id": "deepseek", "provider": "openrouter", "model": "deepseek/deepseek-v4-flash" },
+  { "id": "opus",     "provider": "openrouter", "model": "anthropic/claude-opus-5" },
+  { "id": "grok",     "provider": "xai",        "model": "grok-4.6", "enabled": true }
 ]
 ```
+
+Six seats, six labs. `enabled: false` benches a seat without deleting it, so trialling a
+model is one word rather than a restructure.
 
 Aggregation rules, each chosen against a specific failure:
 
@@ -80,8 +84,9 @@ model family (one opinion billed five times) or when every seat routes through o
 (one outage blinds the panel). The shipped preset deliberately puts the Gemini seat on the
 direct API for exactly that reason.
 
-`visualPanel` is separate and excludes text-only seats — a blind model cannot score visual
-evidence — and leads with Gemini, the only adapter with native video.
+`visualPanel` is separate and omits the DeepSeek and Kimi seats — a seat that cannot see the
+evidence would contribute a confident guess to the median — and leads with Gemini, the only
+adapter with native video.
 
 Run `npm run verify:panel` before a gauntlet: it checks credentials per seat and validates
 every OpenRouter slug against the live catalog, so a bad model ID costs a second at startup
@@ -152,7 +157,7 @@ ROUND COMMIT → REPEAT / SHIP (+ optional branch push)
 ```json
 "provider": { "visual": "gemini" },
 "judgePanel": [ ... ], "visualPanel": [ ... ],
-"panelQuorum": { "judge": 3, "visual": 2 },
+"panelQuorum": { "judge": 4, "visual": 2 },
 "maxJudgeSpread": 25,
 "web": { "captureScroll": true, "scrollSteps": 8, "maxFrames": 12, "maxEvidenceImages": 10, "sendVideo": true },
 "snapshot": { "maxFiles": 80, "maxChars": 140000 },
@@ -169,7 +174,7 @@ npm run runner       # V5
 npm run runner:v4    # V4, kept for comparison runs
 npm run resume
 npm run verify:panel # check every judge seat resolves before spending anything
-npm run test:smoke   # 17 offline invariant tests, no API keys
+npm run test:smoke   # 19 offline invariant tests, no API keys
 npm run health
 ```
 
