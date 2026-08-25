@@ -178,5 +178,17 @@ await t("shipped preset is six distinct families, no warnings", async () => {
   assert.ok(!visualModels.includes("deepseek/deepseek-v4-flash"), "text-only seat on the visual panel");
 });
 
+await t("single-key preset keeps six labs and disables video honestly", async () => {
+  const fs = await import("node:fs/promises");
+  const cfg = JSON.parse(await fs.readFile(new URL("../presets/judge-panel-openrouter-only.json", import.meta.url), "utf8"));
+  const seats = normalizeSeats(cfg.judgePanel, ["openrouter"]);
+  const d = diversityReport(seats);
+  assert.equal(d.families.length, 6, "narrowing the transport must not narrow the labs");
+  assert.equal(d.singleTransport, "openrouter");
+  assert.equal(d.warnings.length, 1, "single-transport risk must still be surfaced");
+  assert.equal(cfg.web.sendVideo, false, "no video path over OpenRouter — say so, do not silently degrade");
+  assert.ok(seats.every((x) => x.provider === "openrouter"), "one key must mean one provider");
+});
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

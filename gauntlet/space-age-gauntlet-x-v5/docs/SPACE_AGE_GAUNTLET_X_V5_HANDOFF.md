@@ -188,9 +188,22 @@ ROUND COMMIT → REPEAT / SHIP (+ optional branch push)
 Copy `.env.example` to `.env`, fill it in **once**. Every npm script loads it automatically
 via `--env-file-if-exists=.env`, so keys are never re-entered per run.
 
-Three keys cover the entire shipped panel:
-`OPENROUTER_API_KEY` (sol, kimi, deepseek, opus) + `GEMINI_API_KEY` (gemini + native video)
-+ `XAI_API_KEY` (grok). Run `npm run doctor` to see what is configured.
+**Only one key is actually required.** All six panel seats exist on OpenRouter, so
+`OPENROUTER_API_KEY` alone runs the full six-lab panel via
+`presets/judge-panel-openrouter-only.json`.
+
+| Key | Required? | What it buys |
+|---|---|---|
+| `OPENROUTER_API_KEY` | **yes** | all six seats — sol, gemini, kimi, deepseek, opus, grok |
+| `GEMINI_API_KEY` | recommended | native video motion judging (the reason V5 records the scroll), plus a seat off OpenRouter so one outage cannot take the panel to zero |
+| `XAI_API_KEY` | optional | nothing new — Grok runs fine over OpenRouter |
+
+The OpenRouter adapter sends image parts only, so on the single-key preset the scroll
+recording never reaches a model and every visual seat scores sampled keyframes. That preset
+sets `web.sendVideo: false` to make the limitation explicit rather than silently degrading,
+and the judge is told motion is keyframe-only so it scores `motionFidelity` accordingly.
+
+Run `npm run doctor` — it names which key to add next and what it unlocks.
 
 ## Commands
 

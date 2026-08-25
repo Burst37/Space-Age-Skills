@@ -36,5 +36,18 @@ try {
 } catch {}
 say(ffmpeg, "ffmpeg keyframe sampling", "install ffmpeg, or motion evidence falls back to stills");
 
-console.log(`\n${live}/${PROVIDERS.length} providers configured. Three keys (OpenRouter + Gemini + xAI) cover the whole shipped panel.`);
+console.log(`\n${live}/${PROVIDERS.length} providers configured.`);
+
+// Say plainly what each additional key buys, so nobody signs up for an account they don't need.
+if (!has("OPENROUTER_API_KEY")) {
+  console.log("\n→ OPENROUTER_API_KEY is the one key that matters. All six panel seats exist there.");
+} else if (!has("GEMINI_API_KEY")) {
+  console.log("\n→ You can run the whole panel right now with presets/judge-panel-openrouter-only.json.");
+  console.log("  Adding GEMINI_API_KEY buys two things: native video motion judging (the reason V5 records");
+  console.log("  the scroll at all), and a seat off OpenRouter so one outage cannot take the panel to zero.");
+  console.log("  XAI_API_KEY is optional — Grok runs fine over OpenRouter.");
+} else {
+  console.log("\n→ Use presets/judge-panel.json (native video + off-OpenRouter redundancy).");
+  if (!has("XAI_API_KEY")) console.log("  XAI_API_KEY is optional — the Grok seat falls back to OpenRouter.");
+}
 console.log("Next: npm run verify:panel");
