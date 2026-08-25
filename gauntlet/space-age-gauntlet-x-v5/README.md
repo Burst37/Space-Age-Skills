@@ -16,6 +16,8 @@ New in V5:
   split-panel blocking — all slugs verified against the live OpenRouter catalog
 - per-model video capability routing (Gemini + Kimi get the recording, the rest keyframes)
 - `.env` loaded automatically by every script — keys are set once, never re-entered
+- direct adapters for Anthropic, Moonshot and DeepSeek, so the all-direct panel
+  (`presets/judge-panel-direct.json`) runs six labs over six transports with no broker
 - panel diversity warnings + `npm run verify:panel` seat preflight
 - scripted scroll-path video recording per viewport + ffmpeg keyframes
 - evidence adaptation per provider (video → keyframes, flagged, never silently dropped)
@@ -33,7 +35,7 @@ See `docs/SPACE_AGE_GAUNTLET_X_V5_HANDOFF.md`.
 npm run runner      # V5
 npm run verify:panel # check every judge seat resolves before spending anything
 npm run doctor      # what is configured and what it costs you
-npm run test:smoke  # 22 offline invariant tests, no API keys needed
+npm run test:smoke  # 26 offline invariant tests, no API keys needed
 ```
 
 Requires `ffmpeg` on PATH for keyframe sampling (absent → stills only, run continues) and

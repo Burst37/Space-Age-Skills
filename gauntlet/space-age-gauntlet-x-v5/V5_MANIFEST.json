@@ -3,6 +3,9 @@
   "name": "Space Age Gauntlet X V5",
   "thesis": "Close the evidence loop. V4 judged rendered work from file paths; V5 judges the pixels.",
   "capabilities": [
+    "all-direct provider panel (no broker dependency)",
+    "direct adapters: Anthropic Messages, Moonshot, DeepSeek",
+    "video capability gated on adapter AND model",
     "multi-model judge panels (weighted median, majority ship, any-seat veto)",
     "panel quorum + split-panel ship blocking",
     "panel diversity detection (family + transport monoculture warnings)",

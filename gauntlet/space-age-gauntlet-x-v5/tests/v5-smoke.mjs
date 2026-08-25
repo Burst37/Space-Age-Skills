@@ -24,20 +24,25 @@ await t("video to a text-only provider is refused, not silently dropped", async 
   await assert.rejects(() => callProvider("openrouter", { prompt: "x", video: { path: "v" } }), /cannot accept video/);
 });
 
-await t("video capability follows the model, not the transport", () => {
-  assert.equal(supportsVideo("openrouter", "moonshotai/kimi-k3"), true, "Kimi K3 takes video");
-  assert.equal(supportsVideo("openrouter", "deepseek/deepseek-v4-flash"), false, "DeepSeek Flash is text-only");
-  assert.equal(supportsVideo("openrouter", "anthropic/claude-opus-5"), false);
-  assert.equal(supportsVideo("gemini", ""), true);
-  // Same transport, opposite answers — the old provider-level set got this wrong.
-  assert.notEqual(supportsVideo("openrouter", "moonshotai/kimi-k3"), supportsVideo("openrouter", "deepseek/deepseek-v4-flash"));
+await t("video needs BOTH a capable model and an adapter that carries it", () => {
+  // Kimi K3 understands video, but the OpenRouter adapter serialises image parts only —
+  // claiming support there would silently drop the recording.
+  assert.equal(supportsVideo("openrouter", "moonshotai/kimi-k3"), false, "adapter cannot carry video");
+  assert.equal(supportsVideo("gemini", ""), true, "Gemini Files API does carry it");
+  assert.equal(supportsVideo("gemini", "gemini-3.7-flash"), true);
+  assert.equal(supportsVideo("openrouter", "deepseek/deepseek-v4-flash"), false);
+  assert.equal(supportsVideo("anthropic", "claude-opus-5"), false);
 });
-await t("each seat gets the richest evidence it can consume", () => {
+await t("a seat that cannot carry video degrades to keyframes, flagged", () => {
   const kimi = adaptEvidence("openrouter", { images: ["i"], video: { path: "v" }, frames: ["f"], model: "moonshotai/kimi-k3" });
-  assert.ok(kimi.video, "video-capable seat keeps the recording");
-  const ds = adaptEvidence("openrouter", { images: ["i"], video: { path: "v" }, frames: ["f"], model: "deepseek/deepseek-v4-flash" });
-  assert.equal(ds.video, null);
-  assert.equal(ds.degraded, "video->frames");
+  assert.equal(kimi.video, null);
+  assert.equal(kimi.degraded, "video->frames");
+  assert.equal(kimi.images.length, 2, "keyframes fold in, evidence is never dropped");
+  const gem = adaptEvidence("gemini", { images: ["i"], video: { path: "v" }, frames: ["f"], model: "gemini-3.7-flash" });
+  assert.ok(gem.video, "the one adapter that carries video keeps the recording");
+});
+await t("a text-only provider refuses image evidence outright", async () => {
+  await assert.rejects(() => callProvider("deepseek", { prompt: "x", images: ["data:image/png;base64,aa"] }), /cannot accept image/);
 });
 await t("real prices are wired for every panel seat", async () => {
   const { PRICE_TABLE, estimateCost } = await import("../runner/token-budget.mjs");
@@ -188,6 +193,27 @@ await t("single-key preset keeps six labs and disables video honestly", async ()
   assert.equal(d.warnings.length, 1, "single-transport risk must still be surfaced");
   assert.equal(cfg.web.sendVideo, false, "no video path over OpenRouter — say so, do not silently degrade");
   assert.ok(seats.every((x) => x.provider === "openrouter"), "one key must mean one provider");
+});
+
+await t("all-direct preset uses six independent transports", async () => {
+  const fs = await import("node:fs/promises");
+  const cfg = JSON.parse(await fs.readFile(new URL("../presets/judge-panel-direct.json", import.meta.url), "utf8"));
+  const seats = normalizeSeats(cfg.judgePanel, ["openai"]);
+  const transports = new Set(seats.map((s) => s.provider));
+  assert.equal(transports.size, 6, "every seat must ride its own lab's API");
+  assert.ok(!transports.has("openrouter"), "the all-direct preset must not depend on the broker");
+  const d = diversityReport(seats);
+  assert.equal(d.singleTransport, null);
+  assert.deepEqual(d.warnings, []);
+  // The text-only DeepSeek seat must stay off the panel that scores pixels.
+  assert.ok(!cfg.visualPanel.some((s) => s.provider === "deepseek"));
+});
+await t("every direct provider is registered and credential-gated", async () => {
+  const { providerAvailable } = await import("../lib/providers/index.mjs");
+  for (const p of ["anthropic", "deepseek", "moonshot"]) {
+    assert.equal(typeof providerAvailable(p), "boolean", `${p} not registered`);
+    await assert.rejects(() => callProvider(p, { prompt: "x" }), /missing/i, `${p} must refuse without a key`);
+  }
 });
 
 console.log(`\n${pass} passed, ${fail} failed`);

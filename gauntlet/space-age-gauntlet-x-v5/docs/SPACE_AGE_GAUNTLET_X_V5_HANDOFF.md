@@ -188,22 +188,35 @@ ROUND COMMIT → REPEAT / SHIP (+ optional branch push)
 Copy `.env.example` to `.env`, fill it in **once**. Every npm script loads it automatically
 via `--env-file-if-exists=.env`, so keys are never re-entered per run.
 
-**Only one key is actually required.** All six panel seats exist on OpenRouter, so
-`OPENROUTER_API_KEY` alone runs the full six-lab panel via
-`presets/judge-panel-openrouter-only.json`.
+Three presets, in order of preference:
 
-| Key | Required? | What it buys |
+| Preset | Transports | Use when |
 |---|---|---|
-| `OPENROUTER_API_KEY` | **yes** | all six seats — sol, gemini, kimi, deepseek, opus, grok |
-| `GEMINI_API_KEY` | recommended | native video motion judging (the reason V5 records the scroll), plus a seat off OpenRouter so one outage cannot take the panel to zero |
-| `XAI_API_KEY` | optional | nothing new — Grok runs fine over OpenRouter |
+| `judge-panel-direct.json` | **six independent lab APIs, no broker** | production / Hermes — the default |
+| `judge-panel.json` | mixed direct + OpenRouter | you have some direct keys, not all |
+| `judge-panel-openrouter-only.json` | one broker | getting started with a single key |
 
-The OpenRouter adapter sends image parts only, so on the single-key preset the scroll
-recording never reaches a model and every visual seat scores sampled keyframes. That preset
-sets `web.sendVideo: false` to make the limitation explicit rather than silently degrading,
-and the judge is told motion is keyframe-only so it scores `motionFidelity` accordingly.
+**All-direct is the production default.** Every seat talks to its own lab, so no single
+broker outage can take the panel below quorum, and each lab bills and rate-limits separately.
 
-Run `npm run doctor` — it names which key to add next and what it unlocks.
+| Key | Seat |
+|---|---|
+| `GEMINI_API_KEY` | gemini — **and the only native video path** |
+| `OPENAI_API_KEY` | sol |
+| `ANTHROPIC_API_KEY` | opus |
+| `MOONSHOT_API_KEY` | kimi (`api.moonshot.ai`) |
+| `DEEPSEEK_API_KEY` | deepseek (`api.deepseek.com`) — cheapest seat, judge panel only |
+| `XAI_API_KEY` | grok |
+
+`OPENROUTER_API_KEY` stays useful as a **backstop**: the failover chain falls through to it
+when a direct API is down. Direct is preferred; the broker is the spare tyre.
+
+**Only the Gemini seat sees motion.** Not because the other models can't understand video —
+Kimi K3 can — but because only the Gemini adapter serialises it (Files API). Every other seat
+receives sampled keyframes flagged `degraded: "video->frames"`. Capability is gated on the
+adapter *and* the model, so a seat is never credited with evidence it never received.
+
+Run `npm run doctor` — it counts your direct labs and names which preset you can run today.
 
 ## Commands
 
@@ -213,9 +226,15 @@ npm run runner:v4    # V4, kept for comparison runs
 npm run resume
 npm run verify:panel # check every judge seat resolves before spending anything
 npm run doctor       # what is configured and what it costs you
-npm run test:smoke   # 22 offline invariant tests, no API keys
+npm run test:smoke   # 26 offline invariant tests, no API keys
 npm run health
 ```
+
+## Hermes / VPS
+
+`doctor` and `verify:panel` both run headless and exit non-zero on a bad seat, so they drop
+straight into a preflight step before a Hermes-driven run. Keep the six direct keys in the
+VPS `.env`; every npm script loads it automatically.
 
 ## Requirements
 

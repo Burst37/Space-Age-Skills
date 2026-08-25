@@ -6,10 +6,13 @@ const has = (k) => Boolean(process.env[k]);
 const envExists = await fs.access(".env").then(() => true).catch(() => false);
 
 const PROVIDERS = [
-  { key: "OPENROUTER_API_KEY", name: "OpenRouter", unlocks: "codex, kimi, deepseek, opus seats" },
-  { key: "GEMINI_API_KEY", name: "Gemini (direct)", unlocks: "gemini seat + NATIVE VIDEO judging" },
-  { key: "XAI_API_KEY", name: "xAI (direct)", unlocks: "grok seat" },
-  { key: "OPENAI_API_KEY", name: "OpenAI (direct)", unlocks: "optional builder/vision fallback" },
+  { key: "GEMINI_API_KEY", name: "Gemini (direct)", unlocks: "gemini seat + the ONLY native video path", direct: true },
+  { key: "OPENAI_API_KEY", name: "OpenAI (direct)", unlocks: "sol seat", direct: true },
+  { key: "ANTHROPIC_API_KEY", name: "Anthropic (direct)", unlocks: "opus seat", direct: true },
+  { key: "MOONSHOT_API_KEY", name: "Moonshot (direct)", unlocks: "kimi seat", direct: true },
+  { key: "DEEPSEEK_API_KEY", name: "DeepSeek (direct)", unlocks: "deepseek seat (cheapest)", direct: true },
+  { key: "XAI_API_KEY", name: "xAI (direct)", unlocks: "grok seat", direct: true },
+  { key: "OPENROUTER_API_KEY", name: "OpenRouter (broker)", unlocks: "backstop for any direct API that is down" },
   { key: "GENERIC_API_KEY", name: "Generic OpenAI-compatible", unlocks: "self-hosted / proxy lane" },
 ];
 
@@ -26,8 +29,9 @@ console.log("\ncapability");
 const say = (ok, label, why) => console.log(`  ${ok ? "✅" : "❌"} ${label}${ok ? "" : "  — " + why}`);
 say(live > 0, "can run a gauntlet at all", "no provider credentials at all");
 say(has("GEMINI_API_KEY"), "native video motion judging", "without it, scroll recordings degrade to keyframes (flagged, still usable)");
-say(has("OPENROUTER_API_KEY"), "multi-lab judge panel", "without it the panel collapses toward one family");
-say(has("OPENROUTER_API_KEY") && has("GEMINI_API_KEY"), "panel survives one provider outage", "all seats on one transport = one outage blinds the panel");
+const directLive = PROVIDERS.filter((p) => p.direct && has(p.key)).length;
+say(directLive >= 4, "all-direct panel reaches quorum", `${directLive}/6 direct lab keys set — presets/judge-panel-direct.json needs 4 live seats`);
+say(directLive >= 2 || has("OPENROUTER_API_KEY"), "panel survives one provider outage", "a single transport means one outage blinds the panel");
 
 let ffmpeg = false;
 try {
@@ -36,18 +40,20 @@ try {
 } catch {}
 say(ffmpeg, "ffmpeg keyframe sampling", "install ffmpeg, or motion evidence falls back to stills");
 
-console.log(`\n${live}/${PROVIDERS.length} providers configured.`);
+console.log(`\n${live}/${PROVIDERS.length} providers configured (${directLive}/6 direct labs).`);
 
-// Say plainly what each additional key buys, so nobody signs up for an account they don't need.
-if (!has("OPENROUTER_API_KEY")) {
-  console.log("\n→ OPENROUTER_API_KEY is the one key that matters. All six panel seats exist there.");
-} else if (!has("GEMINI_API_KEY")) {
-  console.log("\n→ You can run the whole panel right now with presets/judge-panel-openrouter-only.json.");
-  console.log("  Adding GEMINI_API_KEY buys two things: native video motion judging (the reason V5 records");
-  console.log("  the scroll at all), and a seat off OpenRouter so one outage cannot take the panel to zero.");
-  console.log("  XAI_API_KEY is optional — Grok runs fine over OpenRouter.");
+const missingDirect = PROVIDERS.filter((p) => p.direct && !has(p.key));
+if (directLive >= 6) {
+  console.log("\n→ Full all-direct panel available: presets/judge-panel-direct.json");
+} else if (directLive >= 4) {
+  console.log("\n→ presets/judge-panel-direct.json will reach quorum with the seats you have.");
+  console.log(`  Still missing: ${missingDirect.map((p) => p.key).join(", ")}`);
+} else if (has("OPENROUTER_API_KEY")) {
+  console.log("\n→ Not enough direct keys for the all-direct panel yet.");
+  console.log(`  presets/judge-panel-openrouter-only.json runs today; add ${missingDirect.slice(0, 3).map((p) => p.key).join(", ")} to move off the broker.`);
 } else {
-  console.log("\n→ Use presets/judge-panel.json (native video + off-OpenRouter redundancy).");
-  if (!has("XAI_API_KEY")) console.log("  XAI_API_KEY is optional — the Grok seat falls back to OpenRouter.");
+  console.log("\n→ No usable panel yet. Add direct lab keys (see presets/judge-panel-direct.json)");
+  console.log("  or OPENROUTER_API_KEY as a single-key stopgap.");
 }
+if (!has("GEMINI_API_KEY")) console.log("  GEMINI_API_KEY is the one that matters most: it is the only native video path.");
 console.log("Next: npm run verify:panel");

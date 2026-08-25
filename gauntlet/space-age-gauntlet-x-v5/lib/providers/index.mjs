@@ -3,28 +3,35 @@ import { callXAI } from "./xai.mjs";
 import { callGemini } from "./gemini.mjs";
 import { callOpenRouter } from "./openrouter.mjs";
 import { callGeneric } from "./generic.mjs";
+import { callAnthropic } from "./anthropic.mjs";
+import { callDeepSeek, callMoonshot } from "./openai-compatible.mjs";
 
-const providers={openai:callOpenAI,xai:callXAI,gemini:callGemini,openrouter:callOpenRouter,generic:callGeneric};
+const providers={openai:callOpenAI,xai:callXAI,gemini:callGemini,openrouter:callOpenRouter,generic:callGeneric,
+  anthropic:callAnthropic,deepseek:callDeepSeek,moonshot:callMoonshot};
 
 // V5: every adapter accepts `images` (data URLs). Only Gemini has native video
 // understanding — everyone else is served keyframes. Kept explicit so a text-only
 // provider fails loudly rather than silently discarding the evidence.
-export const VISION_CAPABLE=new Set(["openai","xai","gemini","openrouter","generic"]);
+export const VISION_CAPABLE=new Set(["openai","xai","gemini","openrouter","generic","anthropic","moonshot"]);
+// DeepSeek's direct chat model is text-only; its vision model is served elsewhere.
+const TEXT_ONLY=new Set(["deepseek"]);
 
-// Video support is a property of the MODEL, not the transport: OpenRouter can carry both a
-// video-capable Kimi K3 and a text-only DeepSeek Flash. Verified against the live catalog.
+// Video needs BOTH a model that understands it and an adapter that can carry it.
+// OpenRouter carries a video-capable Kimi K3 and a text-only DeepSeek Flash on one transport,
+// so the model decides; but an adapter that never serialises video must still say no.
 const VIDEO_MODELS=[/gemini-3\.[5-9]|gemini-[4-9]/i,/kimi-k3/i];
-export const VIDEO_CAPABLE=new Set(["gemini"]); // direct-API providers whose default model takes video
+export const VIDEO_CAPABLE=new Set(["gemini"]); // adapters that actually serialise video
+const modelTakesVideo=(model)=>VIDEO_MODELS.some(r=>r.test(model));
 
 export function supportsVideo(provider,model=""){
-  if(model) return VIDEO_MODELS.some(r=>r.test(model));
-  return VIDEO_CAPABLE.has(provider);
+  if(!VIDEO_CAPABLE.has(provider)) return false;
+  return model ? modelTakesVideo(model) : true;
 }
 
 export async function callProvider(name,args){
   const fn=providers[name];
   if(!fn) throw new Error(`Unknown provider: ${name}`);
-  if(args?.images?.length && !VISION_CAPABLE.has(name)) throw new Error(`Provider ${name} cannot accept image evidence`);
+  if(args?.images?.length && (!VISION_CAPABLE.has(name)||TEXT_ONLY.has(name))) throw new Error(`Provider ${name} cannot accept image evidence`);
   if(args?.video && !supportsVideo(name,args.model)) throw new Error(`${name}${args.model?"/"+args.model:""} cannot accept video evidence`);
   return fn(args);
 }
@@ -44,6 +51,9 @@ export function adaptEvidence(name,{images=[],video=null,frames=[],model=""}={})
 export function providerAvailable(name){
   return ({
     openai:!!process.env.OPENAI_API_KEY,
+    anthropic:!!process.env.ANTHROPIC_API_KEY,
+    deepseek:!!process.env.DEEPSEEK_API_KEY,
+    moonshot:!!process.env.MOONSHOT_API_KEY,
     xai:!!process.env.XAI_API_KEY,
     gemini:!!process.env.GEMINI_API_KEY,
     openrouter:!!process.env.OPENROUTER_API_KEY,
@@ -62,7 +72,7 @@ export async function callWithFailover(chain,args,{retries=2,baseDelayMs=1500,on
   let lastErr=null;
   for(const name of chain.filter(Boolean)){
     if(!providerAvailable(name)) { tried.push({provider:name,skipped:"missing_credentials"}); continue; }
-    if(args?.images?.length && !VISION_CAPABLE.has(name)) { tried.push({provider:name,skipped:"no_vision"}); continue; }
+    if(args?.images?.length && (!VISION_CAPABLE.has(name)||TEXT_ONLY.has(name))) { tried.push({provider:name,skipped:"no_vision"}); continue; }
     if(args?.video && !supportsVideo(name,args.model)) { tried.push({provider:name,skipped:"no_video"}); continue; }
     for(let attempt=0;attempt<=retries;attempt++){
       try{
