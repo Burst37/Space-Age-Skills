@@ -1,0 +1,23 @@
+{
+  "version": "3.0.0",
+  "capabilities": [
+    "web compiler",
+    "runner config export",
+    "live provider routing",
+    "safe workspace writes",
+    "shell checks from human config",
+    "Playwright viewport inspection",
+    "fresh critic",
+    "independent judge",
+    "regression ledger",
+    "plateau detection",
+    "persistent run evidence"
+  ],
+  "provider_adapters": [
+    "openai",
+    "xai",
+    "gemini",
+    "openrouter",
+    "generic-openai-compatible"
+  ]
+}

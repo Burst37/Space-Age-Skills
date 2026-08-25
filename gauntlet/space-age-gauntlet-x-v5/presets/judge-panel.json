@@ -1,0 +1,28 @@
+{
+  "_comment": "Five-family judge panel. Diversity is the point: five seats from five different labs disagree in different directions, which is the only cheap signal that a score is real rather than one model's taste. Verify IDs with `npm run verify:panel` before a run — OpenRouter slugs change.",
+
+  "judgePanel": [
+    { "id": "opus",     "provider": "openrouter", "model": "anthropic/claude-opus-5",        "weight": 1 },
+    { "id": "gemini",   "provider": "gemini",     "model": "gemini-3.7-flash",               "weight": 1 },
+    { "id": "deepseek", "provider": "openrouter", "model": "deepseek/deepseek-chat",         "weight": 1 },
+    { "id": "kimi",     "provider": "openrouter", "model": "moonshotai/kimi-k3",             "weight": 1 },
+    { "id": "codex",    "provider": "openrouter", "model": "openai/gpt-5.6-codex",           "weight": 1 }
+  ],
+
+  "visualPanel": [
+    { "id": "gemini-vision", "provider": "gemini",     "model": "gemini-3.7-flash",        "weight": 1 },
+    { "id": "opus-vision",   "provider": "openrouter", "model": "anthropic/claude-opus-5", "weight": 1 },
+    { "id": "gpt-vision",    "provider": "openrouter", "model": "openai/gpt-5.6",          "weight": 1 }
+  ],
+
+  "panelQuorum": { "judge": 3, "visual": 2 },
+  "maxJudgeSpread": 25,
+
+  "_notes": [
+    "gemini seat deliberately sits on the direct API, not OpenRouter — if OpenRouter has an outage the panel still reaches quorum.",
+    "visualPanel excludes text-only seats: DeepSeek and Kimi seats are omitted there because a blind seat cannot score visual evidence.",
+    "gemini leads visualPanel because it is the only adapter with native video understanding; the others receive sampled keyframes.",
+    "panelQuorum.judge=3 of 5 means two dead seats still produce a verdict, three does not.",
+    "maxJudgeSpread=25 blocks shipping when the panel is genuinely split rather than averaging the disagreement away."
+  ]
+}
