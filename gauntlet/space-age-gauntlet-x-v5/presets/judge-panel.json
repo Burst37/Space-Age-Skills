@@ -1,0 +1,41 @@
+{
+  "_comment": "Six-lab judge panel. Diversity is the point: seats from six different labs fail in different directions, which is the only cheap signal that a score is real rather than one model's taste. All slugs verified against the live OpenRouter catalog — re-run `npm run verify:panel` before a gauntlet, since slugs drift.",
+
+  "judgePanel": [
+    { "id": "sol",      "provider": "openrouter", "model": "openai/gpt-5.6-sol",         "weight": 1 },
+    { "id": "gemini",   "provider": "gemini",     "model": "gemini-3.7-flash",           "weight": 1 },
+    { "id": "kimi",     "provider": "openrouter", "model": "moonshotai/kimi-k3",         "weight": 1 },
+    { "id": "deepseek", "provider": "openrouter", "model": "deepseek/deepseek-v4-flash", "weight": 1 },
+    { "id": "opus",     "provider": "openrouter", "model": "anthropic/claude-opus-5",    "weight": 1 },
+    { "id": "grok",     "provider": "xai",        "model": "grok-4.6",                   "weight": 1, "enabled": true }
+  ],
+
+  "visualPanel": [
+    { "id": "gemini-vision", "provider": "gemini",     "model": "gemini-3.7-flash",        "weight": 1 },
+    { "id": "kimi-vision",   "provider": "openrouter", "model": "moonshotai/kimi-k3",      "weight": 1 },
+    { "id": "opus-vision",   "provider": "openrouter", "model": "anthropic/claude-opus-5", "weight": 1 },
+    { "id": "sol-vision",    "provider": "openrouter", "model": "openai/gpt-5.6-sol",      "weight": 1 },
+    { "id": "grok-vision",   "provider": "xai",        "model": "grok-4.6",                "weight": 1, "enabled": true }
+  ],
+
+  "panelQuorum": { "judge": 4, "visual": 3 },
+  "maxJudgeSpread": 25,
+
+  "_verified": {
+    "openai/gpt-5.6-sol":         "text+image+file, 1.05M ctx, $2.00/$10.00 per 1M",
+    "gemini-3.7-flash":           "text+image+VIDEO+audio, 1.05M ctx, $0.38/$1.88 — only seat with native video",
+    "moonshotai/kimi-k3":         "text+image+VIDEO, 1.05M ctx, $3.00/$15.00 — second video-capable seat",
+    "deepseek/deepseek-v4-flash": "TEXT ONLY, 1.05M ctx, $0.09/$0.18 — cheapest seat, judge panel only",
+    "anthropic/claude-opus-5":    "text+image+file, 1M ctx, $5.00/$25.00",
+    "x-ai/grok-4.6":              "text+image+file, 500k ctx, $2.00/$6.00"
+  },
+
+  "_notes": [
+    "deepseek is deliberately absent from visualPanel: deepseek-v4-flash is text-only, so it would score visual evidence it cannot see. Swap in deepseek/deepseek-v4-flash-vision-exp ($0.22/$0.66) if you want a deepseek seat on the visual panel.",
+    "gemini and kimi are the only two seats that receive the scroll RECORDING; the rest get sampled keyframes and are flagged degraded:'video->frames' on the round.",
+    "gemini and grok seats sit on their direct APIs, not OpenRouter — if OpenRouter has an outage the panel still reaches quorum.",
+    "grok seats carry `enabled` so they can be benched with one word; set false and lower panelQuorum.judge to 3 and visual to 2.",
+    "panelQuorum.judge=4 of 6 means two dead seats still produce a verdict, three does not.",
+    "maxJudgeSpread=25 blocks shipping when the panel is genuinely split rather than averaging the disagreement away."
+  ]
+}

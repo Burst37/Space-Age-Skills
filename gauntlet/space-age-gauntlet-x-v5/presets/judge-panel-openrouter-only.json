@@ -1,0 +1,32 @@
+{
+  "_comment": "Single-key panel. Everything routes through OPENROUTER_API_KEY — no Gemini or xAI account needed. Trade-offs are real and listed below; use presets/judge-panel.json once you have a direct Gemini key.",
+
+  "judgePanel": [
+    { "id": "sol",      "provider": "openrouter", "model": "openai/gpt-5.6-sol",         "weight": 1 },
+    { "id": "gemini",   "provider": "openrouter", "model": "google/gemini-3.7-flash",    "weight": 1 },
+    { "id": "kimi",     "provider": "openrouter", "model": "moonshotai/kimi-k3",         "weight": 1 },
+    { "id": "deepseek", "provider": "openrouter", "model": "deepseek/deepseek-v4-flash", "weight": 1 },
+    { "id": "opus",     "provider": "openrouter", "model": "anthropic/claude-opus-5",    "weight": 1 },
+    { "id": "grok",     "provider": "openrouter", "model": "x-ai/grok-4.6",              "weight": 1 }
+  ],
+
+  "visualPanel": [
+    { "id": "gemini-vision", "provider": "openrouter", "model": "google/gemini-3.7-flash",  "weight": 1 },
+    { "id": "kimi-vision",   "provider": "openrouter", "model": "moonshotai/kimi-k3",       "weight": 1 },
+    { "id": "opus-vision",   "provider": "openrouter", "model": "anthropic/claude-opus-5",  "weight": 1 },
+    { "id": "sol-vision",    "provider": "openrouter", "model": "openai/gpt-5.6-sol",       "weight": 1 },
+    { "id": "grok-vision",   "provider": "openrouter", "model": "x-ai/grok-4.6",            "weight": 1 }
+  ],
+
+  "panelQuorum": { "judge": 4, "visual": 3 },
+  "maxJudgeSpread": 25,
+  "web": { "sendVideo": false },
+
+  "_tradeoffs": [
+    "NO NATIVE VIDEO. The OpenRouter adapter sends image parts only, so the scroll recording never reaches a model — every visual seat scores sampled keyframes. Motion evidence is weaker but honest: the judge is told so and scores motionFidelity accordingly. `web.sendVideo` is false here to make that explicit rather than silently degrading.",
+    "SINGLE TRANSPORT. All six seats ride one provider; an OpenRouter outage takes the panel to zero instead of to quorum. verify:panel warns about this by design — the warning is correct, not noise.",
+    "Model diversity is unaffected: six labs are still six labs. Only the transport and the video path are narrowed."
+  ],
+
+  "_upgrade": "Add GEMINI_API_KEY and switch the gemini seat to provider:'gemini' (see presets/judge-panel.json). That one key restores native video judging AND puts a seat off OpenRouter so an outage cannot take the panel below quorum. XAI_API_KEY is optional — Grok runs fine over OpenRouter."
+}
