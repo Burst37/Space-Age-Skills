@@ -200,11 +200,11 @@ class XiaoHongShuChannel(Channel):
 
         return "off", (
             "未安装任何小红书后端。推荐：\n"
-            "  桌面：agent-reach install --channels opencli\n"
+            "  桌面：agent-reach install --system --channels opencli\n"
             "       （复用 Chrome 登录态，刷过小红书即零配置可用）\n"
             f"  服务器：xiaohongshu-mcp：{_MCP_INSTALL_URL}\n"
             "       登录只使用 Cookie-Editor 明确导出：\n"
-            "       agent-reach configure xhs-cookies '<Cookie-Editor export>'"
+            "       agent-reach configure xhs-cookies（隐藏输入）"
         )
 
     def _check_opencli(self):

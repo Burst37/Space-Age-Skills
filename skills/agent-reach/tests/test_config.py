@@ -72,17 +72,53 @@ class TestConfig:
         assert "exa_search" in features
         assert all(v is False for v in features.values())
 
-    def test_to_dict_masks_sensitive(self, tmp_config):
-        tmp_config.set("exa_api_key", "super-secret-key-12345")
+    def test_to_dict_redacts_long_secret_without_leaking_prefix(self, tmp_config):
+        secret = "super-secret-key-12345"
+        tmp_config.set("exa_api_key", secret)
         tmp_config.set("normal_setting", "visible")
         masked = tmp_config.to_dict()
-        assert masked["exa_api_key"] == "super-se..."
+
+        assert masked["exa_api_key"] == "[REDACTED]"
+        assert secret not in str(masked)
         assert masked["normal_setting"] == "visible"
 
-    def test_to_dict_masks_cookie_and_session_credentials(self, tmp_config):
+    @pytest.mark.parametrize(
+        "secret",
+        (
+            "!",
+            "!@",
+            "!@#",
+            "!@#$",
+            "!@#$%",
+            "!@#$%^",
+            "!@#$%^&",
+            "!@#$%^&*",
+        ),
+    )
+    def test_to_dict_redacts_short_secrets_without_leaking_value(
+        self, tmp_config, secret
+    ):
+        tmp_config.set("api_key", secret)
+
+        masked = tmp_config.to_dict()
+
+        assert masked["api_key"] == "[REDACTED]"
+        assert secret not in str(masked)
+
+    @pytest.mark.parametrize("empty_value", (None, ""))
+    def test_to_dict_keeps_empty_sensitive_values_as_none(
+        self, tmp_config, empty_value
+    ):
+        tmp_config.set("api_key", empty_value)
+
+        assert tmp_config.to_dict()["api_key"] is None
+
+    def test_to_dict_redacts_sensitive_credential_markers(self, tmp_config):
         secrets = {
             "twitter_ct0": "csrf-secret-value",
             "xhs_cookie": "web_session=xhs-secret",
+            "browser_session": "browser-session-secret",
+            "https_proxy": "socks5://proxy.example:1080",
             "xueqiu_cookie": "xq_a_token=xueqiu-secret",
             "bilibili_sessdata": "bili-session-secret",
             "bilibili_csrf": "bili-csrf-secret",
@@ -95,7 +131,8 @@ class TestConfig:
         masked = tmp_config.to_dict()
 
         dumped = str(masked)
-        for value in secrets.values():
+        for key, value in secrets.items():
+            assert masked[key] == "[REDACTED]"
             assert value not in dumped
         assert masked["normal_setting"] == "visible"
 

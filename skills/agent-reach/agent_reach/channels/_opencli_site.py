@@ -32,7 +32,7 @@ class OpenCLISiteChannel(Channel):
         if not st.installed:
             return "off", (
                 f"未安装 {self.description} 后端。安装：\n"
-                "  agent-reach install --channels opencli\n"
+                "  agent-reach install --system --channels opencli\n"
                 f"然后在 Chrome 里登录 {self.login_hint}"
             )
         if st.broken:

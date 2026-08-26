@@ -105,6 +105,7 @@ def test_check_warn_when_no_js_runtime_but_backend_active():
         status, message = ch.check()
     assert status == "warn"
     assert "JS runtime" in message
+    assert "agent-reach install --system" in message
     assert ch.active_backend == "yt-dlp"  # probe was ok → backend attributed
 
 
@@ -203,6 +204,19 @@ def test_check_ok_reports_transcription_when_provider_and_ffmpeg_present():
     assert status == "ok"
     assert "groq" in message
     assert "可转写音频" in message
+
+
+def test_check_lists_multiple_transcription_providers_without_implying_fallback():
+    ch = YouTubeChannel()
+    cfg = Mock()
+    cfg.is_configured = lambda key: key in {"groq_whisper", "openai_whisper"}
+    with patch.object(yt, "probe_command", return_value=ProbeResult("ok")), \
+         patch("shutil.which", side_effect=_which("deno", "ffmpeg", "ffprobe")):
+        status, message = ch.check(config=cfg)
+
+    assert status == "ok"
+    assert "groq/openai" in message
+    assert "groq→openai" not in message
 
 
 def test_check_ok_flags_missing_ffmpeg_for_transcription():

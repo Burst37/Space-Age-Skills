@@ -3,11 +3,14 @@
 
 import importlib.resources
 import os
+import re
 import tempfile
 import unittest
+from argparse import Namespace
+from pathlib import Path
 from unittest.mock import patch
 
-from agent_reach.cli import _install_skill, _uninstall_skill
+from agent_reach.cli import _cmd_skill, _install_skill, _uninstall_skill
 
 
 class TestSkillCommand(unittest.TestCase):
@@ -22,6 +25,103 @@ class TestSkillCommand(unittest.TestCase):
 
         self.assertTrue(default_skill.strip())
         self.assertTrue(english_skill.strip())
+
+    def test_exa_reference_uses_default_registered_tools_only(self):
+        """Agent instructions must not call Exa tools disabled by default."""
+        search_reference = (
+            importlib.resources.files("agent_reach")
+            .joinpath("skill", "references", "search.md")
+            .read_text(encoding="utf-8")
+        )
+
+        self.assertIn("web_search_exa", search_reference)
+        self.assertNotIn("exa.get_code_context_exa", search_reference)
+        self.assertNotIn("get_code_context_exa(", search_reference)
+
+    def test_mcporter_examples_use_shell_safe_named_arguments(self):
+        """Packaged commands must survive PowerShell and POSIX parsing."""
+        root = Path(__file__).resolve().parents[1]
+        markdown_files = [
+            *(root / "agent_reach" / "skill").rglob("*.md"),
+            *(root / "agent_reach" / "guides").rglob("*.md"),
+            root / "docs" / "install.md",
+            root / "docs" / "troubleshooting.md",
+        ]
+        function_call = re.compile(r"mcporter call\s+['\"][^'\"\r\n]+\(")
+
+        for markdown_file in markdown_files:
+            with self.subTest(markdown_file=markdown_file):
+                content = markdown_file.read_text(encoding="utf-8")
+                self.assertNotRegex(content, function_call)
+
+    def test_linkedin_reference_uses_current_tool_contract(self):
+        """LinkedIn examples should use the current server and parameters."""
+        career_reference = (
+            importlib.resources.files("agent_reach")
+            .joinpath("skill", "references", "career.md")
+            .read_text(encoding="utf-8")
+        )
+
+        self.assertIn(
+            "linkedin.get_person_profile "
+            'linkedin_username="username" '
+            'sections="experience,education"',
+            career_reference,
+        )
+        self.assertIn(
+            'linkedin.search_people keywords="AI engineer" '
+            'location="Shanghai"',
+            career_reference,
+        )
+        self.assertIn(
+            'linkedin.get_company_profile company_name="openai" '
+            'sections="posts,jobs"',
+            career_reference,
+        )
+        self.assertIn(
+            'linkedin.search_jobs keywords="software engineer" '
+            'location="Remote" max_pages=2',
+            career_reference,
+        )
+        self.assertNotIn("linkedin-scraper.", career_reference)
+
+    def test_linkedin_install_docs_use_current_stdio_contract(self):
+        """LinkedIn install guidance should use uvx over stdio."""
+        install_doc = (
+            Path(__file__).resolve().parents[1] / "docs" / "install.md"
+        ).read_text(encoding="utf-8")
+        linkedin_section = install_doc.split(
+            "**LinkedIn (", maxsplit=1
+        )[1].split("### Step 4:", maxsplit=1)[0]
+
+        self.assertIn(
+            "uvx mcp-server-linkedin@latest --login",
+            linkedin_section,
+        )
+        self.assertIn(
+            "mcporter config add linkedin --command uvx "
+            "--arg mcp-server-linkedin@latest --env UV_HTTP_TIMEOUT=300 "
+            "--scope home",
+            linkedin_section,
+        )
+        self.assertNotIn("linkedin-scraper-mcp", linkedin_section)
+        self.assertNotIn("localhost:3000/mcp", linkedin_section)
+        self.assertNotIn("linkedin-scraper.", linkedin_section)
+        self.assertNotIn("--transport streamable-http", linkedin_section)
+
+    def test_localized_readmes_use_current_linkedin_server_name(self):
+        root = Path(__file__).resolve().parents[1]
+        for name in ("README_ja.md", "README_ko.md"):
+            content = (root / "docs" / name).read_text(encoding="utf-8")
+            self.assertIn("mcp-server-linkedin", content)
+            self.assertNotIn("linkedin-scraper-mcp", content)
+
+    def test_skill_install_command_exits_nonzero_when_install_fails(self):
+        with patch("agent_reach.cli._install_skill", return_value=False):
+            with self.assertRaises(SystemExit) as raised:
+                _cmd_skill(Namespace(install=True, uninstall=False))
+
+        self.assertEqual(raised.exception.code, 1)
 
     def test_install_skill_creates_skill_md(self):
         """_install_skill should create SKILL.md in the first available skill dir."""

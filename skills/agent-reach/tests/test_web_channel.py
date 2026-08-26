@@ -10,7 +10,11 @@ completing dedicated coverage for the channels that still lacked it.
 
 from unittest.mock import MagicMock, patch
 
-from agent_reach.channels.web import WebChannel, _UA
+import pytest
+
+from agent_reach.channels.web import _UA, WebChannel
+
+_MAX_RESPONSE_BYTES = 5 * 1024 * 1024
 
 
 def _resp(body=b"# Example\nfull text\n"):
@@ -90,3 +94,132 @@ def test_read_decodes_utf8_body():
     with patch("urllib.request.urlopen", return_value=_resp("café ☕\n".encode("utf-8"))):
         out = channel.read("https://example.com")
     assert out == "café ☕\n"
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "file:///etc/passwd",
+        "ftp://example.com/file",
+        "http://localhost/admin",
+        "http://intranet/admin",
+        "http://home.arpa/admin",
+        "http://metadata.google.internal/latest/meta-data",
+        "http://127.0.0.1/private",
+        "http://127.1/private",
+        "http://169.254.169.254/latest/meta-data",
+        "http://192.168.1/private",
+        "http://0/private",
+        "http://2130706433/private",
+        "http://0x7f000001/private",
+        "http://0177.0.0.1/private",
+        "http://2852039166/latest/meta-data",
+        "http://0xA9FEA9FE/latest/meta-data",
+        "http://[::1]/private",
+        "http://[::ffff:127.0.0.1]/private",
+        "http://localhost./admin",
+        "http://127.0.0.1\\example.com/private",
+        "https://user:password@example.com/private",
+    ],
+)
+def test_read_rejects_non_public_urls_before_network(url):
+    channel = WebChannel()
+
+    with patch("urllib.request.urlopen") as mock_open:
+        with pytest.raises(ValueError, match="public HTTP"):
+            channel.read(url)
+
+    mock_open.assert_not_called()
+
+
+@pytest.mark.parametrize("url", ["https://8.8.8.8/page", "http://010.010.010.010/page"])
+def test_read_allows_public_literal_addresses(url):
+    channel = WebChannel()
+    with patch("urllib.request.urlopen", return_value=_resp()) as mock_open:
+        channel.read(url)
+    mock_open.assert_called_once()
+
+
+def test_read_accepts_response_at_exact_size_limit():
+    channel = WebChannel()
+    response = _resp(b"x" * _MAX_RESPONSE_BYTES)
+
+    with patch("urllib.request.urlopen", return_value=response):
+        out = channel.read("https://example.com/exact")
+
+    assert len(out) == _MAX_RESPONSE_BYTES
+    response.__enter__.return_value.read.assert_called_once_with(
+        _MAX_RESPONSE_BYTES + 1
+    )
+
+
+def test_read_rejects_oversized_reader_response():
+    channel = WebChannel()
+    response = _resp(b"x" * (_MAX_RESPONSE_BYTES + 1))
+
+    with patch("urllib.request.urlopen", return_value=response):
+        with pytest.raises(ValueError, match="response exceeds"):
+            channel.read("https://example.com/large")
+
+    response.__enter__.return_value.read.assert_called_once_with(
+        _MAX_RESPONSE_BYTES + 1
+    )
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        (
+            "Title: Just a moment...\n\n"
+            "URL Source: https://imginn.com/instagram/\n\n"
+            "Warning: This page maybe requiring CAPTCHA\n\n"
+            "Markdown Content:\n\n"
+            "## Performing security verification\n"
+        ),
+        (
+            "Title: Attention Required! | Cloudflare\n\n"
+            "Sorry, you have been blocked.\n\nRay ID: 1234567890abcdef\n"
+        ),
+    ],
+)
+def test_read_rejects_high_confidence_antibot_pages(body):
+    channel = WebChannel()
+
+    with patch(
+        "urllib.request.urlopen", return_value=_resp(body.encode("utf-8"))
+    ) as mock_open:
+        with pytest.raises(RuntimeError, match="反爬验证页"):
+            channel.read("https://example.com/protected")
+
+    mock_open.assert_called_once()
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        "# A guide to security verification\n",
+        "# DDoS protection explained\n",
+        "# Checking your browser automation\n",
+        "# Please turn JavaScript on for progressive enhancement\n",
+        "# A history of cf-browser-verify\n",
+        "Title: Just a moment...\n\nA short-story review.\n",
+    ],
+)
+def test_read_does_not_reject_single_generic_antibot_terms(body):
+    channel = WebChannel()
+
+    with patch("urllib.request.urlopen", return_value=_resp(body.encode("utf-8"))):
+        assert channel.read("https://example.com/article") == body
+
+
+def test_antibot_detection_has_a_fixed_scan_window():
+    channel = WebChannel()
+    body = (
+        "x" * 4096
+        + "Warning: requiring CAPTCHA\n"
+        + "Title: Just a moment...\n"
+        + "## Performing security verification\n"
+    )
+
+    with patch("urllib.request.urlopen", return_value=_resp(body.encode("utf-8"))):
+        assert channel.read("https://example.com/long-article") == body

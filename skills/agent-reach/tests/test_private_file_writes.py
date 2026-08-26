@@ -92,6 +92,62 @@ def test_legacy_xfetch_sync_refuses_ancestor_symlink(tmp_path, monkeypatch):
     assert config_dir.is_symlink()
 
 
+def test_credential_writes_honor_home_when_expanduser_disagrees(
+    tmp_path, monkeypatch
+):
+    """Windows expanduser ignores HOME; private writes must not escape it."""
+    intended_home = tmp_path / "isolated-home"
+    windows_profile = tmp_path / "windows-profile"
+    intended_home.mkdir()
+    windows_profile.mkdir()
+    monkeypatch.setenv("HOME", str(intended_home))
+
+    real_expanduser = os.path.expanduser
+
+    def windows_expanduser(value):
+        if value == "~":
+            return str(windows_profile)
+        if value.startswith("~/"):
+            return str(windows_profile / value[2:])
+        return real_expanduser(value)
+
+    monkeypatch.setattr(os.path, "expanduser", windows_expanduser)
+    monkeypatch.setattr("shutil.which", lambda _name: None)
+
+    assert _sync_xfetch_session("auth", "ct0") is True
+    assert _sync_bird_env("auth", "ct0") is True
+    assert cli._configure_xhs_cookies("web_session=xhs-secret") is True
+
+    assert (intended_home / ".config" / "xfetch" / "session.json").exists()
+    assert (intended_home / ".config" / "bird" / "credentials.env").exists()
+    assert (intended_home / ".agent-reach" / "xhs-cookies.json").exists()
+    assert list(windows_profile.rglob("*")) == []
+
+
+def test_expanduser_fallback_still_refuses_symlinked_profile(
+    tmp_path, monkeypatch
+):
+    """Without HOME, the USERPROFILE fallback remains guarded end to end."""
+    victim_dir = tmp_path / "victim-profile"
+    victim_dir.mkdir()
+    profile_link = tmp_path / "profile-link"
+    try:
+        profile_link.symlink_to(victim_dir, target_is_directory=True)
+    except OSError:
+        pytest.skip("symlinks are not supported on this platform")
+
+    monkeypatch.delenv("HOME", raising=False)
+    monkeypatch.setattr(
+        os.path,
+        "expanduser",
+        lambda value: str(profile_link) if value == "~" else value,
+    )
+
+    assert _sync_xfetch_session("auth", "ct0") is False
+    assert _sync_bird_env("auth", "ct0") is False
+    assert list(victim_dir.rglob("*")) == []
+
+
 def test_legacy_xfetch_sync_refuses_oversized_existing_session(
     tmp_path, monkeypatch
 ):
@@ -402,6 +458,7 @@ def test_safe_install_with_proxy_makes_no_persistent_writes(
         Namespace(
             env="local",
             proxy="http://user:pass@proxy.example:8080",
+            system=False,
             safe=True,
             dry_run=False,
             channels="twitter",
@@ -419,3 +476,165 @@ def test_safe_install_with_proxy_makes_no_persistent_writes(
     output = capsys.readouterr().out
     assert "SAFE MODE" in output
     assert "Would save network proxy" in output
+
+
+def test_install_is_safe_by_default(isolated_home, monkeypatch, capsys):
+    """Plain install checks readiness without modifying the host."""
+    monkeypatch.setattr(cli, "_configure_logging", lambda _verbose=False: None)
+    monkeypatch.setattr(
+        cli,
+        "_install_system_deps",
+        lambda: pytest.fail("default install must not modify system dependencies"),
+    )
+    monkeypatch.setattr(
+        cli,
+        "_install_mcporter",
+        lambda: pytest.fail("default install must not install global tools"),
+    )
+    monkeypatch.setattr(
+        cli,
+        "_install_skill",
+        lambda: pytest.fail("default install must not register agent skills"),
+    )
+    monkeypatch.setattr("agent_reach.doctor.check_all", lambda _config: {})
+    monkeypatch.setattr(
+        "agent_reach.doctor.format_report",
+        lambda _results: "report",
+    )
+    monkeypatch.setattr(
+        cli.sys,
+        "argv",
+        ["agent-reach", "install", "--env", "local"],
+    )
+
+    cli.main()
+
+    assert not (isolated_home / ".agent-reach").exists()
+    output = capsys.readouterr().out
+    assert "SAFE MODE" in output
+    assert "No changes were made" in output
+
+
+def test_install_system_flag_explicitly_enables_writes(
+    isolated_home, monkeypatch, capsys
+):
+    """The legacy write path remains available only through --system."""
+    calls = []
+    monkeypatch.setattr(cli, "_configure_logging", lambda _verbose=False: None)
+    monkeypatch.setattr(
+        cli,
+        "_install_system_deps",
+        lambda: calls.append("system-deps"),
+    )
+    monkeypatch.setattr(
+        cli,
+        "_install_mcporter",
+        lambda: calls.append("mcporter"),
+    )
+    monkeypatch.setattr(
+        cli,
+        "_install_skill",
+        lambda: calls.append("skill"),
+    )
+    monkeypatch.setattr("agent_reach.doctor.check_all", lambda _config: {})
+    monkeypatch.setattr(
+        "agent_reach.doctor.format_report",
+        lambda _results: "report",
+    )
+    monkeypatch.setattr(
+        cli.sys,
+        "argv",
+        ["agent-reach", "install", "--env", "local", "--system"],
+    )
+
+    cli.main()
+
+    assert calls == ["system-deps", "mcporter", "skill"]
+    assert (isolated_home / ".agent-reach" / "tools").is_dir()
+    assert "Installation complete" in capsys.readouterr().out
+
+
+def test_install_system_exits_nonzero_when_core_steps_fail(
+    isolated_home, monkeypatch, capsys
+):
+    """Automation must not receive exit zero after failed core installation."""
+    monkeypatch.setattr(cli, "_configure_logging", lambda _verbose=False: None)
+    monkeypatch.setattr(cli, "_install_system_deps", lambda: False)
+    monkeypatch.setattr(cli, "_install_mcporter", lambda: False)
+    monkeypatch.setattr(cli, "_install_skill", lambda: None)
+    monkeypatch.setattr("agent_reach.doctor.check_all", lambda _config: {})
+    monkeypatch.setattr(
+        "agent_reach.doctor.format_report",
+        lambda _results: "report",
+    )
+    monkeypatch.setattr(
+        cli.sys,
+        "argv",
+        ["agent-reach", "install", "--env", "local", "--system"],
+    )
+
+    with pytest.raises(SystemExit) as exc:
+        cli.main()
+
+    assert exc.value.code == 1
+    output = capsys.readouterr().out
+    assert "Installation incomplete" in output
+    assert "Installation complete" not in output
+
+
+def test_install_system_exits_nonzero_when_requested_channel_fails(
+    isolated_home, monkeypatch, capsys
+):
+    monkeypatch.setattr(cli, "_configure_logging", lambda _verbose=False: None)
+    monkeypatch.setattr(cli, "_install_system_deps", lambda: True)
+    monkeypatch.setattr(cli, "_install_mcporter", lambda: True)
+    monkeypatch.setattr(cli, "_install_opencli_deps", lambda: False)
+    monkeypatch.setattr(cli, "_install_skill", lambda: True)
+    monkeypatch.setattr("agent_reach.doctor.check_all", lambda _config: {})
+    monkeypatch.setattr(
+        "agent_reach.doctor.format_report",
+        lambda _results: "report",
+    )
+    monkeypatch.setattr(
+        cli.sys,
+        "argv",
+        [
+            "agent-reach",
+            "install",
+            "--env",
+            "local",
+            "--system",
+            "--channels=opencli",
+        ],
+    )
+
+    with pytest.raises(SystemExit) as exc:
+        cli.main()
+
+    assert exc.value.code == 1
+    assert "Installation incomplete" in capsys.readouterr().out
+
+
+def test_install_system_exits_nonzero_when_skill_install_fails(
+    isolated_home, monkeypatch, capsys
+):
+    monkeypatch.setattr(cli, "_configure_logging", lambda _verbose=False: None)
+    monkeypatch.setattr(cli, "_install_system_deps", lambda: True)
+    monkeypatch.setattr(cli, "_install_mcporter", lambda: True)
+    monkeypatch.setattr(cli, "_install_skill", lambda: False)
+    monkeypatch.setattr("agent_reach.doctor.check_all", lambda _config: {})
+    monkeypatch.setattr(
+        "agent_reach.doctor.format_report",
+        lambda _results: "report",
+    )
+    monkeypatch.setattr(
+        cli.sys,
+        "argv",
+        ["agent-reach", "install", "--env", "local", "--system"],
+    )
+
+    with pytest.raises(SystemExit) as exc:
+        cli.main()
+
+    assert exc.value.code == 1
+    assert "Installation incomplete" in capsys.readouterr().out

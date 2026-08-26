@@ -89,7 +89,7 @@ class TestOpenCLISiteChannels:
         status, msg = ch.check()
         assert status == "off"
         assert ch.active_backend is None
-        assert "agent-reach install --channels opencli" in msg
+        assert "agent-reach install --system --channels opencli" in msg
         assert "instagram.com" in msg
 
     def test_opencli_installed_without_extension_reports_warn(self, monkeypatch):
@@ -127,7 +127,7 @@ class TestV2EXChannel:
             def __exit__(self, *args):
                 pass
 
-            def read(self):
+            def read(self, _size=-1):
                 return b"[]"
 
         monkeypatch.setattr(
@@ -227,7 +227,7 @@ class TestV2EXChannel:
             def __exit__(self, *_):
                 pass
 
-            def read(self):
+            def read(self, _size=-1):
                 return json.dumps(fake_data).encode()
 
         monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout=None: FakeResponse())
@@ -252,7 +252,7 @@ class TestV2EXChannel:
         class FakeResponse:
             def __enter__(self): return self
             def __exit__(self, *_): pass
-            def read(self): return json.dumps(fake_data).encode()
+            def read(self, _size=-1): return json.dumps(fake_data).encode()
 
         monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout=None: FakeResponse())
         topics = V2EXChannel().get_hot_topics(limit=3)
@@ -270,7 +270,7 @@ class TestV2EXChannel:
         class FakeResponse:
             def __enter__(self): return self
             def __exit__(self, *_): pass
-            def read(self): return json.dumps(fake_data).encode()
+            def read(self, _size=-1): return json.dumps(fake_data).encode()
 
         monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout=None: FakeResponse())
         topics = V2EXChannel().get_hot_topics(limit=1)
@@ -298,7 +298,7 @@ class TestV2EXChannel:
         class FakeResponse:
             def __enter__(self): return self
             def __exit__(self, *_): pass
-            def read(self): return json.dumps(fake_data).encode()
+            def read(self, _size=-1): return json.dumps(fake_data).encode()
 
         monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout=None: FakeResponse())
         topics = V2EXChannel().get_node_topics("python")
@@ -346,7 +346,7 @@ class TestV2EXChannel:
 
             def __enter__(self): return self
             def __exit__(self, *_): pass
-            def read(self): return json.dumps(self._payload).encode()
+            def read(self, _size=-1): return json.dumps(self._payload).encode()
 
         def fake_urlopen(req, timeout=None):
             url = req.full_url
@@ -385,7 +385,7 @@ class TestV2EXChannel:
             def __init__(self, payload): self._payload = payload
             def __enter__(self): return self
             def __exit__(self, *_): pass
-            def read(self): return json.dumps(self._payload).encode()
+            def read(self, _size=-1): return json.dumps(self._payload).encode()
 
         def fake_urlopen(req, timeout=None):
             if "replies" in req.full_url:
@@ -421,7 +421,7 @@ class TestV2EXChannel:
         class FakeResponse:
             def __enter__(self): return self
             def __exit__(self, *_): pass
-            def read(self): return json.dumps(fake_user).encode()
+            def read(self, _size=-1): return json.dumps(fake_user).encode()
 
         monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout=None: FakeResponse())
         user = V2EXChannel().get_user("alice")
@@ -1450,6 +1450,62 @@ class TestGitHubChannel:
 
 
 class TestLinkedInChannel:
+    def test_setup_hint_uses_current_stdio_contract(self, monkeypatch):
+        monkeypatch.setattr(shutil, "which", lambda _: None)
+
+        from agent_reach.channels.linkedin import LinkedInChannel
+
+        channel = LinkedInChannel()
+        status, message = channel.check()
+
+        assert status == "off"
+        assert channel.backends[0] == "mcp-server-linkedin"
+        assert "docs.astral.sh/uv/getting-started/installation" in message
+        assert "uvx mcp-server-linkedin@latest --login" in message
+        assert (
+            "mcporter config add linkedin --command uvx "
+            "--arg mcp-server-linkedin@latest --env UV_HTTP_TIMEOUT=300 "
+            "--scope home"
+        ) in message
+        assert "pip install linkedin-scraper-mcp" not in message
+        assert "localhost:3000/mcp" not in message
+
+    def test_configured_linkedin_warns_when_uvx_is_missing(
+        self, monkeypatch, tmp_path
+    ):
+        monkeypatch.chdir(tmp_path)
+        config_path = tmp_path / "config" / "mcporter.json"
+        config_path.parent.mkdir()
+        config_path.write_text(
+            json.dumps(
+                {
+                    "mcpServers": {
+                        "linkedin": {
+                            "command": "uvx",
+                            "args": ["mcp-server-linkedin@latest"],
+                        }
+                    },
+                    "imports": [],
+                }
+            ),
+            encoding="utf-8",
+        )
+        monkeypatch.setattr(
+            shutil,
+            "which",
+            lambda name: "/usr/local/bin/mcporter"
+            if name == "mcporter"
+            else None,
+        )
+
+        from agent_reach.channels.linkedin import LinkedInChannel
+
+        status, message = LinkedInChannel().check()
+
+        assert status == "warn"
+        assert "uvx 未安装" in message
+        assert "docs.astral.sh/uv/getting-started/installation" in message
+
     def test_mcporter_is_never_executed(
         self, monkeypatch, tmp_path
     ):
@@ -1468,8 +1524,17 @@ class TestLinkedInChannel:
         assert status == "off"
         assert ch.active_backend is None
 
-    def test_configured_linkedin_is_not_false_positive_active(
-        self, monkeypatch, tmp_path
+    @pytest.mark.parametrize(
+        "server_name",
+        [
+            "linkedin",
+            "linkedin-scraper",
+            "linkedin-scraper-mcp",
+            "mcp-server-linkedin",
+        ],
+    )
+    def test_configured_linkedin_name_is_not_false_positive_active(
+        self, monkeypatch, tmp_path, server_name
     ):
         monkeypatch.chdir(tmp_path)
         config_path = tmp_path / "config" / "mcporter.json"
@@ -1478,7 +1543,7 @@ class TestLinkedInChannel:
             json.dumps(
                 {
                     "mcpServers": {
-                        "linkedin-scraper": {"command": "linkedin-mcp"}
+                        server_name: {"command": "linkedin-mcp"}
                     },
                     "imports": [],
                 }

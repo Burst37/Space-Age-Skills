@@ -1,12 +1,19 @@
 # -*- coding: utf-8 -*-
-"""Whisper audio transcription with Groq → OpenAI fallback.
+"""Whisper audio transcription with explicit provider routing.
 
 Downloads audio (yt-dlp), compresses + chunks (ffmpeg), and posts to a
-Whisper-compatible API. Defaults to Groq's free `whisper-large-v3` and falls
-back to OpenAI's `whisper-1` on HTTP error.
+Whisper-compatible API. Auto mode selects the first configured provider and
+only sends audio to another provider when the caller explicitly opts in.
 
 Public entry point:
-    transcribe(source, *, provider="auto", out_dir=None, config=None) -> str
+    transcribe(
+        source,
+        *,
+        provider="auto",
+        out_dir=None,
+        config=None,
+        allow_provider_fallback=False,
+    ) -> str
 
 Designed to be importable from channels (e.g. YouTubeChannel.transcribe).
 """
@@ -16,6 +23,7 @@ from __future__ import annotations
 import ipaddress
 import math
 import shutil
+import socket
 import subprocess
 import tempfile
 from pathlib import Path
@@ -99,7 +107,8 @@ def _probe_audio_duration(path: Path) -> float:
         proc = subprocess.run(
             cmd,
             capture_output=True,
-            text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=FFPROBE_TIMEOUT_SECONDS,
         )
     except subprocess.TimeoutExpired:
@@ -150,7 +159,13 @@ def _run(cmd: List[str], timeout: int = 600) -> None:
     network read or a hung probe must not block the CLI forever.
     """
     try:
-        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+        proc = subprocess.run(
+            cmd,
+            capture_output=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=timeout,
+        )
     except subprocess.TimeoutExpired:
         raise TranscribeError(f"{cmd[0]} timed out after {timeout}s")
     if proc.returncode != 0:
@@ -159,10 +174,30 @@ def _run(cmd: List[str], timeout: int = 600) -> None:
         )
 
 
-def _is_private_ip(value: str) -> bool:
+def _literal_ip(host: str):
+    """Return the address a literal host denotes, or None for a real hostname.
+
+    ``ipaddress`` only accepts the canonical dotted-quad form, but the C
+    resolver behind yt-dlp accepts the whole ``inet_aton`` grammar: ``127.1``,
+    ``2130706433``, ``0x7f000001`` and ``0177.0.0.1`` all reach 127.0.0.1, and
+    ``0xA9FEA9FE`` reaches the cloud metadata endpoint. Parsing with the same
+    grammar keeps those shorthands from slipping past the private-address
+    check. This is literal parsing only — no name is resolved here.
+    """
     try:
-        ip = ipaddress.ip_address(value)
+        return ipaddress.ip_address(host)
     except ValueError:
+        pass
+    try:
+        packed = socket.inet_aton(host)
+    except OSError:
+        return None
+    return ipaddress.IPv4Address(packed)
+
+
+def _is_private_ip(value: str) -> bool:
+    ip = _literal_ip(value)
+    if ip is None:
         return False
     return any(
         (
@@ -184,15 +219,28 @@ def _assert_safe_public_url(url: str) -> None:
             host_part, port_part = before_slash.rsplit(":", 1)
             if not host_part or not port_part.isdigit():
                 raise TranscribeError("SSRF blocked: only public http(s) URLs are allowed")
-        parsed = urlparse(f"https://{url}")
+        normalized_url = f"https://{url}"
+        parsed = urlparse(normalized_url)
     else:
+        normalized_url = url
         parsed = urlparse(url)
         if parsed.scheme not in {"http", "https"}:
             raise TranscribeError("SSRF blocked: only public http(s) URLs are allowed")
 
-    host = (parsed.hostname or "").strip().lower().rstrip(".")
-    if not host:
+    raw_authority = normalized_url.split("://", 1)[1]
+    raw_authority = raw_authority.split("/", 1)[0]
+    raw_authority = raw_authority.split("?", 1)[0]
+    raw_authority = raw_authority.split("#", 1)[0]
+    if "\\" in raw_authority or "%" in raw_authority:
+        raise TranscribeError("SSRF blocked: encoded or ambiguous URL host")
+
+    raw_host = (parsed.hostname or "").strip().rstrip(".")
+    if not raw_host:
         raise TranscribeError("SSRF blocked: URL host is missing")
+    try:
+        host = raw_host.encode("idna").decode("ascii").lower().rstrip(".")
+    except UnicodeError:
+        raise TranscribeError("SSRF blocked: URL host is invalid") from None
     if host in _BLOCKED_HOSTS or host.endswith(".localhost"):
         raise TranscribeError("SSRF blocked: internal host is not allowed")
     if _is_private_ip(host):
@@ -360,19 +408,32 @@ def transcribe(
     provider: str = "auto",
     out_dir: Optional[Path] = None,
     config: Optional[Config] = None,
+    allow_provider_fallback: bool = False,
 ) -> str:
     """Transcribe a URL or local file path. Returns the joined transcript text.
 
-    `provider` is one of `auto` (groq → openai), `groq`, or `openai`.
+    `provider` is one of `auto`, `groq`, or `openai`. Auto mode selects the
+    first configured provider (Groq, then OpenAI). In auto mode only, set
+    `allow_provider_fallback=True` to permit sending failed chunks to the next
+    configured provider; using the flag with an explicit provider is rejected.
     `out_dir` defaults to a fresh temp directory; intermediate files stay there.
     """
+    if allow_provider_fallback and provider != "auto":
+        raise TranscribeError(
+            "allow_provider_fallback requires provider='auto'"
+        )
     cfg = config or Config()
-    order = _provider_order(provider)
+    candidates = _provider_order(provider)
+    configured = [p for p in candidates if _provider_key(p, cfg)]
 
     # Validate at least one provider is configured before doing expensive work.
-    if not any(_provider_key(p, cfg) for p in order):
-        names = ", ".join(PROVIDERS[p]["key_field"] for p in order)
+    if not configured:
+        names = ", ".join(PROVIDERS[p]["key_field"] for p in candidates)
         raise NoProviderConfigured(f"no provider key configured (need one of: {names})")
+
+    order = configured
+    if provider == "auto" and not allow_provider_fallback:
+        order = configured[:1]
 
     if out_dir:
         return _transcribe_in_dir(source, order, cfg, Path(out_dir))

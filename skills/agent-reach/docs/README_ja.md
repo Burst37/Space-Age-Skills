@@ -64,10 +64,8 @@ Update Agent Reach: https://raw.githubusercontent.com/Panniantong/agent-reach/ma
 | 🌐 **Web** | 閲覧 | 設定不要 | 任意のURL → クリーンなMarkdown（[Jina Reader](https://github.com/jina-ai/reader) ⭐9.8K） |
 | 🐦 **Twitter/X** | 閲覧・検索 | 設定不要 / Cookie | 単一ツイートはすぐに閲覧可能。Cookieで検索、タイムライン、投稿が解放（[twitter-cli](https://github.com/public-clis/twitter-cli)） |
 | 📕 **小紅書** | 閲覧・検索・コメント | OpenCLI / Cookie | OpenCLI はユーザー管理の既存 Chrome セッションだけを使用。MCP/旧ツールは Cookie-Editor を使用 |
-| 🎵 **抖音** | 動画解析・ウォーターマークなしダウンロード | mcporter | [douyin-mcp-server](https://github.com/yzfly/douyin-mcp-server)、ログイン不要 |
 | 💼 **LinkedIn** | Jina Reader（公開ページ） | プロフィール、企業、求人検索 | エージェントに「LinkedInの設定を手伝って」と伝えてください |
 | 💬 **WeChat記事** | 検索 + 閲覧 | 設定不要 | WeChat公式アカウント記事の検索+閲覧（完全Markdown）（[Exa](https://exa.ai) + [Camoufox](https://github.com/daijro/camoufox)（オプション）） |
-| 📰 **Weibo** | トレンド・検索・フィード・コメント | 設定不要 | ホット検索、コンテンツ/ユーザー/トピック検索、フィード、コメント（[mcp-server-weibo](https://github.com/Panniantong/mcp-server-weibo)） |
 | 💻 **V2EX** | 人気トピック・ノードトピック・トピック詳細+返信・ユーザープロフィール | 設定不要 | 公開JSON API、認証不要。技術コミュニティのコンテンツに最適 |
 | 📈 **雪球（Xueqiu）** | 株価・検索・人気投稿・人気銘柄 | 設定不要 | 公開APIで自動セッションCookie、ログイン不要 |
 | 🎙️ **小宇宙Podcast** | 文字起こし | 無料APIキー | Podcast音声 → Groq Whisper（無料）による完全テキスト文字起こし |
@@ -102,7 +100,8 @@ Install Agent Reach: https://raw.githubusercontent.com/Panniantong/agent-reach/m
 
 ```bash
 pip install https://github.com/Panniantong/agent-reach/archive/main.zip
-agent-reach install --env=auto
+agent-reach install --env=auto           # 読み取り専用チェック（デフォルト）
+agent-reach install --env=auto --system  # システム変更を明示的に許可した場合のみ
 ```
 </details>
 
@@ -115,7 +114,7 @@ npx skills add Panniantong/Agent-Reach@agent-reach
 
 Skillインストール後、エージェントは`agent-reach` CLIが利用可能かを自動検出し、必要に応じてインストールします。
 
-> `agent-reach install` でインストールした場合、Skillは自動的に登録されます — 追加の手順は不要です。
+> `agent-reach install --system` を明示的に許可した場合のみ、Skill は自動登録されます。デフォルトの `agent-reach install` は読み取り専用です。
 </details>
 
 ---
@@ -206,7 +205,6 @@ channels/
 ├── bilibili.py     → bili-cli ▸ OpenCLI ▸ 検索 API（yt-dlp は 412 制限により退役）
 ├── reddit.py       → OpenCLI ▸ rdt-cli（ログイン状態が必要）
 ├── xiaohongshu.py  → OpenCLI ▸ xiaohongshu-mcp ▸ xhs-cli
-├── douyin.py       → mcporter MCP    ← 他の抖音ツールに差し替え可能…
 ├── linkedin.py     → linkedin-mcp    ← LinkedIn APIに差し替え可能…
 ├── rss.py          → feedparser      ← atomaなどに差し替え可能…
 ├── exa_search.py   → mcporter MCP    ← Tavily、SerpAPIなどに差し替え可能…
@@ -227,10 +225,8 @@ channels/
 | GitHub | [gh CLI](https://cli.github.com) | 公式ツール、認証後フルAPI |
 | RSS閲覧 | [feedparser](https://github.com/kurtmckee/feedparser) | Pythonエコシステムの標準、⭐2.3K |
 | 小紅書 | [OpenCLI](https://github.com/jackwener/opencli)（デスクトップ）▸ [xiaohongshu-mcp](https://github.com/xpzouying/xiaohongshu-mcp)（サーバー）▸ xhs-cli | OpenCLI は既存のユーザー管理セッションのみ使用。その他は Cookie-Editor で手動設定 |
-| 抖音 | [douyin-mcp-server](https://github.com/yzfly/douyin-mcp-server) | MCPサーバー、ログイン不要、動画解析 + ウォーターマークなしダウンロード |
-| LinkedIn | [linkedin-scraper-mcp](https://github.com/stickerdaniel/linkedin-mcp-server) | ⭐900+、MCPサーバー、ブラウザ自動化 |
+| LinkedIn | [mcp-server-linkedin](https://github.com/stickerdaniel/linkedin-mcp-server) | ⭐900+、MCPサーバー、ブラウザ自動化 |
 | WeChat記事 | [Exa](https://exa.ai)（検索+閲覧）+ [Camoufox](https://github.com/daijro/camoufox)（オプション） | ゼロ設定で検索+全文閲覧、Camoufoxでオプション強化 |
-| Weibo | `mcporter` | `mcporter call 'weibo.get_trendings(limit: 10)'` |
 | 小宇宙Podcast | `transcribe.sh` | `bash ~/.agent-reach/tools/xiaoyuzhou/transcribe.sh <URL>` |
 
 > 📌 これらは*現在*の選択です。気に入らなければファイルを差し替えるだけ。それがスキャフォールディングの要点です。
@@ -254,7 +250,7 @@ channels/
 <details>
 <summary><strong>Twitter/X APIに課金せずにAIエージェントで検索するには？</strong></summary>
 
-Agent Reach は [twitter-cli](https://github.com/public-clis/twitter-cli) をCookie認証で使用します。Cookie-Editor で手動エクスポートし、`agent-reach configure twitter-cookies "your_cookies"` で Agent Reach に保存します。これは doctor の設定確認用であり、doctor は上流の認証をリアルタイム検証しません。`twitter search "query" -n 10` を直接実行するプロセスには `TWITTER_AUTH_TOKEN` と `TWITTER_CT0` を明示的に渡してください。
+Agent Reach は [twitter-cli](https://github.com/public-clis/twitter-cli) をCookie認証で使用します。Cookie-Editor で手動エクスポートし、`agent-reach configure twitter-cookies` の非表示入力で Agent Reach に保存します。これは doctor の設定確認用であり、doctor は上流の認証をリアルタイム検証しません。`twitter search "query" -n 10` を直接実行するプロセスには `TWITTER_AUTH_TOKEN` と `TWITTER_CT0` を明示的に渡してください。
 </details>
 
 <details>
@@ -272,7 +268,7 @@ Agent Reach は [rdt-cli](https://github.com/public-clis/rdt-cli) でRedditに�
 <details>
 <summary><strong>Agent Reach は Claude Code / Cursor / Windsurf / OpenClaw で動作する？</strong></summary>
 
-はい！Agent Reach はインストーラー + 設定ツールです。シェルコマンドを実行できるあらゆるAIコーディングエージェントで使用できます — Claude Code、Cursor、Windsurf、OpenClaw、Codex等。`pip install agent-reach` を実行し、`agent-reach install` を実行するだけで、エージェントはすぐに上流ツールを使い始められます。
+はい！Agent Reach はインストーラー + 設定ツールです。シェルコマンドを実行できるあらゆるAIコーディングエージェントで使用できます — Claude Code、Cursor、Windsurf、OpenClaw、Codex等。`pip install https://github.com/Panniantong/agent-reach/archive/main.zip` の後、まず `agent-reach install` で読み取り専用チェックを行い、システム変更を明示的に許可した場合だけ `agent-reach install --system` を実行します。PyPI の同名パッケージは別プロジェクトです。
 </details>
 
 <details>
@@ -293,17 +289,11 @@ Agent Reach はtwitter-cliを使用し、Cookie認証でTwitterにアクセス�
 Agent Reach は小紅書へのログインを代行せず、ブラウザ Cookie も読み取りません。OpenCLI はユーザーが既に所有・管理している Chrome セッションだけを使用します。既存セッションがない場合は自動ログインせず、Cookie-Editor で手動エクスポートして xiaohongshu-mcp または旧ツールを設定してください。`agent-reach configure xhs-cookies` は OpenCLI / Chrome に Cookie を注入しません。
 </details>
 
-<details>
-<summary><strong>AIエージェントで抖音の動画を解析するには？</strong></summary>
-
-douyin-mcp-serverをインストールすれば、`mcporter call 'douyin.parse_douyin_video_info(share_link: "share_url")'` で動画情報を解析し、ウォーターマークなしのダウンロードリンクを取得できます。ログイン不要 — 抖音のリンクを共有するだけ。詳細は https://github.com/yzfly/douyin-mcp-server を参照。
-</details>
-
 ---
 
 ## クレジット
 
-[twitter-cli](https://github.com/public-clis/twitter-cli) · [rdt-cli](https://github.com/public-clis/rdt-cli) · [xhs-cli](https://github.com/jackwener/xiaohongshu-cli) · [Jina Reader](https://github.com/jina-ai/reader) · [yt-dlp](https://github.com/yt-dlp/yt-dlp) · [Exa](https://exa.ai) · [feedparser](https://github.com/kurtmckee/feedparser) · [douyin-mcp-server](https://github.com/yzfly/douyin-mcp-server) · [linkedin-scraper-mcp](https://github.com/stickerdaniel/linkedin-mcp-server)
+[twitter-cli](https://github.com/public-clis/twitter-cli) · [rdt-cli](https://github.com/public-clis/rdt-cli) · [xhs-cli](https://github.com/jackwener/xiaohongshu-cli) · [Jina Reader](https://github.com/jina-ai/reader) · [yt-dlp](https://github.com/yt-dlp/yt-dlp) · [Exa](https://exa.ai) · [feedparser](https://github.com/kurtmckee/feedparser) · [mcp-server-linkedin](https://github.com/stickerdaniel/linkedin-mcp-server)
 
 ## お問い合わせ
 
@@ -324,4 +314,4 @@ douyin-mcp-serverをインストールすれば、`mcporter call 'douyin.parse_d
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Panniantong/Agent-Reach&type=Date&v=20260309)](https://star-history.com/#Panniantong/Agent-Reach&Date)
+<a href="https://www.star-history.com/?type=date&repos=Panniantong%2FAgent-Reach"><picture><source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=Panniantong/Agent-Reach&type=date&theme=dark&legend=top-left&sealed_token=K3_u-LJQTVURYu-38Tqa_VWJOSqMf_HbAw-QKSdGwEq6seqznugdIpXdSeztEdOutT40IBXwVxTmg8wS_OSygb5UWf1x8e-Fai6aygrjq6QH8vU09EcqQCN7atp-76HmxX-j9fnZ9NiSrLDNzK98TnXBFJ_Wb_y80I0nWr3O8DdGnLXFhAJgoNK3Jz8D" /><source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=Panniantong/Agent-Reach&type=date&legend=top-left&sealed_token=P2746KOq7grpS8Q-nrqEzci1-Z0-dOw-M3KEqju-l3TyF24NMyRDR7TnxdReJWlXyomoT4mjjqC28-2-c2G6CnzmS1hgYdEDiGPmLkmEqKP5tgjORXshdrUFxoSxTqmIKEMFFmGZUX1v3ec-q_XMyftTVWzluiQH7CvKoZ1uDKU3PJN05mO22u7qlLeG" /><img alt="Star History Chart" src="https://api.star-history.com/chart?repos=Panniantong/Agent-Reach&type=date&legend=top-left&sealed_token=P2746KOq7grpS8Q-nrqEzci1-Z0-dOw-M3KEqju-l3TyF24NMyRDR7TnxdReJWlXyomoT4mjjqC28-2-c2G6CnzmS1hgYdEDiGPmLkmEqKP5tgjORXshdrUFxoSxTqmIKEMFFmGZUX1v3ec-q_XMyftTVWzluiQH7CvKoZ1uDKU3PJN05mO22u7qlLeG" /></picture></a>

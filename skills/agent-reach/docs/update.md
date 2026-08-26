@@ -75,7 +75,7 @@ by the user. The update must never log the user in or read browser cookies:
 > 『添加扩展』。小红书 OpenCLI 只使用你已有的 Chrome 会话；如果没有现成
 > 会话，我不会自动登录，会改用 Cookie-Editor 配置 MCP / 存量工具。"
 
-If yes: `agent-reach install --channels opencli` and guide them through the
+If yes: `agent-reach install --system --channels opencli` and guide them through the
 extension click. If no, everything keeps working on existing backends.
 
 ### Step 4: Coexistence (DO NOT uninstall old tools)

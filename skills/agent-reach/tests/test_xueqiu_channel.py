@@ -13,6 +13,9 @@ import json
 import sys
 import types
 from unittest.mock import patch
+from urllib.parse import parse_qs, urlsplit
+
+import pytest
 
 from agent_reach.channels import xueqiu as xq
 from agent_reach.channels.xueqiu import XueqiuChannel, _strip_html
@@ -209,6 +212,52 @@ def test_get_hot_posts_tolerates_bad_data_field():
         assert p["id"] == 0
         assert p["author"] == ""
         assert p["url"] == ""
+
+
+def test_get_hot_posts_requests_the_requested_count():
+    ch = XueqiuChannel()
+    captured = {}
+
+    def fake_get_json(url):
+        captured["url"] = url
+        return {"list": []}
+
+    with patch.object(xq, "_get_json", side_effect=fake_get_json):
+        ch.get_hot_posts(limit=50)
+
+    assert parse_qs(urlsplit(captured["url"]).query)["count"] == ["50"]
+
+
+def test_get_hot_posts_clamps_count_to_documented_maximum():
+    ch = XueqiuChannel()
+    captured = {}
+    payload = {"list": [{"data": "{}"}] * 60}
+
+    def fake_get_json(url):
+        captured["url"] = url
+        return payload
+
+    with patch.object(xq, "_get_json", side_effect=fake_get_json):
+        posts = ch.get_hot_posts(limit=500)
+
+    assert parse_qs(urlsplit(captured["url"]).query)["count"] == ["50"]
+    assert len(posts) == 50
+
+
+def test_get_hot_posts_zero_limit_skips_network():
+    ch = XueqiuChannel()
+    with patch.object(
+        xq,
+        "_get_json",
+        side_effect=AssertionError("zero limit must not make a request"),
+    ):
+        assert ch.get_hot_posts(limit=0) == []
+
+
+def test_get_hot_posts_rejects_negative_limit():
+    ch = XueqiuChannel()
+    with pytest.raises(ValueError, match="non-negative"):
+        ch.get_hot_posts(limit=-1)
 
 
 # --- get_hot_stocks: ranking + code/symbol fallback ---

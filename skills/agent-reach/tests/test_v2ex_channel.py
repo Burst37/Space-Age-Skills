@@ -11,11 +11,17 @@ channel coverage after rss (#360), github (#361), web (#363),
 reddit (#364) and xueqiu (#365).
 """
 
+import json
+import ssl
+import subprocess
 from unittest.mock import patch
+from urllib.error import URLError
+from urllib.parse import parse_qs, urlsplit
+
+import pytest
 
 from agent_reach.channels import v2ex as v2
 from agent_reach.channels.v2ex import V2EXChannel
-
 
 # --- can_handle ---
 
@@ -45,6 +51,107 @@ def test_check_warn_on_exception_clears_backend():
     assert status == "warn"
     assert "连接失败" in message
     assert ch.active_backend is None
+
+
+def test_get_json_retries_unexpected_tls_eof_with_bounded_curl():
+    payload = [{"id": 1}]
+    tls_error = URLError(
+        ssl.SSLError(
+            "[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol"
+        )
+    )
+
+    with patch.object(v2, "_get_json_with_urllib", side_effect=tls_error), patch.object(
+        v2.shutil, "which", return_value="C:/Windows/System32/curl.exe"
+    ), patch.object(
+        v2.subprocess,
+        "run",
+        return_value=subprocess.CompletedProcess(
+            ["curl"], 0, json.dumps(payload), ""
+        ),
+    ) as run:
+        assert v2._get_json("https://www.v2ex.com/api/topics/hot.json") == payload
+
+    command = run.call_args.args[0]
+    assert command[0] == "C:/Windows/System32/curl.exe"
+    assert "--fail" in command
+    assert command[command.index("--proto") + 1] == "=https"
+    assert "--location" not in command
+    assert "--max-time" in command
+    assert "--max-filesize" in command
+    assert command[-2:] == [
+        "--url",
+        "https://www.v2ex.com/api/topics/hot.json",
+    ]
+    assert run.call_args.kwargs["timeout"] == v2._TIMEOUT + 2
+
+
+def test_get_json_does_not_hide_certificate_verification_failures():
+    certificate_error = ssl.SSLCertVerificationError(
+        "certificate verify failed"
+    )
+
+    with patch.object(
+        v2, "_get_json_with_urllib", side_effect=certificate_error
+    ), patch.object(v2.subprocess, "run") as run:
+        with pytest.raises(ssl.SSLCertVerificationError):
+            v2._get_json("https://www.v2ex.com/api/topics/hot.json")
+
+    run.assert_not_called()
+
+
+def test_get_json_does_not_fallback_for_plain_error_text():
+    fake_error = RuntimeError(
+        "UNEXPECTED_EOF_WHILE_READING appeared in an unrelated message"
+    )
+
+    with patch.object(
+        v2, "_get_json_with_urllib", side_effect=fake_error
+    ), patch.object(v2.subprocess, "run") as run:
+        with pytest.raises(RuntimeError, match="unrelated"):
+            v2._get_json("https://www.v2ex.com/api/topics/hot.json")
+
+    run.assert_not_called()
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://www.v2ex.com/api/topics/hot.json",
+        "https://v2ex.com.evil.test/api/topics/hot.json",
+        "https://user:pass@www.v2ex.com/api/topics/hot.json",
+        "https://www.v2ex.com:8443/api/topics/hot.json",
+        "https://www.v2ex.com/about",
+    ],
+)
+def test_get_json_rejects_non_api_targets_before_network(url):
+    with patch.object(v2.urllib.request, "urlopen") as urlopen, patch.object(
+        v2.subprocess, "run"
+    ) as run:
+        with pytest.raises(ValueError, match="V2EX HTTPS API"):
+            v2._get_json(url)
+
+    urlopen.assert_not_called()
+    run.assert_not_called()
+
+
+def test_check_is_healthy_when_native_curl_recovers_tls_eof():
+    ch = V2EXChannel()
+    tls_error = ssl.SSLError(
+        "[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol"
+    )
+
+    with patch.object(v2, "_get_json_with_urllib", side_effect=tls_error), patch.object(
+        v2.shutil, "which", return_value="/usr/bin/curl"
+    ), patch.object(
+        v2.subprocess,
+        "run",
+        return_value=subprocess.CompletedProcess(["curl"], 0, "[]", ""),
+    ):
+        status, _message = ch.check()
+
+    assert status == "ok"
+    assert ch.active_backend == ch.backends[0]
 
 
 # --- get_hot_topics / get_node_topics ---
@@ -78,6 +185,28 @@ def test_get_node_topics_falls_back_to_requested_node_name():
     with patch.object(v2, "_get_json", return_value=[{"id": 1, "title": "x"}]):
         topics = ch.get_node_topics("jobs")
     assert topics[0]["node_name"] == "jobs"
+
+
+@pytest.mark.parametrize(
+    "node_name",
+    ["python&page=99", "foo#bar", "c++", "Python 开发"],
+)
+def test_get_node_topics_percent_encodes_node_name(node_name):
+    ch = V2EXChannel()
+    captured = {}
+
+    def fake_get_json(url):
+        captured["url"] = url
+        return []
+
+    with patch.object(v2, "_get_json", side_effect=fake_get_json):
+        ch.get_node_topics(node_name)
+
+    parts = urlsplit(captured["url"])
+    query = parse_qs(parts.query)
+    assert parts.fragment == ""
+    assert query["node_name"] == [node_name]
+    assert query["page"] == ["1"]
 
 
 # --- get_topic: list-or-dict shape + replies fetch + fallbacks ---
@@ -120,6 +249,26 @@ def test_get_topic_url_fallback_when_missing():
     assert result["url"] == "https://www.v2ex.com/t/99"
 
 
+def test_get_topic_percent_encodes_topic_id_in_both_requests():
+    ch = V2EXChannel()
+    captured = []
+
+    def fake_get_json(url):
+        captured.append(url)
+        return [{"id": 1}] if len(captured) == 1 else []
+
+    with patch.object(v2, "_get_json", side_effect=fake_get_json):
+        ch.get_topic("1#&page=99")
+
+    topic_parts = urlsplit(captured[0])
+    replies_parts = urlsplit(captured[1])
+    assert topic_parts.fragment == ""
+    assert replies_parts.fragment == ""
+    assert parse_qs(topic_parts.query)["id"] == ["1#&page=99"]
+    assert parse_qs(replies_parts.query)["topic_id"] == ["1#&page=99"]
+    assert parse_qs(replies_parts.query)["page"] == ["1"]
+
+
 # --- get_user: field mapping + avatar/url fallbacks ---
 
 def test_get_user_maps_fields_and_prefers_large_avatar():
@@ -144,6 +293,33 @@ def test_get_user_avatar_falls_back_to_normal():
     assert user["url"] == "https://www.v2ex.com/member/neo"
 
 
+def test_get_user_percent_encodes_username():
+    ch = V2EXChannel()
+    captured = {}
+
+    def fake_get_json(url):
+        captured["url"] = url
+        return {}
+
+    with patch.object(v2, "_get_json", side_effect=fake_get_json):
+        ch.get_user("张三&admin=true")
+
+    parts = urlsplit(captured["url"])
+    assert parts.fragment == ""
+    assert parse_qs(parts.query)["username"] == ["张三&admin=true"]
+
+
+def test_fallback_display_urls_percent_encode_path_segments():
+    ch = V2EXChannel()
+    with patch.object(v2, "_get_json", return_value={}):
+        user_url = ch.get_user("a b/c")["url"]
+    with patch.object(v2, "_get_json", side_effect=[{}, []]):
+        topic_url = ch.get_topic("9 9")["url"]
+
+    assert user_url == "https://www.v2ex.com/member/a%20b%2Fc"
+    assert topic_url == "https://www.v2ex.com/t/9%209"
+
+
 # --- search: intentionally offline (no public search endpoint) ---
 
 def test_search_returns_guidance_without_network():
@@ -153,3 +329,11 @@ def test_search_returns_guidance_without_network():
     assert len(results) == 1
     assert "error" in results[0]
     assert "python" in results[0]["error"]
+
+
+def test_search_guidance_percent_encodes_query():
+    ch = V2EXChannel()
+    message = ch.search("rust & go#lang")[0]["error"]
+
+    assert "?q=rust+%26+go%23lang" in message
+    assert "?q=rust & go#lang" not in message

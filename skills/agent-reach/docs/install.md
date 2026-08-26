@@ -8,11 +8,11 @@ Copy this to your AI Agent:
 帮我安装 Agent Reach：https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/install.md
 ```
 
-> 🛡️ **Security-conscious?** Use safe mode — it won't auto-install system packages:
+> 🛡️ **Safe by default:** `agent-reach install` only checks the machine and lists missing dependencies:
 > ```
-> 帮我安装 Agent Reach（安全模式）：https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/install.md
-> 安装时使用 --safe 参数
+> 帮我安全检查并安装 Agent Reach：https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/install.md
 > ```
+> Only use `--system` after the user explicitly approves system-level installs and configuration writes.
 
 ---
 
@@ -51,14 +51,18 @@ All Agent Reach files go in dedicated directories — **never in the agent works
 ```bash
 # 推荐：pipx（最省心）
 pipx install https://github.com/Panniantong/agent-reach/archive/main.zip
-agent-reach install --env=auto
+agent-reach install --env=auto               # Read-only check (default)
+# After the user explicitly approves system changes:
+agent-reach install --env=auto --system
 
 # 如果你的 Python 来自 Homebrew / 遇到 PEP 668（externally-managed-environment）
 # 用虚拟环境安装：
 python3 -m venv ~/.agent-reach-venv
 source ~/.agent-reach-venv/bin/activate
 pip install https://github.com/Panniantong/agent-reach/archive/main.zip
-agent-reach install --env=auto
+agent-reach install --env=auto               # Read-only check (default)
+# After the user explicitly approves system changes:
+agent-reach install --env=auto --system
 ```
 
 > 💡 **Windows / Microsoft Store Python alias?**
@@ -74,18 +78,20 @@ agent-reach install --env=auto
 > agent-reach install --env=auto
 > ```
 
-This installs core infrastructure (gh CLI, Node.js, mcporter, Exa search, yt-dlp config) and activates these zero-config channels:
+The default command checks core infrastructure (gh CLI, Node.js, mcporter, Exa search, yt-dlp config) without changing the host. With explicit `--system` approval it installs/configures the missing pieces and activates these zero-config channels:
 
 - Web (Jina Reader), YouTube, GitHub, RSS, Exa Search, V2EX, Bilibili (basic)
 
 > 💡 **macOS / Homebrew Python 提示 `externally-managed-environment`？**
 > 这是 PEP 668 保护，不是 Agent Reach 本身的问题。优先用 `pipx install ...`，或先创建 `venv` 再安装。
 
-**Safe mode / Dry run:**
+**Install modes:**
 
 ```bash
-agent-reach install --env=auto --safe      # Check only, no auto-install
-agent-reach install --env=auto --dry-run   # Preview what would be done
+agent-reach install --env=auto             # Check only; safe default
+agent-reach install --env=auto --safe      # Same check-only behavior (compatibility)
+agent-reach install --env=auto --system    # Explicitly allow external/system installs
+agent-reach install --env=auto --dry-run   # Preview what --system would do
 ```
 
 ### Step 2: Ask the user which optional channels they want
@@ -112,9 +118,9 @@ After installing the basics, **ask the user** which additional channels they nee
 Based on the user's choice, run:
 
 ```bash
-agent-reach install --env=auto --channels=opencli,xiaohongshu   # Example: desktop user chose XHS (OpenCLI-backed)
-agent-reach install --env=auto --channels=facebook,instagram    # Example: desktop user chose Meta social channels
-agent-reach install --env=auto --channels=all              # User wants everything
+agent-reach install --env=auto --system --channels=opencli,xiaohongshu   # Desktop user chose XHS
+agent-reach install --env=auto --system --channels=facebook,instagram    # Desktop Meta channels
+agent-reach install --env=auto --system --channels=all                   # User approved everything
 ```
 
 Supported channel names: `opencli`, `twitter`, `xiaoyuzhou`, `xueqiu`, `xiaohongshu`, `reddit`, `facebook`, `instagram`, `bilibili`, `linkedin`, `all`
@@ -149,7 +155,7 @@ Some channels need credentials only the user can provide. Based on the doctor ou
 > "To unlock Twitter search, I need your Twitter cookies. Install the Cookie-Editor Chrome extension, go to x.com/twitter.com, click the extension → Export → Header String, and paste it to me."
 
 ```bash
-agent-reach configure twitter-cookies "PASTED_STRING"
+agent-reach configure twitter-cookies
 ```
 
 这会把 `twitter_auth_token` 和 `twitter_ct0` 保存给 Agent Reach 自己的
@@ -167,7 +173,7 @@ twitter search "query" -n 10
 > twitter-cli 和 rdt-cli 使用 Python，在需要代理的网络环境下可通过环境变量配置代理。
 >
 > **你（Agent）需要做的：**
-> 1. 确认用户配了代理：`agent-reach configure proxy http://user:pass@ip:port`
+> 1. 确认用户配了代理：`agent-reach configure proxy`（隐藏输入）
 > 2. 设置环境变量：`export HTTP_PROXY="..." HTTPS_PROXY="..."`
 > 3. Agent Reach 会自动处理剩下的，不需要用户做额外操作
 >
@@ -184,7 +190,7 @@ rdt login   # 自动提取浏览器 Cookie；服务器无浏览器时按 doctor 
 
 > 中国大陆访问 Reddit 需要代理；服务器 IP 被风控时可配住宅代理（如 https://webshare.io，约 $1/月）：
 > ```bash
-> agent-reach configure proxy http://user:pass@ip:port
+> agent-reach configure proxy
 > ```
 
 **XiaoHongShu / 小红书（多后端，按环境选）:**
@@ -196,7 +202,7 @@ rdt login   # 自动提取浏览器 Cookie；服务器无浏览器时按 doctor 
 > xiaohongshu-mcp 或存量工具：
 >
 > ```bash
-> agent-reach configure xhs-cookies "key1=val1; key2=val2; ..."
+> agent-reach configure xhs-cookies
 > ```
 >
 > 该显式命令会保存/导入用户提供的 xiaohongshu.com 同域 Cookie 集；请先确认
@@ -205,7 +211,7 @@ rdt login   # 自动提取浏览器 Cookie；服务器无浏览器时按 doctor 
 > **桌面电脑（推荐 OpenCLI）：**
 
 ```bash
-agent-reach install --channels opencli
+agent-reach install --system --channels opencli
 ```
 
 > 装完后引导用户做唯一一步手动操作（Chrome 安全限制，无法代劳）：
@@ -231,7 +237,7 @@ agent-reach install --channels opencli
 > 这两个平台走 OpenCLI：复用用户自己的 Chrome 登录态，不保存账号密码，不走 Meta Graph API 审批流。服务器/无桌面环境不推荐支持。
 
 ```bash
-agent-reach install --channels facebook,instagram
+agent-reach install --system --channels facebook,instagram
 ```
 
 > 装完后：
@@ -264,7 +270,7 @@ agent-reach configure --from-browser chrome --platform xueqiu
 脚本已随 Agent Reach 自动安装，用户只需提供 Key：
 
 ```bash
-agent-reach configure groq-key gsk_xxxxx
+agent-reach configure groq-key
 ```
 
 > **获取 Groq API Key（免费、无需信用卡、30 秒搞定）：**
@@ -287,42 +293,24 @@ agent-reach configure groq-key gsk_xxxxx
 > - 转录质量高（Whisper large-v3），但不区分说话人
 > - 2 小时以上的播客建议分批处理
 
-**LinkedIn (可选 — linkedin-scraper-mcp):**
-> "LinkedIn 基本内容可通过 Jina Reader 读取。完整功能（Profile 详情、职位搜索）需要 linkedin-scraper-mcp。"
+**LinkedIn (可选 — mcp-server-linkedin):**
+> "LinkedIn 基本内容可通过 Jina Reader 读取。完整功能（Profile 详情、人才与职位搜索）需要 mcp-server-linkedin。"
 
-```bash
-pip install linkedin-scraper-mcp
-```
-
-> **登录方式（需要浏览器界面）：**
+> **配置方式（推荐 stdio）：**
+> 先按官方说明安装 `uv`（会同时提供 `uvx`）：
+> https://docs.astral.sh/uv/getting-started/installation/
 >
-> linkedin-scraper-mcp 使用 Chromium 浏览器登录，需要你能看到浏览器窗口。
->
-> - **本地电脑（有桌面）：** 直接运行：
->   ```bash
->   linkedin-scraper-mcp --login --no-headless
->   ```
->   浏览器会弹出来，手动登录 LinkedIn 即可。
->
-> - **服务器（无 UI）：** 需要通过 VNC 远程桌面操作：
->   ```bash
->   # 1. 服务器上安装并启动 VNC（如已有可跳过）
->   apt install -y tigervnc-standalone-server
->   vncserver :1 -geometry 1280x720
->   
->   # 2. 用 VNC 客户端连接 服务器IP:5901
->   
->   # 3. 在 VNC 桌面的终端里运行：
->   export DISPLAY=:1
->   linkedin-scraper-mcp --login --no-headless
->   ```
->   在 VNC 里看到浏览器后手动登录。登录成功后 session 会保存到 `~/.linkedin-mcp/profile/`。
->
-> **登录后启动 MCP 服务：**
 > ```bash
-> linkedin-scraper-mcp --transport streamable-http --port 8001
-> mcporter config add linkedin http://localhost:8001/mcp --scope home
+> mcporter config add linkedin --command uvx --arg mcp-server-linkedin@latest --env UV_HTTP_TIMEOUT=300 --scope home
 > ```
+>
+> `uvx` 会按需获取并启动最新版服务，无需另装 Python 包或常驻 HTTP 服务。
+>
+> **首次登录（需要浏览器界面）：**
+> ```bash
+> uvx mcp-server-linkedin@latest --login
+> ```
+> 浏览器弹出后手动登录 LinkedIn；登录态会保存到 `~/.linkedin-mcp/profile/`。无桌面的服务器需在 VNC 等可见桌面中运行同一条登录命令。
 >
 > 详见 https://github.com/stickerdaniel/linkedin-mcp-server
 
@@ -353,17 +341,18 @@ If the user wants a different agent to handle it, let them choose.
 
 | Command | What it does |
 |---------|-------------|
-| `agent-reach install --env=auto` | Install core channels (lightweight, zero-config) |
-| `agent-reach install --env=auto --channels=twitter,xiaohongshu` | Install core + optional channels |
-| `agent-reach install --env=auto --channels=all` | Install everything |
-| `agent-reach install --env=auto --safe` | Safe setup (no auto system changes) |
+| `agent-reach install --env=auto` | Read-only dependency and channel check (default) |
+| `agent-reach install --env=auto --system` | Explicitly install/configure core external tools |
+| `agent-reach install --env=auto --system --channels=twitter,xiaohongshu` | Install approved optional channels |
+| `agent-reach install --env=auto --system --channels=all` | Install everything after explicit approval |
+| `agent-reach install --env=auto --safe` | Compatibility alias for the safe default |
 | `agent-reach install --env=auto --dry-run` | Preview what would be done |
 | `agent-reach doctor` | Show channel status |
 | `agent-reach watch` | Quick health + update check (for scheduled tasks) |
 | `agent-reach check-update` | Check for new versions |
-| `agent-reach configure twitter-cookies "..."` | 保存 Twitter Cookie 供 doctor 检查；直接调用仍需显式环境变量 |
-| `agent-reach configure proxy URL` | 保存代理地址（Agent 访问 Reddit/Twitter 等受限网络时读取它设置 HTTP_PROXY/HTTPS_PROXY，不是自动解锁开关） |
-| `agent-reach configure groq-key gsk_xxx` | Unlock Xiaoyuzhou podcast transcription |
+| `agent-reach configure twitter-cookies` | 通过隐藏输入保存 Twitter Cookie；直接调用仍需显式环境变量 |
+| `agent-reach configure proxy` | 通过隐藏输入保存代理地址；不是自动解锁开关 |
+| `agent-reach configure groq-key` | 通过隐藏输入配置小宇宙转录 Key |
 
 After installation, use upstream tools directly. See SKILL.md for the full command reference:
 
@@ -377,10 +366,10 @@ After installation, use upstream tools directly. See SKILL.md for the full comma
 | Instagram | `opencli` | `opencli instagram user nasa -f yaml` |
 | GitHub | `gh` | `gh search repos "query"` |
 | Web | `curl` + Jina | `curl -s "https://r.jina.ai/URL"` |
-| Exa Search | `mcporter` | `mcporter call 'exa.web_search_exa(...)'` |
+| Exa Search | `mcporter` | `mcporter call exa.web_search_exa query="..." numResults=5` |
 | 小红书 | `opencli`（服务器 `mcporter`） | `opencli xiaohongshu search "query" -f yaml` |
 | 小宇宙播客 | `transcribe.sh` | `bash ~/.agent-reach/tools/xiaoyuzhou/transcribe.sh <URL>` |
-| LinkedIn | `mcporter` | `mcporter call 'linkedin.get_person_profile(...)'` |
+| LinkedIn | `mcporter` | `mcporter call linkedin.get_person_profile linkedin_username="..."` |
 | RSS | `feedparser` | `python3 -c "import feedparser; ..."` |
 
 > 多后端平台以 `agent-reach doctor --json` 的 `active_backend` 为准。

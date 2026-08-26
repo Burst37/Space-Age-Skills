@@ -64,10 +64,8 @@ Update Agent Reach: https://raw.githubusercontent.com/Panniantong/agent-reach/ma
 | 🌐 **Web** | 읽기 | 없음 | 모든 URL → 깨끗한 Markdown ([Jina Reader](https://github.com/jina-ai/reader) ⭐9.8K) |
 | 🐦 **Twitter/X** | 읽기 · 검색 | Cookie | Cookie로 검색, 타임라인, 트윗 읽기, 아티클 읽기 가능 ([twitter-cli](https://github.com/public-clis/twitter-cli)) |
 | 📕 **XiaoHongShu** | 읽기 · 검색 · 댓글 | OpenCLI / Cookie | OpenCLI는 사용자가 관리하는 기존 Chrome 세션만 사용하며, MCP/기존 도구는 Cookie-Editor 사용 |
-| 🎵 **Douyin** | 비디오 파싱 · 워터마크 없는 다운로드 | mcporter | [douyin-mcp-server](https://github.com/yzfly/douyin-mcp-server) 통해, 로그인 불필요 |
 | 💼 **LinkedIn** | Jina Reader (공개 페이지) | Cookie | 전체 프로필, 회사, 채용 공고 검색 가능. 에이전트에 "LinkedIn 설정 도와줘"라고 말하세요 |
 | 💬 **WeChat Articles** | 검색 + 읽기 | 없음 | Exa를 통한 WeChat 공식 계정 게시글 검색 + 읽기 (설정 없음) + 선택적 [Camoufox](https://github.com/daijro/camoufox) |
-| 📰 **Weibo** | 인기 · 검색 · 피드 · 댓글 | 없음 | 핫 검색, 콘텐츠/사용자/주제 검색, 피드, 댓글 ([mcp-server-weibo](https://github.com/Panniantong/mcp-server-weibo)) |
 | 💻 **V2EX** | 인기 주제 · 노드 주제 · 주제 상세 + 답글 · 사용자 프로필 | 없음 | 공개 JSON API, 인증 없음. 기술 커뮤니티 콘텐츠에 적합 |
 | 📈 **Xueqiu (雪球)** | 주식 시세 · 검색 · 인기 글 · 인기 종목 | 브라우저 Cookie | 에이전트에 "Xueqiu 설정 도와줘"라고 말하세요 |
 | 🎙️ **Xiaoyuzhou Podcast** | 음성 변환 | 무료 API key | Groq Whisper를 통한 팟캐스트 오디오 → 전체 텍스트 변환 (무료) |
@@ -102,7 +100,8 @@ Install Agent Reach: https://raw.githubusercontent.com/Panniantong/agent-reach/m
 
 ```bash
 pip install https://github.com/Panniantong/agent-reach/archive/main.zip
-agent-reach install --env=auto
+agent-reach install --env=auto           # 읽기 전용 확인 (기본값)
+agent-reach install --env=auto --system  # 시스템 변경을 명시적으로 승인한 경우에만
 ```
 </details>
 
@@ -115,7 +114,7 @@ npx skills add Panniantong/Agent-Reach@agent-reach
 
 Skill이 설치된 후, 에이전트는 `agent-reach` CLI 사용 가능 여부를 자동 감지하고 필요한 경우 설치합니다.
 
-> `agent-reach install`을 통해 설치하면 Skill이 자동으로 등록됩니다 — 추가 단계 불필요.
+> `agent-reach install --system`을 명시적으로 승인한 경우에만 Skill이 자동 등록됩니다. 기본 `agent-reach install`은 읽기 전용입니다.
 </details>
 
 ---
@@ -206,7 +205,6 @@ channels/
 ├── bilibili.py     → bili-cli ▸ OpenCLI ▸ 검색 API (yt-dlp는 412 차단으로 폐기)
 ├── reddit.py       → OpenCLI ▸ rdt-cli (로그인 상태 필요)
 ├── xiaohongshu.py  → OpenCLI ▸ xiaohongshu-mcp ▸ xhs-cli
-├── douyin.py       → mcporter MCP    ← 다른 Douyin 도구로 교체...
 ├── linkedin.py     → linkedin-mcp    ← LinkedIn API로 교체...
 ├── rss.py          → feedparser      ← atoma로 교체...
 ├── exa_search.py   → mcporter MCP    ← Tavily, SerpAPI로 교체...
@@ -228,10 +226,8 @@ channels/
 | GitHub | [gh CLI](https://cli.github.com) | 공식 도구, 인증 후 전체 API |
 | RSS 읽기 | [feedparser](https://github.com/kurtmckee/feedparser) | Python 생태계 표준, 2.3K stars |
 | XiaoHongShu | [OpenCLI](https://github.com/jackwener/opencli) (데스크톱) ▸ [xiaohongshu-mcp](https://github.com/xpzouying/xiaohongshu-mcp) (서버) ▸ xhs-cli | OpenCLI는 사용자가 관리하는 기존 세션만 사용하며, 그 외에는 Cookie-Editor로 수동 설정 |
-| Douyin | [douyin-mcp-server](https://github.com/yzfly/douyin-mcp-server) | MCP 서버, 로그인 불필요, 비디오 파싱 + 워터마크 없는 다운로드 |
-| LinkedIn | [linkedin-scraper-mcp](https://github.com/stickerdaniel/linkedin-mcp-server) | 1.2K stars, MCP 서버, 브라우저 자동화 |
+| LinkedIn | [mcp-server-linkedin](https://github.com/stickerdaniel/linkedin-mcp-server) | 1.2K stars, MCP 서버, 브라우저 자동화 |
 | WeChat Articles | [Exa](https://exa.ai) (검색 + 읽기) + [Camoufox](https://github.com/daijro/camoufox) (선택) | 설정 없이 검색 + 전체 글 읽기 |
-| Weibo | `mcporter` | `mcporter call 'weibo.get_trendings(limit: 10)'` |
 | Xiaoyuzhou Podcast | `transcribe.sh` | `bash ~/.agent-reach/tools/xiaoyuzhou/transcribe.sh <URL>` |
 
 > 📌 이것은 *현재* 선택입니다. 마음에 안 드나요? 파일을 교체하세요. 그것이 스캐폴딩의 전부입니다.
@@ -255,7 +251,7 @@ channels/
 <details>
 <summary><strong>AI 에이전트로 Twitter/X를 API 비용 없이 검색하는 방법?</strong></summary>
 
-Agent Reach는 cookie 기반 인증을 사용하는 [twitter-cli](https://github.com/public-clis/twitter-cli)를 사용합니다. Cookie-Editor로 수동 내보낸 뒤 `agent-reach configure twitter-cookies "..."`로 저장합니다. 이 값은 doctor의 설정 확인용이며 실시간 인증 성공을 뜻하지 않습니다. `twitter search "query" -n 10`을 직접 실행하는 프로세스에는 `TWITTER_AUTH_TOKEN`과 `TWITTER_CT0`를 명시적으로 전달해야 합니다.
+Agent Reach는 cookie 기반 인증을 사용하는 [twitter-cli](https://github.com/public-clis/twitter-cli)를 사용합니다. Cookie-Editor로 수동 내보낸 뒤 `agent-reach configure twitter-cookies`의 숨김 입력으로 저장합니다. 이 값은 doctor의 설정 확인용이며 실시간 인증 성공을 뜻하지 않습니다. `twitter search "query" -n 10`을 직접 실행하는 프로세스에는 `TWITTER_AUTH_TOKEN`과 `TWITTER_CT0`를 명시적으로 전달해야 합니다.
 </details>
 
 <details>
@@ -273,7 +269,7 @@ Agent Reach는 Reddit을 위해 [rdt-cli](https://github.com/public-clis/rdt-cli
 <details>
 <summary><strong>Agent Reach는 Claude Code / Cursor / Windsurf / OpenClaw와 호환되나요?</strong></summary>
 
-네! Agent Reach는 설치 + 설정 도구입니다. Shell 명령을 실행할 수 있는 모든 AI 코딩 에이전트가 사용할 수 있습니다 — Claude Code, Cursor, Windsurf, OpenClaw, Codex 등. `pip install agent-reach`만 실행하고 `agent-reach install`을 실행하면, 에이전트가 즉시 업스트림 도구 사용을 시작할 수 있습니다.
+네! Agent Reach는 설치 + 설정 도구입니다. Shell 명령을 실행할 수 있는 모든 AI 코딩 에이전트가 사용할 수 있습니다 — Claude Code, Cursor, Windsurf, OpenClaw, Codex 등. `pip install https://github.com/Panniantong/agent-reach/archive/main.zip` 실행 후 먼저 `agent-reach install`로 읽기 전용 검사를 하고, 시스템 변경을 명시적으로 승인한 경우에만 `agent-reach install --system`을 실행합니다. PyPI의 동명 패키지는 다른 프로젝트입니다.
 </details>
 
 <details>
@@ -294,44 +290,11 @@ Agent Reach는 cookie 인증을 통해 Twitter에 접근하는 twitter-cli를 �
 Agent Reach는 XiaoHongShu 로그인을 대신 수행하거나 브라우저 cookie를 읽지 않습니다. OpenCLI는 사용자가 이미 보유하고 명시적으로 관리하는 Chrome 세션만 사용합니다. 기존 세션이 없다면 자동 로그인하지 말고 Cookie-Editor로 수동 내보내 xiaohongshu-mcp 또는 기존 도구를 설정하세요. `agent-reach configure xhs-cookies`는 OpenCLI/Chrome에 cookie를 주입하지 않습니다.
 </details>
 
-<details>
-<summary><strong>AI 에이전트로 Douyin / 抖音 비디오를 파싱하는 방법?</strong></summary>
-
-douyin-mcp-server를 설치한 다음, 에이전트가 `mcporter call 'douyin.parse_douyin_video_info(share_link: "share_url")'`를 사용하여 비디오 정보를 파싱하고 워터마크 없는 다운로드 링크를 가져올 수 있습니다. 로그인 불필요 — Douyin 링크를 공유하기만 하면 됩니다. https://github.com/yzfly/douyin-mcp-server 참조
-</details>
-
-<details>
-<summary><strong>하나의 MCP로 Douyin과 XiaoHongShu 모두에서 대본을 추출하는 방법?</strong></summary>
-
-다음을 처리할 수 있는 하나의 MCP 서버가 필요한 경우:
-
-- Douyin 비디오
-- XiaoHongShu 비디오 노트
-- XiaoHongShu 이미지 노트
-
-그리고 직접 `script.md` + `info.json`을 작성하려면, 기존 `douyin` mcporter 별칭을 다음으로 변경할 수 있습니다:
-
-- https://github.com/JNHFlow21/social-post-extractor-mcp
-
-다음과 호환성을 유지합니다:
-
-- `parse_douyin_video_info`
-- `get_douyin_download_link`
-- `extract_douyin_text`
-
-그리고 통합 도구를 추가합니다:
-
-- `parse_social_post_info`
-- `extract_social_post_script`
-
-이것은 에이전트 워크플로우가 "링크를 붙여넣고, 스크립트 파일을 받음"일 때 유용합니다.
-</details>
-
 ---
 
 ## 크레딧
 
-[twitter-cli](https://github.com/public-clis/twitter-cli) · [rdt-cli](https://github.com/public-clis/rdt-cli) · [xhs-cli](https://github.com/jackwener/xiaohongshu-cli) · [bili-cli](https://github.com/public-clis/bilibili-cli) · [yt-dlp](https://github.com/yt-dlp/yt-dlp) · [Jina Reader](https://github.com/jina-ai/reader) · [Exa](https://exa.ai) · [mcporter](https://github.com/nicobailon/mcporter) · [feedparser](https://github.com/kurtmckee/feedparser) · [douyin-mcp-server](https://github.com/yzfly/douyin-mcp-server) · [linkedin-scraper-mcp](https://github.com/stickerdaniel/linkedin-mcp-server)
+[twitter-cli](https://github.com/public-clis/twitter-cli) · [rdt-cli](https://github.com/public-clis/rdt-cli) · [xhs-cli](https://github.com/jackwener/xiaohongshu-cli) · [bili-cli](https://github.com/public-clis/bilibili-cli) · [yt-dlp](https://github.com/yt-dlp/yt-dlp) · [Jina Reader](https://github.com/jina-ai/reader) · [Exa](https://exa.ai) · [mcporter](https://github.com/nicobailon/mcporter) · [feedparser](https://github.com/kurtmckee/feedparser) · [mcp-server-linkedin](https://github.com/stickerdaniel/linkedin-mcp-server)
 
 ## 연락처
 
@@ -356,4 +319,4 @@ douyin-mcp-server를 설치한 다음, 에이전트가 `mcporter call 'douyin.pa
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Panniantong/Agent-Reach&type=Date&v=20260309)](https://star-history.com/#Panniantong/Agent-Reach&Date)
+<a href="https://www.star-history.com/?type=date&repos=Panniantong%2FAgent-Reach"><picture><source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=Panniantong/Agent-Reach&type=date&theme=dark&legend=top-left&sealed_token=K3_u-LJQTVURYu-38Tqa_VWJOSqMf_HbAw-QKSdGwEq6seqznugdIpXdSeztEdOutT40IBXwVxTmg8wS_OSygb5UWf1x8e-Fai6aygrjq6QH8vU09EcqQCN7atp-76HmxX-j9fnZ9NiSrLDNzK98TnXBFJ_Wb_y80I0nWr3O8DdGnLXFhAJgoNK3Jz8D" /><source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=Panniantong/Agent-Reach&type=date&legend=top-left&sealed_token=P2746KOq7grpS8Q-nrqEzci1-Z0-dOw-M3KEqju-l3TyF24NMyRDR7TnxdReJWlXyomoT4mjjqC28-2-c2G6CnzmS1hgYdEDiGPmLkmEqKP5tgjORXshdrUFxoSxTqmIKEMFFmGZUX1v3ec-q_XMyftTVWzluiQH7CvKoZ1uDKU3PJN05mO22u7qlLeG" /><img alt="Star History Chart" src="https://api.star-history.com/chart?repos=Panniantong/Agent-Reach&type=date&legend=top-left&sealed_token=P2746KOq7grpS8Q-nrqEzci1-Z0-dOw-M3KEqju-l3TyF24NMyRDR7TnxdReJWlXyomoT4mjjqC28-2-c2G6CnzmS1hgYdEDiGPmLkmEqKP5tgjORXshdrUFxoSxTqmIKEMFFmGZUX1v3ec-q_XMyftTVWzluiQH7CvKoZ1uDKU3PJN05mO22u7qlLeG" /></picture></a>

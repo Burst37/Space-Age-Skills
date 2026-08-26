@@ -1,18 +1,29 @@
 # -*- coding: utf-8 -*-
-"""LinkedIn — check if linkedin-scraper-mcp is available."""
+"""LinkedIn — check if mcp-server-linkedin is configured."""
 
 import shutil
 
 from .base import Channel
 from .mcporter import McporterConfigError, inspect_mcporter_config
 
-_LINKEDIN_SERVER_NAMES = {"linkedin", "linkedin-scraper", "linkedin-scraper-mcp"}
+_LINKEDIN_SERVER_NAMES = {
+    "linkedin",
+    "linkedin-scraper",
+    "linkedin-scraper-mcp",
+    "mcp-server-linkedin",
+}
+_LOGIN_COMMAND = "uvx mcp-server-linkedin@latest --login"
+_UV_INSTALL_URL = "https://docs.astral.sh/uv/getting-started/installation/"
+_CONFIG_COMMAND = (
+    "mcporter config add linkedin --command uvx "
+    "--arg mcp-server-linkedin@latest --env UV_HTTP_TIMEOUT=300 --scope home"
+)
 
 
 class LinkedInChannel(Channel):
     name = "linkedin"
     description = "LinkedIn 职业社交"
-    backends = ["linkedin-scraper-mcp", "Jina Reader"]
+    backends = ["mcp-server-linkedin", "Jina Reader"]
     tier = 2
 
     def can_handle(self, url: str) -> bool:
@@ -25,9 +36,9 @@ class LinkedInChannel(Channel):
         if not shutil.which("mcporter"):
             return "off", (
                 "基本内容可通过 Jina Reader 读取。完整功能需要：\n"
-                "  pip install linkedin-scraper-mcp\n"
-                "  mcporter config add linkedin http://localhost:3000/mcp "
-                "--scope home\n"
+                f"  先安装 uv/uvx：{_UV_INSTALL_URL}\n"
+                f"  {_LOGIN_COMMAND}\n"
+                f"  {_CONFIG_COMMAND}\n"
                 "  详见 https://github.com/stickerdaniel/linkedin-mcp-server"
             )
         try:
@@ -35,6 +46,12 @@ class LinkedInChannel(Channel):
         except McporterConfigError as exc:
             return "error", f"mcporter 配置检查失败：{exc}"
         if inspection.server_names & _LINKEDIN_SERVER_NAMES:
+            if not shutil.which("uvx"):
+                return "warn", (
+                    "LinkedIn MCP 已写入 mcporter 配置，但 uvx 未安装，"
+                    "当前无法启动服务。安装：\n"
+                    f"  {_UV_INSTALL_URL}"
+                )
             return "warn", (
                 "LinkedIn MCP 已写入 mcporter 配置，但 Doctor 未启动本地"
                 "服务做连通验证，不能仅凭配置宣称完整可用。"
@@ -46,7 +63,7 @@ class LinkedInChannel(Channel):
             )
         return "off", (
             "mcporter 已装但 LinkedIn MCP 未配置。运行：\n"
-            "  pip install linkedin-scraper-mcp\n"
-            "  mcporter config add linkedin http://localhost:3000/mcp "
-            "--scope home"
+            f"  先安装 uv/uvx：{_UV_INSTALL_URL}\n"
+            f"  {_LOGIN_COMMAND}\n"
+            f"  {_CONFIG_COMMAND}"
         )
