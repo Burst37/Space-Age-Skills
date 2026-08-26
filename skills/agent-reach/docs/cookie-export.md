@@ -18,9 +18,13 @@ Here's how to export cookies from your local computer — **fastest method first
 
 That's it! Your Agent will run:
 ```bash
-agent-reach configure twitter-cookies <your_pasted_string>
-agent-reach configure xhs-cookies <your_pasted_string>
+agent-reach configure twitter-cookies
+agent-reach configure xhs-cookies
 ```
+
+Both commands use a hidden prompt. For non-interactive automation, send the
+same exported value through stdin and add `--stdin`; never place cookies in
+the process arguments.
 
 Twitter values saved by Agent Reach are used by `agent-reach doctor` only to
 check whether explicit credentials are present. Doctor does not run

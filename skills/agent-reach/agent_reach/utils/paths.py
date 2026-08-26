@@ -14,6 +14,23 @@ class PrivatePathError(RuntimeError):
     """Raised when a private write could be redirected through a symlink."""
 
 
+def home_dir() -> Path:
+    """Return the explicit HOME first, including on Windows.
+
+    Windows' ``expanduser("~")`` ignores HOME and resolves USERPROFILE.  Agent
+    Reach uses HOME as an isolation boundary in tests, containers and managed
+    agent environments, so credential paths must honor it consistently.
+    """
+    explicit_home = os.environ.get("HOME")
+    if explicit_home:
+        return Path(os.path.abspath(explicit_home))
+
+    expanded = os.path.expanduser("~")
+    if expanded and expanded != "~":
+        return Path(expanded)
+    return Path.home()
+
+
 def ensure_no_symlink_path(path: str | Path, label: str = "路径") -> Path:
     """Reject any existing symlink component without resolving the path."""
     target = Path(path)

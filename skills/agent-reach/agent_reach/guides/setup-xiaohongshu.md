@@ -24,7 +24,7 @@ xiaohongshu-mcp 或存量工具：
 4. 把导出的字符串发给 Agent，运行：
 
 ```bash
-agent-reach configure xhs-cookies "导出的 Cookie Header String"
+agent-reach configure xhs-cookies
 agent-reach doctor
 ```
 
@@ -57,7 +57,7 @@ xhs comments NOTE_ID
 
 **Q: Cookie 过期了？**
 A: 重新通过 Cookie-Editor 手工导出，再运行
-`agent-reach configure xhs-cookies "新的 Cookie Header String"`。
+`agent-reach configure xhs-cookies`，并粘贴到隐藏输入提示。
 
 **Q: 小红书提示 IP 风险？**
 A: 推荐使用住宅代理：`export HTTP_PROXY="http://user:pass@ip:port"`。

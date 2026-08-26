@@ -16,6 +16,7 @@ import yaml
 from agent_reach.utils.paths import (
     PrivatePathError,
     ensure_no_symlink_path,
+    home_dir,
     make_private_dir,
     read_small_text_no_follow,
 )
@@ -98,7 +99,7 @@ def _atomic_write_yaml(target: Path, data: dict) -> None:
 class Config:
     """Manages Agent Reach configuration."""
 
-    CONFIG_DIR = Path.home() / ".agent-reach"
+    CONFIG_DIR = home_dir() / ".agent-reach"
     CONFIG_FILE = CONFIG_DIR / "config.yaml"
 
     # Feature → required config keys
@@ -226,7 +227,7 @@ class Config:
         masked = {}
         for k, v in self.data.items():
             if any(s in k.lower() for s in sensitive_markers):
-                masked[k] = f"{str(v)[:8]}..." if v else None
+                masked[k] = "[REDACTED]" if v else None
             else:
                 masked[k] = v
         return masked

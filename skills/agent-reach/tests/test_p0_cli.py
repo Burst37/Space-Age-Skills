@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import io
 import json
 import subprocess
 import sys
@@ -24,6 +25,147 @@ class _MemoryConfig:
 
     def set(self, key, value):
         self.data[key] = value
+
+
+def test_configure_reads_secret_from_stdin_without_echoing_it(
+    monkeypatch, capsys
+):
+    import agent_reach.config as config_module
+
+    secret = "gsk-secret-from-stdin"
+    config = _MemoryConfig()
+    monkeypatch.setattr(config_module, "Config", lambda: config)
+    monkeypatch.setattr(cli, "_configure_logging", lambda _verbose=False: None)
+    monkeypatch.setattr(sys, "stdin", io.StringIO(secret + "\n"))
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["agent-reach", "configure", "groq-key", "--stdin"],
+    )
+
+    cli.main()
+
+    assert config.data["groq_api_key"] == secret
+    output = capsys.readouterr()
+    assert secret not in output.out
+    assert secret not in output.err
+
+
+def test_configure_uses_hidden_prompt_when_no_value_is_given(
+    monkeypatch, capsys
+):
+    import getpass
+
+    import agent_reach.config as config_module
+
+    class TtyInput(io.StringIO):
+        def isatty(self):
+            return True
+
+    secret = "sk-secret-from-prompt"
+    config = _MemoryConfig()
+    monkeypatch.setattr(config_module, "Config", lambda: config)
+    monkeypatch.setattr(cli, "_configure_logging", lambda _verbose=False: None)
+    monkeypatch.setattr(sys, "stdin", TtyInput())
+    monkeypatch.setattr(getpass, "getpass", lambda _prompt: secret)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["agent-reach", "configure", "openai-key"],
+    )
+
+    cli.main()
+
+    assert config.data["openai_api_key"] == secret
+    output = capsys.readouterr()
+    assert secret not in output.out
+    assert secret not in output.err
+
+
+def test_setup_uses_hidden_prompts_for_secrets(monkeypatch, capsys):
+    import getpass
+    import shutil
+
+    import agent_reach.config as config_module
+
+    github_secret = "ghp-secret-from-setup"
+    groq_secret = "gsk-secret-from-setup"
+    secrets = iter([github_secret, groq_secret])
+    prompts = []
+    config = _MemoryConfig()
+    config.config_path = Path("/tmp/agent-reach-test-config.yaml")
+
+    monkeypatch.setattr(config_module, "Config", lambda: config)
+    monkeypatch.setattr(shutil, "which", lambda _name: None)
+    monkeypatch.setattr(
+        getpass,
+        "getpass",
+        lambda prompt: prompts.append(prompt) or next(secrets),
+    )
+
+    cli._cmd_setup()
+
+    assert config.data["github_token"] == github_secret
+    assert config.data["groq_api_key"] == groq_secret
+    assert prompts == [
+        "  GITHUB_TOKEN (回车跳过): ",
+        "  GROQ_API_KEY (回车跳过): ",
+    ]
+    output = capsys.readouterr()
+    assert github_secret not in output.out
+    assert github_secret not in output.err
+    assert groq_secret not in output.out
+    assert groq_secret not in output.err
+
+
+def test_configure_positional_secret_warns_to_use_safe_input(
+    monkeypatch, capsys
+):
+    import agent_reach.config as config_module
+
+    config = _MemoryConfig()
+    monkeypatch.setattr(config_module, "Config", lambda: config)
+    monkeypatch.setattr(cli, "_configure_logging", lambda _verbose=False: None)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["agent-reach", "configure", "groq-key", "legacy-secret"],
+    )
+
+    cli.main()
+
+    assert config.data["groq_api_key"] == "legacy-secret"
+    error = capsys.readouterr().err
+    assert "deprecated" in error.lower()
+    assert "--stdin" in error
+    assert "legacy-secret" not in error
+
+
+def test_configure_rejects_stdin_combined_with_positional_value(
+    monkeypatch, capsys
+):
+    monkeypatch.setattr(
+        cli,
+        "_cmd_configure",
+        lambda _args: pytest.fail("invalid input sources must not configure"),
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "agent-reach",
+            "configure",
+            "groq-key",
+            "legacy-secret",
+            "--stdin",
+        ],
+    )
+
+    with pytest.raises(SystemExit) as exc:
+        cli.main()
+
+    assert exc.value.code == 2
+    assert "--stdin cannot be combined" in capsys.readouterr().err
 
 
 def test_browser_cookie_import_requires_explicit_platform(monkeypatch):
@@ -192,6 +334,7 @@ def test_install_does_not_implicitly_read_browser_cookies(monkeypatch, tmp_path,
         Namespace(
             env="local",
             proxy="",
+            system=True,
             safe=False,
             dry_run=False,
             channels="twitter",
@@ -201,6 +344,25 @@ def test_install_does_not_implicitly_read_browser_cookies(monkeypatch, tmp_path,
     output = capsys.readouterr().out
     assert "configure twitter-cookies" in output
     assert "Importing cookies from browser" not in output
+
+
+def test_install_rejects_safe_and_system_together(monkeypatch, capsys):
+    monkeypatch.setattr(
+        cli,
+        "_cmd_install",
+        lambda _args: pytest.fail("conflicting install modes must not run"),
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["agent-reach", "install", "--safe", "--system"],
+    )
+
+    with pytest.raises(SystemExit) as exc:
+        cli.main()
+
+    assert exc.value.code == 2
+    assert "not allowed with argument" in capsys.readouterr().err
 
 
 def test_install_rejects_unknown_channel_before_side_effects(
@@ -497,6 +659,38 @@ def test_xhs_docker_cookie_copy_always_removes_temporary_file(monkeypatch, capsy
     assert "Failed to copy cookies: copy failed" in capsys.readouterr().out
 
 
+def test_xhs_docker_restart_failure_returns_failure(monkeypatch, capsys):
+    """Cookies are not active until the container successfully restarts."""
+
+    def fake_which(name):
+        return "/usr/bin/docker" if name == "docker" else None
+
+    def fake_run(args, **_kwargs):
+        if args[1] == "ps":
+            return _docker_result(args, stdout="xiaohongshu-mcp\n")
+        if args[1:3] == ["exec", "xiaohongshu-mcp"]:
+            return _docker_result(args, stdout="/app/data/cookies.json\n")
+        if args[1] == "restart":
+            return _docker_result(
+                args,
+                returncode=1,
+                stderr="no such container",
+            )
+        return _docker_result(args)
+
+    monkeypatch.setattr("shutil.which", fake_which)
+    monkeypatch.setattr(subprocess, "run", fake_run)
+
+    result = cli._configure_xhs_cookies("web_session=xhs_secret")
+
+    output = capsys.readouterr().out
+    assert result is False
+    assert "Could not restart container" in output
+    assert "no such container" in output
+    assert "Restart manually" in output
+    assert "done" not in output
+
+
 def test_system_install_uses_ytdlp_first_user_config(
     monkeypatch, tmp_path
 ):
@@ -505,7 +699,6 @@ def test_system_install_uses_ytdlp_first_user_config(
 
     import agent_reach.utils.paths as paths
 
-    monkeypatch.setattr(paths.sys, "platform", "darwin")
     monkeypatch.setattr(paths.Path, "home", classmethod(lambda cls: tmp_path))
     monkeypatch.delenv("XDG_CONFIG_HOME")
     monkeypatch.setattr(
@@ -540,6 +733,230 @@ def test_system_install_uses_ytdlp_first_user_config(
     config_path = tmp_path / ".config" / "yt-dlp" / "config"
     assert config_path.read_text(encoding="utf-8") == "--js-runtimes node\n"
     assert not (tmp_path / ".legacy-config" / "config").exists()
+
+
+def test_system_install_uses_existing_apt_without_remote_bootstrap(
+    monkeypatch,
+):
+    """Linux installs only from an already-configured apt package manager."""
+    import builtins
+    import io
+    import platform
+    import shutil
+
+    commands = []
+    system_source_writes = []
+    real_open = builtins.open
+
+    def fake_which(name):
+        if name == "apt-get":
+            return "/usr/bin/apt-get"
+        return None
+
+    def fake_open(path, mode="r", *args, **kwargs):
+        if str(path).startswith(("/etc/apt/", "/usr/share/keyrings/")):
+            system_source_writes.append((str(path), mode))
+            return io.StringIO()
+        return real_open(path, mode, *args, **kwargs)
+
+    def fake_run(args, **_kwargs):
+        commands.append(args)
+        return subprocess.CompletedProcess(args, 0, stdout="", stderr="")
+
+    monkeypatch.setattr(platform, "system", lambda: "Linux")
+    monkeypatch.setattr(shutil, "which", fake_which)
+    monkeypatch.setattr(builtins, "open", fake_open)
+    monkeypatch.setattr(subprocess, "run", fake_run)
+
+    cli._install_system_deps()
+
+    assert commands == [
+        ["/usr/bin/apt-get", "update", "-qq"],
+        [
+            "/usr/bin/apt-get",
+            "install",
+            "-y",
+            "-qq",
+            "gh",
+            "nodejs",
+            "npm",
+        ],
+    ]
+    assert system_source_writes == []
+
+
+def test_system_install_stops_after_failed_apt_update(monkeypatch, capsys):
+    """A failed apt index refresh blocks the package installation step."""
+    import platform
+    import shutil
+
+    commands = []
+    monkeypatch.setattr(platform, "system", lambda: "Linux")
+    monkeypatch.setattr(
+        shutil,
+        "which",
+        lambda name: "/usr/bin/apt-get" if name == "apt-get" else None,
+    )
+
+    def fake_run(args, **_kwargs):
+        commands.append(args)
+        return subprocess.CompletedProcess(args, 1, stdout="", stderr="failed")
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+
+    cli._install_system_deps()
+
+    assert commands == [["/usr/bin/apt-get", "update", "-qq"]]
+    output = capsys.readouterr().out
+    assert "apt-get update failed" in output
+    assert "Installed with apt-get" not in output
+
+
+def test_system_install_uses_brew_and_checks_each_result(monkeypatch, capsys):
+    """Homebrew failures are reported per dependency and never as success."""
+    import platform
+    import shutil
+
+    commands = []
+    monkeypatch.setattr(platform, "system", lambda: "Darwin")
+    monkeypatch.setattr(
+        shutil,
+        "which",
+        lambda name: "/opt/homebrew/bin/brew" if name == "brew" else None,
+    )
+
+    def fake_run(args, **_kwargs):
+        commands.append(args)
+        returncode = 0 if args[-1] == "gh" else 1
+        return subprocess.CompletedProcess(
+            args,
+            returncode,
+            stdout="",
+            stderr="failed" if returncode else "",
+        )
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+
+    cli._install_system_deps()
+
+    assert commands == [
+        ["/opt/homebrew/bin/brew", "install", "gh"],
+        ["/opt/homebrew/bin/brew", "install", "node"],
+    ]
+    output = capsys.readouterr().out
+    assert "✅ gh CLI installed" in output
+    assert "[!]  Node.js install failed" in output
+    assert "✅ Node.js installed" not in output
+
+
+def test_system_install_stops_undici_setup_when_npm_root_fails(
+    monkeypatch, capsys
+):
+    """A failed discovery step must not trigger a global npm write."""
+    import shutil
+
+    commands = []
+    monkeypatch.setattr(
+        shutil,
+        "which",
+        lambda name: f"/usr/bin/{name}"
+        if name in {"gh", "node", "npm", "deno"}
+        else None,
+    )
+
+    def fake_run(args, **_kwargs):
+        commands.append(args)
+        return subprocess.CompletedProcess(
+            args,
+            1,
+            stdout="/untrusted/npm-root\n",
+            stderr="npm root failed",
+        )
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+
+    cli._install_system_deps()
+
+    assert commands == [["/usr/bin/npm", "root", "-g"]]
+    output = capsys.readouterr().out
+    assert "undici installed" not in output
+    assert "Could not inspect global npm packages" in output
+
+
+def test_system_install_does_not_report_failed_undici_as_success(
+    monkeypatch, capsys
+):
+    import shutil
+
+    monkeypatch.setattr(
+        shutil,
+        "which",
+        lambda name: f"/usr/bin/{name}"
+        if name in {"gh", "node", "npm", "deno"}
+        else None,
+    )
+
+    def fake_run(args, **_kwargs):
+        if args[1:3] == ["root", "-g"]:
+            return subprocess.CompletedProcess(
+                args,
+                0,
+                stdout="/missing/npm-root\n",
+                stderr="",
+            )
+        return subprocess.CompletedProcess(
+            args,
+            1,
+            stdout="",
+            stderr="install failed",
+        )
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+
+    cli._install_system_deps()
+
+    output = capsys.readouterr().out
+    assert "✅ undici installed" not in output
+    assert "undici install failed" in output
+
+
+def test_install_dry_run_never_suggests_remote_setup_scripts(
+    monkeypatch, capsys
+):
+    import shutil
+
+    monkeypatch.setattr(shutil, "which", lambda _name: None)
+
+    cli._install_system_deps_dryrun()
+
+    output = capsys.readouterr().out
+    assert "curl" not in output
+    assert "NodeSource" not in output
+    assert "apt-get" in output
+    assert "brew" in output
+
+
+@pytest.mark.parametrize(
+    "helper",
+    [cli._install_system_deps_safe, cli._install_system_deps_dryrun],
+)
+def test_system_dependency_checks_require_both_node_and_npm(
+    monkeypatch, capsys, helper
+):
+    import shutil
+
+    monkeypatch.setattr(
+        shutil,
+        "which",
+        lambda name: f"/usr/bin/{name}" if name in {"gh", "node"} else None,
+    )
+
+    helper()
+
+    output = capsys.readouterr().out
+    assert "Node.js" in output
+    assert "All system dependencies are installed" not in output
+    assert "Node.js: already installed" not in output
 
 
 @pytest.mark.parametrize(
@@ -611,7 +1028,7 @@ def test_mcporter_install_adds_exa_to_home_scope(monkeypatch):
 
     def fake_run(args, **_kwargs):
         calls.append(args)
-        if args == ["mcporter", "config", "list", "--json"]:
+        if args == ["/usr/bin/mcporter", "config", "list", "--json"]:
             return _docker_result(args, stdout='{"servers": []}')
         return _docker_result(args)
 
@@ -620,7 +1037,7 @@ def test_mcporter_install_adds_exa_to_home_scope(monkeypatch):
     cli._install_mcporter()
 
     assert [
-        "mcporter",
+        "/usr/bin/mcporter",
         "config",
         "add",
         "exa",
@@ -628,7 +1045,7 @@ def test_mcporter_install_adds_exa_to_home_scope(monkeypatch):
         "--scope",
         "home",
     ] in calls
-    assert ["mcporter", "config", "list", "--json"] in calls
+    assert ["/usr/bin/mcporter", "config", "list", "--json"] in calls
 
 
 def test_mcporter_install_does_not_treat_metadata_as_exa_server(
@@ -657,7 +1074,7 @@ def test_mcporter_install_does_not_treat_metadata_as_exa_server(
 
     def fake_run(args, **_kwargs):
         calls.append(args)
-        if args == ["mcporter", "config", "list", "--json"]:
+        if args == ["/usr/bin/mcporter", "config", "list", "--json"]:
             return _docker_result(args, stdout=json.dumps(payload))
         return _docker_result(args)
 
@@ -666,7 +1083,7 @@ def test_mcporter_install_does_not_treat_metadata_as_exa_server(
     cli._install_mcporter()
 
     assert [
-        "mcporter",
+        "/usr/bin/mcporter",
         "config",
         "add",
         "exa",
@@ -674,6 +1091,44 @@ def test_mcporter_install_does_not_treat_metadata_as_exa_server(
         "--scope",
         "home",
     ] in calls
+
+
+def test_mcporter_install_uses_resolved_windows_command_paths(monkeypatch):
+    """Windows .CMD shims must not be replaced with unresolved bare names."""
+    import shutil
+
+    npm_cmd = "C:/Tools/npm.CMD"
+    mcporter_cmd = "C:/Tools/mcporter.CMD"
+    state = {"installed": False}
+    calls = []
+
+    def fake_which(name):
+        if name == "npm":
+            return npm_cmd
+        if name == "mcporter" and state["installed"]:
+            return mcporter_cmd
+        return None
+
+    def fake_run(args, **_kwargs):
+        calls.append(args)
+        if args[:4] == [npm_cmd, "install", "-g", "mcporter"]:
+            state["installed"] = True
+            return _docker_result(args)
+        if args == [mcporter_cmd, "config", "list", "--json"]:
+            return _docker_result(
+                args,
+                stdout='{"servers": [{"name": "exa"}]}',
+            )
+        return _docker_result(args, returncode=1)
+
+    monkeypatch.setattr(shutil, "which", fake_which)
+    monkeypatch.setattr(subprocess, "run", fake_run)
+
+    assert cli._install_mcporter() is True
+    assert calls == [
+        [npm_cmd, "install", "-g", "mcporter"],
+        [mcporter_cmd, "config", "list", "--json"],
+    ]
 
 
 def test_server_xhs_install_never_recommends_qr_or_browser_extraction(
@@ -830,6 +1285,7 @@ def test_install_dry_run_does_not_create_agent_reach_directory(
         Namespace(
             env="local",
             proxy="",
+            system=True,
             safe=False,
             dry_run=True,
             channels="",

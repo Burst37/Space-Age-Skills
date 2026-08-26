@@ -352,15 +352,15 @@ def _read_xfetch_session(path: Path) -> dict:
 def _sync_xfetch_session(auth_token: str, ct0: str) -> bool:
     """Sync Twitter credentials to ~/.config/xfetch/session.json (legacy xreach compat)."""
     import json
-    import os
 
     try:
         from agent_reach.utils.paths import (
             atomic_write_private_text,
+            home_dir,
             make_private_dir,
         )
 
-        xfetch_dir = os.path.join(os.path.expanduser("~"), ".config", "xfetch")
+        xfetch_dir = home_dir() / ".config" / "xfetch"
         make_private_dir(xfetch_dir)
         session_path = Path(xfetch_dir) / "session.json"
         session_data = _read_xfetch_session(session_path)
@@ -384,18 +384,18 @@ def _sync_bird_env(auth_token: str, ct0: str) -> bool:
     Values are passed through shlex.quote so a token containing a quote, $, or
     backtick cannot break out into shell syntax when the file is sourced.
     """
-    import os
     import shlex
 
     try:
         from agent_reach.utils.paths import (
             atomic_write_private_text,
+            home_dir,
             make_private_dir,
         )
 
-        bird_dir = os.path.join(os.path.expanduser("~"), ".config", "bird")
+        bird_dir = home_dir() / ".config" / "bird"
         make_private_dir(bird_dir)
-        env_path = os.path.join(bird_dir, "credentials.env")
+        env_path = bird_dir / "credentials.env"
         atomic_write_private_text(
             env_path,
             f"AUTH_TOKEN={shlex.quote(auth_token)}\n"

@@ -168,6 +168,112 @@ class TestFallback:
 
 
 class TestOrchestrator:
+    def test_provider_fallback_consent_requires_auto(self, fake_config, chunk_file):
+        with pytest.raises(tr.TranscribeError, match="requires provider='auto'"):
+            tr.transcribe(
+                str(chunk_file),
+                provider="groq",
+                config=fake_config,
+                allow_provider_fallback=True,
+            )
+
+    def test_auto_does_not_send_audio_to_second_provider_without_consent(
+        self,
+        monkeypatch,
+        fake_config,
+        tmp_path,
+        chunk_file,
+        bounded_audio_duration,
+    ):
+        fake_config.set("groq_api_key", "gsk_test")
+        fake_config.set("openai_api_key", "sk-test")
+        compressed = tmp_path / "compressed.m4a"
+        compressed.write_bytes(b"compressed")
+        monkeypatch.setattr(tr, "compress_audio", lambda *_args: compressed)
+        calls: List[str] = []
+
+        def fake_post(url, **_kwargs):
+            calls.append(url)
+            if url == tr.PROVIDERS["groq"]["endpoint"]:
+                return FakeResponse(429, "rate limited")
+            return FakeResponse(200, "from-openai")
+
+        monkeypatch.setattr(tr.requests, "post", fake_post)
+
+        with pytest.raises(tr.TranscribeError, match="groq.*HTTP 429"):
+            tr.transcribe(
+                str(chunk_file),
+                out_dir=tmp_path / "work",
+                config=fake_config,
+            )
+
+        assert calls == [tr.PROVIDERS["groq"]["endpoint"]]
+
+    def test_auto_falls_back_only_with_explicit_consent(
+        self,
+        monkeypatch,
+        fake_config,
+        tmp_path,
+        chunk_file,
+        bounded_audio_duration,
+    ):
+        fake_config.set("groq_api_key", "gsk_test")
+        fake_config.set("openai_api_key", "sk-test")
+        compressed = tmp_path / "compressed.m4a"
+        compressed.write_bytes(b"compressed")
+        monkeypatch.setattr(tr, "compress_audio", lambda *_args: compressed)
+        calls: List[str] = []
+
+        def fake_post(url, **_kwargs):
+            calls.append(url)
+            if url == tr.PROVIDERS["groq"]["endpoint"]:
+                return FakeResponse(429, "rate limited")
+            return FakeResponse(200, "from-openai")
+
+        monkeypatch.setattr(tr.requests, "post", fake_post)
+
+        text = tr.transcribe(
+            str(chunk_file),
+            out_dir=tmp_path / "work",
+            config=fake_config,
+            allow_provider_fallback=True,
+        )
+
+        assert text == "from-openai"
+        assert calls == [
+            tr.PROVIDERS["groq"]["endpoint"],
+            tr.PROVIDERS["openai"]["endpoint"],
+        ]
+
+    def test_auto_uses_openai_when_it_is_the_only_configured_provider(
+        self,
+        monkeypatch,
+        fake_config,
+        tmp_path,
+        chunk_file,
+        bounded_audio_duration,
+    ):
+        fake_config.set("openai_api_key", "sk-test")
+        compressed = tmp_path / "compressed.m4a"
+        compressed.write_bytes(b"compressed")
+        monkeypatch.setattr(tr, "compress_audio", lambda *_args: compressed)
+        calls: List[str] = []
+
+        def fake_post(url, **_kwargs):
+            calls.append(url)
+            return FakeResponse(200, "from-openai")
+
+        monkeypatch.setattr(tr.requests, "post", fake_post)
+
+        text = tr.transcribe(
+            str(chunk_file),
+            out_dir=tmp_path / "work",
+            config=fake_config,
+        )
+
+        assert text == "from-openai"
+        assert calls == [tr.PROVIDERS["openai"]["endpoint"]]
+
     def test_rejects_overlong_audio_before_compression(
         self, monkeypatch, fake_config, chunk_file
     ):
@@ -583,6 +689,89 @@ class TestDownloadAudioSafety:
 
         assert captured["cmd"][-1] == "https://youtu.be/abc123"
 
+    # The C resolver behind yt-dlp accepts the full inet_aton grammar, so a
+    # canonical dotted-quad check alone lets loopback and the cloud metadata
+    # endpoint through under a different spelling.
+    @pytest.mark.parametrize(
+        ("url", "reaches"),
+        [
+            ("http://127.1/a.mp3", "127.0.0.1"),
+            ("http://127.0.1/a.mp3", "127.0.0.1"),
+            ("http://2130706433/a.mp3", "127.0.0.1"),
+            ("http://0x7f000001/a.mp3", "127.0.0.1"),
+            ("http://0177.0.0.1/a.mp3", "127.0.0.1"),
+            ("http://017700000001/a.mp3", "127.0.0.1"),
+            ("http://0/a.mp3", "0.0.0.0"),
+            ("http://192.168.1/a.mp3", "192.168.0.1"),
+            ("http://2852039166/a.mp3", "169.254.169.254"),
+            ("http://0xA9FEA9FE/a.mp3", "169.254.169.254"),
+            ("http://１２７.０.０.１/a.mp3", "127.0.0.1"),
+            ("http://２１３０７０６４３３/a.mp3", "127.0.0.1"),
+            ("http://０x７f０００００１/a.mp3", "127.0.0.1"),
+            ("http://ⓛⓞⓒⓐⓛⓗⓞⓢⓣ/a.mp3", "localhost"),
+            ("http://ℓocalhost/a.mp3", "localhost"),
+            ("http://%31%32%37.0.0.1/a.mp3", "127.0.0.1"),
+            ("http://127%2e0%2e0%2e1/a.mp3", "127.0.0.1"),
+            ("http://local%68ost/a.mp3", "localhost"),
+            ("http://127.0.0.1\\@example.com/a.mp3", "127.0.0.1"),
+        ],
+    )
+    def test_rejects_shorthand_ipv4_spellings_of_internal_hosts(
+        self, monkeypatch, tmp_path, url, reaches
+    ):
+        monkeypatch.setattr(tr, "_require", lambda binary: None)
+
+        def should_not_run(*args, **kwargs):
+            raise AssertionError(f"yt-dlp must not run for a URL reaching {reaches}")
+
+        monkeypatch.setattr(tr, "_run", should_not_run)
+
+        with pytest.raises(tr.TranscribeError, match="private|internal|SSRF"):
+            tr.download_audio(url, tmp_path)
+
+    def test_shorthand_ipv4_check_stays_dns_free(self, monkeypatch, tmp_path):
+        import socket as socket_module
+
+        monkeypatch.setattr(tr, "_require", lambda binary: None)
+        monkeypatch.setattr(
+            socket_module,
+            "getaddrinfo",
+            lambda *args, **kwargs: (_ for _ in ()).throw(
+                AssertionError("literal IP parsing must not resolve names")
+            ),
+        )
+
+        def should_not_run(*args, **kwargs):
+            raise AssertionError("yt-dlp must not run for private/internal URLs")
+
+        monkeypatch.setattr(tr, "_run", should_not_run)
+
+        with pytest.raises(tr.TranscribeError, match="private|internal|SSRF"):
+            tr.download_audio("http://２１３０７０６４３３/a.mp3", tmp_path)
+
+    @pytest.mark.parametrize(
+        "url",
+        [
+            "https://1.1.1.1/a.mp3",
+            "https://8.8.8.8/a.mp3",
+            # Octal dotted-quad that denotes a public address, not loopback.
+            "http://010.010.010.010/a.mp3",
+        ],
+    )
+    def test_allows_public_literal_addresses(self, monkeypatch, tmp_path, url):
+        monkeypatch.setattr(tr, "_require", lambda binary: None)
+        captured = {}
+
+        def fake_run(cmd, timeout=600):
+            captured["cmd"] = cmd
+            (tmp_path / "source.m4a").write_bytes(b"audio")
+
+        monkeypatch.setattr(tr, "_run", fake_run)
+
+        tr.download_audio(url, tmp_path)
+
+        assert captured["cmd"][-1] == url
+
 
 class TestMediaGenerationBudget:
     def test_compression_has_hard_duration_cap(
@@ -639,6 +828,37 @@ class TestMediaGenerationBudget:
             )
 
 
+# --- Subprocess output decoding ---------------------------------------- #
+
+
+class TestSubprocessDecoding:
+    CJK_BYTES = "中文标题".encode("utf-8")
+
+    def _decoding_run(self, returncode: int):
+        def fake_run(cmd, **kwargs):
+            encoding = kwargs.get("encoding") or "gbk"
+            errors = kwargs.get("errors") or "strict"
+            text = self.CJK_BYTES.decode(encoding, errors)
+            return subprocess.CompletedProcess(cmd, returncode, text, text)
+
+        return fake_run
+
+    def test_run_preserves_cjk_failure_as_transcribe_error(self, monkeypatch):
+        monkeypatch.setattr(tr.subprocess, "run", self._decoding_run(1))
+
+        with pytest.raises(tr.TranscribeError, match="yt-dlp"):
+            tr._run(["yt-dlp", "https://example.com/video"], timeout=5)
+
+    def test_probe_preserves_cjk_failure_as_transcribe_error(
+        self, monkeypatch, tmp_path
+    ):
+        monkeypatch.setattr(tr, "_require", lambda _binary: None)
+        monkeypatch.setattr(tr.subprocess, "run", self._decoding_run(1))
+
+        with pytest.raises(tr.TranscribeError, match="duration"):
+            tr._probe_audio_duration(tmp_path / "audio.m4a")
+
+
 # --- YouTubeChannel integration --------------------------------------- #
 
 
@@ -648,20 +868,32 @@ class TestYouTubeChannelTranscribe:
 
         captured = {}
 
-        def fake_transcribe(source, *, provider="auto", out_dir=None, config=None):
+        def fake_transcribe(
+            source,
+            *,
+            provider="auto",
+            out_dir=None,
+            config=None,
+            allow_provider_fallback=False,
+        ):
             captured["source"] = source
             captured["provider"] = provider
             captured["config"] = config
+            captured["allow_provider_fallback"] = allow_provider_fallback
             return "delegated text"
 
         monkeypatch.setattr(tr, "transcribe", fake_transcribe)
         out = YouTubeChannel().transcribe(
-            "https://youtu.be/abc", provider="groq", config=fake_config
+            "https://youtu.be/abc",
+            provider="groq",
+            config=fake_config,
+            allow_provider_fallback=True,
         )
         assert out == "delegated text"
         assert captured["source"] == "https://youtu.be/abc"
         assert captured["provider"] == "groq"
         assert captured["config"] is fake_config
+        assert captured["allow_provider_fallback"] is True
 
 
 # --- Config feature requirement --------------------------------------- #

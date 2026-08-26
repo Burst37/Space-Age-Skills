@@ -76,7 +76,7 @@ class BilibiliChannel(Channel):
         return "off", (
             "没有可用的 B站后端（搜索 API 也不可达，可能是网络问题）。推荐：\n"
             "  pipx install bilibili-cli（搜索/热门/视频详情，无需登录）\n"
-            "  或桌面装 OpenCLI（额外解锁字幕）：agent-reach install --channels opencli"
+            "  或桌面装 OpenCLI（额外解锁字幕）：agent-reach install --system --channels opencli"
         )
 
     def _check_bili_cli(self):

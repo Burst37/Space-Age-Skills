@@ -103,6 +103,48 @@ class TestCLI:
         assert out_file.read_text(encoding="utf-8").strip() == "saved text"
         assert "Transcript written" in capsys.readouterr().out
 
+    def test_transcribe_provider_fallback_requires_explicit_flag(self):
+        with patch(
+            "agent_reach.transcribe.transcribe",
+            return_value="hello transcript",
+        ) as mock_transcribe:
+            with patch(
+                "sys.argv",
+                [
+                    "agent-reach",
+                    "transcribe",
+                    "audio.mp3",
+                    "--allow-provider-fallback",
+                ],
+            ):
+                main()
+
+        mock_transcribe.assert_called_once_with(
+            "audio.mp3",
+            provider="auto",
+            allow_provider_fallback=True,
+        )
+
+    def test_transcribe_provider_fallback_rejects_explicit_provider(self, capsys):
+        with patch("agent_reach.transcribe.transcribe") as mock_transcribe:
+            with patch(
+                "sys.argv",
+                [
+                    "agent-reach",
+                    "transcribe",
+                    "audio.mp3",
+                    "--provider",
+                    "groq",
+                    "--allow-provider-fallback",
+                ],
+            ):
+                with pytest.raises(SystemExit) as exc_info:
+                    main()
+
+        assert exc_info.value.code == 2
+        assert "requires --provider auto" in capsys.readouterr().err
+        mock_transcribe.assert_not_called()
+
     def test_parse_twitter_cookie_input_separate_values(self):
         auth_token, ct0 = cli._parse_twitter_cookie_input("token123 ct0abc")
         assert auth_token == "token123"
@@ -166,7 +208,7 @@ class TestCLI:
         cli._install_rdt_cli()
 
         out = capsys.readouterr().out
-        assert commands == [["pipx", "install", cli._RDT_GIT_SOURCE]]
+        assert commands == [["/usr/local/bin/pipx", "install", cli._RDT_GIT_SOURCE]]
         assert "✅ rdt-cli installed" in out
 
     def test_install_reddit_deps_routes_by_environment(self, monkeypatch):
@@ -184,6 +226,35 @@ class TestCLI:
         monkeypatch.setattr(cli, "_detect_environment", lambda: "server")
         cli._install_reddit_deps()
         assert calls == ["rdt"]
+
+    def test_install_opencli_uses_resolved_windows_npm_path(self, monkeypatch):
+        import agent_reach.backends as backends
+        from agent_reach.backends import OpenCLIStatus
+
+        statuses = iter(
+            [
+                OpenCLIStatus(installed=False),
+                OpenCLIStatus(installed=True, extension_connected=False),
+            ]
+        )
+        calls = []
+        monkeypatch.setattr(backends, "opencli_status", lambda: next(statuses))
+        monkeypatch.setattr(
+            shutil,
+            "which",
+            lambda name: "C:/Tools/npm.CMD" if name == "npm" else None,
+        )
+        monkeypatch.setattr(
+            subprocess,
+            "run",
+            lambda args, **_kwargs: calls.append(args)
+            or subprocess.CompletedProcess(args, 0, "", ""),
+        )
+
+        assert cli._install_opencli_deps() is True
+        assert calls == [
+            ["C:/Tools/npm.CMD", "install", "-g", backends.OPENCLI_PACKAGE]
+        ]
 
     def test_install_facebook_instagram_routes_to_opencli_once(self, monkeypatch, capsys):
         calls = []
@@ -212,6 +283,7 @@ class TestCLI:
             Namespace(
                 env="auto",
                 proxy="",
+                system=True,
                 safe=False,
                 dry_run=False,
                 channels="facebook,instagram,opencli",
@@ -228,6 +300,7 @@ class TestCLI:
             Namespace(
                 env="server",
                 proxy="",
+                system=True,
                 safe=False,
                 dry_run=True,
                 channels="facebook,instagram,opencli,bilibili",

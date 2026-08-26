@@ -42,7 +42,7 @@ class XiaoyuzhouChannel(Channel):
         if not os.path.isfile(script):
             return "off", (
                 "转录脚本未安装。运行：\n"
-                "  agent-reach install --env=auto\n"
+                "  agent-reach install --env=auto --system --channels=xiaoyuzhou\n"
                 "  或手动复制 transcribe.sh 到 ~/.agent-reach/tools/xiaoyuzhou/"
             )
 
@@ -58,7 +58,7 @@ class XiaoyuzhouChannel(Channel):
             return "warn", (
                 "需要配置 Groq API Key（免费）。步骤：\n"
                 "  1. 注册 https://console.groq.com\n"
-                "  2. 运行: agent-reach configure groq-key gsk_xxxxx"
+                "  2. 运行: agent-reach configure groq-key（隐藏输入）"
             )
 
         self.active_backend = "groq-whisper"

@@ -64,7 +64,7 @@ class RedditChannel(Channel):
         return "off", (
             "未安装任何 Reddit 后端。注意：Reddit 没有零配置路径"
             "（匿名 .json 已被封，官方 API 需人工审批），必须用登录态。推荐：\n"
-            "  桌面：agent-reach install --channels opencli\n"
+            "  桌面：agent-reach install --system --channels opencli\n"
             "       （复用 Chrome 登录态，登录过 reddit.com 即可用）\n"
             f"  服务器/存量：pipx install '{_RDT_GIT_SOURCE}'\n"
             "       然后 `rdt login` 或手动写入 Cookie（见 doctor 提示）\n"

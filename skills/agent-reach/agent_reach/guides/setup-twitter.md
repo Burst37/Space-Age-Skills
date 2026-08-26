@@ -39,7 +39,7 @@ twitter --help
 4. 运行配置命令：
 
 ```bash
-agent-reach configure twitter-cookies "粘贴的 Header String"
+agent-reach configure twitter-cookies
 ```
 
 这会提取 `auth_token` 和 `ct0`，安全保存到
@@ -53,7 +53,7 @@ agent-reach configure twitter-cookies "粘贴的 Header String"
 - `~/.config/bird/credentials.env`
 
 ```bash
-agent-reach configure twitter-cookies "粘贴的 Header String" --sync-legacy-twitter
+agent-reach configure twitter-cookies --sync-legacy-twitter
 ```
 
 `agent-reach uninstall` 只会提醒这些 legacy 副本，不会自动删除。需要清理时，

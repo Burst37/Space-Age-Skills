@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -139,3 +140,96 @@ def test_localized_readmes_keep_current_bilibili_and_xhs_routes():
             "xiaohongshu.py  → OpenCLI ▸ xiaohongshu-mcp ▸ xhs-cli"
             in text
         ), path.relative_to(ROOT)
+
+
+def test_localized_readmes_do_not_advertise_retired_channels():
+    """Japanese and Korean docs must match the channels shipped by the CLI."""
+    for path in (ROOT / "docs" / "README_ja.md", ROOT / "docs" / "README_ko.md"):
+        text = path.read_text(encoding="utf-8").lower()
+        assert "douyin" not in text, path.relative_to(ROOT)
+        assert "weibo" not in text, path.relative_to(ROOT)
+
+
+def test_public_guidance_never_installs_the_unrelated_pypi_package():
+    """The PyPI name is owned by another project; GitHub URLs are required."""
+    candidates = _policy_documents() + [
+        ROOT / "agent_reach" / "integrations" / "mcp_server.py",
+    ]
+    bare_install = re.compile(
+        r"\bpip\s+install(?:\s+--upgrade)?\s+['\"]?agent-reach(?:\[[^\]]+\])?\b",
+        re.IGNORECASE,
+    )
+    violations = []
+    for path in candidates:
+        for line_number, line in enumerate(
+            path.read_text(encoding="utf-8").splitlines(), 1
+        ):
+            if bare_install.search(line) and (
+                "github.com/Panniantong/agent-reach" not in line
+            ):
+                violations.append(
+                    f"{path.relative_to(ROOT)}:{line_number}: {line.strip()}"
+                )
+
+    assert not violations, "\n".join(violations)
+
+
+def test_public_guidance_never_puts_secrets_in_process_arguments():
+    """Operational docs should use hidden prompts or stdin for credentials."""
+    forbidden = (
+        'agent-reach configure twitter-cookies "',
+        "agent-reach configure twitter-cookies '",
+        'agent-reach configure xhs-cookies "',
+        "agent-reach configure xhs-cookies '",
+        "agent-reach configure groq-key gsk_",
+        "agent-reach configure openai-key sk-",
+        "agent-reach configure github-token gh",
+        "agent-reach configure proxy http",
+    )
+    violations = []
+    for path in _policy_documents():
+        text = path.read_text(encoding="utf-8")
+        for marker in forbidden:
+            if marker in text:
+                violations.append(f"{path.relative_to(ROOT)}: {marker}")
+
+    assert not violations, "\n".join(violations)
+
+
+def test_skill_explains_unverified_backend_state():
+    """A null backend is an explicit safety state, not a routing instruction."""
+    skills = (
+        ROOT / "agent_reach" / "skill" / "SKILL.md",
+        ROOT / "agent_reach" / "skill" / "SKILL_en.md",
+    )
+    for path in skills:
+        text = path.read_text(encoding="utf-8")
+        assert "active_backend: null" in text, path.relative_to(ROOT)
+        assert "Doctor" in text, path.relative_to(ROOT)
+
+
+def test_video_reference_has_content_level_youtube_fallbacks():
+    """Version-only health must not be presented as proof subtitles work."""
+    text = (
+        ROOT / "agent_reach" / "skill" / "references" / "video.md"
+    ).read_text(encoding="utf-8")
+    assert "opencli youtube transcript" in text
+    assert "最多重试 3 次" in text
+    assert "agent-reach transcribe" in text
+
+
+def test_skill_routes_finance_and_documents_opencli_discovery():
+    skills = (
+        ROOT / "agent_reach" / "skill" / "SKILL.md",
+        ROOT / "agent_reach" / "skill" / "SKILL_en.md",
+    )
+    for path in skills:
+        text = path.read_text(encoding="utf-8")
+        assert "references/finance.md" in text, path.relative_to(ROOT)
+        assert "opencli list" in text, path.relative_to(ROOT)
+        assert "--help" in text, path.relative_to(ROOT)
+
+    finance = ROOT / "agent_reach" / "skill" / "references" / "finance.md"
+    text = finance.read_text(encoding="utf-8")
+    assert "opencli xueqiu stock" in text
+    assert "agent-reach configure --from-browser chrome --platform xueqiu" in text
