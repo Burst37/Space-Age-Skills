@@ -55,6 +55,7 @@ See SESSION_INIT.md in Google Drive for full routing matrix.
 7. **Encore logo** — always upper left chest in generated images
 8. **Obsidian vault** — lives on Windows machine, NOT on VPS. Google Drive is the memory layer.
 9. **Animation naming** — use `animation-vocabulary` when a user describes a motion effect but needs the proper UI/animation term.
+10. **GUI app automation** — before writing Playwright/subprocess glue for any desktop or GUI-first app (Blender, GIMP, Kdenlive, OBS, LibreOffice, Obsidian, n8n...), load `cli-anything` and run `cli-hub search <app>`. A harness probably already exists — installing beats rebuilding.
 
 ## SESSION END CHECKLIST
 
