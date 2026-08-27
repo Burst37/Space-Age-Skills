@@ -97,3 +97,19 @@ Module 2 — Researching pain points and desired outcomes
 - Implement agents for Facebook ads, Google ads, SEO / AI search, social media management and more 
 - Build reporting dashboards for all go to market motions 
 If you want to book a discovery call go to [graphed.com](http://graphed.com) or email will@graphed.com
+---
+
+## Embedded screenshot (transcribed)
+
+The page's one image is a Meta Ads Manager "Performance overview" panel,
+`Screenshot_2026-07-16_at_11.28.27_AM.png`, saved here as
+`source-performance-screenshot.png`.
+
+- Date range: Last 30 days: Jun 16, 2026 – Jul 15, 2026
+- Granularity: Week · Activity history: All
+- Website Leads: **75**
+- Per Lead: **$94.43**
+- Amount spent: **$7,082.55**
+- "Per Lead" line chart, Jun 16 → Jul 14: starts ≈$62, peaks ≈$183 on Jun 23,
+  dips ≈$68 on Jun 30, rises ≈$107 on Jul 7, ends at **$53.63** on Jul 14
+  (tooltip visible on the final point).

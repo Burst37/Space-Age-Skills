@@ -8,14 +8,36 @@ category: marketing-automation
 
 # Facebook Ads Agent
 
-A seven-module blueprint for an autonomous Meta Ads agent. The reported result from
+A seven-module blueprint for an autonomous Meta Ads agent. The headline claim from
 the source class: **CPA reduced from $100 to $50 in four weeks.**
 
+### What the source evidence actually shows
+
+The class backs that claim with one Meta Ads Manager screenshot
+([`source-performance-screenshot.png`](./source-performance-screenshot.png)),
+Last 30 days, Jun 16 - Jul 15 2026:
+
+| Metric | Value |
+|---|---|
+| Website Leads | 75 |
+| Cost per lead (30-day avg) | $94.43 |
+| Amount spent | $7,082.55 |
+| Cost per lead, final week (Jul 14) | $53.63 |
+
+Read the curve honestly before you promise anyone a number: cost per lead starts
+around $62, **spikes to ~$183 on Jun 23**, then descends to $53.63 by Jul 14. The
+"$100 to $50" framing compares a mid-run peak to the final point; the period average
+is $94.43. The end-state number is real and the trend is genuinely downward - but
+the spike is the more instructive part. Creative-volume prospecting *costs more
+before it costs less*, because you are paying for the losers that identify the
+winners. Budget for that spike; it is the mechanism working, not a failure.
+
 > Source fidelity: this skill is derived from the Graphed live-class outline
-> (`reference-live-class-notes.md`, the verbatim page content). The module
-> structure, core loop, and the Facebook API key procedure are from the source.
-> Implementation detail beyond the outline is standard practice, not class material
-> — treat it as a starting point, not a transcript.
+> (`reference-live-class-notes.md`, the verbatim page content) and its one
+> performance screenshot. The module structure, core loop, the API key procedure,
+> and the performance figures are from the source. Implementation detail beyond
+> the outline is standard practice, not class material — treat it as a starting
+> point, not a transcript.
 
 ## Why this system works
 
@@ -30,7 +52,8 @@ Everything below serves this loop. Run it continuously:
 
 1. **Make and publish more ads** — volume is the input the algorithm needs.
 2. **Prospect for winning formats** — let spend find signal, don't pre-judge.
-3. **Trim losers** — kill underperformers fast.
+3. **Trim losers** — kill underperformers fast. This is where the cost spike above
+   gets paid down; without a hard trim rule the spike becomes the new baseline.
 4. **Promote winners** — move proven ads into the scaling campaign.
 5. **Iterate on winners** — generate new variants from what won, return to step 1.
 
@@ -179,4 +202,8 @@ Graphed deploys marketing agents (Facebook ads, Google ads, SEO/AI search, socia
 media management) and go-to-market reporting dashboards: [graphed.com](http://graphed.com),
 will@graphed.com.
 
-Full verbatim source outline: [`reference-live-class-notes.md`](./reference-live-class-notes.md)
+Source files:
+
+- [`reference-live-class-notes.md`](./reference-live-class-notes.md) — verbatim page outline
+- [`source-performance-screenshot.png`](./source-performance-screenshot.png) — the Ads Manager
+  performance overview backing the CPA claim
