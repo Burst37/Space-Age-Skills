@@ -1,82 +1,66 @@
 ---
 name: screenshot-to-code
-description: Use when converting a screenshot, mockup, Figma export, or screen-recording video into a working single-file HTML page (Tailwind, plain CSS, React, Vue, Bootstrap, or Ionic) — an agentic create→verify loop that closes the gap with a self-taken screenshot of its own output instead of trusting the model's guess.
+description: Use when converting a screenshot, mockup, Figma export, or screen-recording video into a working single-file HTML page (Tailwind, plain CSS, React, Vue, Bootstrap, or Ionic). Ports abi/screenshot-to-code's actual system prompt, user-turn templates, and tool contract verbatim, and includes a real, tested screenshot_preview implementation (Playwright) so the self-verification loop the original app relies on actually runs here instead of being described in prose.
 ---
 
-# Screenshot-to-Code Patterns
+# Screenshot-to-Code
 
-## Overview
+## What this is
 
-[abi/screenshot-to-code](https://github.com/abi/screenshot-to-code) turns a screenshot, Figma design, or a video of someone using an app into functional, close-to-pixel-perfect code. The part worth porting into any agent doing image-to-code work isn't the FastAPI/React app itself — it's three structural decisions in `backend/`:
+A verbatim port of [abi/screenshot-to-code](https://github.com/abi/screenshot-to-code)'s prompt layer, not a paraphrase of it:
 
-1. **Tool-driven output, never raw code in chat.** `create_file` / `edit_file` tools are the only way code leaves the model (`backend/prompts/system_prompt.py`). No "paste the HTML in your response" — this is what makes edits diffable and stops the model from silently drifting the whole file on a small change.
-2. **Self-verification via `screenshot_preview`.** After every `create_file`/`edit_file` call, the agent renders its own HTML in a headless browser (desktop + mobile viewport, `backend/preview_screenshot/playwright_backend.py`) and looks at the result before declaring done. This is the single highest-leverage idea here: an LLM guessing at "does this look right" from markup alone is far worse than one that can actually look.
-3. **Asset realism over asset guessing.** `extract_assets` pulls real image regions out of the source screenshot instead of letting the model invent placeholder graphics; `generate_images`/`edit_images`/`remove_backgrounds` only fill gaps for assets that truly can't be extracted (occluded, background texture). Never used to re-embed the whole screenshot as one image — the goal is real, editable markup.
+- `reference/system_prompt.md` — the exact `SYSTEM_PROMPT` string from `backend/prompts/system_prompt.py`, unedited.
+- `reference/prompt_templates.md` — the exact user-turn templates from `backend/prompts/create/{image,text,video}.py`, plus the exact substitution rules from `backend/prompts/policies.py` and `backend/prompts/design_system.py`.
+- `reference/tool_schemas.json` — the exact tool names, descriptions, and JSON schemas from `backend/agent/tools/definitions.py` (`canonical_tool_definitions`), including which tools are conditionally available.
+- `scripts/screenshot_preview.py` — a **working** reimplementation of the `screenshot_preview` tool (see below), not a description of one.
 
-## When to Use
+Use this when the task is "make code that looks like this image/video." Load `reference/system_prompt.md` as your operating instructions for the task, and `reference/prompt_templates.md` to build the actual user turn for the input type you have (image / video / text), substituting the selected stack, image policy, and design system exactly as documented there.
 
-- Converting a screenshot/mockup/Figma export into HTML/CSS/JS (or React/Vue/Bootstrap/Ionic) code
-- Recreating a UI from a screen-recording video, including its interactions
-- Any task where an agent generates visual/UI code and you want it to check its own work instead of shipping on the first guess
-- NOT for backend/API code generation, and not a substitute for `frontend-design`/`design-taste-frontend` when the ask is original design direction rather than replicating a given reference
+## The honesty problem this version fixes
 
-## Core Pattern
+The original app's system prompt and tool descriptions refer to tools by name — `create_file`, `edit_file`, `generate_images`, `edit_images`, `remove_backgrounds`, `extract_assets`, `screenshot_preview`, `retrieve_option` — that only exist inside its own FastAPI backend. Loading the verbatim prompt text alone (as a previous version of this skill did) makes an agent narrate calling tools that don't exist in whatever harness is actually running it. Below is the real mapping. Use it every time you follow `reference/system_prompt.md`'s tooling instructions.
 
-```
-1. Normalize input → one or more image data URLs, or a video data URL, plus a target stack
-   (html_css | html_tailwind | react_tailwind | vue_tailwind | bootstrap | ionic_tailwind)
-2. Build the prompt in two layers:
-   - System prompt: tone/tool-usage rules + stack-specific include-script snippets
-     (see Quick Reference below — copy the exact CDN tags, do not improvise versions)
-   - User turn: "match this exactly" replication instructions (image case) or
-     "recreate the interactions" instructions (video case)
-3. Agent loop, tool-gated:
-   a. create_file (single call, full HTML, path defaults to index.html)
-   b. extract_assets → pull real image regions from the source screenshot
-   c. generate_images / edit_images / remove_backgrounds → only for non-extractable assets
-   d. screenshot_preview → render the current HTML, desktop + mobile
-   e. If preview shows broken layout/overlap/wrong spacing/colors → edit_file with exact
-      old_text/new_text replacement (never regenerate the whole file for a small fix)
-   f. Repeat c–e until the preview matches the source
-4. One or two sentence summary of what was built. No code in the chat response.
-```
-
-## Quick Reference — stack include tags (copy exactly, versions are pinned for a reason)
-
-| Stack | Required tags |
+| Prompt's tool name | What actually happens here |
 |---|---|
-| `html_tailwind` | `<script src="https://cdn.tailwindcss.com"></script>` |
-| `html_css` | Plain HTML/CSS/JS only — do not add Tailwind |
-| `bootstrap` | `<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">` |
-| `react_tailwind` | React 18 UMD + `https://unpkg.com/@babel/standalone@7.25.6/babel.min.js` (pin this exact version — the unversioned URL now resolves to Babel 8, which injects an `import` that breaks in-browser transforms) + Tailwind CDN tag |
-| `ionic_tailwind` | Ionic core ESM/nomodule scripts + Ionic CSS bundle + Tailwind CDN tag + ionicons script near `</body>` |
-| `vue_tailwind` | Vue 3 global build + Tailwind CDN tag |
+| `create_file` | Write tool — write the full HTML to `index.html`, once. |
+| `edit_file` | Edit tool — exact old_text/new_text replacement, never a full rewrite. |
+| `screenshot_preview` | **Real**: run `python3 scripts/screenshot_preview.py <html_file> <out_dir>` (see Setup below), then use Read on the two resulting PNGs to actually look at them. This is a genuine implementation, tested against this environment's pre-staged Chromium — not aspirational. |
+| `generate_images` / `edit_images` / `remove_backgrounds` | Only real if an image-generation MCP tool is attached this session (e.g. Adobe Firefly, Higgsfield). Check what's available before claiming to use these; if none is attached, follow the prompt's own fallback (`image_policy` in `reference/prompt_templates.md`): use `https://placehold.co` placeholder URLs or CSS, and say so. |
+| `extract_assets` | No equivalent unless a vision-crop/segmentation tool is attached this session. If not, this step is honestly unavailable — fall back to `generate_images`'s path per the prompt, or ask the user for the real asset. Do not claim to have extracted anything you didn't. |
+| `retrieve_option` | Not applicable — that's the original app's multi-variant UI feature. Skip it; there's nothing to port. |
+| `save_assets` | Out of scope — its schema lives outside `definitions.py` (`backend/uploaded_assets/tools.py`) and wasn't ported. See `reference/tool_schemas.json`'s note. |
 
-## Implementation
+## Setup for `screenshot_preview.py`
+
+```bash
+pip install playwright   # the Python driver; browser binary is not re-downloaded
+python3 scripts/screenshot_preview.py <path-to-html-file> <output-dir>
+# writes <output-dir>/preview_desktop.png (1280x832) and preview_mobile.png (342x684)
+```
+
+In an environment that pre-stages Chromium via `PLAYWRIGHT_BROWSERS_PATH` with a `chromium` symlink at its root (true of this one — verified against `/opt/pw-browsers/chromium`), the script finds it directly and skips `playwright install`, which avoids the revision mismatch between whatever `playwright` pip version you get and the browser revision actually staged (`Executable doesn't exist at .../chrome-headless-shell` — hit and fixed while building this). If no pre-staged browser is found, unset `executable_path` and run `playwright install chromium` once.
+
+## Core loop
 
 ```
-1. Collect image(s) or video as data URLs; pick the target Stack.
-2. Compose system prompt = tool-usage rules + the one matching stack block above.
-3. Compose user turn:
-   - Images: "generate code that looks exactly like the screenshot(s)" + replication
-     rules (exact text, extract real assets first, generate only for non-extractable
-     ones, upscale via edit_images rather than CSS-stretching a low-res asset) +
-     multi-screenshot handling (distinct linked pages vs. one component's states).
-   - Video: "recreate the app such that the same interactions produce the same
-     results" — watch the whole video, match colors/spacing/typography exactly,
-     mock any backend calls, make it actually functional with JS, not a static trace.
-4. Run the tool loop: create_file once → extract_assets → fill gaps with
-   generate_images/edit_images/remove_backgrounds → screenshot_preview → edit_file
-   for any visual mismatch → re-screenshot until it matches.
-5. Never let the model paste HTML directly into a chat response — if you can't wire
-   real create_file/edit_file/screenshot_preview tools, at minimum replicate the loop
-   structure: generate → render/inspect the output yourself → patch → re-check.
+1. Build the prompt: reference/system_prompt.md (system) + the matching
+   reference/prompt_templates.md template (user), substituted per its rules.
+2. Write the HTML (index.html), following the stack-specific include-tag
+   instructions in reference/system_prompt.md exactly — do not improvise CDN
+   URLs or versions, they're pinned there for documented reasons (see the
+   Babel 7.25.6 note).
+3. Run screenshot_preview.py, Read both PNGs.
+4. If layout is broken, spacing/colors are wrong, or content doesn't match
+   the source: Edit with an exact-match replacement, then re-run step 3.
+   Repeat until the render matches.
+5. One or two sentence summary of what was built. No code in chat, per the
+   system prompt's tone rules.
 ```
 
 ## Common Mistakes
 
-- **Trusting the first generation without a look-back pass.** The screenshot_preview step exists specifically because models are unreliable at judging their own markup's visual correctness from code alone — always close the loop with an actual render.
-- **Regenerating the whole file for a one-line fix.** Burns tokens and risks drifting parts that were already correct; use exact-match edits.
-- **Embedding the entire source screenshot as one background image.** Defeats the purpose — assets should be extracted/generated individually so the result stays editable, real markup.
-- **Improvising CDN script versions/URLs.** The Babel and Bootstrap pins above exist because unpinned URLs silently broke in production; copy them verbatim.
-- **Skipping the extract-before-generate order.** Generating a fresh image for something that was extractable produces a worse, non-matching asset — always try `extract_assets` first.
+- **Treating the tool-name mapping table as optional.** Without it, "call screenshot_preview" becomes a sentence you type instead of a script you run — that gap is the whole reason this version exists.
+- **Regenerating the whole file for a one-line fix.** The system prompt is explicit: edit_file only, never re-emit the full HTML for a small change.
+- **Improvising CDN script versions.** `reference/system_prompt.md` pins Babel and Bootstrap for stated reasons (Babel 8's unversioned URL breaks in-browser JSX transforms) — copy them verbatim.
+- **Claiming asset extraction or image generation happened when no tool for it was attached.** Say so and fall back per the prompt's own `image_policy`, don't fabricate a result.
+- **Skipping the screenshot step because "it's probably fine."** That's the exact failure mode the original app's design argues against — an LLM judging its own markup without rendering it is unreliable; that's why the real script exists now.
