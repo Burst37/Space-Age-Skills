@@ -1,0 +1,13 @@
+{
+  "name": "watch",
+  "version": "3.0.0",
+  "description": "Watch any video (URL or local path). Extracts frames, transcript, pacing metrics, hook microscope, highlights, sentiment arc, and chapter analysis. Compare two videos, generate HTML storyboards, and ingest reports into Obsidian.",
+  "author": "burst37",
+  "license": "MIT",
+  "skills": [
+    {
+      "name": "watch",
+      "file": "SKILL.md"
+    }
+  ]
+}
