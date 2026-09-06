@@ -238,3 +238,49 @@ user's cookies/localStorage across runs
   detection for automated signups/form filling.
 - User wants to add proxy + GeoIP + persistent sessions to an existing
   automated signup pipeline.
+
+---
+
+## Reliability fixes (success-rate pass)
+
+Bugs found and fixed across `camofox_client.py`, `auto_signup_camofox.py`,
+`auto_signup_camofox_parallel.py`, `loyaltybot_server.patched.py`. Regression
+suite: `python3 test_camofox_engine.py` (19 tests, no server/network needed).
+
+### Made sites reachable that previously reported "no form fields found"
+| # | Bug | Fix |
+|---|-----|-----|
+| 1 | `parse_snapshot()` understood only `[textbox e3] Label`. Any other snapshot renderer → zero items → every page looked formless. | Parser accepts `[role eN] label`, `- role "label" [ref=eN]`, and `role "label" (eN)`. |
+| 2 | Only the FIRST snapshot chunk was read; the API pages by `offset`. Fields below the fold were invisible. | `CamofoxClient.snapshot_text()` follows pagination. |
+| 3 | One fixed 3s wait after opening the tab, then snapshot. JS-rendered forms had not drawn yet. | `wait_for_form()` polls up to `--page-timeout` (default 20s). |
+| 4 | Hop loop took the first link matching an alternation containing both `create account` and `sign in`, in document order — the header "Sign In" won on most retail sites. | Split into `PRIMARY_SIGNUP_LINK_PATTERNS` (registration) tried before `FALLBACK_SIGNUP_LINK_PATTERNS` (login). |
+| 5 | Hop guard `A and not B or C` parses as `(A and not B) or C` — the `or` re-admitted submit buttons the guard excluded. | Explicit ordered selection. |
+| 6 | A CAPTCHA wall (no form rendered) was recorded as `no form fields found` → 2-strike retirement killed live sites permanently. | CAPTCHA checked before the strike is issued. |
+
+### Made filled forms actually submit
+| # | Bug | Fix |
+|---|-----|-----|
+| 7 | Checkboxes were never touched — most programs refuse to submit with Terms unticked. | Required boxes (terms/privacy/age/consent) ticked; marketing/paid opt-ins explicitly skipped. |
+| 8 | `<select>` (state, country) was typed into. | `client.select()` with a click/type fallback. |
+| 9 | `spinbutton` (number: zip, income) and `textarea` were not in `INTERACTIVE_ROLES`. | Added. |
+| 10 | Re-fill after a CAPTCHA appended to already-filled fields → `"AdaAda"` → validation failure. | Fields cleared before typing; `filled_refs` skips fields already done. |
+| 11 | `\bcity\|town\b` parses as `(\bcity)` OR `(town\b)` — matched "Downtown". Same shape in the state rule. | Per-alternative boundaries. |
+| 12 | `street\|address\s*(line\s*1\|1)?\b` also matched "Address Line 2", writing the street into the apartment field. | Line 2 gets its own earlier rule. |
+
+### Stopped losing work and lying about outcomes
+| # | Bug | Fix |
+|---|-----|-----|
+| 13 | Any non-`CamofoxError` (ConnectionError, ReadTimeout, KeyError) escaped `process_entry` → **worker thread died**, its popped row vanished with no result row, and the run silently continued with fewer workers. | `_request()` wraps every `requests` exception as `CamofoxError`; `process_entry` and `worker_loop` both catch broadly and always record a row. |
+| 14 | No transport retry — one blip = permanent site failure. | 3 attempts with exponential backoff on connection errors and 408/429/5xx. |
+| 15 | Any post-submit page without a CAPTCHA was `success`, including pages still reading "Email is required". | `verify_submission()` classifies confirmation / validation-error / form-still-present. |
+| 16 | Tabs leaked on any error path in the single-process runner; browser sessions were never closed at all — 500+ sites exhausted the camofox server. | `finally: close_tab()` + `close_session()`. |
+| 17 | `elif "captcha" in status` preceded `elif status == "captcha_skipped"` — the skipped branch was unreachable, dashboard counter stuck at 0. | Reordered. |
+| 18 | `_no_form_strikes` mutated from every worker without a lock. | Guarded by `_dead_urls_lock`. |
+| 19 | Single-process runner wrote a 5-column CSV against the 7-column contract — unreadable to the dashboard and to `retire_repeated_failures()`. | 7 columns. |
+| 20 | `create_tab` did `data["tabId"]` → `KeyError` on any other response shape. | Tolerant lookup + clear error. |
+| 21 | `datetime.utcnow()` / `utcfromtimestamp()` (deprecated). | `datetime.now(timezone.utc)`. |
+| 22 | Server: camofox + manual mode ran 5 workers, so a human on noVNC saw five tabs race. | Clamped to 1 worker. |
+| 23 | Server: `_errors[cid]` written from the watcher thread without `_lock`. | Locked. |
+
+### New flag
+`--page-timeout` (default 20s) on both engines — how long to wait for a form to render.

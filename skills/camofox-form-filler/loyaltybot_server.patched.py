@@ -153,7 +153,8 @@ def _watch_process(cid, proc):
         _, stderr = proc.communicate()
         if proc.returncode != 0 and stderr:
             # Keep last 800 chars of error
-            _errors[cid] = stderr.decode("utf-8", errors="replace")[-800:]
+            with _lock:
+                _errors[cid] = stderr.decode("utf-8", errors="replace")[-800:]
     except Exception:
         pass
 
@@ -231,8 +232,12 @@ def do_launch(cid, mode="live", workers=5, limit=0):
             # Camofox engine: shares dead-urls.json with the Playwright bot.
             # It has no --manual/--headless flags (Camoufox visibility is set
             # by the camofox-browser server, e.g. ENABLE_VNC=1), so manual mode
-            # falls back to a normal live run here.
+            # runs live -- but still on ONE worker, so a human watching over
+            # noVNC has a single tab to follow instead of five racing ones.
             cmd += ["--dead-urls", str(BASE_DIR / "dead-urls.json")]
+            if mode == "manual":
+                workers = 1
+                cmd[cmd.index("--workers") + 1] = "1"
             if limit > 0:
                 cmd += ["--limit", str(limit)]
         else:
