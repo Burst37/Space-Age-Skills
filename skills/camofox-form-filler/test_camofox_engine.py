@@ -5,6 +5,7 @@ No camofox server and no network: FakeClient stands in for CamofoxClient and
 serves scripted snapshots, so every fix below is exercised on the real code
 paths. Run with:  python3 test_camofox_engine.py
 """
+import csv
 import json
 import tempfile
 import unittest
@@ -235,6 +236,95 @@ class TestResultsCsv(unittest.TestCase):
                                           "timestamp": "t"})
             self.assertEqual(out.read_text().splitlines()[0],
                              "url,brand,program,status,worker,error,timestamp")
+
+
+
+class TestPurgeMasterCsv(unittest.TestCase):
+    """purge_master_csv.py -- dead/junk row purging for the master CSV."""
+
+    def setUp(self):
+        import purge_master_csv as purge
+        self.purge = purge
+        self.d = tempfile.TemporaryDirectory()
+        self.dir = Path(self.d.name)
+        self.csv_path = self.dir / "master.csv"
+        self.csv_path.write_text(
+            "Category,Brand_Name,Program_Name,Direct_Sign-up_URL,Auto_Signup_Feasible,Barriers\n"
+            "Retail,Target,Target Circle,https://target.example.com/circle,Yes,None noted\n"
+            "Automotive,Downtown Nissan,Nissan Rewards,https://nissan.example.com/r,Yes,None noted\n"
+            "Grocery,DeadStoreCo,Dead Rewards,https://dead.example.com/signup,Yes,None noted\n"
+            "Retail,LocalShop,Loyalty,https://localshop.example.com/join,Yes,In-store signup only\n"
+            "Retail,GoodBrand,Perks,,Yes,None noted\n"
+            "Retail,SecondGood,Rewards Plus,https://secondgood.example.com/join,Yes,None noted\n"
+        )
+        (self.dir / "dead-urls.json").write_text(
+            json.dumps({"urls": ["https://dead.example.com/signup"]})
+        )
+
+    def tearDown(self):
+        self.d.cleanup()
+
+    def _args(self, **overrides):
+        import argparse
+        defaults = dict(
+            csv=str(self.csv_path), dead_urls=str(self.dir / "dead-urls.json"), results=None,
+            exclude_category="", exclude_brand="", live_check=False, timeout=8.0,
+            live_check_delay=0, report="", apply=False, output=None, backup=True,
+        )
+        defaults.update(overrides)
+        return argparse.Namespace(**defaults)
+
+    def test_dealership_brand_is_purged(self):
+        rows = self.purge.load_programs(self.csv_path)
+        reasons = {r["brand"]: self.purge.is_junk_row(r, [], []) for r in rows}
+        self.assertIsNotNone(reasons["Downtown Nissan"])
+        self.assertIsNone(reasons["Target"])
+
+    def test_dead_url_and_in_store_and_missing_url_are_purged(self):
+        self.purge.run(self._args())  # dry run just needs to not crash
+        rows = self.purge.load_programs(self.csv_path)
+        dead_urls = self.purge.load_dead_urls(self.dir / "dead-urls.json")
+        survivors = [r for r in rows if r.get("url") and r["url"] not in dead_urls
+                    and not self.purge.is_junk_row(r, [], [])]
+        self.assertEqual({r["brand"] for r in survivors}, {"Target", "SecondGood"})
+
+    def test_apply_writes_only_survivors_and_keeps_original_columns(self):
+        self.purge.run(self._args(apply=True, report=str(self.dir / "report.csv")))
+        out_rows = list(csv.DictReader(open(self.csv_path)))
+        self.assertEqual({r["Brand_Name"] for r in out_rows}, {"Target", "SecondGood"})
+        # Original column names/order preserved for downstream tools.
+        self.assertEqual(list(out_rows[0].keys()),
+                         ["Category", "Brand_Name", "Program_Name",
+                          "Direct_Sign-up_URL", "Auto_Signup_Feasible", "Barriers"])
+
+    def test_apply_does_not_truncate_source_before_finishing_read(self):
+        # Regression: writing to the same path being read (the default,
+        # in-place purge) used to truncate the file mid-DictReader-iteration,
+        # silently dropping every row after the truncation point.
+        self.purge.run(self._args(apply=True))
+        out_rows = list(csv.DictReader(open(self.csv_path)))
+        self.assertEqual(len(out_rows), 2)
+
+    def test_backup_preserves_full_original(self):
+        original = self.csv_path.read_text()
+        self.purge.run(self._args(apply=True))
+        backup = self.csv_path.with_suffix(".csv.bak")
+        self.assertEqual(backup.read_text(), original)
+
+    def test_dry_run_never_writes(self):
+        original = self.csv_path.read_text()
+        self.purge.run(self._args(apply=False))
+        self.assertEqual(self.csv_path.read_text(), original)
+
+    def test_extra_exclude_brand_is_additive_not_replacing(self):
+        rows = self.purge.load_programs(self.csv_path)
+        reason = self.purge.is_junk_row(
+            next(r for r in rows if r["brand"] == "SecondGood"), [], ["SecondGood"])
+        self.assertIsNotNone(reason)
+        # Built-in dealership rule still applies alongside the custom one.
+        reason2 = self.purge.is_junk_row(
+            next(r for r in rows if r["brand"] == "Downtown Nissan"), [], ["SecondGood"])
+        self.assertIsNotNone(reason2)
 
 
 if __name__ == "__main__":

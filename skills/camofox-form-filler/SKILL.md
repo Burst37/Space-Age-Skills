@@ -284,3 +284,38 @@ suite: `python3 test_camofox_engine.py` (19 tests, no server/network needed).
 
 ### New flag
 `--page-timeout` (default 20s) on both engines — how long to wait for a form to render.
+
+---
+
+## Purging dead/junk rows: `purge_master_csv.py`
+
+Run against the real `loyalty-rewards-MASTER.csv` on the client's machine
+(not present in either sandbox repo). Three filters, all report-then-apply:
+
+1. **Dead-URL retirement** — rows already 3-strike/no-form-strike retired in
+   `dead-urls.json` from real runs (optionally re-mined from a results CSV
+   with `--results`).
+2. **Live-check** (`--live-check`, off by default) — HEAD/GET each remaining
+   URL and drop DNS failures, connection errors, and 404/410/5xx.
+3. **Structural junk** — car dealership / franchise brands (Nissan, Toyota,
+   Ford, ...) and categories (`Automotive`, `auto financing`, `rent-to-own`,
+   `timeshare`) and any barrier reading "in-store signup only" / "requires a
+   visit". These aren't bugs to fix — a dealership "rewards" page is a lead
+   form or financing application gated behind visiting a specific store, not
+   a self-service signup. Add more with `--exclude-brand`/`--exclude-category`
+   (comma-separated, additive to the built-in list).
+
+```
+python purge_master_csv.py --csv loyalty-rewards-MASTER.csv                 # dry run + report
+python purge_master_csv.py --csv loyalty-rewards-MASTER.csv --live-check    # + real HTTP check
+python purge_master_csv.py --csv loyalty-rewards-MASTER.csv --apply         # writes cleaned CSV
+```
+
+`--apply` always writes a `.bak` of the original first (skip with
+`--no-backup`) and a `purge-report.csv` of everything removed and why.
+
+**Bug found and fixed while building this**: writing the cleaned CSV back to
+the same path being read (the default, in-place purge) truncated the file
+mid-`DictReader`-iteration — every row after the truncation point vanished
+instead of being evaluated. Fixed by reading every row into memory before any
+write. Covered by `test_camofox_engine.py::TestPurgeMasterCsv`.
