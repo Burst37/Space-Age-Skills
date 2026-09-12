@@ -63,3 +63,11 @@ Before closing any session:
 - [ ] Log any credentials that exist (names only, never values)
 - [ ] Push any code changes to relevant repo
 - [ ] Note which skills need updating
+
+## STANDING RULES
+
+- Start a fresh conversation for each new task rather than continuing one long thread.
+- Plan non-trivial work before building it, and hand the plan to a new conversation.
+- Never give me PDFs or screenshots. Convert to markdown, or connect the underlying tool.
+- Use subagents for anything that reads many files, so the main thread stays clean.
+- Tell me when a task would be faster or cheaper for me to do myself without AI.
