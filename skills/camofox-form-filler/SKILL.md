@@ -227,6 +227,9 @@ user's cookies/localStorage across runs
 | `auto_signup_camofox.py` | Single-process signup runner + shared helpers (`FIELD_PATTERNS`, `flat_config`, smart-queue/dead-URL helpers) reused by the parallel engine |
 | `auto_signup_camofox_parallel.py` | Multi-worker engine matching LoyaltyBot_V3's `auto-signup-parallel-FIXED.py` CLI/file contract (nested config, 7-column results CSV, `progress_<id>.json`, `dead-urls.json`) — drop-in replacement for `do_launch()` |
 | `loyaltybot_server.patched.py` | Reference patch of LoyaltyBot_V3's `loyaltybot_server.py` with a per-client `"engine": "camofox"\|"playwright"` toggle wired into `do_launch()` (client name defaults scrubbed). Diff against your local copy or drop in. |
+| `purge_master_csv.py` | Drops dead/retired/structurally-unfit rows from `loyalty-rewards-MASTER.csv` (dead-URL retirement, optional live HTTP check, dealership/in-store junk filter) |
+| `test_camofox_engine.py` | 26-test offline regression suite (scripted fake camofox client — no server or network needed) |
+| `FIXES.md` | Full writeup of the 23 engine bugs fixed in the success-rate pass, with the failure analysis and test coverage map |
 | `program.md` | Karpathy-autoresearch fixed-budget A/B loop to measure success_rate per engine/config change |
 | `requirements.txt` | Python deps (`requests`) |
 
@@ -238,3 +241,74 @@ user's cookies/localStorage across runs
   detection for automated signups/form filling.
 - User wants to add proxy + GeoIP + persistent sessions to an existing
   automated signup pipeline.
+
+---
+
+## Reliability fixes (success-rate pass)
+
+23 bugs fixed across `camofox_client.py`, `auto_signup_camofox.py`,
+`auto_signup_camofox_parallel.py`, `loyaltybot_server.patched.py`.
+
+**Full writeup with every bug and its fix: [`FIXES.md`](FIXES.md).**
+
+Short version — the failures were three stacked layers, each losing most of
+what the layer above handed it:
+
+1. **Most sites never produced a form.** The snapshot parser understood one of
+   three formats, only the first page of a paginated snapshot was read, and
+   pages were snapshotted before JS-rendered forms drew. A CAPTCHA wall was
+   also misreported as "no form fields found", so the 2-strike rule
+   permanently retired live sites.
+2. **Forms that were found often couldn't submit.** Checkboxes were never
+   ticked, `<select>` was typed into, `spinbutton`/`textarea` were ignored,
+   and two regex precedence bugs wrote values into the wrong fields.
+3. **Outcomes were recorded wrong.** Any page without a CAPTCHA counted as
+   `success`; worker threads died on unhandled exceptions and dropped their
+   rows silently; browser sessions were never closed, so long runs starved the
+   camofox server and finished with fewer workers than they started with.
+
+Regression suite: `test_camofox_engine.py` — 26 tests, no server or network
+needed (scripted fake client).
+
+```
+python3 test_camofox_engine.py
+python3 -m unittest test_camofox_engine -v
+```
+
+### New flag
+`--page-timeout` (default 20s) on both engines — how long to wait for a form to render.
+
+---
+
+## Purging dead/junk rows: `purge_master_csv.py`
+
+Run against the real `loyalty-rewards-MASTER.csv` on the client's machine
+(not present in either sandbox repo). Three filters, all report-then-apply:
+
+1. **Dead-URL retirement** — rows already 3-strike/no-form-strike retired in
+   `dead-urls.json` from real runs (optionally re-mined from a results CSV
+   with `--results`).
+2. **Live-check** (`--live-check`, off by default) — HEAD/GET each remaining
+   URL and drop DNS failures, connection errors, and 404/410/5xx.
+3. **Structural junk** — car dealership / franchise brands (Nissan, Toyota,
+   Ford, ...) and categories (`Automotive`, `auto financing`, `rent-to-own`,
+   `timeshare`) and any barrier reading "in-store signup only" / "requires a
+   visit". These aren't bugs to fix — a dealership "rewards" page is a lead
+   form or financing application gated behind visiting a specific store, not
+   a self-service signup. Add more with `--exclude-brand`/`--exclude-category`
+   (comma-separated, additive to the built-in list).
+
+```
+python purge_master_csv.py --csv loyalty-rewards-MASTER.csv                 # dry run + report
+python purge_master_csv.py --csv loyalty-rewards-MASTER.csv --live-check    # + real HTTP check
+python purge_master_csv.py --csv loyalty-rewards-MASTER.csv --apply         # writes cleaned CSV
+```
+
+`--apply` always writes a `.bak` of the original first (skip with
+`--no-backup`) and a `purge-report.csv` of everything removed and why.
+
+**Bug found and fixed while building this**: writing the cleaned CSV back to
+the same path being read (the default, in-place purge) truncated the file
+mid-`DictReader`-iteration — every row after the truncation point vanished
+instead of being evaluated. Fixed by reading every row into memory before any
+write. Covered by `test_camofox_engine.py::TestPurgeMasterCsv`.
