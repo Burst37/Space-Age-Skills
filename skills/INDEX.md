@@ -1,0 +1,57 @@
+# Skills Index — Space-Age-Skills
+
+One line per skill, pulled from its own description. Nothing below was moved, renamed, or deleted — this file is purely additive. 53 skills total (`README.md` in this folder is not a skill).
+
+- **addy-osmani-skills** — Addy Osmani's production-grade coding agent skills — web performance, modern JS patterns, AI-assisted dev, frontend architecture.
+- **adobe-creative-suite** — AI-powered Adobe Creative Cloud pipeline for image editing, design production, video, and asset management (Firefly, Photoshop, Illustrator, InDesign, CC storage via MCP).
+- **agent-ops-pro** — Operate long-lived agent workloads with observability, security boundaries, instinct-based continuous learning, and token-efficient incident response.
+- **agent-reach** — Give AI agents read/search access to 13 internet platforms (Twitter/X, Reddit, YouTube, XHS, LinkedIn, HN, GitHub, RSS, web, Bluesky, Mastodon, Telegram, Discord).
+- **ai-email-agent-cf** — Read, search, summarize, or draft replies to email through an Agentic Inbox (Cloudflare Workers email client) MCP server.
+- **banana-pro-director-30** — Higgsfield image prompt director for Banana Pro, Soul Cinema, and GPT-2 — face-lock and character-consistency modes.
+- **browserbase-scraper** — Cloud browser scraper for the SA lead-gen pipeline; replaces local Playwright with Browserbase-hosted stealth sessions.
+- **camofox-form-filler** — Anti-detection browser automation for automated form filling (signups, loyalty enrollment, onboarding forms).
+- **canva-design-engine** — AI-powered design generation pipeline using Canva — prompt-to-design, brand kit enforcement, templates, multi-page docs, export.
+- **caveman** — Ultra-compressed communication mode (~75% token cut) while keeping full technical precision — for long pipeline sessions.
+- **character-builder** — Photoreal character and outfit builder for Higgsfield image prompts, primarily Nano Banana Pro.
+- **cinema-director-v3** — Cinema director for Seedance 2.0/2.5 and Higgsfield video prompts; supersedes earlier cinema-director versions.
+- **code-review-pro** — Review code, a PR, staged/unstaged changes, a commit, or a branch comparison for quality issues.
+- **codebase-memory-mcp** — Persistent MCP codebase memory — indexes a codebase into a local vector DB for sub-millisecond structural queries, 158 languages.
+- **compound-loop-pro** — Single-skill version of the compound-engineering five-step loop (brainstorm → plan → work → review → compound) with surgical-change discipline.
+- **deep-research-pro** — Research/comparison tasks, or any content-generation task requiring current, sourced information.
+- **design-loop** — Extracts what makes a real-world reference good, then runs a builder and three fresh-context critics until the build wins.
+- **design-review-pro** — Review UI code for design quality, accessibility, or "Web Interface Guidelines" compliance before shipping.
+- **dyad-app-scaffold** — Scaffold a full-stack web app from a natural-language description, with Supabase/Neon backend wiring, auth, or a guided setup.
+- **firecrawl-mcp** — Connects Claude to the live web via Firecrawl — scrape, search with full page content, map site structure, batch scrape, structured extraction.
+- **gsap-core** — Official GSAP skill for the core API — `gsap.to/from/fromTo`, easing, duration, stagger, `matchMedia` (responsive/reduced-motion).
+- **gsap-scrolltrigger** — Official GSAP skill for ScrollTrigger — scroll-linked animation, pinning, scrub, triggers, parallax.
+- **gsap-supercharged** — Advanced GSAP patterns — scroll storytelling, SplitText reveals, MorphSVG, Flip, Draggable, physics.
+- **gsap-timeline** — Official GSAP skill for timelines — `gsap.timeline()`, position parameter, nesting, playback sequencing.
+- **higgsfield-video-studio** — Full-stack AI video/image pipeline via Higgsfield — generation through post-production (upscaling, bg removal, motion control, virality prediction).
+- **immich-photo-search** — Find, organize, tag, or report on photos/videos in a self-hosted Immich library.
+- **market-data-terminal** — Market data, economic indicators, news, or portfolio info from a local Fincept Terminal MCP bridge.
+- **mattpocock-skills** — Matt Pocock's production Claude skills — TypeScript, tooling, docs, and DX workflows.
+- **matts-peeker** — Video analysis — samples frames at 1Hz, sends to Gemini 2.5 Flash via OpenRouter for frame-by-frame description.
+- **media-gen-pipeline** — AI-generated images or video via a multi-model pipeline (prompt → generate → edit → stitch).
+- **mobbin-operator** — Terminal-native Mobbin client (`mobbin-pp-cli`) with offline SQLite mirror, FTS5 search, compound design-intelligence commands.
+- **obsidian-releases** — Obsidian community plugin/theme manifests — plugin IDs, authors, descriptions, download counts.
+- **obsidian-skills** — Official Obsidian agent skills by kepano — vault ops, markdown standards, CLI usage, JSON Canvas, Bases, Defuddle.
+- **odysseus-memory-ops** — Decide whether to write, update, or skip a memory entry when an agent has a persistent memory/skills API.
+- **one-prompt-website-pack** — Ten copy-paste prompts turning a single sentence into a cinematic, award-style website (AI video + scroll animation).
+- **opencut** — Open-source browser-based video editor (CapCut alternative) — trim, cut, captions, overlay audio, export; pairs with Higgsfield.
+- **penpot** — Self-hosted Penpot design tool (Figma replacement) — setup/troubleshooting on the Space Age VPS.
+- **quant-backtest-diagnostician** — Diagnose a failed, errored, zero-trade, or suspicious-result quant trading strategy backtest.
+- **research-notebook-pipeline** — Collect sources into a persistent research notebook, ask questions across them, generate output.
+- **sa-figma-framer-spline** — Figma + Framer Motion + Spline design-to-production skill; sits between `ui-ux-designer` and `cinematic-website-builder`.
+- **scrapegraph-ai** — LLM-powered web scraping library — scraping pipelines as graphs instead of brittle CSS/XPath selectors.
+- **scroll-film-studio** — Build a scroll-film website — the whole page as one continuous cinematic shot that plays on scroll.
+- **seedance-2-5-prompting** — Technical reference for Dreamina Seedance 2.5's official prompt syntax and reference-material role mapping.
+- **site-to-video** — Turn a website URL into a video (e.g. a product-launch capture/promo).
+- **skillspector** — NVIDIA's security scanner for Claude agent skills — scans SKILL.md for prompt injection, credential harvesting, scope creep, malicious instructions.
+- **spaceage-savo-creative-director-os** — Strategic creative direction (visual/story/trust/motion/layout/conversion) before any builder model runs.
+- **stealth-browser-automation** — Automate browsing a hard-to-script site — scraping, form fill, search — with stealth techniques.
+- **stop-slop-pro** — Detect and remove AI writing tells from prose, with intensity levels, genre presets, a scoring rubric.
+- **story-bible-builder** — Interview-driven skill turning a story into a single dense canon document (the story bible).
+- **taste-pro** — Anti-slop frontend design skill — brief inference, three-dial calibration, design-system mapping, accessibility/performance pre-flight.
+- **trading-thesis-research** — Structured investment/trading thesis for an asset — sentiment + technical/quant analysis + risk assessment.
+- **ui-ux-pro-max** — UI/UX design intelligence — 50+ styles, 161 color palettes, 57 font pairings, 161 product types, 99 UX guidelines, 25 chart types.
+- **voice-io-cli** — Generate spoken audio from text (TTS), transcribe audio to text (STT), or clone/use a custom voice profile.
