@@ -227,6 +227,9 @@ user's cookies/localStorage across runs
 | `auto_signup_camofox.py` | Single-process signup runner + shared helpers (`FIELD_PATTERNS`, `flat_config`, smart-queue/dead-URL helpers) reused by the parallel engine |
 | `auto_signup_camofox_parallel.py` | Multi-worker engine matching LoyaltyBot_V3's `auto-signup-parallel-FIXED.py` CLI/file contract (nested config, 7-column results CSV, `progress_<id>.json`, `dead-urls.json`) — drop-in replacement for `do_launch()` |
 | `loyaltybot_server.patched.py` | Reference patch of LoyaltyBot_V3's `loyaltybot_server.py` with a per-client `"engine": "camofox"\|"playwright"` toggle wired into `do_launch()` (client name defaults scrubbed). Diff against your local copy or drop in. |
+| `purge_master_csv.py` | Drops dead/retired/structurally-unfit rows from `loyalty-rewards-MASTER.csv` (dead-URL retirement, optional live HTTP check, dealership/in-store junk filter) |
+| `test_camofox_engine.py` | 26-test offline regression suite (scripted fake camofox client — no server or network needed) |
+| `FIXES.md` | Full writeup of the 23 engine bugs fixed in the success-rate pass, with the failure analysis and test coverage map |
 | `program.md` | Karpathy-autoresearch fixed-budget A/B loop to measure success_rate per engine/config change |
 | `requirements.txt` | Python deps (`requests`) |
 
@@ -243,44 +246,34 @@ user's cookies/localStorage across runs
 
 ## Reliability fixes (success-rate pass)
 
-Bugs found and fixed across `camofox_client.py`, `auto_signup_camofox.py`,
-`auto_signup_camofox_parallel.py`, `loyaltybot_server.patched.py`. Regression
-suite: `python3 test_camofox_engine.py` (19 tests, no server/network needed).
+23 bugs fixed across `camofox_client.py`, `auto_signup_camofox.py`,
+`auto_signup_camofox_parallel.py`, `loyaltybot_server.patched.py`.
 
-### Made sites reachable that previously reported "no form fields found"
-| # | Bug | Fix |
-|---|-----|-----|
-| 1 | `parse_snapshot()` understood only `[textbox e3] Label`. Any other snapshot renderer → zero items → every page looked formless. | Parser accepts `[role eN] label`, `- role "label" [ref=eN]`, and `role "label" (eN)`. |
-| 2 | Only the FIRST snapshot chunk was read; the API pages by `offset`. Fields below the fold were invisible. | `CamofoxClient.snapshot_text()` follows pagination. |
-| 3 | One fixed 3s wait after opening the tab, then snapshot. JS-rendered forms had not drawn yet. | `wait_for_form()` polls up to `--page-timeout` (default 20s). |
-| 4 | Hop loop took the first link matching an alternation containing both `create account` and `sign in`, in document order — the header "Sign In" won on most retail sites. | Split into `PRIMARY_SIGNUP_LINK_PATTERNS` (registration) tried before `FALLBACK_SIGNUP_LINK_PATTERNS` (login). |
-| 5 | Hop guard `A and not B or C` parses as `(A and not B) or C` — the `or` re-admitted submit buttons the guard excluded. | Explicit ordered selection. |
-| 6 | A CAPTCHA wall (no form rendered) was recorded as `no form fields found` → 2-strike retirement killed live sites permanently. | CAPTCHA checked before the strike is issued. |
+**Full writeup with every bug and its fix: [`FIXES.md`](FIXES.md).**
 
-### Made filled forms actually submit
-| # | Bug | Fix |
-|---|-----|-----|
-| 7 | Checkboxes were never touched — most programs refuse to submit with Terms unticked. | Required boxes (terms/privacy/age/consent) ticked; marketing/paid opt-ins explicitly skipped. |
-| 8 | `<select>` (state, country) was typed into. | `client.select()` with a click/type fallback. |
-| 9 | `spinbutton` (number: zip, income) and `textarea` were not in `INTERACTIVE_ROLES`. | Added. |
-| 10 | Re-fill after a CAPTCHA appended to already-filled fields → `"AdaAda"` → validation failure. | Fields cleared before typing; `filled_refs` skips fields already done. |
-| 11 | `\bcity\|town\b` parses as `(\bcity)` OR `(town\b)` — matched "Downtown". Same shape in the state rule. | Per-alternative boundaries. |
-| 12 | `street\|address\s*(line\s*1\|1)?\b` also matched "Address Line 2", writing the street into the apartment field. | Line 2 gets its own earlier rule. |
+Short version — the failures were three stacked layers, each losing most of
+what the layer above handed it:
 
-### Stopped losing work and lying about outcomes
-| # | Bug | Fix |
-|---|-----|-----|
-| 13 | Any non-`CamofoxError` (ConnectionError, ReadTimeout, KeyError) escaped `process_entry` → **worker thread died**, its popped row vanished with no result row, and the run silently continued with fewer workers. | `_request()` wraps every `requests` exception as `CamofoxError`; `process_entry` and `worker_loop` both catch broadly and always record a row. |
-| 14 | No transport retry — one blip = permanent site failure. | 3 attempts with exponential backoff on connection errors and 408/429/5xx. |
-| 15 | Any post-submit page without a CAPTCHA was `success`, including pages still reading "Email is required". | `verify_submission()` classifies confirmation / validation-error / form-still-present. |
-| 16 | Tabs leaked on any error path in the single-process runner; browser sessions were never closed at all — 500+ sites exhausted the camofox server. | `finally: close_tab()` + `close_session()`. |
-| 17 | `elif "captcha" in status` preceded `elif status == "captcha_skipped"` — the skipped branch was unreachable, dashboard counter stuck at 0. | Reordered. |
-| 18 | `_no_form_strikes` mutated from every worker without a lock. | Guarded by `_dead_urls_lock`. |
-| 19 | Single-process runner wrote a 5-column CSV against the 7-column contract — unreadable to the dashboard and to `retire_repeated_failures()`. | 7 columns. |
-| 20 | `create_tab` did `data["tabId"]` → `KeyError` on any other response shape. | Tolerant lookup + clear error. |
-| 21 | `datetime.utcnow()` / `utcfromtimestamp()` (deprecated). | `datetime.now(timezone.utc)`. |
-| 22 | Server: camofox + manual mode ran 5 workers, so a human on noVNC saw five tabs race. | Clamped to 1 worker. |
-| 23 | Server: `_errors[cid]` written from the watcher thread without `_lock`. | Locked. |
+1. **Most sites never produced a form.** The snapshot parser understood one of
+   three formats, only the first page of a paginated snapshot was read, and
+   pages were snapshotted before JS-rendered forms drew. A CAPTCHA wall was
+   also misreported as "no form fields found", so the 2-strike rule
+   permanently retired live sites.
+2. **Forms that were found often couldn't submit.** Checkboxes were never
+   ticked, `<select>` was typed into, `spinbutton`/`textarea` were ignored,
+   and two regex precedence bugs wrote values into the wrong fields.
+3. **Outcomes were recorded wrong.** Any page without a CAPTCHA counted as
+   `success`; worker threads died on unhandled exceptions and dropped their
+   rows silently; browser sessions were never closed, so long runs starved the
+   camofox server and finished with fewer workers than they started with.
+
+Regression suite: `test_camofox_engine.py` — 26 tests, no server or network
+needed (scripted fake client).
+
+```
+python3 test_camofox_engine.py
+python3 -m unittest test_camofox_engine -v
+```
 
 ### New flag
 `--page-timeout` (default 20s) on both engines — how long to wait for a form to render.
