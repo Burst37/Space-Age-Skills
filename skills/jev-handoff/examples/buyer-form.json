@@ -1,0 +1,8 @@
+{
+  "questions": {
+    "buyer": {
+      "type": "noul",
+      "instructions": "Is the sender showing immediate intent to purchase, such as requesting a working checkout/payment link, confirming a chosen plan or asking to pay an approved invoice? General curiosity, research, complaints, a past purchase or lack of budget are not immediate purchase intent."
+    }
+  }
+}

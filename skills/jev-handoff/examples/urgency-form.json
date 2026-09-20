@@ -1,0 +1,15 @@
+{
+  "questions": {
+    "urgency": {
+      "type": "score",
+      "instructions": "How soon should a human reply? Use explicit deadlines and operational impact. Spam or no-action messages are never. Flexible nonurgent requests are this month. Ordinary active requests are this week. Same-day deadlines are today. An active outage or deadline within an hour is within the hour.",
+      "criteria": [
+        "Never: spam, no action or explicitly no reply needed",
+        "This month: flexible, nonurgent request",
+        "This week: ordinary request needing a reply",
+        "Today: a same-day deadline or blocking issue",
+        "Within the hour: active outage or a deadline under one hour"
+      ]
+    }
+  }
+}

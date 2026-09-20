@@ -1,0 +1,20 @@
+{"id": "owner-01", "sender": "Julia Stone <julia.stone@example.com>", "subject": "Interview invitation", "body": "Could Jack join our podcast to discuss his approach to AI education? We would like his view on the topic."}
+{"id": "owner-02", "sender": "Arun Das <arun.das@example.com>", "subject": "Payment taken twice", "body": "My card was charged twice for the same subscription. Could someone check the duplicate?"}
+{"id": "owner-03", "sender": "Marcus Hill <marcus.hill@example.com>", "subject": "Webhook 500 error", "body": "The workflow endpoint returns HTTP 500 after yesterday's deployment. Logs show a missing database column."}
+{"id": "owner-04", "sender": "Promo Factory <promo.factory@example.com>", "subject": "Cheap traffic", "body": "Purchase ten thousand bot visits today. Guaranteed numbers, no human readers."}
+{"id": "owner-05", "sender": "Imogen Frost <imogen.frost@example.com>", "subject": "Sponsor negotiation", "body": "We have an \u00a38,000 campaign budget and would like Jack to discuss a dedicated video partnership."}
+{"id": "owner-06", "sender": "Ben Lake <ben.lake@example.com>", "subject": "Move my booking", "body": "I booked Tuesday's session but need to move it to Thursday. Could you adjust the calendar?"}
+{"id": "owner-07", "sender": "Chloe West <chloe.west@example.com>", "subject": "API token refresh bug", "body": "Our integration stops after the refresh token rotates. Could the engineering owner inspect the retry code?"}
+{"id": "owner-08", "sender": "Alex Moss <alex.moss@example.com>", "subject": "Thanks, all sorted", "body": "The fix worked. No reply needed. Thanks for your help."}
+{"id": "owner-09", "sender": "Freya Rose <freya.rose@example.com>", "subject": "Video topic idea", "body": "Would Jack consider a video about the tradeoffs in model routing? I have a clear counterexample to discuss."}
+{"id": "owner-10", "sender": "Noah King <noah.king@example.com>", "subject": "Cannot join the community", "body": "I paid this morning, but my invitation link has expired. Could you resend access?"}
+{"id": "owner-11", "sender": "Iris Gray <iris.gray@example.com>", "subject": "Broken starter kit", "body": "The starter kit download route consistently returns 404. The URL in the app looks misconfigured."}
+{"id": "owner-12", "sender": "Auto Digest <auto.digest@example.com>", "subject": "Daily digest copy", "body": "Here is the automated daily digest for your records. There is no action required."}
+{"id": "owner-13", "sender": "Theo Black <theo.black@example.com>", "subject": "Approve an editorial angle", "body": "Before our interview, could Jack decide whether he wants to discuss agent safety or design workflows?"}
+{"id": "owner-14", "sender": "Sana Patel <sana.patel@example.com>", "subject": "VAT invoice please", "body": "Could you issue the receipt to my business name and include the billing address I supplied?"}
+{"id": "owner-15", "sender": "Louis Wood <louis.wood@example.com>", "subject": "OAuth callback failure", "body": "The Google callback rejects the state parameter in production but works on localhost."}
+{"id": "owner-16", "sender": "Easy Millions <easy.millions@example.com>", "subject": "Lottery winnings", "body": "Pay a release fee to collect your surprise lottery winnings."}
+{"id": "owner-17", "sender": "Mila Scott <mila.scott@example.com>", "subject": "Long-term partnership", "body": "Our founder wants to discuss a six-month content partnership directly with Jack."}
+{"id": "owner-18", "sender": "Finn Young <finn.young@example.com>", "subject": "Cancel my renewal", "body": "Please cancel my membership before the renewal date. I need confirmation of the billing change."}
+{"id": "owner-19", "sender": "Zara Lane <zara.lane@example.com>", "subject": "Queue duplicates messages", "body": "The inbox job inserts the same message twice whenever the worker restarts. I included reproduction steps."}
+{"id": "owner-20", "sender": "Weekly Bot <weekly.bot@example.com>", "subject": "FYI build passed", "body": "The scheduled build passed. This message is informational and no follow-up is needed."}
