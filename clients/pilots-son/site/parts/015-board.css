@@ -1,0 +1,76 @@
+/* ---------- P1.5 THE LINEUP — the flick-board, the signature device --------- */
+#board{position:relative;background:var(--void);padding-block:var(--s7) var(--s5);
+  padding-inline:var(--gut);overflow:clip}
+#board .b-head{max-width:1700px;margin:0 auto}
+#board .b-kick{display:flex;align-items:center;gap:14px;color:var(--steel);margin-bottom:var(--s3)}
+#board .b-kick i{width:4px;height:4px;background:var(--beam);border-radius:999px;flex:none}
+#board .b-h{margin:0;font-size:clamp(56px,8.4vw,150px);line-height:.86}
+#board .b-sub{margin:var(--s3) 0 0;color:var(--bone);opacity:.7;max-width:44ch}
+
+#board .b-bar{max-width:1700px;margin:var(--s5) auto var(--s3);display:flex;
+  align-items:center;justify-content:space-between;gap:var(--s3);flex-wrap:wrap}
+#board .b-sort{display:flex;align-items:center;gap:12px}
+#board .b-sort>span{color:var(--steel)}
+#board .b-s{color:var(--bone);opacity:.5;border:1px solid transparent;padding:7px 14px;
+  transition:opacity .3s ease,border-color .3s ease,background-color .3s ease}
+#board .b-s:hover{opacity:.85}
+#board .b-s.is-on{opacity:1;border-color:var(--beam);background:rgba(201,151,31,.09)}
+#board .b-clock{color:var(--steel);font-variant-numeric:tabular-nums}
+#board .b-clock b{color:var(--beam);font-weight:400;letter-spacing:.2em}
+
+#board .b-board{max-width:1700px;margin:0 auto;border-top:var(--hair);border-bottom:var(--hair)}
+#board .b-row{display:grid;grid-template-columns:76px minmax(0,2.4fr) minmax(0,1.5fr) 120px 96px 150px;
+  gap:var(--s3);align-items:center;padding:0 clamp(8px,1vw,18px)}
+#board .b-row-h{color:var(--steel);border-bottom:var(--hair);height:46px;font-size:9px}
+#board .b-rows .b-row{height:clamp(54px,5.2vw,74px);border-bottom:1px solid rgba(242,232,213,.07);
+  cursor:pointer;position:relative;transition:background-color .35s var(--ease-out)}
+#board .b-rows .b-row:last-child{border-bottom:0}
+#board .b-rows .b-row:hover,#board .b-rows .b-row:focus-visible{background:rgba(242,232,213,.045)}
+/* the row leans toward the pointer the way the board's own lamp would sweep it */
+#board .b-rows .b-row::after{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:var(--beam);transform:scaleY(0);transform-origin:50% 50%;
+  transition:transform .38s var(--ease-out)}
+#board .b-rows .b-row:hover::after{transform:scaleY(1)}
+
+#board .b-gate{font-family:var(--ff-m);font-size:var(--t-micro);letter-spacing:.18em;color:var(--beam);
+  font-variant-numeric:tabular-nums}
+#board .b-name{font-family:var(--ff-d);text-transform:uppercase;font-weight:400;
+  font-size:clamp(19px,1.9vw,34px);letter-spacing:-.02em;color:var(--bone);line-height:1;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#board .b-siz{font-family:var(--ff-m);font-size:9px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--steel);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#board .b-fab{font-size:13px;font-style:italic;color:var(--beam);opacity:.72;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#board .b-fare{font-family:var(--ff-m);font-size:var(--t-micro);letter-spacing:.14em;color:var(--bone);
+  font-variant-numeric:tabular-nums}
+#board .b-stat{font-family:var(--ff-m);font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+  display:flex;align-items:center;gap:9px;color:var(--bone)}
+#board .b-stat i{width:5px;height:5px;border-radius:999px;background:var(--beam);flex:none}
+#board .b-stat[data-s="final"]{color:var(--amber)}
+#board .b-stat[data-s="final"] i{background:var(--amber)}
+#board .b-stat[data-s="boarding"] i{animation:b-blink 1.6s steps(1,end) infinite}
+@keyframes b-blink{0%,55%{opacity:1}56%,100%{opacity:.15}}
+
+/* split-flap: each glyph sits in its own slot and snaps down into place */
+#board .b-flap{display:inline-block;white-space:pre}
+#board .b-flap span{display:inline-block;will-change:transform,opacity;transform-origin:50% 0}
+
+/* hover peek — the row shows you the garment without leaving the board */
+#board .b-peek{position:fixed;left:0;top:0;z-index:60;margin:0;width:206px;pointer-events:none;
+  opacity:0;will-change:transform,opacity}
+#board .b-peek img{width:100%;height:auto;display:block;
+  filter:saturate(.9) contrast(1.06) brightness(.98)}
+
+@media (max-width:1100px){
+  #board .b-row{grid-template-columns:56px minmax(0,2fr) 86px 116px}
+  #board .b-fab,#board .b-row-h span:nth-child(3){display:none}
+  #board .b-peek{display:none}
+}
+@media (max-width:620px){
+  #board .b-row{grid-template-columns:46px minmax(0,1fr) 84px}
+  #board .b-siz,#board .b-row-h span:nth-child(4){display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  #board .b-flap span{transform:none!important;opacity:1!important}
+  #board .b-stat[data-s="boarding"] i{animation:none}
+}

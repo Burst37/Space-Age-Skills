@@ -1,0 +1,210 @@
+<!-- ============ P5 — CONVERT : capture + footer ============ -->
+<div class="x-veil" id="cv-veil" aria-hidden="true">
+  <div class="x-veil-in">
+    <p class="micro x-veil-l">Next drop</p>
+    <p class="micro x-veil-r">Drop 02 &mdash; loading</p>
+  </div>
+</div>
+
+<section id="notify" class="x-notify" aria-labelledby="cv-notify-h">
+
+  <div class="x-nt-top">
+    <p class="micro x-kick">Next drop</p>
+    <p class="micro x-nt-idx">05 / Next up</p>
+  </div>
+
+  <h2 class="mega x-nt-mega" id="cv-notify-h">
+    <span class="x-ln"><span>Don&rsquo;t miss</span></span>
+    <span class="x-ln"><span>the drop</span></span>
+  </h2>
+
+  <div class="x-nt-body">
+
+    <div class="x-nt-spec">
+      <dl class="x-spec">
+        <div><dt class="micro">Next drop</dt><dd class="micro">Drop 02 &middot; Q1</dd></div>
+        <div><dt class="micro">Access</dt><dd class="micro">Restocks + Academy</dd></div>
+        <div><dt class="micro">Frequency</dt><dd class="micro">Rare</dd></div>
+      </dl>
+    </div>
+
+    <div class="x-nt-form">
+      <p class="body x-nt-copy">First access to new drops, restocks and Fly&nbsp;Boy Academy exclusives. No spam &mdash; just the good stuff.</p>
+
+      <form class="x-form" id="cv-form" novalidate>
+        <label class="micro x-lab" for="cv-email">Email address</label>
+        <div class="x-field">
+          <input class="x-input" id="cv-email" name="email" type="email" inputmode="email"
+                 autocomplete="email" spellcheck="false" placeholder="you@email.com"
+                 aria-describedby="cv-note" required>
+          <button class="x-submit" id="cv-submit" type="submit">Notify me</button>
+        </div>
+        <p class="micro x-note" id="cv-note">One email per drop. Unsubscribe any time.</p>
+        <p class="micro x-live" id="cv-live" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+
+<footer class="x-foot" id="cv-foot">
+  <div class="x-foot-grid">
+
+    <nav class="x-fcol x-fcol--a" aria-label="Shop">
+      <h3 class="micro x-fh">Shop</h3>
+      <ul class="x-flist">
+        <li><a href="#drop"><span>Drop 01 — Hoodies</span><b aria-hidden="true">84</b></a></li>
+        <li><a href="#gear"><span>Aviator Cap</span><b aria-hidden="true">38</b></a></li>
+        <li><a href="#gear"><span>Crew Socks</span><b aria-hidden="true">18</b></a></li>
+        <li><a href="#gear"><span>Flight Beanie</span><b aria-hidden="true">32</b></a></li>
+        <li><a href="#gear"><span>Logo Sweater</span><b aria-hidden="true">98</b></a></li>
+        <li><a href="#gear"><span>Varsity Jacket</span><b aria-hidden="true">180</b></a></li>
+      </ul>
+    </nav>
+
+    <nav class="x-fcol x-fcol--b" aria-label="Help">
+      <h3 class="micro x-fh">Help</h3>
+      <ul class="x-flist">
+        <li><a href="#notify"><span>Shipping</span></a></li>
+        <li><a href="#craft"><span>Size guide</span><b aria-hidden="true">XS&ndash;3XL &middot; 2T&ndash;M</b></a></li>
+        <li><a href="#notify"><span>Contact</span></a></li>
+      </ul>
+    </nav>
+
+    <nav class="x-fcol x-fcol--c" aria-label="Social">
+      <h3 class="micro x-fh">Signal</h3>
+      <ul class="x-flist">
+        <li><a href="#notify"><span>Instagram</span><b aria-hidden="true">@thepilotsson</b></a></li>
+        <li><a href="#notify"><span>TikTok</span><b aria-hidden="true">@thepilotsson</b></a></li>
+        <li><a href="#notify"><span>Fly Boy Academy</span></a></li>
+      </ul>
+    </nav>
+
+    <div class="x-fcol x-fcol--d">
+      <h3 class="micro x-fh">Legacy</h3>
+      <p class="body x-fcreed">Fly high. Stay focused.<br>Leave a legacy.</p>
+    </div>
+
+  </div>
+
+  <div class="x-wordmark" aria-hidden="true">
+    <span id="cv-wm">The Pilot&rsquo;s Son</span>
+  </div>
+
+  <div class="x-foot-base">
+    <p class="micro">&copy; Est. 1974 &mdash; The Pilot&rsquo;s Son.</p>
+    <nav class="x-legal" aria-label="Legal">
+      <a class="micro" href="#notify">Privacy</a>
+      <a class="micro" href="#notify">Terms</a>
+      <a class="micro" href="#notify">Accessibility</a>
+    </nav>
+    <p class="micro x-foot-loc">34&deg;03&prime;N 118&deg;15&prime;W</p>
+  </div>
+</footer>
+
+
+<!-- ============ P5 — overlays : scrim / cart / pdp ============ -->
+<div class="x-scrim" id="cv-scrim" hidden></div>
+
+<aside class="x-drawer x-cart" id="cv-cart" role="dialog" aria-modal="true"
+       aria-labelledby="cv-cart-h" hidden tabindex="-1">
+  <header class="x-dr-head">
+    <h2 class="lead x-dr-title" id="cv-cart-h">Cart</h2>
+    <p class="micro x-dr-sub" id="cv-cart-sub">0 items</p>
+    <button class="x-close" id="cv-cart-x" type="button" aria-label="Close cart">
+      <span aria-hidden="true"></span>
+    </button>
+  </header>
+
+  <div class="x-dr-body" id="cv-cart-body">
+    <ul class="x-lines" id="cv-lines"></ul>
+    <div class="x-empty" id="cv-empty">
+      <p class="lead x-empty-h">Cart&rsquo;s empty.<br>Go cop something.</p>
+      <button class="x-ghost" id="cv-empty-cta" type="button">Back to the drop</button>
+    </div>
+  </div>
+
+  <footer class="x-dr-foot" id="cv-cart-foot">
+    <div class="x-ship">
+    </div>
+    <div class="x-sub">
+      <span class="micro">Subtotal</span>
+      <span class="x-sub-v" id="cv-sub">$0.00</span>
+    </div>
+    <button class="x-primary" id="cv-checkout" type="button">
+      <span>Checkout</span><span class="x-primary-n" aria-hidden="true">Demo</span>
+    </button>
+    <p class="micro x-disc">Demo storefront &mdash; no payment is taken. A Shopify Buy Button wires in here.</p>
+  </footer>
+</aside>
+
+<aside class="x-drawer x-pdp" id="cv-pdp" role="dialog" aria-modal="true"
+       aria-labelledby="cv-pdp-name" hidden tabindex="-1">
+  <button class="x-close x-close--pdp" id="cv-pdp-x" type="button" aria-label="Close quick view">
+    <span aria-hidden="true"></span>
+  </button>
+
+  <div class="x-pdp-media">
+    <img id="cv-pdp-img" src="" alt="" decoding="async" loading="lazy">
+    <p class="micro x-pdp-tag" id="cv-pdp-tag">Drop 01</p>
+  </div>
+
+  <div class="x-pdp-info">
+    <p class="micro x-pdp-kick" id="cv-pdp-kick">Quick view</p>
+    <h2 class="lead x-pdp-name" id="cv-pdp-name">&nbsp;</h2>
+    <p class="x-pdp-price" id="cv-pdp-price">&nbsp;</p>
+    <p class="body x-pdp-desc" id="cv-pdp-desc"></p>
+
+    <dl class="x-pdp-spec" id="cv-pdp-spec"></dl>
+
+    <fieldset class="x-sizes x-fits" id="cv-pdp-fits">
+      <legend class="micro">Fit</legend>
+      <div class="x-size-row" id="cv-fit-row"></div>
+    </fieldset>
+
+    <fieldset class="x-sizes" id="cv-pdp-sizes">
+      <legend class="micro">Size</legend>
+      <div class="x-size-row" id="cv-size-row"></div>
+    </fieldset>
+
+    <button class="x-primary x-primary--pdp" id="cv-pdp-add" type="button">
+      <span>Add to cart</span><span class="x-primary-n" id="cv-pdp-addn" aria-hidden="true"></span>
+    </button>
+    <p class="micro x-live" id="cv-pdp-live" role="status" aria-live="polite"></p>
+
+    <ul class="x-facts">
+    </ul>
+  </div>
+</aside>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"ItemList","name":"The Pilot's Son Apparel Co. — Drop 01 and Gear","numberOfItems":12,"itemListOrder":"https://schema.org/ItemListOrderAscending","itemListElement":[
+{"@type":"ListItem","position":1,"item":{"@type":"Product","name":"Abduction","sku":"TPS-D1-ABD","description":"All-over-print sweatshirt, printed edge to edge front and back.","brand":{"@type":"Brand","name":"The Pilot's Son Apparel Co."},"category":"Apparel > Sweatshirts","offers":{"@type":"Offer","price":"88.00","priceCurrency":"USD","availability":"https://schema.org/InStock","itemCondition":"https://schema.org/NewCondition","url":"https://thepilotsson.com/#drop"}}},
+{"@type":"ListItem","position":2,"item":{"@type":"Product","name":"Nebula Deception","sku":"TPS-D1-NEB","description":"All-over-print sweatshirt, printed edge to edge front and back.","brand":{"@type":"Brand","name":"The Pilot's Son Apparel Co."},"category":"Apparel > Sweatshirts","offers":{"@type":"Offer","price":"94.00","priceCurrency":"USD","availability":"https://schema.org/InStock","itemCondition":"https://schema.org/NewCondition","url":"https://thepilotsson.com/#drop"}}},
+{"@type":"ListItem","position":3,"item":{"@type":"Product","name":"Chibi Medusa","sku":"TPS-D1-MED","description":"All-over-print sweatshirt, printed edge to edge front and back.","brand":{"@type":"Brand","name":"The Pilot's Son Apparel Co."},"category":"Apparel > Sweatshirts","offers":{"@type":"Offer","price":"90.00","priceCurrency":"USD","availability":"https://schema.org/InStock","itemCondition":"https://schema.org/NewCondition","url":"https://thepilotsson.com/#drop"}}},
+{"@type":"ListItem","position":4,"item":{"@type":"Product","name":"Cyber Geisha","sku":"TPS-D1-GEI","description":"All-over-print sweatshirt, printed edge to edge front and back.","brand":{"@type":"Brand","name":"The Pilot's Son Apparel Co."},"category":"Apparel > Sweatshirts","offers":{"@type":"Offer","price":"96.00","priceCurrency":"USD","availability":"https://schema.org/InStock","itemCondition":"https://schema.org/NewCondition","url":"https://thepilotsson.com/#drop"}}},
+{"@type":"ListItem","position":5,"item":{"@type":"Product","name":"Poseidon","sku":"TPS-D1-POS","description":"All-over-print sweatshirt, printed edge to edge front and back.","brand":{"@type":"Brand","name":"The Pilot's Son Apparel Co."},"category":"Apparel > Sweatshirts","offers":{"@type":"Offer","price":"96.00","priceCurrency":"USD","availability":"https://schema.org/InStock","itemCondition":"https://schema.org/NewCondition","url":"https://thepilotsson.com/#drop"}}},
+{"@type":"ListItem","position":6,"item":{"@type":"Product","name":"Phoenix Rising","sku":"TPS-D1-PHX","description":"All-over-print sweatshirt, printed edge to edge front and back.","brand":{"@type":"Brand","name":"The Pilot's Son Apparel Co."},"category":"Apparel > Sweatshirts","offers":{"@type":"Offer","price":"94.00","priceCurrency":"USD","availability":"https://schema.org/InStock","itemCondition":"https://schema.org/NewCondition","url":"https://thepilotsson.com/#drop"}}},
+{"@type":"ListItem","position":7,"item":{"@type":"Product","name":"Aviator Cap","sku":"TPS-G-CAP","material":"See product","brand":{"@type":"Brand","name":"The Pilot's Son Apparel Co."},"category":"Accessories","offers":{"@type":"Offer","price":"38.00","priceCurrency":"USD","availability":"https://schema.org/InStock","itemCondition":"https://schema.org/NewCondition","url":"https://thepilotsson.com/#gear"}}},
+{"@type":"ListItem","position":8,"item":{"@type":"Product","name":"Legacy Crew Socks","sku":"TPS-G-SOCK","material":"See product","brand":{"@type":"Brand","name":"The Pilot's Son Apparel Co."},"category":"Accessories","offers":{"@type":"Offer","price":"18.00","priceCurrency":"USD","availability":"https://schema.org/InStock","itemCondition":"https://schema.org/NewCondition","url":"https://thepilotsson.com/#gear"}}},
+{"@type":"ListItem","position":9,"item":{"@type":"Product","name":"Flight Beanie","sku":"TPS-G-BEAN","description":"Chunky rib-knit beanie with a folded cuff. Six colourways.","material":"See product","brand":{"@type":"Brand","name":"The Pilot's Son Apparel Co."},"category":"Accessories","offers":{"@type":"Offer","price":"32.00","priceCurrency":"USD","availability":"https://schema.org/InStock","itemCondition":"https://schema.org/NewCondition","url":"https://thepilotsson.com/#gear"}}},
+{"@type":"ListItem","position":10,"item":{"@type":"Product","name":"Oversized Logo Sweater","sku":"TPS-G-SWT","description":"Heavyweight fleece sweater, drop shoulder, embroidered mark.","material":"See product","brand":{"@type":"Brand","name":"The Pilot's Son Apparel Co."},"category":"Accessories","offers":{"@type":"Offer","price":"98.00","priceCurrency":"USD","availability":"https://schema.org/InStock","itemCondition":"https://schema.org/NewCondition","url":"https://thepilotsson.com/#gear"}}},
+{"@type":"ListItem","position":11,"item":{"@type":"Product","name":"Varsity Jacket","sku":"TPS-G-VAR","material":"See product","brand":{"@type":"Brand","name":"The Pilot's Son Apparel Co."},"category":"Accessories","offers":{"@type":"Offer","price":"180.00","priceCurrency":"USD","availability":"https://schema.org/InStock","itemCondition":"https://schema.org/NewCondition","url":"https://thepilotsson.com/#gear"}}},
+{"@type":"ListItem","position":12,"item":{"@type":"Product","name":"Legacy Backpack","sku":"TPS-G-BAG","material":"See product","brand":{"@type":"Brand","name":"The Pilot's Son Apparel Co."},"category":"Accessories","offers":{"@type":"Offer","price":"88.00","priceCurrency":"USD","availability":"https://schema.org/InStock","itemCondition":"https://schema.org/NewCondition","url":"https://thepilotsson.com/#gear"}}}
+]}
+</script>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+{"@type":"ListItem","position":1,"name":"Home","item":"https://thepilotsson.com/"},
+{"@type":"ListItem","position":2,"name":"Drop 01","item":"https://thepilotsson.com/#drop"},
+{"@type":"ListItem","position":3,"name":"Gear","item":"https://thepilotsson.com/#gear"},
+{"@type":"ListItem","position":4,"name":"Craft","item":"https://thepilotsson.com/#craft"},
+{"@type":"ListItem","position":5,"name":"Notify","item":"https://thepilotsson.com/#notify"}
+]}
+</script>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"The Pilot's Son Apparel Co.","alternateName":"The Pilot's Son","foundingDate":"1974","url":"https://thepilotsson.com/","slogan":"Fly Boy Mentality. Born Fly.","description":"All-over-print streetwear and accessories.","sameAs":["https://www.instagram.com/thepilotsson","https://www.tiktok.com/@thepilotsson"]}
+</script>

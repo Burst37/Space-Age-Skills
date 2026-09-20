@@ -1,0 +1,62 @@
+/* ---------- P3.5 BORN FLY — the father→son hook, finally designed ---------- */
+#lineage{position:relative;background:var(--void);padding-block:var(--s7);
+  padding-inline:var(--gut);overflow:clip}
+/* a warm oxblood wash off the varsity jacket, so the palette widens past
+   bone-on-black without borrowing anything from an airport */
+#lineage::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(90% 70% at 18% 30%,rgba(212,98,42,.10),transparent 62%),
+             radial-gradient(70% 60% at 88% 78%,rgba(140,122,95,.09),transparent 66%)}
+#lineage>*{position:relative;z-index:1}
+
+#lineage .l-grid{max-width:1700px;margin:0 auto;display:grid;
+  grid-template-columns:repeat(12,1fr);gap:var(--s5) var(--s3);align-items:center}
+#lineage .l-big{grid-column:1 / 8;margin:0}
+#lineage .l-big img{width:100%;height:auto;display:block;
+  filter:saturate(.94) contrast(1.04)}
+#lineage .l-copy{grid-column:8 / 13;padding-left:var(--s2)}
+#lineage .l-kick{display:flex;align-items:center;gap:14px;color:var(--steel);margin-bottom:var(--s3)}
+#lineage .l-kick i{width:4px;height:4px;background:var(--amber);border-radius:999px;flex:none}
+#lineage .l-h{margin:0;font-size:clamp(42px,4.8vw,88px);line-height:.88}
+#lineage .l-l{display:block;overflow:hidden;padding-block:.06em .16em;margin-bottom:-.14em}
+#lineage .l-l>span{display:block}
+#lineage .l-l:last-child{color:var(--amber)}
+#lineage .l-p{margin:var(--s3) 0 0;color:var(--bone);opacity:.76;max-width:38ch}
+#lineage .l-p em{font-style:normal;color:var(--beam);opacity:1}
+
+#lineage .l-pair{margin:var(--s4) 0 var(--s4);display:grid;gap:0}
+#lineage .l-pair div{display:flex;justify-content:space-between;align-items:baseline;
+  gap:var(--s2);border-bottom:var(--hair);padding:11px 0}
+#lineage .l-pair dt{color:var(--steel)}
+#lineage .l-pair dd{margin:0;color:var(--bone);font-family:var(--ff-m);
+  font-size:var(--t-micro);letter-spacing:.14em;text-transform:uppercase}
+
+#lineage .l-small{grid-column:2 / 7;margin:0}
+#lineage .l-small img{width:100%;height:auto;display:block;filter:saturate(.94) contrast(1.04)}
+#lineage .l-small figcaption{margin-top:12px;color:var(--steel);letter-spacing:.16em}
+
+/* the crew frame runs full bleed — it is the widest cast on the site */
+#lineage .l-crew{max-width:1700px;margin:var(--s6) auto 0;position:relative}
+#lineage .l-crew-fig{margin:0;overflow:hidden}
+#lineage .l-crew-fig img{width:100%;height:auto;display:block;
+  filter:saturate(.92) contrast(1.06)}
+#lineage .l-crew-cap{display:flex;align-items:baseline;justify-content:space-between;
+  gap:var(--s3);border-top:var(--hair);margin-top:var(--s2);padding-top:var(--s2);flex-wrap:wrap}
+#lineage .l-crew-p{margin:0;color:var(--bone);opacity:.8;font-family:var(--ff-d);
+  text-transform:uppercase;font-size:clamp(18px,2vw,34px);letter-spacing:-.02em}
+
+@media (max-width:980px){
+  #lineage .l-big,#lineage .l-copy,#lineage .l-small{grid-column:1 / -1}
+  #lineage .l-copy{padding-left:0}
+}
+
+/* ---- row 2 right column: the name, explained ---- */
+#lineage .l-say{grid-column:8 / 13;align-self:end;padding-left:var(--s2);
+  padding-bottom:6px;border-left:var(--hair)}
+#lineage .l-say-q{margin:0;padding-left:var(--s2)}
+#lineage .l-say-q p{margin:0;font-family:var(--ff-d);text-transform:uppercase;
+  font-size:clamp(26px,2.5vw,46px);line-height:.98;letter-spacing:-.02em;color:var(--bone)}
+#lineage .l-say-a{margin:var(--s2) 0 0;padding-left:var(--s2);color:var(--steel);letter-spacing:.2em}
+@media (max-width:900px){
+  #lineage .l-say{grid-column:1 / -1;border-left:0;padding-left:0;margin-top:var(--s3)}
+  #lineage .l-say-q,#lineage .l-say-a{padding-left:0}
+}
