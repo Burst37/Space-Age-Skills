@@ -29,3 +29,17 @@ and which are the original author's work.
 
 Each folder is a self-contained Claude Code skill — copy the directory into
 `~/.claude/skills/` (or your project's `.claude/skills/`) to use it.
+
+## Vendored third-party plugins/skills
+
+Pulled in whole (not reworked) for reference and direct use, each with a
+`SKILL.md` wrapper documenting scope and how it differs from any similarly
+named Space Age original:
+
+| Skill | Vendored from | What it's for |
+|-------|----------------|----------------|
+| [`ponytail`](./ponytail/SKILL.md) | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) | Terse, surgical "one-line fix" agent persona, cross-tool (Claude Code, Codex, Cursor, Cline, Kiro, Grok, Devin) |
+| [`claude-plugins-official`](./claude-plugins-official/SKILL.md) | [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official) | Full mirror of Anthropic's official Claude Code plugin marketplace |
+| [`claude-code-review-plugin`](./claude-code-review-plugin/SKILL.md) | [anthropics/claude-code — plugins/code-review](https://github.com/anthropics/claude-code/tree/main/plugins/code-review) | Anthropic's stock 4-agent PR review plugin (distinct from `code-review-pro` above) |
+| [`claude-mem`](./claude-mem/SKILL.md) | [thedotmack/claude-mem](https://github.com/thedotmack/claude-mem) | SQLite-backed persistent cross-session memory plugin (trimmed to the installable `plugin/` surface) |
+| [`obsidian-second-brain`](./obsidian-second-brain/SKILL.md) | [eugeniughelbur/obsidian-second-brain](https://github.com/eugeniughelbur/obsidian-second-brain) | Full cross-platform Obsidian second-brain/PKM skill (47 commands, 8 agent runtimes) |

@@ -1,0 +1,43 @@
+# Python / uv
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.python-version
+
+# Local config (never commit)
+.env
+*.local
+.claude/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Build output (regenerate with `bash scripts/build.sh`)
+dist/
+
+# Node / npm scratch. The rule is repo-wide because stray package.json files
+# used to appear from tooling experiments and none of them belonged here.
+node_modules/
+.next/
+package.json
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ...except the Obsidian plugin, which is a real npm package and cannot build
+# from a checkout without its manifest and lockfile. The blanket rule above
+# silently excluded both, so CI would have run `npm ci` against nothing.
+!integrations/obsidian-plugin/package.json
+!integrations/obsidian-plugin/package-lock.json
+
+# Per-vault retrieval eval cases (contain private note paths; generate locally)
+scripts/eval/retrieval_cases*.jsonl
+scripts/eval/behavior_cases.jsonl
