@@ -1,0 +1,4 @@
+interface:
+  display_name: "Jev Handoff"
+  short_description: "Fast decisions inside Codex and Claude workflows"
+  default_prompt: "Use $jev-handoff to classify a bounded sample, inspect the results, and review uncertain decisions."

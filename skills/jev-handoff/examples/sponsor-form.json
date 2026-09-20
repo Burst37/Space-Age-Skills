@@ -1,0 +1,23 @@
+{
+  "questions": {
+    "deal": {
+      "type": "choice",
+      "instructions": "Classify this sponsorship enquiry. A real deal names a relevant product and offers a concrete paid campaign or budget. A cold pitch proposes legitimate collaboration but has no concrete budget/commitment. Junk is spam, a scam or irrelevant bulk promotion.",
+      "criteria": {
+        "real_deal": "Relevant concrete paid campaign with a named product and budget or approved payment",
+        "cold_pitch": "Potentially legitimate outreach with no concrete budget or commitment",
+        "junk": "Spam, scams or irrelevant bulk promotions"
+      }
+    },
+    "budget": {
+      "type": "score",
+      "instructions": "Classify the explicitly stated total campaign budget in USD. Never infer a budget from praise or company size. If no usable amount is stated, use level 0. Scam prizes, grants and promised windfalls are not usable campaign budgets and belong in level 0.",
+      "criteria": [
+        "0: no explicit budget, or under $1,000",
+        "1: $1,000 to $4,999",
+        "2: $5,000 to $14,999",
+        "3: $15,000 or more"
+      ]
+    }
+  }
+}
