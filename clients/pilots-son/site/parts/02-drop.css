@@ -1,0 +1,144 @@
+/* ---------- P2 THE DROP — pinned horizontal rail of the real 19 ---------- */
+#drop{position:relative;background:var(--void);padding-block:var(--s5) 0}
+#drop .d-head{padding-inline:var(--gut);max-width:1700px;margin:0 auto}
+#drop .d-kick{display:flex;align-items:center;gap:14px;color:var(--steel);margin-bottom:var(--s4)}
+#drop .d-kick i{width:4px;height:4px;background:var(--beam);border-radius:999px;flex:none;opacity:.85}
+#drop .d-h{margin:0;font-size:clamp(64px,10vw,190px);line-height:.9}
+#drop .d-l{display:block;overflow:hidden;padding-block:.06em .16em;margin-bottom:-.14em}
+#drop .d-l>span{display:block}
+#drop .d-l:last-child{margin-left:1ch}
+#drop .d-foot{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--s3);
+  margin-top:var(--s5);border-top:var(--hair);padding-top:var(--s3)}
+#drop .d-intro{grid-column:1 / 7;color:var(--bone);opacity:.78;max-width:46ch;margin:0}
+#drop .d-stats{grid-column:9 / 13;display:flex;flex-direction:column;gap:10px}
+#drop .d-stats div{display:flex;justify-content:space-between;gap:var(--s3);
+  border-bottom:var(--hair);padding-bottom:9px}
+#drop .d-stats dt{color:var(--steel)}
+#drop .d-stats dd{margin:0;color:var(--bone);font-variant-numeric:tabular-nums}
+
+#drop .d-ticker{overflow:hidden;border-top:var(--hair);border-bottom:var(--hair);
+  padding:var(--s2) 0;margin-top:var(--s6)}
+#drop .d-ticker-in{display:flex;align-items:center;gap:var(--s4);width:max-content;will-change:transform}
+#drop .d-ticker-in span{font-family:var(--ff-m);font-size:var(--t-micro);letter-spacing:.22em;
+  text-transform:uppercase;color:var(--bone);opacity:.62;white-space:nowrap}
+#drop .d-ticker-in i{color:var(--steel);font-style:normal;font-size:11px;opacity:.5}
+
+#drop .d-pin{position:relative;padding-block:var(--s6) var(--s7)}
+#drop .d-hud{display:flex;justify-content:space-between;color:var(--steel);
+  padding-inline:var(--gut);max-width:1700px;margin:0 auto var(--s4);
+  border-bottom:var(--hair);padding-bottom:var(--s2)}
+#drop .d-hud span{color:var(--bone);font-variant-numeric:tabular-nums}
+#drop .d-hud i{font-style:normal}
+#drop .d-rail{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));
+  gap:clamp(32px,3.4vw,64px) clamp(20px,2.2vw,40px);
+  padding-inline:var(--gut);max-width:1700px;margin:0 auto}
+#drop .d-prog{display:none}
+#drop .d-prog span{display:block;height:100%;width:0;background:var(--beam)}
+
+#drop .d-cell{display:flex;flex-direction:column;gap:var(--s2)}
+#drop .d-media{position:relative;aspect-ratio:4/5;overflow:hidden;background:var(--void)}
+#drop .d-media img,#drop .d-media video{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:contain;transition:transform .8s var(--ease-out),opacity .55s var(--ease-out);
+  /* one grade across every product plate — the packshots arrive from five pipelines */
+  filter:saturate(.90) contrast(1.06) sepia(.07) brightness(.98)}
+#drop .d-media video{opacity:0;z-index:2}
+#drop .d-cell:hover .d-media img{transform:scale(1.05)}
+#drop .d-cell.has-spin:hover .d-media video{opacity:1}
+#drop .d-n{position:absolute;top:14px;left:14px;z-index:3;color:var(--bone);opacity:.7}
+#drop .d-badge{position:absolute;top:14px;right:14px;z-index:3;color:var(--void);
+  color:var(--beam);border:1px solid var(--beam);padding:3px 9px;border-radius:0;letter-spacing:.16em}
+#drop .d-360{position:absolute;bottom:14px;left:14px;z-index:3;color:var(--bone);
+  border:var(--hair);padding:4px 9px;border-radius:999px;backdrop-filter:blur(6px)}
+#drop .d-quick{position:absolute;bottom:14px;right:14px;z-index:3;color:var(--void);
+  background:var(--bone);padding:8px 14px;border-radius:999px;opacity:0;
+  transform:translate3d(0,8px,0);transition:opacity .45s var(--ease-out),transform .45s var(--ease-out)}
+#drop .d-cell:hover .d-quick,#drop .d-quick:focus-visible{opacity:1;transform:none}
+
+#drop .d-info{display:flex;flex-direction:column;gap:10px}
+#drop .d-name{margin:0;font-size:clamp(22px,1.9vw,34px);line-height:1}
+#drop .d-spec{color:var(--steel);line-height:1.6;letter-spacing:.12em}
+#drop .d-buy{display:flex;flex-wrap:wrap;align-items:center;gap:12px;
+  border-top:var(--hair);padding-top:12px;margin-top:4px}
+#drop .d-price{color:var(--bone);font-size:15px;letter-spacing:.1em;font-variant-numeric:tabular-nums}
+#drop .d-sizes{display:flex;gap:5px;flex-wrap:wrap}
+#drop .d-sz{font-family:var(--ff-m);font-size:10px;letter-spacing:.1em;color:var(--steel);
+  border:var(--hair);padding:5px 8px;transition:color .35s var(--ease-out),
+  border-color .35s var(--ease-out),background .35s var(--ease-out)}
+#drop .d-sz:hover{color:var(--bone);border-color:rgba(248,252,255,.4)}
+#drop .d-sz[aria-pressed="true"]{background:var(--bone);color:var(--void);border-color:var(--bone)}
+#drop .d-add{margin-left:auto;color:var(--bone);background:transparent;border:1px solid var(--beam);border-radius:0;
+  padding:10px 18px;letter-spacing:.16em;transition:filter .35s var(--ease-out)}
+#drop .d-add:hover{background:var(--beam);color:var(--void)}
+#drop .d-add[data-done="1"]{background:var(--bone);color:var(--void);border-color:var(--bone)}
+
+@media(max-width:860px){
+  #drop{padding-block:var(--s6) 0}
+  #drop .d-foot{grid-template-columns:repeat(6,1fr)}
+  #drop .d-intro,#drop .d-stats{grid-column:1 / -1}
+  #drop .d-stats{margin-top:var(--s4)}
+  #drop .d-cell{width:76vw}
+  #drop .d-cell:nth-child(n){transform:none}
+  #drop .d-quick{opacity:1;transform:none}
+}
+@media (prefers-reduced-motion:reduce){
+  #drop .d-ticker-in{animation:none}
+  #drop .d-cell{transform:none!important}
+}
+
+/* size guidance at the decision point, not exiled to the footer */
+#drop .d-guide{display:inline-block;margin-top:8px;color:var(--steel);
+  text-decoration:underline;text-underline-offset:3px;letter-spacing:.14em}
+#drop .d-guide:hover{color:var(--bone)}
+
+/* the altitude thesis — every print in this catalogue is about ascent.
+   without this the shop and the brand are strangers. */
+#drop .d-thesis{margin:6px 0 2px;color:var(--beam);opacity:.85;
+  letter-spacing:.04em;text-transform:none;font-style:italic;max-width:34ch}
+
+/* four plates the matting model can't separate — their backdrop IS the artwork
+   (sky scenes behind sky prints). Feather the plate edge into the page ground
+   so they sit with the knocked-out garments instead of floating in a box. */
+#drop .d-media img[data-plate="baked"]{
+  -webkit-mask-image:radial-gradient(78% 70% at 50% 46%,#000 34%,transparent 88%);
+          mask-image:radial-gradient(78% 70% at 50% 46%,#000 34%,transparent 88%)}
+
+/* arriving from the board: the row you picked identifies itself */
+#drop .d-cell.is-flagged .d-media{outline:1px solid var(--beam);outline-offset:8px}
+#drop .d-cell.is-flagged .d-name{color:var(--beam)}
+
+/* pre-launch trust: no reviews exist yet, so the guarantee carries it —
+   and it sits with the grid, not in the footer */
+#drop .d-trust{max-width:1700px;margin:0 auto var(--s4);padding-inline:var(--gut);
+  display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);list-style:none;
+  border-top:var(--hair);border-bottom:var(--hair);padding-block:14px}
+#drop .d-trust li{display:flex;align-items:center;gap:10px;color:var(--bone);opacity:.8}
+#drop .d-trust i{width:5px;height:5px;border-radius:999px;background:var(--beam);flex:none}
+@media (max-width:720px){#drop .d-trust{gap:10px var(--s3)}}
+
+/* ---- size pick is required: prompt + shake ---- */
+#drop .d-szmsg{margin:6px 0 0;min-height:12px;color:var(--rust,#d4622a);
+  letter-spacing:.14em;text-transform:uppercase;opacity:0;transition:opacity .28s var(--ease-out)}
+#drop .d-szmsg:not(:empty){opacity:1}
+#drop .d-sizes.is-ask{animation:d-ask .42s var(--ease-out)}
+#drop .d-sizes.is-ask .d-sz{border-color:rgba(212,98,42,.65)}
+@keyframes d-ask{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-5px)}
+  45%{transform:translateX(4px)}
+  70%{transform:translateX(-2px)}
+}
+@media (prefers-reduced-motion:reduce){
+  #drop .d-sizes.is-ask{animation:none}
+}
+
+/* ---- artwork-only plate: print art, not a garment shot ---- */
+#drop .d-cell[data-art] .d-media{
+  background:radial-gradient(70% 70% at 50% 42%,rgba(140,122,95,.16),transparent 70%),var(--ink,#12100c)}
+#drop .d-cell[data-art] .d-media img{
+  object-fit:contain;padding:12% 14%;mix-blend-mode:normal;
+  filter:drop-shadow(0 18px 40px rgba(0,0,0,.55))}
+#drop .d-cell[data-art] .d-media::after{
+  content:"Print artwork";position:absolute;left:14px;bottom:14px;z-index:3;
+  font-family:var(--ff-m);font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--steel);border:var(--hair);border-radius:2px;padding:5px 8px;
+  background:rgba(10,9,7,.6);backdrop-filter:blur(4px)}

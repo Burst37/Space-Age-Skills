@@ -1,0 +1,70 @@
+/* ---------- P0 MOTION LAYER — global, loads before every section ---------- */
+
+/* load curtain: holds the page until fonts + hero frame are ready, then wipes up */
+.m-curtain{position:fixed;inset:0;z-index:900;background:var(--void);
+  display:grid;place-items:center;will-change:clip-path;
+  clip-path:inset(0 0 0% 0)}
+.m-curtain-in{display:flex;flex-direction:column;align-items:center;gap:var(--s3)}
+.m-curtain-mark{font-size:clamp(28px,4.4vw,64px);letter-spacing:-.03em;color:var(--bone);
+  opacity:.9;overflow:hidden}
+.m-curtain-pct{color:var(--beam);font-variant-numeric:tabular-nums;letter-spacing:.3em}
+body[data-boot="done"] .m-curtain{pointer-events:none}
+
+/* altimeter rail — scroll position read as altitude, right edge */
+.m-alt{position:fixed;right:clamp(12px,1.5vw,26px);top:50%;transform:translateY(-50%);
+  z-index:300;display:flex;flex-direction:column;align-items:center;gap:14px;
+  pointer-events:none;opacity:0;transition:opacity .5s ease}
+body[data-boot="done"] .m-alt{opacity:1}
+.m-alt-lab,.m-alt-n{writing-mode:vertical-rl;font-size:9px;letter-spacing:.24em}
+.m-alt-n{color:var(--bone);font-variant-numeric:tabular-nums}
+.m-alt-n em{font-style:normal;color:var(--steel)}
+.m-alt-track{width:1px;height:clamp(120px,20vh,220px);background:rgba(242,232,213,.18);
+  position:relative;overflow:hidden}
+.m-alt-fill{position:absolute;inset:0 0 auto 0;height:0%;background:var(--beam);display:block}
+@media (max-width:860px){.m-alt{display:none}}
+
+/* cursor — ring that reads the element under it */
+.m-cur{position:fixed;left:0;top:0;z-index:800;pointer-events:none;opacity:0;
+  will-change:transform;mix-blend-mode:difference}
+.m-cur i{display:block;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:999px;
+  border:1px solid var(--bone);transition:width .28s cubic-bezier(.2,.8,.2,1),
+    height .28s cubic-bezier(.2,.8,.2,1),margin .28s cubic-bezier(.2,.8,.2,1),
+    border-color .28s ease,background-color .28s ease}
+body[data-cur="on"] .m-cur{opacity:1}
+body[data-cur="hot"] .m-cur i{width:58px;height:58px;margin:-29px 0 0 -29px;
+  background:rgba(242,232,213,.12);border-color:var(--bone)}
+body[data-cur="drag"] .m-cur i{width:76px;height:76px;margin:-38px 0 0 -38px;border-color:var(--beam)}
+@media (hover:none),(pointer:coarse){.m-cur{display:none}}
+
+/* film grain — fabric tooth over the whole page */
+.m-grain{position:fixed;inset:-120px;z-index:700;pointer-events:none;opacity:.16;
+  background-image:url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'>\
+<filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/>\
+<feColorMatrix type='saturate' values='0'/></filter>\
+<rect width='180' height='180' filter='url(%23n)' opacity='.55'/></svg>");
+  will-change:transform;mix-blend-mode:overlay}
+
+/* section handoff — a veil that darkens the outgoing section, and a seam
+   that draws itself across the incoming one. Both live INSIDE the section
+   so they ride any pin or sticky without fighting it. */
+.m-veil{position:absolute;inset:0;z-index:40;pointer-events:none;opacity:0;
+  background:linear-gradient(180deg,transparent 0%,transparent 52%,var(--void) 100%);
+  will-change:opacity}
+.m-seam{position:absolute;left:0;right:0;top:0;z-index:41;height:1px;
+  background:linear-gradient(90deg,transparent,var(--beam) 18%,var(--beam) 82%,transparent);
+  transform:scaleX(0);transform-origin:50% 50%;will-change:transform;opacity:.7}
+.m-seam-t{position:absolute;left:50%;top:0;z-index:42;transform:translate(-50%,-50%);
+  width:9px;height:9px;border:1px solid var(--beam);background:var(--void);
+  rotate:45deg;opacity:0;will-change:opacity}
+
+/* velocity skew target */
+.m-skew{will-change:transform}
+
+@media (prefers-reduced-motion:reduce){
+  .m-curtain{display:none}
+  .m-cur,.m-grain{display:none}
+  .m-veil{opacity:0!important}
+  .m-seam{transform:scaleX(1)!important}
+  .m-seam-t{opacity:1!important}
+}

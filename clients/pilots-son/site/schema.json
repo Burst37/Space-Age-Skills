@@ -1,0 +1,1020 @@
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Organization",
+   "@id": "https://thepilotsson.com/#org",
+   "name": "The Pilot's Son Apparel Co.",
+   "url": "https://thepilotsson.com/",
+   "logo": "https://thepilotsson.com/assets/logo.webp",
+   "foundingDate": "1974",
+   "slogan": "Fly Boy Mentality. Born Fly.",
+   "description": "All-over-print heavyweight streetwear, released in limited drops."
+  },
+  {
+   "@type": "WebSite",
+   "@id": "https://thepilotsson.com/#site",
+   "url": "https://thepilotsson.com/",
+   "name": "The Pilot's Son Apparel Co.",
+   "publisher": {
+    "@id": "https://thepilotsson.com/#org"
+   }
+  },
+  {
+   "@type": "ItemList",
+   "@id": "https://thepilotsson.com/#drop01",
+   "name": "Drop 01 — Limited Run",
+   "numberOfItems": 19,
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "item": {
+      "@type": "Product",
+      "name": "Abduction",
+      "description": "Taken upward. The oldest way to leave the ground.",
+      "image": "https://thepilotsson.com/assets/ufo-midnight.webp",
+      "sku": "TPS-ABDUCTION",
+      "brand": {
+       "@type": "Brand",
+       "name": "The Pilot's Son Apparel Co."
+      },
+      "category": "Sweatshirts",
+      "size": [
+       "S",
+       "M",
+       "L",
+       "XL",
+       "2XL",
+       "3XL"
+      ],
+      "offers": {
+       "@type": "Offer",
+       "url": "https://thepilotsson.com/#abduction",
+       "priceCurrency": "USD",
+       "price": "88.00",
+       "availability": "https://schema.org/InStock",
+       "itemCondition": "https://schema.org/NewCondition",
+       "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+         "@type": "MonetaryAmount",
+         "value": "0",
+         "currency": "USD"
+        },
+        "shippingDestination": {
+         "@type": "DefinedRegion",
+         "addressCountry": "US"
+        }
+       },
+       "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+       }
+      }
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "item": {
+      "@type": "Product",
+      "name": "Nebula Deception",
+      "description": "Camouflage at altitude. Not everything that flies wants to be seen.",
+      "image": "https://thepilotsson.com/assets/decepticon-nebula.webp",
+      "sku": "TPS-NEBULA",
+      "brand": {
+       "@type": "Brand",
+       "name": "The Pilot's Son Apparel Co."
+      },
+      "category": "Sweatshirts",
+      "size": [
+       "S",
+       "M",
+       "L",
+       "XL",
+       "2XL",
+       "3XL"
+      ],
+      "offers": {
+       "@type": "Offer",
+       "url": "https://thepilotsson.com/#nebula",
+       "priceCurrency": "USD",
+       "price": "94.00",
+       "availability": "https://schema.org/InStock",
+       "itemCondition": "https://schema.org/NewCondition",
+       "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+         "@type": "MonetaryAmount",
+         "value": "0",
+         "currency": "USD"
+        },
+        "shippingDestination": {
+         "@type": "DefinedRegion",
+         "addressCountry": "US"
+        }
+       },
+       "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+       }
+      }
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 3,
+     "item": {
+      "@type": "Product",
+      "name": "Chibi Medusa",
+      "description": "Look up, not back. Stone is what happens to those who don't.",
+      "image": "https://thepilotsson.com/assets/medusa-chibi.webp",
+      "sku": "TPS-MEDUSA",
+      "brand": {
+       "@type": "Brand",
+       "name": "The Pilot's Son Apparel Co."
+      },
+      "category": "Sweatshirts",
+      "size": [
+       "S",
+       "M",
+       "L",
+       "XL",
+       "2XL",
+       "3XL"
+      ],
+      "offers": {
+       "@type": "Offer",
+       "url": "https://thepilotsson.com/#medusa",
+       "priceCurrency": "USD",
+       "price": "90.00",
+       "availability": "https://schema.org/InStock",
+       "itemCondition": "https://schema.org/NewCondition",
+       "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+         "@type": "MonetaryAmount",
+         "value": "0",
+         "currency": "USD"
+        },
+        "shippingDestination": {
+         "@type": "DefinedRegion",
+         "addressCountry": "US"
+        }
+       },
+       "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+       }
+      }
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 4,
+     "item": {
+      "@type": "Product",
+      "name": "First Contact",
+      "description": "Someone had to be first to look up and not run.",
+      "image": "https://thepilotsson.com/assets/ufo-abduction-teal.webp",
+      "sku": "TPS-FIRSTCONTACT",
+      "brand": {
+       "@type": "Brand",
+       "name": "The Pilot's Son Apparel Co."
+      },
+      "category": "Sweatshirts",
+      "size": [
+       "S",
+       "M",
+       "L",
+       "XL",
+       "2XL",
+       "3XL"
+      ],
+      "offers": {
+       "@type": "Offer",
+       "url": "https://thepilotsson.com/#firstcontact",
+       "priceCurrency": "USD",
+       "price": "88.00",
+       "availability": "https://schema.org/InStock",
+       "itemCondition": "https://schema.org/NewCondition",
+       "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+         "@type": "MonetaryAmount",
+         "value": "0",
+         "currency": "USD"
+        },
+        "shippingDestination": {
+         "@type": "DefinedRegion",
+         "addressCountry": "US"
+        }
+       },
+       "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+       }
+      }
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 5,
+     "item": {
+      "@type": "Product",
+      "name": "Daylight Sighting",
+      "description": "You don't need the dark to see something rising.",
+      "image": "https://thepilotsson.com/assets/ufo-daylight.webp",
+      "sku": "TPS-DAYLIGHT",
+      "brand": {
+       "@type": "Brand",
+       "name": "The Pilot's Son Apparel Co."
+      },
+      "category": "Sweatshirts",
+      "size": [
+       "S",
+       "M",
+       "L",
+       "XL",
+       "2XL",
+       "3XL"
+      ],
+      "offers": {
+       "@type": "Offer",
+       "url": "https://thepilotsson.com/#daylight",
+       "priceCurrency": "USD",
+       "price": "88.00",
+       "availability": "https://schema.org/InStock",
+       "itemCondition": "https://schema.org/NewCondition",
+       "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+         "@type": "MonetaryAmount",
+         "value": "0",
+         "currency": "USD"
+        },
+        "shippingDestination": {
+         "@type": "DefinedRegion",
+         "addressCountry": "US"
+        }
+       },
+       "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+       }
+      }
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 6,
+     "item": {
+      "@type": "Product",
+      "name": "Sky Watcher",
+      "description": "Before you fly, you spend years just watching.",
+      "image": "https://thepilotsson.com/assets/ufo-skyblue.webp",
+      "sku": "TPS-SKYWATCH",
+      "brand": {
+       "@type": "Brand",
+       "name": "The Pilot's Son Apparel Co."
+      },
+      "category": "Sweatshirts",
+      "size": [
+       "S",
+       "M",
+       "L",
+       "XL",
+       "2XL",
+       "3XL"
+      ],
+      "offers": {
+       "@type": "Offer",
+       "url": "https://thepilotsson.com/#skywatch",
+       "priceCurrency": "USD",
+       "price": "84.00",
+       "availability": "https://schema.org/InStock",
+       "itemCondition": "https://schema.org/NewCondition",
+       "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+         "@type": "MonetaryAmount",
+         "value": "0",
+         "currency": "USD"
+        },
+        "shippingDestination": {
+         "@type": "DefinedRegion",
+         "addressCountry": "US"
+        }
+       },
+       "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+       }
+      }
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 7,
+     "item": {
+      "@type": "Product",
+      "name": "Invasion",
+      "description": "Arrival from above. Ask who taught them to fly.",
+      "image": "https://thepilotsson.com/assets/ufo-invasion-teal.webp",
+      "sku": "TPS-INVASION",
+      "brand": {
+       "@type": "Brand",
+       "name": "The Pilot's Son Apparel Co."
+      },
+      "category": "Sweatshirts",
+      "size": [
+       "S",
+       "M",
+       "L",
+       "XL",
+       "2XL",
+       "3XL"
+      ],
+      "offers": {
+       "@type": "Offer",
+       "url": "https://thepilotsson.com/#invasion",
+       "priceCurrency": "USD",
+       "price": "88.00",
+       "availability": "https://schema.org/InStock",
+       "itemCondition": "https://schema.org/NewCondition",
+       "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+         "@type": "MonetaryAmount",
+         "value": "0",
+         "currency": "USD"
+        },
+        "shippingDestination": {
+         "@type": "DefinedRegion",
+         "addressCountry": "US"
+        }
+       },
+       "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+       }
+      }
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 8,
+     "item": {
+      "@type": "Product",
+      "name": "We Are Not The Same",
+      "description": "Altitude separates. That's the whole point.",
+      "image": "https://thepilotsson.com/assets/ufo-notthesame.webp",
+      "sku": "TPS-NOTSAME",
+      "brand": {
+       "@type": "Brand",
+       "name": "The Pilot's Son Apparel Co."
+      },
+      "category": "Sweatshirts",
+      "size": [
+       "S",
+       "M",
+       "L",
+       "XL",
+       "2XL",
+       "3XL"
+      ],
+      "offers": {
+       "@type": "Offer",
+       "url": "https://thepilotsson.com/#notsame",
+       "priceCurrency": "USD",
+       "price": "92.00",
+       "availability": "https://schema.org/InStock",
+       "itemCondition": "https://schema.org/NewCondition",
+       "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+         "@type": "MonetaryAmount",
+         "value": "0",
+         "currency": "USD"
+        },
+        "shippingDestination": {
+         "@type": "DefinedRegion",
+         "addressCountry": "US"
+        }
+       },
+       "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+       }
+      }
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 9,
+     "item": {
+      "@type": "Product",
+      "name": "Chrome Autobot",
+      "description": "Built to transform, built to leave the ground.",
+      "image": "https://thepilotsson.com/assets/autobot-chrome.webp",
+      "sku": "TPS-AUTOBOT",
+      "brand": {
+       "@type": "Brand",
+       "name": "The Pilot's Son Apparel Co."
+      },
+      "category": "Sweatshirts",
+      "size": [
+       "S",
+       "M",
+       "L",
+       "XL",
+       "2XL",
+       "3XL"
+      ],
+      "offers": {
+       "@type": "Offer",
+       "url": "https://thepilotsson.com/#autobot",
+       "priceCurrency": "USD",
+       "price": "94.00",
+       "availability": "https://schema.org/InStock",
+       "itemCondition": "https://schema.org/NewCondition",
+       "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+         "@type": "MonetaryAmount",
+         "value": "0",
+         "currency": "USD"
+        },
+        "shippingDestination": {
+         "@type": "DefinedRegion",
+         "addressCountry": "US"
+        }
+       },
+       "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+       }
+      }
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 10,
+     "item": {
+      "@type": "Product",
+      "name": "Stone Gaze",
+      "description": "Gravity's oldest trick. Refuse it.",
+      "image": "https://thepilotsson.com/assets/medusa-stone.webp",
+      "sku": "TPS-STONEGAZE",
+      "brand": {
+       "@type": "Brand",
+       "name": "The Pilot's Son Apparel Co."
+      },
+      "category": "Sweatshirts",
+      "size": [
+       "S",
+       "M",
+       "L",
+       "XL",
+       "2XL",
+       "3XL"
+      ],
+      "offers": {
+       "@type": "Offer",
+       "url": "https://thepilotsson.com/#stonegaze",
+       "priceCurrency": "USD",
+       "price": "90.00",
+       "availability": "https://schema.org/InStock",
+       "itemCondition": "https://schema.org/NewCondition",
+       "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+         "@type": "MonetaryAmount",
+         "value": "0",
+         "currency": "USD"
+        },
+        "shippingDestination": {
+         "@type": "DefinedRegion",
+         "addressCountry": "US"
+        }
+       },
+       "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+       }
+      }
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 11,
+     "item": {
+      "@type": "Product",
+      "name": "Cupid's Aim",
+      "description": "Wings were the first thing we gave our gods.",
+      "image": "https://thepilotsson.com/assets/cupid-front.webp",
+      "sku": "TPS-CUPID",
+      "brand": {
+       "@type": "Brand",
+       "name": "The Pilot's Son Apparel Co."
+      },
+      "category": "Sweatshirts",
+      "size": [
+       "S",
+       "M",
+       "L",
+       "XL",
+       "2XL",
+       "3XL"
+      ],
+      "offers": {
+       "@type": "Offer",
+       "url": "https://thepilotsson.com/#cupid",
+       "priceCurrency": "USD",
+       "price": "86.00",
+       "availability": "https://schema.org/InStock",
+       "itemCondition": "https://schema.org/NewCondition",
+       "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+         "@type": "MonetaryAmount",
+         "value": "0",
+         "currency": "USD"
+        },
+        "shippingDestination": {
+         "@type": "DefinedRegion",
+         "addressCountry": "US"
+        }
+       },
+       "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+       }
+      }
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 12,
+     "item": {
+      "@type": "Product",
+      "name": "Cyber Geisha",
+      "description": "Tradition at speed. Legacy doesn't mean standing still.",
+      "image": "https://thepilotsson.com/assets/geisha-cyber-front.webp",
+      "sku": "TPS-GEISHA",
+      "brand": {
+       "@type": "Brand",
+       "name": "The Pilot's Son Apparel Co."
+      },
+      "category": "Sweatshirts",
+      "size": [
+       "S",
+       "M",
+       "L",
+       "XL",
+       "2XL",
+       "3XL"
+      ],
+      "offers": {
+       "@type": "Offer",
+       "url": "https://thepilotsson.com/#geisha",
+       "priceCurrency": "USD",
+       "price": "96.00",
+       "availability": "https://schema.org/InStock",
+       "itemCondition": "https://schema.org/NewCondition",
+       "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+         "@type": "MonetaryAmount",
+         "value": "0",
+         "currency": "USD"
+        },
+        "shippingDestination": {
+         "@type": "DefinedRegion",
+         "addressCountry": "US"
+        }
+       },
+       "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+       }
+      }
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 13,
+     "item": {
+      "@type": "Product",
+      "name": "Winged Pegasus",
+      "description": "The first flight was a horse. Every myth starts on the ground.",
+      "image": "https://thepilotsson.com/assets/pegasus-unicorn.webp",
+      "sku": "TPS-PEGASUS",
+      "brand": {
+       "@type": "Brand",
+       "name": "The Pilot's Son Apparel Co."
+      },
+      "category": "Sweatshirts",
+      "size": [
+       "S",
+       "M",
+       "L",
+       "XL",
+       "2XL",
+       "3XL"
+      ],
+      "offers": {
+       "@type": "Offer",
+       "url": "https://thepilotsson.com/#pegasus",
+       "priceCurrency": "USD",
+       "price": "92.00",
+       "availability": "https://schema.org/InStock",
+       "itemCondition": "https://schema.org/NewCondition",
+       "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+         "@type": "MonetaryAmount",
+         "value": "0",
+         "currency": "USD"
+        },
+        "shippingDestination": {
+         "@type": "DefinedRegion",
+         "addressCountry": "US"
+        }
+       },
+       "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+       }
+      }
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 14,
+     "item": {
+      "@type": "Product",
+      "name": "Phoenix Rising",
+      "description": "Burn, climb, repeat. The family business.",
+      "image": "https://thepilotsson.com/assets/phoenix-rising.webp",
+      "sku": "TPS-PHOENIX",
+      "brand": {
+       "@type": "Brand",
+       "name": "The Pilot's Son Apparel Co."
+      },
+      "category": "Sweatshirts",
+      "size": [
+       "S",
+       "M",
+       "L",
+       "XL",
+       "2XL",
+       "3XL"
+      ],
+      "offers": {
+       "@type": "Offer",
+       "url": "https://thepilotsson.com/#phoenix",
+       "priceCurrency": "USD",
+       "price": "94.00",
+       "availability": "https://schema.org/InStock",
+       "itemCondition": "https://schema.org/NewCondition",
+       "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+         "@type": "MonetaryAmount",
+         "value": "0",
+         "currency": "USD"
+        },
+        "shippingDestination": {
+         "@type": "DefinedRegion",
+         "addressCountry": "US"
+        }
+       },
+       "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+       }
+      }
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 15,
+     "item": {
+      "@type": "Product",
+      "name": "Phoenix Flame",
+      "description": "You don't rise clean. You rise anyway.",
+      "image": "https://thepilotsson.com/assets/phoenix-flame.webp",
+      "sku": "TPS-PHOENIXFLAME",
+      "brand": {
+       "@type": "Brand",
+       "name": "The Pilot's Son Apparel Co."
+      },
+      "category": "Sweatshirts",
+      "size": [
+       "S",
+       "M",
+       "L",
+       "XL",
+       "2XL",
+       "3XL"
+      ],
+      "offers": {
+       "@type": "Offer",
+       "url": "https://thepilotsson.com/#phoenixflame",
+       "priceCurrency": "USD",
+       "price": "94.00",
+       "availability": "https://schema.org/InStock",
+       "itemCondition": "https://schema.org/NewCondition",
+       "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+         "@type": "MonetaryAmount",
+         "value": "0",
+         "currency": "USD"
+        },
+        "shippingDestination": {
+         "@type": "DefinedRegion",
+         "addressCountry": "US"
+        }
+       },
+       "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+       }
+      }
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 16,
+     "item": {
+      "@type": "Product",
+      "name": "Prism Light",
+      "description": "Light bends at altitude. So does everything else.",
+      "image": "https://thepilotsson.com/assets/prism-crystal.webp",
+      "sku": "TPS-PRISM",
+      "brand": {
+       "@type": "Brand",
+       "name": "The Pilot's Son Apparel Co."
+      },
+      "category": "Sweatshirts",
+      "size": [
+       "S",
+       "M",
+       "L",
+       "XL",
+       "2XL",
+       "3XL"
+      ],
+      "offers": {
+       "@type": "Offer",
+       "url": "https://thepilotsson.com/#prism",
+       "priceCurrency": "USD",
+       "price": "88.00",
+       "availability": "https://schema.org/InStock",
+       "itemCondition": "https://schema.org/NewCondition",
+       "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+         "@type": "MonetaryAmount",
+         "value": "0",
+         "currency": "USD"
+        },
+        "shippingDestination": {
+         "@type": "DefinedRegion",
+         "addressCountry": "US"
+        }
+       },
+       "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+       }
+      }
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 17,
+     "item": {
+      "@type": "Product",
+      "name": "Poseidon",
+      "description": "He ruled below. We took the other direction.",
+      "image": "https://thepilotsson.com/assets/poseidon.webp",
+      "sku": "TPS-POSEIDON",
+      "brand": {
+       "@type": "Brand",
+       "name": "The Pilot's Son Apparel Co."
+      },
+      "category": "Sweatshirts",
+      "size": [
+       "S",
+       "M",
+       "L",
+       "XL",
+       "2XL",
+       "3XL"
+      ],
+      "offers": {
+       "@type": "Offer",
+       "url": "https://thepilotsson.com/#poseidon",
+       "priceCurrency": "USD",
+       "price": "96.00",
+       "availability": "https://schema.org/InStock",
+       "itemCondition": "https://schema.org/NewCondition",
+       "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+         "@type": "MonetaryAmount",
+         "value": "0",
+         "currency": "USD"
+        },
+        "shippingDestination": {
+         "@type": "DefinedRegion",
+         "addressCountry": "US"
+        }
+       },
+       "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+       }
+      }
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 18,
+     "item": {
+      "@type": "Product",
+      "name": "Medusa Seafoam",
+      "description": "Sea level is a starting position, not a home.",
+      "image": "https://thepilotsson.com/assets/medusa-seagreen.webp",
+      "sku": "TPS-SEAGREENMEDUSA",
+      "brand": {
+       "@type": "Brand",
+       "name": "The Pilot's Son Apparel Co."
+      },
+      "category": "Sweatshirts",
+      "size": [
+       "S",
+       "M",
+       "L",
+       "XL",
+       "2XL",
+       "3XL"
+      ],
+      "offers": {
+       "@type": "Offer",
+       "url": "https://thepilotsson.com/#seagreen-medusa",
+       "priceCurrency": "USD",
+       "price": "90.00",
+       "availability": "https://schema.org/InStock",
+       "itemCondition": "https://schema.org/NewCondition",
+       "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+         "@type": "MonetaryAmount",
+         "value": "0",
+         "currency": "USD"
+        },
+        "shippingDestination": {
+         "@type": "DefinedRegion",
+         "addressCountry": "US"
+        }
+       },
+       "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+       }
+      }
+     }
+    },
+    {
+     "@type": "ListItem",
+     "position": 19,
+     "item": {
+      "@type": "Product",
+      "name": "Autobot Grey",
+      "description": "Storm colour. The altitude nobody photographs.",
+      "image": "https://thepilotsson.com/assets/autobot-grey.webp",
+      "sku": "TPS-AUTOBOTGREY",
+      "brand": {
+       "@type": "Brand",
+       "name": "The Pilot's Son Apparel Co."
+      },
+      "category": "Sweatshirts",
+      "size": [
+       "S",
+       "M",
+       "L",
+       "XL",
+       "2XL",
+       "3XL"
+      ],
+      "offers": {
+       "@type": "Offer",
+       "url": "https://thepilotsson.com/#autobot-grey",
+       "priceCurrency": "USD",
+       "price": "94.00",
+       "availability": "https://schema.org/InStock",
+       "itemCondition": "https://schema.org/NewCondition",
+       "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+         "@type": "MonetaryAmount",
+         "value": "0",
+         "currency": "USD"
+        },
+        "shippingDestination": {
+         "@type": "DefinedRegion",
+         "addressCountry": "US"
+        }
+       },
+       "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 30,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
+       }
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

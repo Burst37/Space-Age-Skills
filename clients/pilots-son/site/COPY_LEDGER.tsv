@@ -1,0 +1,139 @@
+# COPY_LEDGER.tsv
+#
+# Agent-written copy currently in the build. NOT approved - grandfathered so the
+# build runs while the client decides keep / cut / replace on each line.
+#
+# The guard blocks any NEW untraced string that is not listed here. Adding a row
+# to silence a failure defeats the purpose; a row belongs here only after the
+# client has seen the line.
+#
+# Format:  file:line<TAB>status<TAB>exact text
+#   status PENDING = awaiting client decision
+#          KEEP    = client approved
+#
+# 106 lines pending.
+
+00-motion.html:4	PENDING	The Pilot's Son
+01-hero.html:1	PENDING	Skip to the drop
+01-hero.html:6	PENDING	The Pilot's Son
+01-hero.html:6	PENDING	Apparel Co. · Est. 1974
+01-hero.html:9	PENDING	Colourways
+01-hero.html:59	PENDING	Drop 01 · Limited run · 19 pieces
+01-hero.html:60	PENDING	Born to fly.
+01-hero.html:60	PENDING	Built to lead.
+01-hero.html:62	PENDING	Fly boy mentality. All-over-print heavyweight fleece, printed edge to edge — you don&rsquo;t wear it to blend in.
+01-hero.html:89	PENDING	Drop closes in
+015-board.html:3	PENDING	Drop 01 &middot; the lineup
+015-board.html:4	PENDING	The lineup
+015-board.html:5	PENDING	Nineteen pieces. Every one of them a statement. Pick a row.
+015-board.html:10	PENDING	Sort
+015-board.html:11	PENDING	Drop order
+015-board.html:15	PENDING	pieces in Drop 01
+015-board.html:22	PENDING	The word
+02-drop.html:6	PENDING	Nineteen pieces, printed edge to edge. Front and back, no blank panels.
+02-drop.html:18	PENDING	PIECES · ALL SIZES S&ndash;3XL
+02-drop.html:19	PENDING	Scroll to advance
+02-drop.html:24	PENDING	360&deg;
+02-drop.html:31	PENDING	Taken upward. The oldest way to leave the ground.
+02-drop.html:34	PENDING	Size guide
+02-drop.html:35	PENDING	Add to cart
+02-drop.html:48	PENDING	Camouflage at altitude. Not everything that flies wants to be seen.
+02-drop.html:65	PENDING	Look up, not back. Stone is what happens to those who don't.
+02-drop.html:82	PENDING	Someone had to be first to look up and not run.
+02-drop.html:99	PENDING	You don't need the dark to see something rising.
+02-drop.html:116	PENDING	Before you fly, you spend years just watching.
+02-drop.html:133	PENDING	Arrival from above. Ask who taught them to fly.
+02-drop.html:150	PENDING	Altitude separates. That's the whole point.
+02-drop.html:167	PENDING	Built to transform, built to leave the ground.
+02-drop.html:184	PENDING	Gravity's oldest trick. Refuse it.
+02-drop.html:200	PENDING	Cupid's Aim
+02-drop.html:201	PENDING	Wings were the first thing we gave our gods.
+02-drop.html:218	PENDING	Tradition at speed. Legacy doesn't mean standing still.
+02-drop.html:235	PENDING	The first flight was a horse. Every myth starts on the ground.
+02-drop.html:252	PENDING	Burn, climb, repeat. The family business.
+02-drop.html:269	PENDING	You don't rise clean. You rise anyway.
+02-drop.html:286	PENDING	Light bends at altitude. So does everything else.
+02-drop.html:303	PENDING	He ruled below. We took the other direction.
+02-drop.html:320	PENDING	Sea level is a starting position, not a home.
+02-drop.html:337	PENDING	Storm colour. The altitude nobody photographs.
+03-studio.html:3	PENDING	Colourways
+03-studio.html:4	PENDING	Pick your
+03-studio.html:4	PENDING	colours
+03-studio.html:5	PENDING	Thirty-two real colourways across the cap, the crew socks and the beanie. Every swatch is the actual piece — no renders, no guessing.
+03-studio.html:21	PENDING	Colourway
+03-studio.html:25	PENDING	Add to cart
+035-lineage.html:8	PENDING	03 &middot; Born fly
+035-lineage.html:9	PENDING	Born fly.
+035-lineage.html:9	PENDING	Raised flyer.
+035-lineage.html:11	PENDING	one way of carrying it
+035-lineage.html:14	PENDING	Grown
+035-lineage.html:14	PENDING	S &mdash; 3XL
+035-lineage.html:15	PENDING	Next gen
+035-lineage.html:15	PENDING	2T &mdash; Youth M
+035-lineage.html:16	PENDING	Matched sets
+035-lineage.html:16	PENDING	Every signature piece
+035-lineage.html:19	PENDING	Shop matching sets
+035-lineage.html:24	PENDING	Fig. 02 &mdash; It gets handed down
+035-lineage.html:28	PENDING	Born fly. Pilots fly.
+035-lineage.html:28	PENDING	I&rsquo;m the pilot&rsquo;s son.
+035-lineage.html:30	PENDING	The name, explained
+035-lineage.html:39	PENDING	Three generations &middot; one drop
+035-lineage.html:40	PENDING	Sized from a two-year-old to a 3XL. Everybody eats.
+04-craft.html:8	PENDING	Fig. 01 &mdash; Ink in the fibre, not on top of it
+04-craft.html:13	PENDING	Every Pilot&rsquo;s Son piece is printed edge-to-edge on heavyweight fleece &mdash; art you can wear, built to outlast the hype cycle.
+04-craft.html:34	PENDING	05 / The say
+04-craft.html:35	PENDING	Shoot for
+04-craft.html:35	PENDING	the moon.
+04-craft.html:36	PENDING	Miss, and you&rsquo;re still among the stars.
+04-craft.html:40	PENDING	&nbsp;
+04-craft.html:41	PENDING	Pieces in drop
+04-craft.html:44	PENDING	Shop the drop — from $84
+045-gear.html:5	PENDING	Eight logo essentials. Caps, socks, knitwear and the varsity — the pieces that carry the mark without the print.
+045-gear.html:16	PENDING	13 colourways
+045-gear.html:19	PENDING	Add to cart
+045-gear.html:44	PENDING	6 colourways
+05-convert.html:5	PENDING	Drop 02 &mdash; loading
+05-convert.html:17	PENDING	Don&rsquo;t miss
+05-convert.html:26	PENDING	Restocks + Academy
+05-convert.html:27	PENDING	Frequency
+05-convert.html:27	PENDING	Rare
+05-convert.html:32	PENDING	First access to new drops, restocks and Fly&nbsp;Boy Academy exclusives. No spam &mdash; just the good stuff.
+05-convert.html:35	PENDING	Email address
+05-convert.html:42	PENDING	One email per drop. Unsubscribe any time.
+05-convert.html:57	PENDING	Drop 01 — Hoodies
+05-convert.html:67	PENDING	Help
+05-convert.html:69	PENDING	Shipping
+05-convert.html:70	PENDING	Size guide
+05-convert.html:70	PENDING	XS&ndash;3XL &middot; 2T&ndash;M
+05-convert.html:76	PENDING	Signal
+05-convert.html:78	PENDING	Instagram
+05-convert.html:79	PENDING	TikTok
+05-convert.html:86	PENDING	Leave a legacy.
+05-convert.html:92	PENDING	The Pilot&rsquo;s Son
+05-convert.html:98	PENDING	Privacy
+05-convert.html:99	PENDING	Terms
+05-convert.html:100	PENDING	Accessibility
+05-convert.html:102	PENDING	34&deg;03&prime;N 118&deg;15&prime;W
+05-convert.html:123	PENDING	Cart&rsquo;s empty.
+05-convert.html:124	PENDING	Back to the drop
+05-convert.html:138	PENDING	Demo storefront &mdash; no payment is taken. A Shopify Buy Button wires in here.
+05-convert.html:155	PENDING	&nbsp;
+05-convert.html:172	PENDING	Add to cart
+
+# approved by client 2026-09-15 — gear spec lines (read off the product photos) + slide sizes
+045-gear.html	KEEP	Six-panel · embroidered front logo · 13 colourways
+045-gear.html	KEEP	Ribbed crew · striped cuff · 13 colourways
+045-gear.html	KEEP	Cuffed rib knit · woven patch · 6 colourways
+045-gear.html	KEEP	All-over print · ribbed collar and cuffs
+045-gear.html	KEEP	Cream body · leather sleeves · snap front
+045-gear.html	KEEP	Two-tone · gold hardware · front zip compartment
+045-gear.html	KEEP	Moulded footbed · embossed monogram strap
+045-gear.html	KEEP	Full-bleed print · hard shell
+045-gear.html	KEEP	Eight logo essentials. Caps, socks, knitwear and the varsity — the pieces that carry the mark.
+045-gear.html	KEEP	7
+045-gear.html	KEEP	8
+045-gear.html	KEEP	9
+045-gear.html	KEEP	10
+045-gear.html	KEEP	11
+045-gear.html	KEEP	12
+045-gear.html	KEEP	13

@@ -1,0 +1,22 @@
+# COPY_VERBATIM.tsv
+#
+# Text that exists in the real world: printed on a garment, or sent by the
+# client. It must appear in the build EXACTLY as written here. The guard fails
+# the build on any alteration - no paraphrase, no tightening, no "better" line.
+#
+# Format:  where<TAB>exact text
+#
+# Add a row whenever the client sends a photo of a piece or states brand wording.
+# Never edit the right-hand column to match what the build happens to say.
+
+Tee front print	Shoot for the moon
+Tee back print	If you miss you're still among the stars
+Brand name	The Pilot's Son
+Brand tagline	Fly Boy Mentality
+Founding year line	Est. 1974
+Fabric spec (client's own)	420gsm heavyweight cotton fleece
+Print spec (client's own)	Full-bleed all-over print, front and back
+Construction spec (client's own)	Ribbed collar and cuffs, double-stitched seams
+Sizing line (client's own)	Designed for Fly Boys. Sized for everyone.
+Craft headline (client's own)	Built heavy.
+Craft headline 2 (client's own)	Cut clean.

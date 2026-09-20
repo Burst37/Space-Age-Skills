@@ -1,0 +1,61 @@
+/* ---------- P3 COLOURWAYS — real product photography, swapped live ---------- */
+#studio{position:relative;background:var(--void);padding-block:var(--s6);overflow:clip}
+#studio .s-head{padding-inline:var(--gut);max-width:1700px;margin:0 auto}
+#studio .s-kick{display:flex;align-items:center;gap:14px;color:var(--steel);margin-bottom:var(--s4)}
+#studio .s-kick i{width:4px;height:4px;background:var(--beam);border-radius:999px;flex:none}
+#studio .s-h{margin:0;font-size:clamp(56px,7.4vw,132px);line-height:.9}
+#studio .s-l{display:block;overflow:hidden;padding-block:.06em .16em;margin-bottom:-.14em}
+#studio .s-l>span{display:block}
+#studio .s-l:last-child{margin-left:1ch}
+#studio .s-intro{margin:var(--s4) 0 0;max-width:48ch;color:var(--bone);opacity:.78}
+
+#studio .s-tabs{display:flex;gap:8px;flex-wrap:wrap;padding-inline:var(--gut);
+  max-width:1700px;margin:var(--s4) auto var(--s4)}
+#studio .s-tabs button{font-family:var(--ff-m);font-size:var(--t-micro);letter-spacing:.18em;
+  text-transform:uppercase;color:var(--steel);border:var(--hair);border-radius:0;padding:11px 20px;
+  transition:color .4s var(--ease-out),background .4s var(--ease-out),border-color .4s var(--ease-out)}
+#studio .s-tabs button:hover{color:var(--bone);border-color:rgba(248,252,255,.42)}
+#studio .s-tabs button[aria-selected="true"]{background:var(--bone);color:var(--void);border-color:var(--bone)}
+
+#studio .s-deck{position:relative;padding-inline:var(--gut);max-width:1700px;margin:0 auto}
+#studio .s-panel{display:none;grid-template-columns:repeat(12,1fr);gap:var(--s3);align-items:center}
+#studio .s-panel.is-on{display:grid}
+#studio .s-stage{grid-column:1 / 7;position:relative;aspect-ratio:1/1;background:#0A1216;overflow:hidden}
+#studio .s-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  transition:opacity .5s var(--ease-out),transform .7s var(--ease-out)}
+#studio .s-img.is-swap{opacity:0;transform:scale(.965)}
+#studio .s-reg{position:absolute;inset:18px;border:var(--hair);pointer-events:none}
+#studio .s-reg::before,#studio .s-reg::after{content:"";position:absolute;background:var(--beam);opacity:.85}
+#studio .s-reg::before{left:50%;top:-6px;width:1px;height:12px;transform:translateX(-50%)}
+#studio .s-reg::after{left:50%;bottom:-6px;width:1px;height:12px;transform:translateX(-50%)}
+#studio .s-ctl{grid-column:8 / 13;display:flex;flex-direction:column;gap:var(--s2)}
+#studio .s-idx{color:var(--steel);font-variant-numeric:tabular-nums}
+#studio .s-idx i{font-style:normal;opacity:.6}
+#studio .s-name{margin:0;font-size:clamp(30px,3.4vw,62px);line-height:1}
+#studio .s-spec{color:var(--steel);line-height:1.7;letter-spacing:.1em;max-width:40ch}
+#studio .s-colour{color:var(--steel);letter-spacing:.16em;margin-top:var(--s2)}
+#studio .s-colour b{color:var(--bone);font-weight:400;margin-left:8px}
+#studio .s-sws{display:flex;flex-wrap:wrap;gap:9px;margin-top:4px}
+#studio .s-sw{position:relative;width:34px;height:34px;padding:0;border:1px solid rgba(248,252,255,.22);
+  transition:transform .4s var(--ease-out),border-color .4s var(--ease-out)}
+#studio .s-sw span{position:absolute;inset:3px;background:var(--sw);display:block}
+#studio .s-sw:hover{transform:translateY(-3px);border-color:rgba(248,252,255,.6)}
+#studio .s-sw[aria-checked="true"]{border-color:var(--beam)}
+#studio .s-sw[aria-checked="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-7px;
+  height:2px;background:var(--beam)}
+#studio .s-sw-l{position:absolute;left:50%;bottom:calc(100% + 9px);transform:translateX(-50%);
+  white-space:nowrap;color:var(--bone);background:var(--deep);border:var(--hair);padding:5px 9px;
+  opacity:0;pointer-events:none;transition:opacity .3s var(--ease-out);font-size:10px}
+#studio .s-sw:hover .s-sw-l,#studio .s-sw:focus-visible .s-sw-l{opacity:1}
+#studio .s-buy{display:flex;align-items:center;gap:var(--s3);border-top:var(--hair);
+  padding-top:var(--s3);margin-top:var(--s3)}
+#studio .s-price{color:var(--bone);font-size:17px;letter-spacing:.1em;font-variant-numeric:tabular-nums}
+#studio .s-add{margin-left:auto;color:var(--void);background:var(--beam);border-radius:999px;
+  padding:13px 24px;letter-spacing:.16em;transition:filter .35s var(--ease-out)}
+#studio .s-add:hover{filter:brightness(1.15)}
+#studio .s-add[data-done="1"]{background:var(--bone)}
+@media(max-width:980px){
+  #studio .s-panel{grid-template-columns:repeat(6,1fr)}
+  #studio .s-stage,#studio .s-ctl{grid-column:1 / -1}
+}
+@media (prefers-reduced-motion:reduce){#studio .s-img{transition:opacity .2s linear}}

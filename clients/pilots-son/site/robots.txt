@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# AI and answer engines are welcome to read the catalogue.
+User-agent: GPTBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://thepilotsson.com/sitemap.xml
