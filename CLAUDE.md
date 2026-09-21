@@ -55,6 +55,7 @@ See SESSION_INIT.md in Google Drive for full routing matrix.
 7. **Encore logo** — always upper left chest in generated images
 8. **Obsidian vault** — lives on Windows machine, NOT on VPS. Google Drive is the memory layer.
 9. **Animation naming** — use `animation-vocabulary` when a user describes a motion effect but needs the proper UI/animation term.
+10. **TypeSafe (Jev)** — `typesafe:typesafe-ai` plugin (marketplace `typesafe-ai/skills`), installed user-scope. Use when a feature needs programmable common sense (routing, ranking, extraction, verification) that could become a typed AI judgment instead of an ad hoc LLM prompt-and-parse step. Read TypeSafe's live docs (docs.typesafe.ai) as source of truth when building an integration.
 
 ## SESSION END CHECKLIST
 
