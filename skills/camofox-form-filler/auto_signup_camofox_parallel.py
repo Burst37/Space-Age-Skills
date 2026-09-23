@@ -92,7 +92,7 @@ RETRYABLE_STATUSES = {"failed", "timeout", "navigation_error", "captcha_failed",
 # which is the difference between "no form fields found" and a success on the
 # many retail sites that hide signup behind a person-icon or "Sign In" modal.
 MIN_FORM_FIELDS = 2
-MAX_NAV_HOPS = 2  # how many signup-link clicks to chase before giving up
+MAX_NAV_HOPS = 4  # account icon -> login modal -> registration link -> form
 
 # Cookie/consent banners block interaction; dismiss before scanning for a form.
 CONSENT_PATTERNS = re.compile(
@@ -118,6 +118,45 @@ FALLBACK_SIGNUP_LINK_PATTERNS = re.compile(
     r"sign\s*in|log\s*in|get\s+started|my\s+account|rewards",
     re.IGNORECASE,
 )
+ACCOUNT_ENTRY_PATTERNS = re.compile(
+    r"(?<![a-z])(?:account|profile|user|person|member|login|log[-_ ]?in)(?![a-z])",
+    re.IGNORECASE,
+)
+UNRELATED_ACTION_PATTERNS = re.compile(
+    r"cart|checkout|wishlist|search|sign[-_ ]?out|log[-_ ]?out",
+    re.IGNORECASE,
+)
+
+# The accessibility tree can show a head-silhouette control as an unnamed
+# button. Read its visible DOM attributes, link target and icon name, then
+# click the unique CSS path using Camofox's existing click route. Never click
+# every unnamed header icon: the neighboring controls may be search or cart.
+ACCOUNT_ICON_DOM_QUERY = r"""(() => {
+  const nodes = Array.from(document.querySelectorAll('a,button,[role="button"]')).slice(0, 300);
+  const path = (el) => {
+    const parts = [];
+    while (el && el.nodeType === 1) {
+      const tag = el.tagName.toLowerCase();
+      const siblings = el.parentElement ? Array.from(el.parentElement.children).filter(n => n.tagName === el.tagName) : [el];
+      parts.unshift(tag + ':nth-of-type(' + (siblings.indexOf(el) + 1) + ')');
+      el = el.parentElement;
+    }
+    return parts.join(' > ');
+  };
+  return nodes.filter(el => {
+    const box = el.getBoundingClientRect();
+    return box.width > 0 && box.height > 0 && getComputedStyle(el).visibility !== 'hidden' && !el.closest('form');
+  }).map(el => {
+    const icon = el.querySelector('svg,img,[data-icon]');
+    const hint = [el.getAttribute('aria-label'), el.getAttribute('title'), el.getAttribute('href'),
+      typeof el.className === 'string' ? el.className : '',
+      icon && icon.getAttribute('aria-label'), icon && icon.getAttribute('class'),
+      icon && icon.getAttribute('data-icon'), icon && icon.getAttribute('alt'),
+      icon && icon.querySelector('use') && (icon.querySelector('use').getAttribute('href') || icon.querySelector('use').getAttribute('xlink:href'))
+    ].filter(Boolean).join(' ').slice(0, 280);
+    return {selector: path(el), hint, text: (el.innerText || '').trim().slice(0, 90), icon: !!icon};
+  }).filter(x => x.icon && /(?:^|[^a-z])(account|profile|user|person|member|login)(?:$|[^a-z])/i.test(x.hint)).slice(0, 12);
+})()"""
 
 _progress_lock = threading.Lock()
 _results_lock = threading.Lock()
@@ -265,6 +304,72 @@ def dismiss_cookie_banner(client: CamofoxClient, tab_id: str, user_id: str, log)
             return
 
 
+def navigation_targets(client: CamofoxClient, tab_id: str, user_id: str, items: list) -> list[tuple[int, str, str]]:
+    """Rank visible registration links ahead of account icons and login."""
+    targets: list[tuple[int, str, str]] = []
+    fields = count_form_fields(items)
+    has_login_button = any(it.role == "button" and re.search(r"sign\s*in|log\s*in", it.label, re.I)
+                           for it in items)
+    for it in items:
+        if it.role not in ("button", "link") or UNRELATED_ACTION_PATTERNS.search(it.label):
+            continue
+        if PRIMARY_SIGNUP_LINK_PATTERNS.search(it.label):
+            # A Sign Up button on an already visible registration form is a
+            # submit action; never press it while hunting for a form.
+            if it.role == "button" and fields >= MIN_FORM_FIELDS and not has_login_button:
+                continue
+            targets.append((100, "ref", it.ref))
+        elif ACCOUNT_ENTRY_PATTERNS.search(it.label):
+            targets.append((70, "ref", it.ref))
+        elif FALLBACK_SIGNUP_LINK_PATTERNS.search(it.label):
+            targets.append((40, "ref", it.ref))
+
+    # The links endpoint includes hrefs absent from many accessibility names.
+    try:
+        links = client.links(tab_id, user_id).get("links", [])
+    except (CamofoxError, AttributeError, TypeError):
+        links = []
+    for link in links:
+        if not isinstance(link, dict) or not link.get("ref"):
+            continue
+        hint = f"{link.get('text') or ''} {link.get('href') or ''}"
+        if UNRELATED_ACTION_PATTERNS.search(hint):
+            continue
+        if PRIMARY_SIGNUP_LINK_PATTERNS.search(hint):
+            targets.append((90, "ref", str(link["ref"])))
+        elif ACCOUNT_ENTRY_PATTERNS.search(hint):
+            targets.append((65, "ref", str(link["ref"])))
+
+    # Account icon classes and SVG names are sometimes the only semantic clue.
+    # This is read-only page evaluation; interaction still uses client.click.
+    try:
+        icons = client.evaluate(tab_id, user_id, ACCOUNT_ICON_DOM_QUERY)
+    except (CamofoxError, AttributeError, TypeError):
+        icons = []
+    for icon in icons if isinstance(icons, list) else []:
+        if not isinstance(icon, dict) or not icon.get("selector"):
+            continue
+        hint = str(icon.get("hint") or "")
+        if ACCOUNT_ENTRY_PATTERNS.search(hint) and not UNRELATED_ACTION_PATTERNS.search(hint):
+            targets.append((60, "selector", str(icon["selector"])))
+
+    # Stable ordering makes retries explainable. Refs are preferred to CSS
+    # selectors when both describe the same visible control.
+    return sorted(set(targets), reverse=True)
+
+
+def is_login_form(items: list) -> bool:
+    return count_form_fields(items) >= MIN_FORM_FIELDS and any(
+        it.role == "button" and re.search(r"sign\s*in|log\s*in", it.label, re.I)
+        for it in items
+    )
+
+
+def has_registration_link(items: list) -> bool:
+    return any(it.role == "link" and PRIMARY_SIGNUP_LINK_PATTERNS.search(it.label)
+               for it in items)
+
+
 def navigate_to_form(client: CamofoxClient, tab_id: str, user_id: str, worker: int, log) -> list:
     """If the landing page has too few form fields, click through to the real
     signup form. Returns the snapshot items of the best page reached.
@@ -278,53 +383,39 @@ def navigate_to_form(client: CamofoxClient, tab_id: str, user_id: str, worker: i
     items = snapshot_items(client, tab_id, user_id)
     # A login panel has enough fields to pass the old threshold, but it is
     # still the wrong form. Prefer an explicit registration link on that page.
-    registration_link = any(
-        it.role == "link" and PRIMARY_SIGNUP_LINK_PATTERNS.search(it.label)
-        for it in items
-    )
-    registration_button = any(
-        it.role == "button" and PRIMARY_SIGNUP_LINK_PATTERNS.search(it.label)
-        for it in items
-    )
-    login_button = any(
-        it.role == "button" and re.search(r"sign\s*in|log\s*in", it.label, re.IGNORECASE)
-        for it in items
-    )
     if (count_form_fields(items) >= MIN_FORM_FIELDS and
-            (not registration_link or registration_button) and
-            (not login_button or registration_button)):
+            not is_login_form(items) and not has_registration_link(items)):
         return items
 
-    tried: set[str] = set()
+    tried: set[tuple] = set()
     best = items
     for _ in range(MAX_NAV_HOPS):
-        target = None
-        for patterns in (PRIMARY_SIGNUP_LINK_PATTERNS, FALLBACK_SIGNUP_LINK_PATTERNS):
-            for item in items:
-                if item.role not in ("button", "link") or item.ref in tried:
-                    continue
-                if patterns.search(item.label):
-                    target = item
-                    break
-            if target:
-                break
+        fingerprint = tuple((it.role, it.ref, it.label) for it in items)
+        target = next((t for t in navigation_targets(client, tab_id, user_id, items)
+                       if (fingerprint, t[1], t[2]) not in tried), None)
         if not target:
             break
 
-        tried.add(target.ref)
-        log(f"  [W{worker}] hop -> clicking '{target.label}' ({target.ref}) to reach form")
+        _, method, locator = target
+        tried.add((fingerprint, method, locator))
+        log(f"  [W{worker}] hop -> opening {method} {locator} to reach registration")
         try:
-            client.click(tab_id, user_id, ref=target.ref)
+            client.click(tab_id, user_id, **{method: locator})
         except CamofoxError:
             continue
         # Give the destination (often a modal rendered client-side) time to
         # draw its fields instead of snapshotting a still-empty page.
         items = wait_for_form(client, tab_id, user_id, 8.0, MIN_FORM_FIELDS)
         if count_form_fields(items) >= MIN_FORM_FIELDS:
-            return items
+            # Head silhouette often opens a *login* modal first. Follow its
+            # Create Account link rather than filling and submitting login.
+            if not is_login_form(items) and not has_registration_link(items):
+                return items
         if count_form_fields(items) > count_form_fields(best):
             best = items
-    return best
+    # No registration route was found: avoid treating login credentials as a
+    # successful signup just because its form has two fields.
+    return [] if is_login_form(best) else best
 
 
 def wait_out_captcha(client: CamofoxClient, tab_id: str, user_id: str, timeout_s: int, worker: int, log) -> bool:
@@ -356,12 +447,19 @@ def process_entry(client: CamofoxClient, row: dict, flat_cfg: dict, worker: int,
 
         # Wait for the page to actually render a form rather than snapshotting
         # a blank document after a fixed 3s sleep.
-        wait_for_form(client, tab_id, user_id, page_timeout, return_on_signup_link=True)
+        quick_wait = min(page_timeout, 4.0)
+        wait_for_form(client, tab_id, user_id, quick_wait, return_on_signup_link=True)
 
         # Clear consent banners, then chase a Sign Up / Create Account link if
         # the landing page has too few fields to be the actual signup form.
         dismiss_cookie_banner(client, tab_id, user_id, log)
         items = navigate_to_form(client, tab_id, user_id, worker, log)
+        if not items and page_timeout > quick_wait:
+            # Slow JavaScript sites can render their account controls after the
+            # quick pass. Preserve the configured wait budget, then try once.
+            wait_for_form(client, tab_id, user_id, page_timeout - quick_wait,
+                          return_on_signup_link=True)
+            items = navigate_to_form(client, tab_id, user_id, worker, log)
 
         filled_refs: set[str] = set()
         filled = fill_form(client, tab_id, user_id, flat_cfg, log, filled_refs, items)
@@ -373,7 +471,7 @@ def process_entry(client: CamofoxClient, row: dict, flat_cfg: dict, worker: int,
             if snapshot_has_captcha(client, tab_id, user_id):
                 return "captcha_skipped", "blocked by captcha before form"
             check_no_form_strike(dead_urls_path, dead_urls, url, brand, worker, log)
-            return "failed", "no form fields found"
+            return "navigation_review", "registration path or form not found"
 
         if snapshot_has_captcha(client, tab_id, user_id):
             if wait_out_captcha(client, tab_id, user_id, captcha_timeout, worker, log):

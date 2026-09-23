@@ -143,6 +143,51 @@ class TestFillForm(unittest.TestCase):
 
 
 class TestNavigation(unittest.TestCase):
+    def test_head_silhouette_opens_login_then_create_account(self):
+        landing = '- link "My Account" [ref=e1]\n- link "Cart" [ref=e2]\n'
+        login = ('- textbox "Email" [ref=e3]\n- textbox "Password" [ref=e4]\n'
+                 '- button "Sign In" [ref=e5]\n- link "Create Account" [ref=e6]\n')
+        c = FakeClient([landing, login, FORM])
+        clicked = []
+        old_click = c.click
+        def click(tab, user, ref=None, selector=None):
+            clicked.append(ref or selector)
+            return old_click(tab, user, ref=ref, selector=selector)
+        c.click = click
+        items = par.navigate_to_form(c, "t", "u", 1, lambda *a: None)
+        self.assertEqual(clicked, ["e1", "e6"])
+        self.assertGreaterEqual(single.count_form_fields(items), 2)
+
+    def test_unlabeled_icon_found_from_account_href(self):
+        class LinkedIcon(FakeClient):
+            def links(self, *a):
+                return {"links": [{"ref": "e2", "text": "", "href": "/account/login"}]}
+        c = LinkedIcon(['- link "" [ref=e2]\n- link "Cart" [ref=e3]\n', FORM])
+        items = par.navigate_to_form(c, "t", "u", 1, lambda *a: None)
+        self.assertEqual(c.i, 1)
+        self.assertGreaterEqual(single.count_form_fields(items), 2)
+
+    def test_unlabeled_icon_found_from_svg_name_without_clicking_cart(self):
+        class SvgIcon(FakeClient):
+            def evaluate(self, *a):
+                return [{"selector": "header > button:nth-of-type(1)", "hint": "lucide-user-round", "icon": True},
+                        {"selector": "header > button:nth-of-type(2)", "hint": "lucide-shopping-cart", "icon": True}]
+        c = SvgIcon(['- button "" [ref=e1]\n- button "" [ref=e2]\n', FORM])
+        clicked = []
+        old_click = c.click
+        def click(tab, user, ref=None, selector=None):
+            clicked.append(ref or selector)
+            return old_click(tab, user, ref=ref, selector=selector)
+        c.click = click
+        par.navigate_to_form(c, "t", "u", 1, lambda *a: None)
+        self.assertEqual(clicked, ["header > button:nth-of-type(1)"])
+
+    def test_login_panel_without_registration_is_not_a_signup_form(self):
+        login = ('- textbox "Email" [ref=e3]\n- textbox "Password" [ref=e4]\n'
+                 '- button "Sign In" [ref=e5]\n')
+        self.assertEqual(par.navigate_to_form(FakeClient([login]), "t", "u", 1,
+                                              lambda *a: None), [])
+
     def test_prefers_create_account_over_sign_in(self):
         c = FakeClient([LANDING, FORM])
         clicked = []
@@ -172,6 +217,12 @@ class TestNavigation(unittest.TestCase):
 
 
 class TestOutcomes(unittest.TestCase):
+    def test_account_icon_to_login_to_registration_can_complete(self):
+        landing = '- link "Account" [ref=e1]\n'
+        login = ('- textbox "Email" [ref=e3]\n- textbox "Password" [ref=e4]\n'
+                 '- button "Sign In" [ref=e5]\n- link "Create Account" [ref=e6]\n')
+        self.assertEqual(run_entry(FakeClient([landing, login, FORM, CONFIRM]))[0], "success")
+
     def test_success_requires_confirmation(self):
         self.assertEqual(run_entry(FakeClient([FORM, CONFIRM]))[0], "success")
 

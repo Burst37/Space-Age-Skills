@@ -21,13 +21,18 @@ remains outside the completed signup count. Run
 `python score_results.py --csv ORIGINAL_MASTER.csv --results LIVE_RESULTS.csv`
 against a fixed, client-authorized cohort. For 2,500 eligible unique URLs,
 80% needs 2,000 completed signups and 90% needs 2,250. The offline suite has
-44 passing tests, including 2,500 simulated URLs and 50 duplicates; it does
+49 passing tests, including 2,500 simulated URLs and 50 duplicates; it does
 not establish live signup rate.
 
 The parallel runner now defaults to two workers and stops after three
 consecutive browser closure failures, leaving unattempted sites for resumption.
 The dashboard's default is two as well. Explicitly configured higher worker
 counts remain possible on hardware that has been measured under load.
+
+The signup navigator also discovers account icons through link targets and
+visible DOM/SVG metadata, follows login-to-registration dialogs, and labels
+unresolved navigation for review. These offline tests do not show how many
+real sites expose usable icon metadata; a live cohort is still necessary.
 
 ## 1. The problem, measured
 

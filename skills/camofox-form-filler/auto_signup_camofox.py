@@ -340,7 +340,8 @@ def wait_for_form(client: CamofoxClient, tab_id: str, user_id: str, timeout_s: f
             return items
         if return_on_signup_link and any(
             it.role in ("button", "link") and re.search(
-                r"create\s+(an\s+)?account|sign\s*up|register|join\s+(now|free|today)|enroll",
+                r"create\s+(an\s+)?account|sign\s*up|register|join\s+(now|free|today)|enroll|"
+                r"my\s+account|account|profile|sign\s*in|log\s*in|person|user",
                 it.label, re.IGNORECASE,
             ) for it in items
         ):

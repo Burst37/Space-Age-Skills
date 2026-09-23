@@ -153,6 +153,14 @@ class CamofoxClient:
     def links(self, tab_id: str, user_id: str, limit: int = 100) -> dict:
         return self._request("GET", f"/tabs/{tab_id}/links", params={"userId": user_id, "limit": limit})
 
+    def evaluate(self, tab_id: str, user_id: str, expression: str):
+        """Read page DOM metadata through the documented evaluate endpoint."""
+        data = self._request("POST", f"/tabs/{tab_id}/evaluate",
+                             json={"userId": user_id, "expression": expression})
+        if data.get("ok") is False:
+            raise CamofoxError("page evaluation failed")
+        return data.get("result")
+
     # -- Interaction ---------------------------------------------------------
 
     def click(self, tab_id: str, user_id: str, ref: str | None = None, selector: str | None = None) -> dict:

@@ -11,7 +11,7 @@ redirects separately from completed signups. A dry run counts filled forms,
 never completed signups. `score_results.py` uses the original eligible URL
 cohort as its denominator.
 
-Offline verification: 44 tests passed, including a simulated 2,500-URL,
+Offline verification: 49 tests passed, including a simulated 2,500-URL,
 8-worker queue with 50 duplicate input rows. This tests bookkeeping, not live
 website enrollment. A separate archived master (2,724 URLs) and historical
 result log were found in the user's Drive. Of 14,037 historical attempts,
@@ -29,6 +29,15 @@ browser closure errors the batch stops with a nonzero exit, keeps recorded
 results, and leaves the remaining URLs unattempted for a resumed run. This
 protects throughput on the older machine; it does not establish its current
 capacity or improve site acceptance by itself.
+
+Account icon navigation now inspects account/profile labels, hrefs, SVG names,
+and visible icon metadata using the documented read-only evaluate route. It
+follows the head silhouette into a login modal and then opens Create Account,
+up to four navigation hops. An unresolved login panel is classified as
+`navigation_review` rather than a completed signup. Five regression cases
+cover icon routes, a login modal, and missing registration controls. Icons
+with no accessible name, informative DOM attributes, href, or recognizable
+SVG name still need a human or a separately integrated visual model.
 
 Current upstream documentation includes an evaluate route, so the older claim
 that the REST API has no JavaScript evaluation endpoint is outdated. No
