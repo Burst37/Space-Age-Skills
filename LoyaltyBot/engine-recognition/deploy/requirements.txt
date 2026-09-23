@@ -1,0 +1,9 @@
+# LoyaltyBot runtime dependencies (Python 3.10+)
+playwright>=1.44
+playwright-stealth>=1.0.6      # optional but recommended; bot degrades gracefully if absent
+aiohttp>=3.9                   # CapSolver HTTP + async fetches
+pandas>=2.0                    # master CSV loading / smart-sort
+
+# Optional stealth-browser backend — enable with LB_BROWSER=camoufox
+# (also requires: python -m camoufox fetch  — pulls the ~150MB browser)
+camoufox[geoip]>=0.4.0

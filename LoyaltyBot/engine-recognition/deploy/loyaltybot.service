@@ -1,0 +1,29 @@
+# systemd unit for running a LoyaltyBot batch as a managed background job.
+#
+# Install:
+#   sudo cp loyaltybot.service /etc/systemd/system/loyaltybot.service
+#   # edit User= and the two paths below to match your VPS
+#   sudo systemctl daemon-reload
+#   sudo systemctl start loyaltybot          # run one batch now
+#   journalctl -u loyaltybot -f              # follow the log
+#
+# This is Type=oneshot: it runs a single batch and exits. To run on a schedule,
+# pair it with loyaltybot.timer (see that file) instead of starting it directly.
+
+[Unit]
+Description=LoyaltyBot auto form-filler batch
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=CHANGE_ME
+WorkingDirectory=/opt/loyaltybot
+EnvironmentFile=/opt/loyaltybot/.env
+ExecStart=/opt/loyaltybot/.venv/bin/python /opt/loyaltybot/auto-signup.py --headless true --workers 4
+# Give the whole batch a generous ceiling; the bot has its own per-site caps.
+TimeoutStartSec=0
+Nice=5
+
+[Install]
+WantedBy=multi-user.target
