@@ -33,7 +33,7 @@ Usage
         --csv loyalty-rewards-MASTER.csv \\
         --progress progress_tyjuan01.json \\
         --results signup-results_tyjuan01.csv \\
-        --workers 5 --delay 1.5
+        --workers 2 --delay 1.5
 
     python auto_signup_camofox_parallel.py --dry-run --limit 5
     python auto_signup_camofox_parallel.py --retry --workers 3
@@ -74,8 +74,13 @@ from auto_signup_camofox import (
     wait_for_form,
 )
 
-DEFAULT_WORKERS = 5
+DEFAULT_WORKERS = 2
 DEFAULT_DELAY_SECONDS = 1.5
+MAX_CONSECUTIVE_BROWSER_FAILURES = 3
+BROWSER_CLOSED = re.compile(
+    r"browser closed|target closed|context closed|page closed|browser has been closed|"
+    r"connection refused|econnrefused", re.IGNORECASE,
+)
 RESULTS_FIELDNAMES = ["url", "brand", "program", "status", "worker", "error", "timestamp"]
 
 NO_FORM_MAX_STRIKES = 2
@@ -120,6 +125,26 @@ _dead_urls_lock = threading.Lock()
 _progress_log: list[dict] = []
 _current_workers: dict[int, dict] = {}
 _no_form_strikes: dict[str, int] = {}
+
+
+class BrowserCrashGuard:
+    """Stop taking new work when the shared browser is repeatedly unavailable."""
+
+    def __init__(self, threshold: int = MAX_CONSECUTIVE_BROWSER_FAILURES):
+        self.threshold = threshold
+        self.streak = 0
+        self.stopped = threading.Event()
+        self.lock = threading.Lock()
+
+    def record(self, status: str, error: str) -> bool:
+        with self.lock:
+            if status in ("navigation_error", "timeout") and BROWSER_CLOSED.search(error):
+                self.streak += 1
+                if self.streak >= self.threshold:
+                    self.stopped.set()
+            else:
+                self.streak = 0
+            return self.stopped.is_set()
 
 
 def append_progress_log(worker: int, brand: str, program: str, status: str, message: str = "") -> None:
@@ -397,10 +422,13 @@ def process_entry(client: CamofoxClient, row: dict, flat_cfg: dict, worker: int,
 
 def worker_loop(worker_id: int, work_queue: "queue.Queue[dict]", flat_cfg: dict, args, stats: dict,
                  results_path: Path, progress_path: Path, dead_urls_path: Path, dead_urls: set[str],
-                 start_time: float, log, record_failures: list[str] | None = None) -> None:
+                 start_time: float, log, record_failures: list[str] | None = None,
+                 crash_guard: BrowserCrashGuard | None = None) -> None:
     client = CamofoxClient(base_url=args.camofox_url)
 
     while True:
+        if crash_guard and crash_guard.stopped.is_set():
+            return
         try:
             row = work_queue.get_nowait()
         except queue.Empty:
@@ -460,6 +488,10 @@ def worker_loop(worker_id: int, work_queue: "queue.Queue[dict]", flat_cfg: dict,
         write_progress(progress_path, True, stats, start_time)
         log(f"[W{worker_id}] {brand} -- {program} -> {status}" + (f" ({error})" if error else ""))
 
+        if crash_guard and crash_guard.record(status, error):
+            log("Browser repeatedly closed; pausing the batch with remaining URLs unattempted")
+            return
+
         if args.delay:
             time.sleep(args.delay)
 
@@ -511,11 +543,12 @@ def run(args: argparse.Namespace) -> int:
 
     threads = []
     record_failures: list[str] = []
+    crash_guard = BrowserCrashGuard()
     for worker_id in range(1, args.workers + 1):
         t = threading.Thread(
             target=worker_loop,
             args=(worker_id, work_queue, flat_cfg, args, stats, results_path, progress_path,
-                  dead_urls_path, dead_urls, start_time, print, record_failures),
+                  dead_urls_path, dead_urls, start_time, print, record_failures, crash_guard),
             daemon=True,
         )
         t.start()
@@ -530,6 +563,9 @@ def run(args: argparse.Namespace) -> int:
     if record_failures:
         print(f"ERROR: {len(record_failures)} result row(s) could not be saved; run incomplete")
         return 2
+    if crash_guard.stopped.is_set():
+        print("ERROR: browser crash circuit opened; batch incomplete. Repair browser and resume remaining URLs")
+        return 3
     return 0
 
 
