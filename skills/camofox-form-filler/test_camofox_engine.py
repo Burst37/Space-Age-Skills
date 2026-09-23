@@ -219,6 +219,31 @@ class TestOutcomes(unittest.TestCase):
 
 
 class TestWorkerLoop(unittest.TestCase):
+    def test_repeated_browser_closures_stop_batch_with_urls_remaining(self):
+        import queue
+        q = queue.Queue()
+        for i in range(8):
+            q.put({"url": f"https://s{i}.test", "brand": f"B{i}", "program": "P"})
+        stats = dict(total=8, processed=0, success=0, failed=0, captcha=0, skipped=0)
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            args = Args()
+            args.camofox_url = None
+            guard = par.BrowserCrashGuard()
+            orig = par.process_entry
+            par.process_entry = lambda *a, **k: ("navigation_error", "browser closed")
+            try:
+                par.worker_loop(1, q, {}, args, stats, d / "r.csv", d / "p.json",
+                                d / "dead.json", set(), 0.0, lambda *a: None,
+                                crash_guard=guard)
+            finally:
+                par.process_entry = orig
+            self.assertTrue(guard.stopped.is_set())
+            self.assertEqual(stats["processed"], 3)
+            self.assertEqual(q.qsize(), 5)
+            with (d / "r.csv").open(newline="", encoding="utf-8") as handle:
+                self.assertEqual(len(list(csv.DictReader(handle))), 3)
+
     def test_crashing_site_still_records_a_result_and_keeps_worker_alive(self):
         import queue
         q = queue.Queue()
