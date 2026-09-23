@@ -1,5 +1,8 @@
 # Camofox Signup Engine — Bug Fix Report
 
+> Historical bug report. See HANDOFF.md's 2026-09-23 review update for the
+> current outcome rules, upstream API corrections, and 43-test status.
+
 **Branch:** `claude/loyalty-boy-signup-bugs-6wg60w` (repo `Burst37/Space-Age-Skills`)
 **Commits:** `f613b25` (23 bug fixes), `67ef6fd` (drop committed `__pycache__`), `ef8975a` (`purge_master_csv.py`)
 **Files touched:** `camofox_client.py`, `auto_signup_camofox.py`, `auto_signup_camofox_parallel.py`, `loyaltybot_server.patched.py`

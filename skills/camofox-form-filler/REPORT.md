@@ -1,5 +1,39 @@
 # LoyaltyBot Success-Rate Fix — Breakdown Report
 
+## 2026-09-23 correction
+
+The original report below is historical. The 24/511 figure is the earlier
+Playwright result, not a measured result for this Camoufox package. An archived
+2,724-URL master and 14,037-attempt historical log were later found in Drive.
+The log has 7,582 browser/page/context-closed attempts, 627 attempts labeled
+success, and no independently verified completion metric. Repeated browser
+closures should be investigated before attributing failures to bot detection.
+No 2,500-site live benchmark was supplied. A missing form does not itself prove
+bot detection: navigation, unsupported controls, incomplete snapshots, and
+configuration gaps can produce the same symptom. The original dry-run metric
+incorrectly counted filled forms as successful enrollments.
+
+This review fixed unsupported browser API calls, unsafe replay of mutating
+requests, login form confusion, concurrent duplicate URLs/profile collisions,
+transient-failure retirement, silently missing result rows, and optimistic
+success classification. A `verification_required` or `unverified` result
+remains outside the completed signup count. Run
+`python score_results.py --csv ORIGINAL_MASTER.csv --results LIVE_RESULTS.csv`
+against a fixed, client-authorized cohort. For 2,500 eligible unique URLs,
+80% needs 2,000 completed signups and 90% needs 2,250. The offline suite has
+49 passing tests, including 2,500 simulated URLs and 50 duplicates; it does
+not establish live signup rate.
+
+The parallel runner now defaults to two workers and stops after three
+consecutive browser closure failures, leaving unattempted sites for resumption.
+The dashboard's default is two as well. Explicitly configured higher worker
+counts remain possible on hardware that has been measured under load.
+
+The signup navigator also discovers account icons through link targets and
+visible DOM/SVG metadata, follows login-to-registration dialogs, and labels
+unresolved navigation for review. These offline tests do not show how many
+real sites expose usable icon metadata; a live cohort is still necessary.
+
 ## 1. The problem, measured
 
 From your real production files (`progress_tyjuan01.json`,

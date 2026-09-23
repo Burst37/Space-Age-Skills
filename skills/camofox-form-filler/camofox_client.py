@@ -70,7 +70,10 @@ class CamofoxClient:
         here used to kill the worker thread that raised it.
         """
         last_error = "unknown error"
-        for attempt in range(self.retries):
+        # A timed-out POST may already have taken effect. Replaying a click
+        # can submit twice; replaying a type can append text twice.
+        attempts = self.retries if method.upper() in ("GET", "HEAD", "DELETE") else 1
+        for attempt in range(attempts):
             try:
                 resp = self.session.request(
                     method,
@@ -94,9 +97,9 @@ class CamofoxClient:
                     except ValueError:
                         # Non-JSON 2xx body: return it rather than blowing up.
                         return {"raw": resp.text}
-            if attempt < self.retries - 1:
+            if attempt < attempts - 1:
                 time.sleep((2 ** attempt) + random.uniform(0, 0.4))
-        raise CamofoxError(f"{method} {path} failed after {self.retries} attempts: {last_error}")
+        raise CamofoxError(f"{method} {path} failed after {attempts} attempts: {last_error}")
 
     # -- Tabs --------------------------------------------------------------
 
@@ -150,6 +153,14 @@ class CamofoxClient:
     def links(self, tab_id: str, user_id: str, limit: int = 100) -> dict:
         return self._request("GET", f"/tabs/{tab_id}/links", params={"userId": user_id, "limit": limit})
 
+    def evaluate(self, tab_id: str, user_id: str, expression: str):
+        """Read page DOM metadata through the documented evaluate endpoint."""
+        data = self._request("POST", f"/tabs/{tab_id}/evaluate",
+                             json={"userId": user_id, "expression": expression})
+        if data.get("ok") is False:
+            raise CamofoxError("page evaluation failed")
+        return data.get("result")
+
     # -- Interaction ---------------------------------------------------------
 
     def click(self, tab_id: str, user_id: str, ref: str | None = None, selector: str | None = None) -> dict:
@@ -167,36 +178,29 @@ class CamofoxClient:
         return self._request("POST", f"/tabs/{tab_id}/type", json=body)
 
     def clear(self, tab_id: str, user_id: str, ref: str) -> dict:
-        """Empty a field before typing into it.
-
-        Without this, a re-fill (e.g. after a CAPTCHA is solved, or after a
-        validation error) appends to what is already there and produces values
-        like "JohnJohn" that the form then rejects.
-        """
-        return self._request("POST", f"/tabs/{tab_id}/type", json={
-            "userId": user_id, "ref": ref, "text": "", "clear": True,
-        })
+        """Clear the focused field with documented click and press calls."""
+        self.click(tab_id, user_id, ref=ref)
+        self.press(tab_id, user_id, "ControlOrMeta+A")
+        return self.press(tab_id, user_id, "Backspace")
 
     def check(self, tab_id: str, user_id: str, ref: str) -> dict:
-        """Tick a checkbox (terms of service, age confirmation, opt-in).
-
-        Falls back to a plain click if the server has no /check endpoint --
-        most signup forms refuse to submit with the ToS box unticked, so this
-        is not optional.
-        """
-        try:
-            return self._request("POST", f"/tabs/{tab_id}/check", json={"userId": user_id, "ref": ref})
-        except CamofoxError:
-            return self.click(tab_id, user_id, ref=ref)
+        """Click an unchecked checkbox; the caller must inspect its state."""
+        return self.click(tab_id, user_id, ref=ref)
 
     def select(self, tab_id: str, user_id: str, ref: str, value: str) -> dict:
-        """Choose an option in a <select> / combobox, falling back to typing."""
-        try:
-            return self._request("POST", f"/tabs/{tab_id}/select", json={
-                "userId": user_id, "ref": ref, "value": value,
-            })
-        except CamofoxError:
-            return self.type(tab_id, user_id, ref, value)
+        """Choose a visible option with refs, or type into a custom combobox.
+
+        The upstream server documents neither a /select nor a /check route.
+        A native <select> without visible option refs may need site-specific
+        handling; failure is reported rather than pretending it was filled.
+        """
+        self.click(tab_id, user_id, ref=ref)
+        options = parse_snapshot(self.snapshot_text(tab_id, user_id))
+        for option in options:
+            if option.role == "option" and option.label.strip().casefold() == value.strip().casefold():
+                return self.click(tab_id, user_id, ref=option.ref)
+        self.type(tab_id, user_id, ref, value)
+        return self.press(tab_id, user_id, "Enter")
 
     def press(self, tab_id: str, user_id: str, key: str) -> dict:
         return self._request("POST", f"/tabs/{tab_id}/press", json={"userId": user_id, "key": key})

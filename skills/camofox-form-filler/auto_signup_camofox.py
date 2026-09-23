@@ -43,6 +43,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import re
 import sys
@@ -132,10 +133,14 @@ SUBMIT_ERROR_PATTERNS = re.compile(
 )
 
 SUBMIT_SUCCESS_PATTERNS = re.compile(
-    r"thank\s*you|welcome\s+(to|aboard)|check\s+your\s+(e-?mail|inbox)|"
-    r"verify\s+your\s+e-?mail|confirmation\s+e-?mail|account\s+(created|activated)|"
-    r"you'?re\s+(all\s+set|in\b)|successfully\s+(created|registered|enrolled)|"
+    r"account\s+(created|activated)|you'?re\s+all\s+set|"
+    r"successfully\s+(created|registered|enrolled)|"
     r"registration\s+complete",
+    re.IGNORECASE,
+)
+SUBMIT_PENDING_PATTERNS = re.compile(
+    r"check\s+your\s+(e-?mail|inbox)|verify\s+your\s+e-?mail|"
+    r"confirmation\s+e-?mail|confirm\s+your\s+e-?mail|activation\s+link",
     re.IGNORECASE,
 )
 
@@ -147,6 +152,13 @@ SELECT_ROLES = {"combobox", "listbox", "menu"}
 
 def slugify(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-") or "site"
+
+
+def session_user_id(row: dict, config: dict) -> str:
+    """Use stable, private, per-client and per-URL browser profiles."""
+    identity = f"{config.get('email', '')}\0{row.get('url', '')}"
+    suffix = hashlib.sha256(identity.encode("utf-8")).hexdigest()[:20]
+    return f"loyaltybot-{slugify(row.get('brand', ''))[:32]}-{suffix}"
 
 
 def load_config(path: Path) -> dict:
@@ -266,27 +278,11 @@ def save_dead_urls(path: Path, dead_urls: set[str]) -> None:
 
 
 def retire_repeated_failures(results_path: Path, dead_urls: set[str]) -> set[str]:
-    """Scan a results CSV and add URLs with >= MAX_STRIKES failures and 0
-    successes to `dead_urls`. Returns the (possibly expanded) set."""
-    if not results_path.exists():
-        return dead_urls
-    from collections import defaultdict
+    """Keep the legacy API; transient errors cannot prove a URL is dead.
 
-    url_stats = defaultdict(lambda: {"failures": 0, "successes": 0})
-    with open(results_path, newline="", encoding="utf-8") as f:
-        for row in csv.DictReader(f):
-            url = (row.get("url") or "").strip()
-            status = (row.get("status") or "").strip()
-            if not url:
-                continue
-            if status == "success":
-                url_stats[url]["successes"] += 1
-            elif status in ("failed", "timeout", "navigation_error", "captcha_failed", "captcha_skipped"):
-                url_stats[url]["failures"] += 1
-
-    for url, stats in url_stats.items():
-        if stats["failures"] >= MAX_STRIKES and stats["successes"] == 0:
-            dead_urls.add(url)
+    CAPTCHA, form parsing, network and validation failures must remain
+    retryable. Operators may explicitly curate dead-urls.json.
+    """
     return dead_urls
 
 
@@ -306,6 +302,16 @@ def get_value(flat_cfg: dict, field: str) -> str | None:
     return None
 
 
+def safe_error(exc: Exception, config: dict) -> str:
+    """Remove client secrets if a browser error echoes request data."""
+    message = f"{type(exc).__name__}: {exc}"
+    for field in ("password", "ssn", "email", "phone", "capsolver_api_key"):
+        value = config.get(field)
+        if value and len(str(value)) >= 4:
+            message = message.replace(str(value), "[redacted]")
+    return message[:200]
+
+
 def snapshot_items(client: CamofoxClient, tab_id: str, user_id: str) -> list:
     """Full (paged) snapshot, parsed. Returns [] instead of raising."""
     try:
@@ -319,7 +325,7 @@ def count_form_fields(items: list) -> int:
 
 
 def wait_for_form(client: CamofoxClient, tab_id: str, user_id: str, timeout_s: float,
-                  min_fields: int = 1) -> list:
+                  min_fields: int = 1, return_on_signup_link: bool = False) -> list:
     """Poll the snapshot until form fields appear, or the timeout expires.
 
     A single fixed 3s wait after opening the tab was not enough for the many
@@ -331,6 +337,14 @@ def wait_for_form(client: CamofoxClient, tab_id: str, user_id: str, timeout_s: f
     items = snapshot_items(client, tab_id, user_id)
     while time.monotonic() < deadline:
         if count_form_fields(items) >= min_fields:
+            return items
+        if return_on_signup_link and any(
+            it.role in ("button", "link") and re.search(
+                r"create\s+(an\s+)?account|sign\s*up|register|join\s+(now|free|today)|enroll|"
+                r"my\s+account|account|profile|sign\s*in|log\s*in|person|user",
+                it.label, re.IGNORECASE,
+            ) for it in items
+        ):
             return items
         time.sleep(1.0)
         items = snapshot_items(client, tab_id, user_id)
@@ -357,6 +371,9 @@ def fill_form(client: CamofoxClient, tab_id: str, user_id: str, flat_cfg: dict, 
         if item.role in ("checkbox", "switch"):
             label = item.label
             if SKIP_CHECKBOX_PATTERNS.search(label) or not REQUIRED_CHECKBOX_PATTERNS.search(label):
+                continue
+            if re.search(r"\bchecked\b|\bselected\b", label, re.IGNORECASE):
+                filled_refs.add(item.ref)
                 continue
             try:
                 client.check(tab_id, user_id, item.ref)
@@ -396,7 +413,9 @@ def find_submit_ref(client: CamofoxClient, tab_id: str, user_id: str,
     if items is None:
         items = snapshot_items(client, tab_id, user_id)
     for item in items:
-        if item.role in ("button", "link") and SUBMIT_PATTERNS.search(item.label):
+        # Links usually navigate to another form; clicking one is not a
+        # submission. A login form can coexist with a "Sign Up" link.
+        if item.role == "button" and SUBMIT_PATTERNS.search(item.label):
             return item.ref
     return None
 
@@ -414,18 +433,18 @@ def verify_submission(client: CamofoxClient, tab_id: str, user_id: str) -> tuple
         # rather than inventing a success.
         return "failed", f"could not verify submission: {e}"
 
+    # An error has priority over a generic confirmation elsewhere on the
+    # page. "Check email" is a pending action, not a completed enrollment.
     if CAPTCHA_PATTERNS.search(text):
         return "captcha_skipped", "captcha after submit"
-    if SUBMIT_SUCCESS_PATTERNS.search(text):
-        return "success", ""
     error_match = SUBMIT_ERROR_PATTERNS.search(text)
     if error_match:
         return "failed", f"form rejected: {error_match.group(0)[:80]}"
-    # No confirmation and no error: the form is gone from the page, which is
-    # the usual shape of a successful redirect.
-    if count_form_fields(parse_snapshot(text)) == 0:
+    if SUBMIT_PENDING_PATTERNS.search(text):
+        return "verification_required", "email confirmation required"
+    if SUBMIT_SUCCESS_PATTERNS.search(text) and count_form_fields(parse_snapshot(text)) == 0:
         return "success", ""
-    return "failed", "form still present after submit"
+    return "unverified", "no completed registration confirmation observed"
 
 
 def snapshot_has_captcha(client: CamofoxClient, tab_id: str, user_id: str) -> bool:
@@ -491,7 +510,7 @@ def run(args: argparse.Namespace) -> int:
         brand = row.get("brand", "")
         program = row.get("program", "")
         url = row["url"]
-        user_id = f"loyaltybot-{slugify(brand or program or url)}"
+        user_id = session_user_id(row, flat_cfg)
         session_key = "signup"
 
         print(f"[{i}] {brand} -- {program} -- {url}")
@@ -501,7 +520,13 @@ def run(args: argparse.Namespace) -> int:
         tab_id = None
         try:
             tab_id = client.create_tab(user_id, session_key, url)
-            items = wait_for_form(client, tab_id, user_id, args.page_timeout)
+            wait_for_form(client, tab_id, user_id, args.page_timeout,
+                          return_on_signup_link=True)
+            # Reuse the same registration-link discovery as the parallel
+            # runner; otherwise the single runner fills login forms instead.
+            from auto_signup_camofox_parallel import dismiss_cookie_banner, navigate_to_form
+            dismiss_cookie_banner(client, tab_id, user_id, print)
+            items = navigate_to_form(client, tab_id, user_id, 0, print)
 
             filled_refs: set[str] = set()
             filled = fill_form(client, tab_id, user_id, flat_cfg, print, filled_refs, items)
@@ -521,20 +546,24 @@ def run(args: argparse.Namespace) -> int:
                 else:
                     submit_ref = find_submit_ref(client, tab_id, user_id)
                     if submit_ref:
-                        client.click(tab_id, user_id, ref=submit_ref)
                         try:
-                            client.wait(tab_id, user_id, timeout_ms=5000)
-                        except CamofoxError:
-                            pass
-                        status, error = verify_submission(client, tab_id, user_id)
+                            client.click(tab_id, user_id, ref=submit_ref)
+                        except CamofoxError as e:
+                            status, error = "unverified", "submit click uncertain: " + safe_error(e, flat_cfg)
+                        else:
+                            try:
+                                client.wait(tab_id, user_id, timeout_ms=5000)
+                            except CamofoxError:
+                                pass
+                            status, error = verify_submission(client, tab_id, user_id)
                     else:
                         status, error = "failed", "submit button not found"
         except CamofoxError as e:
-            print(f"  ERROR: {e}")
-            status, error = "failed", str(e)[:200]
+            status, error = "failed", safe_error(e, flat_cfg)
+            print(f"  ERROR: {error}")
         except Exception as e:  # never let one bad site abort the whole run
-            print(f"  UNEXPECTED ERROR: {type(e).__name__}: {e}")
-            status, error = "failed", f"{type(e).__name__}: {e}"[:200]
+            status, error = "failed", safe_error(e, flat_cfg)
+            print(f"  UNEXPECTED ERROR: {error}")
         finally:
             # Always release the tab. Leaked tabs pile up inside camofox and
             # starve later sites of browser resources.
