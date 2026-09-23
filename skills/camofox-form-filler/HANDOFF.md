@@ -11,14 +11,24 @@ redirects separately from completed signups. A dry run counts filled forms,
 never completed signups. `score_results.py` uses the original eligible URL
 cohort as its denominator.
 
-Offline verification: 43 tests passed, including a simulated 2,500-URL,
+Offline verification: 44 tests passed, including a simulated 2,500-URL,
 8-worker queue with 50 duplicate input rows. This tests bookkeeping, not live
-website enrollment. The archive has no real 2,500-site master CSV, client
+website enrollment. A separate archived master (2,724 URLs) and historical
+result log were found in the user's Drive. Of 14,037 historical attempts,
+7,582 recorded browser/page/context closures; this is a systemic reliability
+signal, not 7,582 unique failed sites. Only 627 attempts were labeled success,
+and the earlier success classifier was optimistic. The archive has no client
 configuration, live Camoufox service, or verified completion evidence. The
 80–90% goal remains unverified. Run a small authorized live cohort and inspect
 its results before expanding. Older text below asserting that all no-form
 failures are bot blocks or that dry-run success equals signups is a hypothesis,
 not a measured result.
+
+The runner and dashboard now default to two workers. After three consecutive
+browser closure errors the batch stops with a nonzero exit, keeps recorded
+results, and leaves the remaining URLs unattempted for a resumed run. This
+protects throughput on the older machine; it does not establish its current
+capacity or improve site acceptance by itself.
 
 Current upstream documentation includes an evaluate route, so the older claim
 that the REST API has no JavaScript evaluation endpoint is outdated. No
