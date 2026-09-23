@@ -6,7 +6,9 @@
 
 ## The Metric
 
-**`success_rate = success / processed`** on a fixed sample. Higher = better.
+**Verified live signup rate = confirmed success / all eligible unique URLs**
+in the fixed cohort. An email verification prompt is pending, not completed.
+Use the original master CSV as denominator, including URLs never attempted.
 Baseline (production Playwright engine, real run): **24 / 511 ≈ 4.7%**.
 
 Secondary metrics (diagnose *why* a run is low):
@@ -19,8 +21,9 @@ Secondary metrics (diagnose *why* a run is low):
 - **Sample:** same 100 feasible URLs every run. `--limit 100` after
   `sort_by_priority` makes the slice deterministic. Never change the sample
   mid-study or the numbers stop comparing.
-- **Budget:** one pass, `--dry-run` (fill + detect form, do NOT submit — keeps
-  the study side-effect-free and repeatable; submitting changes site state).
+- **Budget:** one `--dry-run` pass for form discovery only. Dry runs never
+  measure successful signups. For a live rate, submit on a separately tracked
+  authorized cohort and verify the completed enrollment outcomes.
 - **One variable per experiment.** Change one thing, re-run, compare.
 
 ```bash
@@ -33,8 +36,9 @@ python auto_signup_camofox_parallel.py --dry-run --limit 100 \
     --config config_tyjuan01.json --results B_camofox.csv --progress B.json
 ```
 
-Score each with the one-liner in `score.py` (below). Keep the engine/config
-that wins on `success_rate`; if tied, prefer lower `no_form_rate`.
+Compare dry runs by form-reach rate only. For live runs, score with
+`python score_results.py --csv loyalty-rewards-MASTER.csv --results B.csv`.
+Do not infer an 80–90% live rate from a form-reach experiment.
 
 ## Hypotheses Queue (ranked by expected payoff)
 
@@ -55,21 +59,13 @@ Worked top-down. Each line is one experiment.
    but cost time; find where success_rate stops climbing.
 6. **VNC first-pass on captcha_skipped brands.** Solve once, persist, re-run.
 
-## score.py (drop next to the results CSVs)
+## Scoring
 
-```python
-import csv, sys
-from collections import Counter
-c = Counter()
-for row in csv.DictReader(open(sys.argv[1], encoding="utf-8")):
-    c[row["status"].strip()] += 1
-tot = sum(c.values()) or 1
-succ = c["success"] + c.get("dry_run", 0)
-print(f"{sys.argv[1]}: n={tot}  success_rate={succ/tot:.1%}  "
-      f"no_form={c['failed']/tot:.1%}  timeout={c['timeout']/tot:.1%}  "
-      f"captcha={c['captcha_skipped']/tot:.1%}")
-print(dict(c))
-```
+Keep the master cohort fixed throughout the study. `score_results.py` counts
+each eligible URL once and reports unattempted, pending email verification,
+and unverified outcomes separately. For 2,500 eligible URLs, 80% means at
+least 2,000 confirmed successes; 90% means 2,250. Report these only after a
+live run and independent review of a sample of claimed successes.
 
 ## Loop
 

@@ -15,19 +15,16 @@ injection needed.
 
 CapSolver note
 --------------
-camofox-browser's REST API does not expose a generic JS-eval/page-script
-endpoint, so CapSolver token *injection* (auto-solving reCAPTCHA/hCaptcha/
-Turnstile) is not implemented here. In practice Camoufox's fingerprint
-spoofing means far fewer CAPTCHA challenges are served in the first place;
-any that do appear fall back to the same noVNC manual-solve flow as
-camofox_client/auto_signup_camofox.py (`ENABLE_VNC=1` on the camofox server).
+CapSolver is not integrated in this runner. Current upstream Camofox versions
+do offer evaluation, but that does not establish that a challenge can or
+should be automated. A manual noVNC flow requires ENABLE_VNC=1 on the server.
 
 Outputs match auto-signup-parallel-FIXED.py so the existing dashboard.html
 and loyaltybot_server.py status/results endpoints work unmodified:
   - results CSV columns: url,brand,program,status,worker,error,timestamp
   - progress.json: {running, start_time, stats{total,processed,success,
     failed,captcha,skipped}, current_workers[], log[], eta_seconds}
-  - dead-urls.json: {"urls": [...]} -- shared 3-strike retirement list
+  - dead-urls.json: {"urls": [...]} -- curated exclusion list
 
 Usage
 -----
@@ -47,6 +44,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import queue
 import re
 import sys
@@ -66,8 +64,9 @@ from auto_signup_camofox import (
     load_programs,
     is_feasible,
     retire_repeated_failures,
+    safe_error,
     save_dead_urls,
-    slugify,
+    session_user_id,
     snapshot_has_captcha,
     snapshot_items,
     sort_by_priority,
@@ -153,14 +152,18 @@ def write_progress(progress_path: Path, running: bool, stats: dict, start_time: 
         data = {
             "running": running,
             "start_time": datetime.fromtimestamp(start_time, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ") if start_time else None,
-            "stats": {k: stats.get(k, 0) for k in ("total", "processed", "success", "failed", "captcha", "skipped")},
+            "stats": {k: stats.get(k, 0) for k in ("total", "processed", "success", "failed", "captcha", "skipped", "dry_run")},
             "current_workers": workers_list,
             "log": list(_progress_log),
             "eta_seconds": eta_seconds,
         }
     try:
-        with open(progress_path, "w", encoding="utf-8") as f:
+        # The dashboard polls this while several workers are active. Replace
+        # one complete JSON document atomically so it never sees a half-write.
+        tmp_path = progress_path.with_name(progress_path.name + f".{threading.get_ident()}.tmp")
+        with open(tmp_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
+        os.replace(tmp_path, progress_path)
     except OSError as exc:
         print(f"WARN: failed to write {progress_path}: {exc}")
 
@@ -221,8 +224,7 @@ def check_no_form_strike(dead_urls_path: Path, dead_urls: set[str], url: str, br
         _no_form_strikes[url] = _no_form_strikes.get(url, 0) + 1
         strikes = _no_form_strikes[url]
     if strikes >= NO_FORM_MAX_STRIKES:
-        mark_url_dead(dead_urls_path, dead_urls, url)
-        log(f"  [W{worker}] no-form {NO_FORM_MAX_STRIKES}-strike retirement: {brand} -> {url}")
+        log(f"  [W{worker}] no form observed {strikes} times: {brand} -> {url}; retained for review")
 
 
 def dismiss_cookie_banner(client: CamofoxClient, tab_id: str, user_id: str, log) -> None:
@@ -249,7 +251,23 @@ def navigate_to_form(client: CamofoxClient, tab_id: str, user_id: str, worker: i
     explicit and ordered.
     """
     items = snapshot_items(client, tab_id, user_id)
-    if count_form_fields(items) >= MIN_FORM_FIELDS:
+    # A login panel has enough fields to pass the old threshold, but it is
+    # still the wrong form. Prefer an explicit registration link on that page.
+    registration_link = any(
+        it.role == "link" and PRIMARY_SIGNUP_LINK_PATTERNS.search(it.label)
+        for it in items
+    )
+    registration_button = any(
+        it.role == "button" and PRIMARY_SIGNUP_LINK_PATTERNS.search(it.label)
+        for it in items
+    )
+    login_button = any(
+        it.role == "button" and re.search(r"sign\s*in|log\s*in", it.label, re.IGNORECASE)
+        for it in items
+    )
+    if (count_form_fields(items) >= MIN_FORM_FIELDS and
+            (not registration_link or registration_button) and
+            (not login_button or registration_button)):
         return items
 
     tried: set[str] = set()
@@ -301,7 +319,7 @@ def process_entry(client: CamofoxClient, row: dict, flat_cfg: dict, worker: int,
     brand = row.get("brand", "")
     program = row.get("program", "")
     url = row["url"]
-    user_id = f"loyaltybot-{slugify(brand or program or url)}"
+    user_id = session_user_id(row, flat_cfg)
     session_key = "signup"
 
     tab_id = None
@@ -309,11 +327,11 @@ def process_entry(client: CamofoxClient, row: dict, flat_cfg: dict, worker: int,
         try:
             tab_id = client.create_tab(user_id, session_key, url)
         except CamofoxError as e:
-            return "navigation_error", str(e)[:200]
+            return "navigation_error", safe_error(e, flat_cfg)
 
         # Wait for the page to actually render a form rather than snapshotting
         # a blank document after a fixed 3s sleep.
-        wait_for_form(client, tab_id, user_id, page_timeout)
+        wait_for_form(client, tab_id, user_id, page_timeout, return_on_signup_link=True)
 
         # Clear consent banners, then chase a Sign Up / Create Account link if
         # the landing page has too few fields to be the actual signup form.
@@ -345,7 +363,12 @@ def process_entry(client: CamofoxClient, row: dict, flat_cfg: dict, worker: int,
         if not submit_ref:
             return "failed", "submit button not found"
 
-        client.click(tab_id, user_id, ref=submit_ref)
+        try:
+            client.click(tab_id, user_id, ref=submit_ref)
+        except CamofoxError as e:
+            # A timed-out click may have submitted successfully. An automatic
+            # retry could create a second account or duplicate enrollment.
+            return "unverified", "submit click uncertain: " + safe_error(e, flat_cfg)
         try:
             client.wait(tab_id, user_id, timeout_ms=5000)
         except CamofoxError:
@@ -353,10 +376,10 @@ def process_entry(client: CamofoxClient, row: dict, flat_cfg: dict, worker: int,
 
         return verify_submission(client, tab_id, user_id)
     except CamofoxError as e:
-        return "timeout", str(e)[:200]
+        return "timeout", safe_error(e, flat_cfg)
     except Exception as e:
         # Anything unexpected is this site's problem, not the run's.
-        return "failed", f"{type(e).__name__}: {e}"[:200]
+        return "failed", safe_error(e, flat_cfg)
     finally:
         if tab_id:
             try:
@@ -374,7 +397,7 @@ def process_entry(client: CamofoxClient, row: dict, flat_cfg: dict, worker: int,
 
 def worker_loop(worker_id: int, work_queue: "queue.Queue[dict]", flat_cfg: dict, args, stats: dict,
                  results_path: Path, progress_path: Path, dead_urls_path: Path, dead_urls: set[str],
-                 start_time: float, log) -> None:
+                 start_time: float, log, record_failures: list[str] | None = None) -> None:
     client = CamofoxClient(base_url=args.camofox_url)
 
     while True:
@@ -400,19 +423,29 @@ def worker_loop(worker_id: int, work_queue: "queue.Queue[dict]", flat_cfg: dict,
                 dead_urls_path, dead_urls, log, args.page_timeout,
             )
         except Exception as e:
-            status, error = "failed", f"worker error: {type(e).__name__}: {e}"[:200]
-            log(f"[W{worker_id}] unexpected error on {url}: {e}")
+            status, error = "failed", "worker error: " + safe_error(e, flat_cfg)
+            log(f"[W{worker_id}] unexpected error on {url}: {error}")
 
         try:
             append_result(results_path, url, brand, program, status, worker_id, error)
             append_progress_log(worker_id, brand, program, status, error)
         except Exception as e:
-            log(f"[W{worker_id}] WARN could not record result for {url}: {e}")
+            log(f"[W{worker_id}] ERROR result not saved for {url}: {safe_error(e, flat_cfg)}")
+            if record_failures is not None:
+                with _results_lock:
+                    record_failures.append(url)
+            with _progress_lock:
+                _current_workers[worker_id] = {"brand": brand, "status": "result_write_failed"}
+            # The URL has no result row, so the next run can retry it. Never
+            # report it as processed or silently finish with exit code zero.
+            return
 
         with _progress_lock:
             stats["processed"] += 1
-            if status in ("success", "dry_run"):
+            if status == "success":
                 stats["success"] += 1
+            elif status == "dry_run":
+                stats["dry_run"] = stats.get("dry_run", 0) + 1
             elif status == "captcha_skipped":
                 # Checked BEFORE the generic captcha test: `"captcha" in status`
                 # matched captcha_skipped first, so the "skipped" counter on the
@@ -441,11 +474,16 @@ def run(args: argparse.Namespace) -> int:
 
     dead_urls = load_dead_urls(dead_urls_path)
     dead_urls = retire_repeated_failures(results_path, dead_urls)
+    if getattr(args, "ignore_dead_urls", False):
+        dead_urls = set()  # audit/retry legacy entries retired by transient errors
 
     programs = load_programs(Path(args.csv))
     rows = [r for r in programs if r.get("url") and (args.include_infeasible or is_feasible(r))]
     rows = sort_by_priority(rows)
     rows = [r for r in rows if r["url"] not in dead_urls]
+    # One URL can appear several times in a master CSV. Concurrent signups to
+    # it with the same client account race each other and corrupt outcomes.
+    rows = list({r["url"]: r for r in reversed(rows)}.values())[::-1]
 
     if args.retry:
         retryable = load_failed_urls(results_path)
@@ -461,7 +499,7 @@ def run(args: argparse.Namespace) -> int:
     client = CamofoxClient(base_url=args.camofox_url)
     client.wait_for_browser()
 
-    stats = {"total": len(batch), "processed": 0, "success": 0, "failed": 0, "captcha": 0, "skipped": 0}
+    stats = {"total": len(batch), "processed": 0, "success": 0, "failed": 0, "captcha": 0, "skipped": 0, "dry_run": 0}
     start_time = time.time()
 
     print(f"Running {len(batch)} signups via camofox at {client.base_url} with {args.workers} worker(s)")
@@ -472,11 +510,12 @@ def run(args: argparse.Namespace) -> int:
         work_queue.put(row)
 
     threads = []
+    record_failures: list[str] = []
     for worker_id in range(1, args.workers + 1):
         t = threading.Thread(
             target=worker_loop,
             args=(worker_id, work_queue, flat_cfg, args, stats, results_path, progress_path,
-                  dead_urls_path, dead_urls, start_time, print),
+                  dead_urls_path, dead_urls, start_time, print, record_failures),
             daemon=True,
         )
         t.start()
@@ -486,8 +525,11 @@ def run(args: argparse.Namespace) -> int:
         t.join()
 
     write_progress(progress_path, False, stats, start_time)
-    print(f"Done. {stats['success']} success, {stats['failed']} failed, "
+    print(f"Done. {stats['success']} success, {stats['dry_run']} dry run, {stats['failed']} failed, "
           f"{stats['captcha']} captcha, {stats['skipped']} skipped. Results -> {results_path}")
+    if record_failures:
+        print(f"ERROR: {len(record_failures)} result row(s) could not be saved; run incomplete")
+        return 2
     return 0
 
 
@@ -503,6 +545,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--start-index", type=int, default=0, help="Start from this row in the CSV")
     parser.add_argument("--dry-run", action="store_true", help="Fill forms but don't submit")
     parser.add_argument("--retry", action="store_true", help="Only re-run previously failed/timeout/captcha URLs")
+    parser.add_argument("--ignore-dead-urls", action="store_true", help="Revisit legacy dead-urls.json entries for audit")
     parser.add_argument("--page-timeout", type=float, default=20.0,
                         help="Seconds to wait for a form to render before giving up on a site")
     parser.add_argument("--captcha-timeout", type=int, default=120, help="Seconds to wait for manual CAPTCHA solve")
@@ -510,6 +553,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--include-infeasible", action="store_true", help="Also process rows where Auto_Signup_Feasible != Yes")
     parser.add_argument("--camofox-url", default=None, help="camofox-browser base URL (default: $CAMOFOX_URL or http://localhost:9377)")
     args = parser.parse_args(argv)
+    if args.workers < 1 or args.delay < 0 or args.page_timeout < 0:
+        parser.error("workers must be >= 1; delay and page-timeout must be >= 0")
     return run(args)
 
 

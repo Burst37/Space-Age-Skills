@@ -1,5 +1,29 @@
 # HANDOFF — LoyaltyBot × camofox integration
 
+## Review update — 2026-09-23
+
+The remainder of this file records an earlier handoff. The updated package
+fixes API calls to `/check` and `/select` that the upstream server does not
+document, replaces an undocumented `/type` clear flag with keyboard actions,
+isolates browser sessions by client and URL, stops retiring transient failures,
+deduplicates URLs in a run, and classifies email verification and unconfirmed
+redirects separately from completed signups. A dry run counts filled forms,
+never completed signups. `score_results.py` uses the original eligible URL
+cohort as its denominator.
+
+Offline verification: 43 tests passed, including a simulated 2,500-URL,
+8-worker queue with 50 duplicate input rows. This tests bookkeeping, not live
+website enrollment. The archive has no real 2,500-site master CSV, client
+configuration, live Camoufox service, or verified completion evidence. The
+80–90% goal remains unverified. Run a small authorized live cohort and inspect
+its results before expanding. Older text below asserting that all no-form
+failures are bot blocks or that dry-run success equals signups is a hypothesis,
+not a measured result.
+
+Current upstream documentation includes an evaluate route, so the older claim
+that the REST API has no JavaScript evaluation endpoint is outdated. No
+automated CAPTCHA solving is included in this package.
+
 Paste this whole file as your first message to a fresh Claude agent to resume
 with full context.
 

@@ -10,8 +10,10 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import Mock
 
-from camofox_client import parse_snapshot
+import requests
+from camofox_client import CamofoxClient, CamofoxError, parse_snapshot
 import auto_signup_camofox as single
 import auto_signup_camofox_parallel as par
 
@@ -34,7 +36,7 @@ FORM = (
     '- checkbox "Send me marketing emails" [ref=e18]\n'
     '- button "Sign Up" [ref=e19]\n'
 )
-CONFIRM = "- heading \"Thank you! Check your email to verify your account.\" [ref=e30]\n"
+CONFIRM = '- heading "Account created" [ref=e30]\n'
 
 
 class FakeClient:
@@ -157,6 +159,17 @@ class TestNavigation(unittest.TestCase):
         items = par.navigate_to_form(c, "t", "u", 1, lambda *a: None)
         self.assertTrue(all(i.ref != "e1" for i in items if i.role == "button" and c.i > 0) or c.i == 0)
 
+    def test_login_fields_do_not_hide_registration_link(self):
+        login = ('- textbox "Email" [ref=e1]\n- textbox "Password" [ref=e2]\n'
+                 '- button "Sign In" [ref=e3]\n- link "Create Account" [ref=e4]\n')
+        c = FakeClient([login, FORM])
+        par.navigate_to_form(c, "t", "u", 1, lambda *a: None)
+        self.assertEqual(c.i, 1)
+
+    def test_signup_link_is_not_a_submit_action(self):
+        c = FakeClient(['- textbox "Email" [ref=e1]\n- link "Sign Up" [ref=e2]\n'])
+        self.assertIsNone(single.find_submit_ref(c, "t", "u"))
+
 
 class TestOutcomes(unittest.TestCase):
     def test_success_requires_confirmation(self):
@@ -167,6 +180,24 @@ class TestOutcomes(unittest.TestCase):
         status, msg = run_entry(FakeClient([FORM, err]))
         self.assertEqual(status, "failed")
         self.assertIn("rejected", msg)
+
+    def test_redirect_without_proof_is_unverified(self):
+        self.assertEqual(run_entry(FakeClient([FORM, '- heading "Store" [ref=e30]\n']))[0],
+                         "unverified")
+
+    def test_email_confirmation_is_pending(self):
+        pending = '- heading "Thank you! Check your email to verify your account" [ref=e30]\n'
+        self.assertEqual(run_entry(FakeClient([FORM, pending]))[0], "verification_required")
+
+    def test_uncertain_submit_is_not_retried_as_a_failed_signup(self):
+        status, _ = run_entry(FakeClient([FORM], fail_on={"e19"}))
+        self.assertEqual(status, "unverified")
+        self.assertNotIn(status, par.RETRYABLE_STATUSES)
+        self.assertNotIn("verification_required", par.RETRYABLE_STATUSES)
+
+    def test_error_overrides_success_copy(self):
+        c = FakeClient([FORM + '- text "Account created. Email is required" [ref=e30]\n'])
+        self.assertEqual(single.verify_submission(c, "t", "u")[0], "failed")
 
     def test_captcha_wall_is_not_no_form_found(self):
         wall = '- heading "Verify you are human" [ref=e1]\n'
@@ -238,6 +269,120 @@ class TestResultsCsv(unittest.TestCase):
                                           "timestamp": "t"})
             self.assertEqual(out.read_text().splitlines()[0],
                              "url,brand,program,status,worker,error,timestamp")
+
+
+class TestScaleAndRecovery(unittest.TestCase):
+    def test_client_uses_documented_checkbox_and_clear_actions(self):
+        client = CamofoxClient()
+        client._request = Mock(return_value={})
+        client.check("tab", "user", "e2")
+        client.clear("tab", "user", "e3")
+        paths = [call.args[1] for call in client._request.call_args_list]
+        self.assertEqual(paths, ["/tabs/tab/click", "/tabs/tab/click",
+                                 "/tabs/tab/press", "/tabs/tab/press"])
+
+    def test_combobox_selects_visible_option_by_ref(self):
+        client = CamofoxClient()
+        client._request = Mock(return_value={})
+        client.snapshot_text = lambda *a: '[option e10] TX\n[option e11] CA'
+        client.select("tab", "user", "e3", "TX")
+        calls = client._request.call_args_list
+        self.assertEqual(len(calls), 2)
+        self.assertEqual(calls[-1].kwargs["json"]["ref"], "e10")
+
+    def test_mutating_requests_never_replay_after_connection_error(self):
+        client = CamofoxClient(retries=3)
+        client.session.request = Mock(side_effect=requests.ConnectionError("reset"))
+        with self.assertRaises(CamofoxError):
+            client._request("POST", "/tabs/t/click", json={"ref": "e1"})
+        self.assertEqual(client.session.request.call_count, 1)
+
+    def test_transient_failures_do_not_retire_live_urls(self):
+        with tempfile.TemporaryDirectory() as d:
+            results = Path(d) / "results.csv"
+            results.write_text("url,status\nhttps://x.test,timeout\nhttps://x.test,failed\n"
+                               "https://x.test,captcha_skipped\n")
+            self.assertEqual(single.retire_repeated_failures(results, set()), set())
+            dead = set()
+            par.check_no_form_strike(Path(d) / "dead.json", dead, "https://x.test", "X", 1, lambda *a: None)
+            par.check_no_form_strike(Path(d) / "dead.json", dead, "https://x.test", "X", 1, lambda *a: None)
+            self.assertEqual(dead, set())
+
+    def test_browser_profiles_are_isolated_by_client_and_url(self):
+        a = {"brand": "Same Brand", "url": "https://a.test"}
+        b = {"brand": "Same Brand", "url": "https://b.test"}
+        self.assertNotEqual(single.session_user_id(a, CONFIG), single.session_user_id(b, CONFIG))
+        self.assertNotEqual(single.session_user_id(a, CONFIG),
+                            single.session_user_id(a, {**CONFIG, "email": "other@example.test"}))
+        self.assertNotIn(CONFIG["email"], single.session_user_id(a, CONFIG))
+
+    def test_dry_run_is_not_counted_as_signup(self):
+        import queue
+        q = queue.Queue()
+        q.put({"url": "https://s.test", "brand": "B", "program": "P"})
+        stats = dict(total=1, processed=0, success=0, failed=0, captcha=0, skipped=0)
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            args = Args(); args.camofox_url = None
+            orig = par.process_entry
+            par.process_entry = lambda *a, **k: ("dry_run", "")
+            try:
+                par.worker_loop(1, q, {}, args, stats, d / "r.csv", d / "p.json",
+                                d / "dead.json", set(), 0.0, lambda *a: None)
+            finally:
+                par.process_entry = orig
+            self.assertEqual(stats["success"], 0)
+            self.assertEqual(stats["dry_run"], 1)
+
+    def test_fixed_cohort_denominator_excludes_ineligible_but_includes_unattempted(self):
+        from score_results import score
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            master = d / "master.csv"
+            master.write_text("Brand_Name,Direct_Sign-up_URL,Auto_Signup_Feasible\n"
+                              "A,https://a.test,Yes\nB,https://b.test,Yes\n"
+                              "C,https://c.test,No\n")
+            results = d / "r.csv"
+            results.write_text("url,status\nhttps://a.test,dry_run\n"
+                               "https://a.test,success\nhttps://c.test,success\n")
+            got = score(master, results)
+            self.assertEqual((got["eligible"], got["attempted"], got["confirmed"]), (2, 1, 1))
+            self.assertEqual(got["rate"], 0.5)
+            self.assertEqual(got["not_attempted"], 1)
+
+    def test_2500_row_queue_records_each_unique_url_once(self):
+        import contextlib
+        import io
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            (d / "config.json").write_text(json.dumps(CONFIG))
+            master = d / "master.csv"
+            urls = [f"https://site{i}.test/join" for i in range(2500)]
+            with master.open("w", newline="") as handle:
+                writer = csv.writer(handle)
+                writer.writerow(["Brand_Name", "Direct_Sign-up_URL", "Auto_Signup_Feasible"])
+                for i, url in enumerate(urls + urls[:50]):
+                    writer.writerow([f"Brand{i}", url, "Yes"])
+            results = d / "results.csv"
+            progress = d / "progress.json"
+            orig_client, orig_entry = par.CamofoxClient, par.process_entry
+            par.CamofoxClient = lambda **kw: FakeClient([FORM])
+            par.process_entry = lambda *a, **k: ("dry_run", "")
+            try:
+                with contextlib.redirect_stdout(io.StringIO()):
+                    rc = par.main(["--config", str(d / "config.json"), "--csv", str(master),
+                                   "--results", str(results), "--progress", str(progress),
+                                   "--dead-urls", str(d / "dead.json"), "--workers", "8", "--delay", "0"])
+            finally:
+                par.CamofoxClient, par.process_entry = orig_client, orig_entry
+            with results.open(newline="") as handle:
+                saved = list(csv.DictReader(handle))
+            stats = json.loads(progress.read_text())["stats"]
+            self.assertEqual(rc, 0)
+            self.assertEqual(len(saved), 2500)
+            self.assertEqual(len({row["url"] for row in saved}), 2500)
+            self.assertEqual((stats["processed"], stats["success"], stats["dry_run"]),
+                             (2500, 0, 2500))
 
 
 

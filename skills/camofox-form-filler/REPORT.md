@@ -1,5 +1,25 @@
 # LoyaltyBot Success-Rate Fix — Breakdown Report
 
+## 2026-09-23 correction
+
+The original report below is historical. The 24/511 figure is the earlier
+Playwright result, not a measured result for this Camoufox package. No
+2,500-site live benchmark was supplied. A missing form does not itself prove
+bot detection: navigation, unsupported controls, incomplete snapshots, and
+configuration gaps can produce the same symptom. The original dry-run metric
+incorrectly counted filled forms as successful enrollments.
+
+This review fixed unsupported browser API calls, unsafe replay of mutating
+requests, login form confusion, concurrent duplicate URLs/profile collisions,
+transient-failure retirement, silently missing result rows, and optimistic
+success classification. A `verification_required` or `unverified` result
+remains outside the completed signup count. Run
+`python score_results.py --csv ORIGINAL_MASTER.csv --results LIVE_RESULTS.csv`
+against a fixed, client-authorized cohort. For 2,500 eligible unique URLs,
+80% needs 2,000 completed signups and 90% needs 2,250. The offline suite has
+43 passing tests, including 2,500 simulated URLs and 50 duplicates; it does
+not establish live signup rate.
+
 ## 1. The problem, measured
 
 From your real production files (`progress_tyjuan01.json`,
