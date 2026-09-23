@@ -4,6 +4,35 @@
 > `val_bpb`. Agent runs fixed-budget experiments, measures the metric, keeps
 > improvements, discards regressions, loops. You wake up to a better bot.
 
+## Product scope: general application engine
+
+This product applies to many kinds of sites, similar to a job-application
+autofill service but across loyalty, shopping, travel, jobs, memberships,
+rewards, and other categories. It must not be presented as a credit-building
+service merely because some enrolled customers have thin credit files.
+
+The archived master contains 2,724 distinct URLs in 36 categories, including
+2,482 marked auto feasible. Within that feasible cohort, the CSV declares
+1,707 email/name/phone flows, 606 email-only flows, and 169 email/name flows.
+These are inventory labels, not proof that those sites currently expose such
+simple forms. A live inventory pass must verify the direct URL, current flow,
+required fields, and completion evidence before the label drives automation.
+
+Build one reusable profile and form engine, then add adapters for recurring
+signup platforms and high-volume site families. Route by the site's observed
+flow, not only by its category. Each adapter should know how to open the real
+form, fill and validate required fields, submit at most once, and verify the
+outcome. Fall back to the generic engine when no adapter applies. Send email
+verification, CAPTCHA, ambiguous outcomes, and sensitive applications to an
+assisted queue with clear customer consent and no silent resubmission.
+
+Measure the full 2,482-URL cohort and each category separately. Track URL
+reach, form discovery, valid fill, submitted, pending verification, completed
+account/application, and browser failures. An accepted application is a
+completed application; it is not a job offer, approved credit, or a credit
+score change. Publish both fully automated and assisted completion rates and
+the number of sites excluded from each cohort.
+
 ## The Metric
 
 **Verified live signup rate = confirmed success / all eligible unique URLs**
