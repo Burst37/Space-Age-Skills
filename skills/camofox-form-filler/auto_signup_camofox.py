@@ -543,6 +543,13 @@ def run(args: argparse.Namespace) -> int:
                     client.close_tab(tab_id, user_id)
                 except Exception:
                     pass
+            # Drop the per-brand browser session too. user_id is unique per
+            # brand, so without this a 500-site run leaves 500 sessions alive
+            # inside camofox and later sites cannot open a tab at all.
+            try:
+                client.close_session(user_id)
+            except Exception:
+                pass
 
         write_result_row(
             out_path,

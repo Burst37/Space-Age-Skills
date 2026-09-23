@@ -43,11 +43,13 @@ class FakeClient:
         self.pages, self.i, self.fail_on = pages, 0, fail_on or set()
         self.typed, self.cleared, self.checked, self.selected = {}, [], [], {}
         self.tabs_open, self.sessions_closed = 0, 0
+        self.base_url = "http://fake.camofox.test"
 
     def create_tab(self, user_id, session_key, url):
         self.tabs_open += 1
         return "tab1"
 
+    def wait_for_browser(self, timeout=60): return True
     def close_tab(self, tab_id, user_id): self.tabs_open -= 1
     def close_session(self, user_id): self.sessions_closed += 1
     def snapshot_text(self, tab_id, user_id, max_pages=10): return self.pages[self.i]
@@ -237,6 +239,59 @@ class TestResultsCsv(unittest.TestCase):
             self.assertEqual(out.read_text().splitlines()[0],
                              "url,brand,program,status,worker,error,timestamp")
 
+
+
+class TestSingleProcessRun(unittest.TestCase):
+    """The single-process engine's full loop, driven through main()."""
+
+    def _drive(self, client):
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            (d / "config.json").write_text(json.dumps(CONFIG), encoding="utf-8")
+            (d / "p.csv").write_text(
+                "Category,Brand_Name,Program_Name,Direct_Sign-up_URL,"
+                "Auto_Signup_Feasible,Barriers\n"
+                "Grocery,BrandOne,Rewards,https://one.test/join,Yes,\n",
+                encoding="utf-8",
+            )
+            out = d / "r.csv"
+            orig = single.CamofoxClient
+            single.CamofoxClient = lambda **kw: client
+            try:
+                rc = single.main([
+                    "--config", str(d / "config.json"), "--csv", str(d / "p.csv"),
+                    "--output", str(out), "--delay", "0", "--captcha-timeout", "0",
+                ])
+            finally:
+                single.CamofoxClient = orig
+            with out.open(encoding="utf-8") as f:
+                rows = list(csv.DictReader(f))
+            return rc, rows
+
+    def test_session_is_closed_so_long_runs_do_not_exhaust_camofox(self):
+        # user_id is unique per brand, so a leaked session per site is what
+        # made long runs degrade until no tab could be opened at all.
+        c = FakeClient([FORM, CONFIRM])
+        self._drive(c)
+        self.assertEqual(c.tabs_open, 0)
+        self.assertEqual(c.sessions_closed, 1)
+
+    def test_session_is_closed_even_when_the_site_blows_up(self):
+        class Boom(FakeClient):
+            def snapshot_text(self, *a, **k): raise ValueError("kaboom")
+        c = Boom([FORM])
+        rc, rows = self._drive(c)
+        self.assertEqual(c.sessions_closed, 1)
+        self.assertEqual(rows[0]["status"], "failed")
+
+    def test_run_records_the_7_column_row_for_a_successful_signup(self):
+        rc, rows = self._drive(FakeClient([FORM, CONFIRM]))
+        self.assertEqual(rc, 0)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["status"], "success")
+        self.assertEqual(rows[0]["brand"], "BrandOne")
+        self.assertEqual(list(rows[0]), ["url", "brand", "program", "status",
+                                         "worker", "error", "timestamp"])
 
 
 class TestPurgeMasterCsv(unittest.TestCase):

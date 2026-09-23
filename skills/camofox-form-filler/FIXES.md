@@ -4,7 +4,7 @@
 **Commits:** `f613b25` (23 bug fixes), `67ef6fd` (drop committed `__pycache__`), `ef8975a` (`purge_master_csv.py`)
 **Files touched:** `camofox_client.py`, `auto_signup_camofox.py`, `auto_signup_camofox_parallel.py`, `loyaltybot_server.patched.py`
 **Net diff:** +769 / −186 across 9 files
-**Regression suite:** `test_camofox_engine.py` — 26 tests, all passing, no camofox server or network required (uses a scripted fake client)
+**Regression suite:** `test_camofox_engine.py` — 29 tests, all passing, no camofox server or network required (uses a scripted fake client)
 
 Run it with either:
 
@@ -71,7 +71,7 @@ were perfectly alive.
 | 13 | Any non-`CamofoxError` (ConnectionError, ReadTimeout, KeyError) escaped `process_entry` → **the worker thread died**, its popped row vanished with no result written, and the run silently continued with fewer workers. | `_request()` wraps every `requests` exception as `CamofoxError`; `process_entry` and `worker_loop` both catch broadly and always record a row. |
 | 14 | No transport retry — one network blip = permanent site failure. | 3 attempts with exponential backoff on connection errors and 408/425/429/5xx. |
 | 15 | Any post-submit page without a CAPTCHA was recorded `success`, including pages still reading "Email is required". | `verify_submission()` classifies confirmation / validation-error / form-still-present. |
-| 16 | Tabs leaked on every error path; browser sessions were **never closed at all** — 500+ sites exhausted the camofox server mid-run. | `finally: close_tab()` + `close_session()`. |
+| 16 | Tabs leaked on every error path; browser sessions were **never closed at all** — 500+ sites exhausted the camofox server mid-run. | `finally: close_tab()` + `close_session()` in both engines. |
 | 17 | `elif "captcha" in status` was checked before `elif status == "captcha_skipped"`, making the skipped branch unreachable — the dashboard's skipped counter was permanently 0. | Reordered. |
 | 18 | `_no_form_strikes` was mutated from every worker thread with no lock. | Guarded by `_dead_urls_lock`. |
 | 19 | The single-process runner wrote a 5-column CSV against the 7-column contract — unreadable by the dashboard and by `retire_repeated_failures()`. | Both engines now write the same 7 columns. |
@@ -83,6 +83,23 @@ were perfectly alive.
 **Bugs 13 and 16 are why long runs got worse over time** — workers died off one
 by one and sessions accumulated until the browser server stopped accepting new
 ones. A run that started with 5 workers could finish with 1.
+
+---
+
+## Follow-up verification pass
+
+A re-review after the fixes above caught one that had only half landed:
+
+**Bug 16 was fixed in the parallel engine only.** `auto_signup_camofox.py`
+released the tab in its `finally` block but never called `close_session()`.
+Because `user_id` is minted per brand (`loyaltybot-<brand-slug>`), every site
+opens its own browser session, so a 500-site single-process run left 500
+sessions alive inside camofox and later sites failed to open a tab at all —
+exactly the degradation bug 16 was written to stop. The existing
+"tab and session always released" test drove the *parallel* `process_entry`,
+so the single-process loop was never exercised. Now fixed, with
+`TestSingleProcessRun` driving that loop through `main()` end-to-end on both a
+successful signup and a crashing site.
 
 ---
 
@@ -132,7 +149,7 @@ before any write happens. Covered by
 
 ## Test coverage
 
-`test_camofox_engine.py` — 26 tests against a scripted fake camofox client.
+`test_camofox_engine.py` — 29 tests against a scripted fake camofox client.
 
 | Class | Covers |
 |---|---|
@@ -143,6 +160,7 @@ before any write happens. Covered by
 | `TestOutcomes` | Success requires confirmation; validation errors aren't success; CAPTCHA ≠ no-form; tab and session always released; unexpected exceptions don't escape |
 | `TestWorkerLoop` | A crashing site still records a result and keeps the worker alive; `captcha_skipped` counts as skipped, not captcha |
 | `TestResultsCsv` | The 7-column contract holds |
+| `TestSingleProcessRun` | The single-process `main()` loop end-to-end: session released on success and on a crashing site; 7-column row written |
 | `TestPurgeMasterCsv` | Dealership/dead/in-store rows purged; apply writes only survivors; source not truncated mid-read; backup intact; dry run writes nothing; `--exclude-brand` is additive |
 
 Two bugs were found in the test file itself while writing it, both worth

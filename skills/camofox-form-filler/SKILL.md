@@ -267,7 +267,7 @@ what the layer above handed it:
    rows silently; browser sessions were never closed, so long runs starved the
    camofox server and finished with fewer workers than they started with.
 
-Regression suite: `test_camofox_engine.py` — 26 tests, no server or network
+Regression suite: `test_camofox_engine.py` — 29 tests, no server or network
 needed (scripted fake client).
 
 ```
