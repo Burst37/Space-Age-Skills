@@ -9,10 +9,14 @@
 **Verified live signup rate = confirmed success / all eligible unique URLs**
 in the fixed cohort. An email verification prompt is pending, not completed.
 Use the original master CSV as denominator, including URLs never attempted.
-Baseline (production Playwright engine, real run): **24 / 511 ≈ 4.7%**.
+Historical Playwright slice: **24 / 511 ≈ 4.7%** labeled success. The later
+archive records 627 / 14,037 attempts labeled success (4.5% per attempt),
+but these labels are not independently verified and retries distort that rate.
+**There is no trustworthy completed-signup baseline yet.**
 
 Secondary metrics (diagnose *why* a run is low):
-- `no_form_rate` = `"no form fields found"` / processed  ← bot-blocked/blank pages
+- `browser_closed_rate` = browser/page/context closure / attempts
+- `no_form_rate` = `"no form fields found"` / processed
 - `timeout_rate` = `timeout` / processed                 ← slow / bot-check loops
 - `captcha_rate` = `captcha_skipped` / processed
 
@@ -44,20 +48,24 @@ Do not infer an 80–90% live rate from a form-reach experiment.
 
 Worked top-down. Each line is one experiment.
 
-1. **Engine swap → camofox.** H: most failures are pre-form bot blocks, which
-   Camoufox's C++ fingerprint spoofing defeats. Expect `no_form_rate` to drop
-   hardest. ← primary fix, already built.
-2. **Residential proxy on camofox** (`PROXY_HOST/PORT/USER/PASS`). H: geo/IP
+1. **Stabilize the browser.** Start with the new two-worker default on the
+   documented N6000 host. Compare browser closures and form reach at one and
+   two workers. The runner stops an unhealthy batch after three consecutive
+   closures; restart the browser before resuming remaining URLs.
+2. **Engine swap → camofox.** H: some reachable pages may block the earlier
+   Playwright engine. Compare form reach on a fixed sample after browser
+   stability has been measured; the anti-bot cause is unverified.
+3. **Residential proxy on camofox** (`PROXY_HOST/PORT/USER/PASS`). H: geo/IP
    fencing causes a chunk of `failed`/`timeout`. Expect timeout_rate down on
    airline/luxury/pharmacy sites.
-3. **Per-brand session warmth** — run the sample twice; the 2nd run reuses
+4. **Per-brand session warmth** — run the sample twice; the 2nd run reuses
    persisted profiles. H: success_rate rises run-2 as first-visit bot checks
    are already cleared.
-4. **`--delay` sweep** {0.5, 1.5, 3, 5}s. H: bursty traffic from one
+5. **`--delay` sweep** {0.5, 1.5, 3, 5}s. H: bursty traffic from one
    IP/profile is itself a signal; find the knee.
-5. **MAX_NAV_HOPS sweep** {1,2,3}. H: more hops reach more modal-gated forms
+6. **MAX_NAV_HOPS sweep** {1,2,3}. H: more hops reach more modal-gated forms
    but cost time; find where success_rate stops climbing.
-6. **VNC first-pass on captcha_skipped brands.** Solve once, persist, re-run.
+7. **VNC first-pass on captcha_skipped brands.** Solve once, persist, re-run.
 
 ## Scoring
 
