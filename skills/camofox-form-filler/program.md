@@ -6,10 +6,12 @@
 
 ## Product scope: general application engine
 
-This product applies to many kinds of sites, similar to a job-application
-autofill service but across loyalty, shopping, travel, jobs, memberships,
-rewards, and other categories. It must not be presented as a credit-building
-service merely because some enrolled customers have thin credit files.
+This product is a multi-category application and enrollment engine. Job
+applications are one lane; the main inventory also includes restaurant and
+grocery rewards, retail loyalty programs, free mail-order catalog requests,
+travel memberships, community memberships, and other categories. It must not
+be presented as a credit-building service merely because some enrolled
+customers have thin credit files.
 
 The archived master contains 2,724 distinct URLs in 36 categories, including
 2,482 marked auto feasible. Within that feasible cohort, the CSV declares
@@ -25,6 +27,12 @@ form, fill and validate required fields, submit at most once, and verify the
 outcome. Fall back to the generic engine when no adapter applies. Send email
 verification, CAPTCHA, ambiguous outcomes, and sensitive applications to an
 assisted queue with clear customer consent and no silent resubmission.
+
+An outcome has different evidence in each lane: an active loyalty account for
+restaurant or retail rewards, a request receipt for a free catalog, a member
+ID or confirmed account for travel, and an application receipt for a job. Do
+not call form completion itself a success, and do not conflate catalog mailing
+with credit reporting.
 
 Measure the full 2,482-URL cohort and each category separately. Track URL
 reach, form discovery, valid fill, submitted, pending verification, completed
