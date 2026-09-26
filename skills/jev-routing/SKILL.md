@@ -1,6 +1,6 @@
 ---
 name: jev-routing
-description: Route cheap, repetitive judgments to a System One model (TypeSafe's Jev) and reserve frontier models for reasoning, planning, and generation. Use when a pipeline or agent loop is burning Opus/GPT-class tokens on work that reduces to one label or one probability — relevance filtering, skill/subagent routing, tool-output gating, lead qualification, guardrails. Covers the four integration seams that actually exist inside closed harnesses (Claude Code, Codex, Cursor, Antigravity), the eleven documented failure modes that must never be routed to Jev, and the mandatory escalation contract. Read before wiring any System One call into a hot path.
+description: Route cheap, repetitive judgments to a System One model (TypeSafe's Jev) and reserve frontier models for reasoning, planning, and generation. Use when a pipeline or agent loop is burning Opus/GPT-class tokens on work that reduces to one label or one probability — relevance filtering, ranking, extraction, lead qualification, guardrails. Covers which integration seams actually work inside closed harnesses (Claude Code, Codex, Cursor, Antigravity) and which look available but are not, the eleven documented failure modes that must never be routed to Jev, and the mandatory escalation contract. Read before wiring any System One call into a hot path.
 metadata:
   origin: Authored for Space Age AI Solutions. Grounded in TypeSafe's live docs (docs.typesafe.ai, model jev-1.13.0) plus independent measurements from LangChain and Parallel.ai. Written 2026-09-21, six days after Jev's public launch — see the Maturity Gate section before shipping this to production.
   license: MIT
@@ -62,29 +62,49 @@ next," "is this search result relevant," or "should I escalate." Those decisions
 inside the harness and are not exposed. Any design that assumes Jev transparently
 intercepts the agent's internal reasoning is not buildable without forking the harness.
 
-Four seams exist today:
+**In Claude Code specifically, exactly one seam is robust: an MCP tool.** The others
+are narrower than they look. Verified against Claude Code's hook contract:
 
-| Seam | What it can do | Saves frontier tokens? |
+| Seam | What it can actually do | Saves frontier tokens? |
 |---|---|---|
-| **MCP tool** | Agent *deliberately* calls Jev for a judgment | Only when Jev replaces a large tool result the model would otherwise reason over — the decision to call it already cost a round-trip |
-| **PostToolUse hook** | Filter/compress a tool result before it enters context | **Yes — this is the highest-leverage seam.** No model participation required |
-| **PreToolUse hook** | Gate a command or tool call (allow/deny/flag) | Indirectly — prevents bad calls and their error-recovery loops |
-| **Skill / subagent routing** | Rank which skill or subagent to dispatch | Yes at large rosters — see below |
+| **MCP tool** | Agent *deliberately* calls Jev for a judgment | **No.** Deciding to call it already cost a frontier round-trip. It adds a capability, not a discount |
+| **PreToolUse hook** | `allow` / `deny` / `ask`, and rewrite tool arguments via `updatedInput` | Indirectly — prevents bad calls and their error-recovery loops. **But see the fail-open warning below** |
+| **PostToolUse hook** | Observe the result and append `additionalContext`. **Cannot** modify, replace, or suppress tool output | **No.** The original result reaches context unchanged regardless |
+| **Skill / subagent routing** | **Nothing — no interception point exists** | N/A |
 
-**Skill routing is the one agentic use with published numbers.** TypeSafe's
-`skill_suggestion` cookbook, measured on a 182-skill roster: wrong loads 16.8% → 7.3%,
-needless loads 9.8% → 4.0%. Two-stage — a wide `Choice` rank over truncated
-descriptions with a 0.30 gate, then a rerank of the top 3 against full descriptions.
-Oracle ceiling is 2.5%/1.2%, so roughly half the remaining error is the method's floor,
-not tuning you can recover.
+### Three corrections worth stating plainly
 
-Two cautions on that result:
-- It only pays at large rosters. Below ~30 skills the frontier model picks correctly on its own and you've added latency for nothing.
-- **Inject the suggestion in a separate block after the roster, never inside it** — rewriting the roster invalidates prefix caching, and the cache you destroy costs more than the judgment you saved.
+**1. You cannot filter tool output before it costs context.** A PostToolUse hook's only
+return field is `additionalContext`, a string *appended* to the model's understanding.
+There is no `modifiedOutput` or `suppressedOutput`. The data flow is: tool runs → result
+stored → hook runs → both the original result *and* your context reach the model. So
+"use a cheap model to compress large tool output" is not buildable in Claude Code.
+
+**2. PreToolUse hooks fail open.** If the hook times out or hangs — an HTTP call to Jev
+that never returns — the tool call is **not** blocked; it proceeds through the normal
+permission flow. A Jev PreToolUse hook therefore cannot be a safety gate: break the
+network and it silently stops gating. This is an independent reason for the §4 #8 rule,
+on top of the injection risk.
+
+**3. Skill and subagent selection have no hook.** That choice is entirely internal to
+the model. TypeSafe's `skill_suggestion` cookbook reports real numbers on a 182-skill
+roster (wrong loads 16.8% → 7.3%, needless loads 9.8% → 4.0%, oracle ceiling 2.5%/1.2%,
+two-stage `Choice` rank with a 0.30 gate then a top-3 rerank) — but that pattern is only
+implementable **in a harness you control**, such as `web-agent`. It is not wireable into
+Claude Code.
+
+If you do implement it in your own harness, two cautions carry over: it only pays above
+~30 skills, and the suggestion must go in a separate block **after** the roster, never
+inside it — rewriting the roster invalidates prefix caching, and the cache you destroy
+costs more than the judgment you saved.
+
+### The bottom line for Claude Code
 
 Measured integration cost from a community Claude Code router: **166–420ms added per
-prompt**. That router defaults to off. Treat added latency as the real price; the token
-saving is often the smaller number.
+prompt**, and that router ships defaulting to off. Combined with the above: **connecting
+Jev to Claude Code does not reduce frontier token spend.** It gives the agent a fast,
+cheap, highly repeatable judgment tool it can choose to call. That is worth having — but
+if the goal is cost, the place to spend the effort is a harness where you own the loop.
 
 ---
 
@@ -136,7 +156,7 @@ vendor-documented, not speculation:
 
 **#8 is a security boundary, not a quality note.** Jev treats input as neutral data,
 and injected instructions can steer it. If you gate tool calls or filter tool output
-with Jev, you have put a promptinjectable component on your permission path. Scraped
+with Jev, you have put a prompt-injectable component on your permission path. Scraped
 pages, PR comments, issue bodies, and CI logs are all attacker-influenced. **Never let
 a Jev judgment alone authorize a destructive or irreversible action** — it advises, a
 deterministic rule or a human decides.
@@ -200,8 +220,8 @@ rate-limit tightening on their side is an outage on yours.
 
 **Ship it here first:**
 1. Evaluation and scoring harnesses (repeatability is the measured win, and nothing breaks if it's down)
-2. `PostToolUse` output filtering behind a bypass
-3. Offline/batch enrichment where latency and availability don't matter
+2. Offline/batch enrichment where latency and availability don't matter
+3. A harness you own (`web-agent`), where you can call it inside the loop rather than waiting for a frontier model to decide to
 
 **Not yet:**
 - Anything in a customer-facing synchronous path
@@ -219,9 +239,9 @@ the implementation is a one-file change.
 
 Highest-value candidates in our stack, in order:
 
-1. **Skill routing** — our roster is large enough for the cookbook's numbers to apply. Separate block after the roster; preserve prefix caching.
-2. **`lead-to-brief` qualification** — "does this lead match the ICP" is a `Noul`; "which archetype" is a `Choice`. High volume, error detectable at the brief stage. Strong fit.
-3. **`sa-deep-research-engine` source filtering** — relevance judgment over already-retrieved candidates. Classic rerank. Measure against no-rerank first (§5).
+1. **`lead-to-brief` qualification** — "does this lead match the ICP" is a `Noul`; "which archetype" is a `Choice`. High volume, error detectable at the brief stage, and it runs in our own code rather than inside a closed harness. Strongest fit.
+2. **`sa-deep-research-engine` source filtering** — relevance judgment over already-retrieved candidates. Classic rerank. Measure against no-rerank first (§5).
+3. **Skill routing — `web-agent` only.** The cookbook's numbers need a roster our size, but there is no interception point in Claude Code (§2). Implementable only in a harness we own.
 4. **`local-business-seo` category matching** — bounded set, stable. **Candidate for a trained classifier instead**, not Jev.
 5. **Guardrails on generated copy** — `outreach-copywriter` and `ai-content-creator` output checks, as advisory flags feeding a human or frontier review. Never as the sole gate.
 
