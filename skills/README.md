@@ -18,6 +18,12 @@ license (all four originals are MIT), and documents exactly which sections are
 carried over vs. newly added — so it's auditable which parts are "supercharge"
 and which are the original author's work.
 
+## Flagship production skills
+
+| Skill | What it is |
+|-------|-----------|
+| [`cinematic-website-builder`](./cinematic-website-builder/SKILL.md) | v3 forensic rebuild — runtime kernel + 36 isolated modules, asset pipeline, `assemble.mjs` single-file builder and `verify.mjs` 5-pass Playwright QA gate. Stage 3–4 of the SA site pipeline. Audit: [`forensic-audit-v2.md`](./cinematic-website-builder/references/forensic-audit-v2.md) |
+
 ## Reference repos used as inspiration
 
 - `multica-ai/andrej-karpathy-skills` — behavioral guidelines for LLM coding (think-before-coding, simplicity, surgical changes, goal-driven execution)
