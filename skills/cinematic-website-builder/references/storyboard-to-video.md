@@ -5,7 +5,8 @@ library (Google Drive): *Storyboard Cinematic Video Prompt for GPT Image 2.0* (N
 *GPT Image 2 Prompt for Storyboard — Endless Bedroom*, *GPT Image 2 Prompt for storyboard (Haze)*,
 *Chatgpt Image 2.0 Storyboard prompt*, *Northgate UGC storyboard prompt*, *Video and Storyboard
 Prompt for GPT IMAGE 2.0 and SEEDANCE 2.0*, *Consistent character with Storyboard sheet prompt*,
-*Character Identity and Storyboard Prompt Sheet*, and the *Seedance 2.5 Director's Engine*.
+*Character Identity and Storyboard Prompt Sheet*, *Character Reference Sheet/Prompt/Storyboard Combo*
+(Banyu), and the *Seedance 2.5 Director's Engine*.
 Models are the current roster (`asset-pipeline.md` §3); tokens come from `prompt-tokens.md`.
 
 ## 1. When to use it
@@ -30,6 +31,51 @@ Models are the current roster (`asset-pipeline.md` §3); tokens come from `promp
 
 "The more detailed the identity sheet, the less Seedance drifts." Always build the sheet first; the
 storyboard controls staging only, never identity.
+
+### 2A. Identity sheet prompt (ChatGPT Images 2.5) — from *Character Reference Sheet/Prompt/Storyboard Combo*
+
+```
+Create a 16:9 image. Use the provided image as the authoritative character reference. It controls
+face, hair, wardrobe, proportions, body type, and silhouette. Do not redesign, age-shift, beautify,
+or stylize away from it.
+
+[SHEET CARD]
+Create a compact designed masthead, not a table.
+NAME: […]
+ROLE LINE: […]
+CORE TRAITS: […four words]
+VISUAL SIGNATURE: […the 3–5 details that identify them at a glance]
+
+[SHEET CONTENTS]
+Lay out a professional animation production character sheet on a clean off-white studio background:
+- HERO POSE: full-body character at largest scale, […signature pose + signature effect/prop]
+- TURNAROUND: front, three-quarter, side, and back views at identical scale and height line
+- EXPRESSION STUDIES: 5 head studies — […the five emotions the film needs]
+- ACTION POSES: 3 small dynamic poses showing […the three key actions in the storyboard]
+- SILHOUETTE STUDIES: small solid-black silhouette row proving readable shape
+- DETAIL CALLOUTS: zoomed crops of […wardrobe closures, hands, footwear, key prop, effect crop]
+- COLOR PALETTE: labeled swatch chips of […wardrobe, skin and hair tones, accent/effect color]
+
+[SHEET PURITY]
+Flat catalog layout, clean typographic labels, generous whitespace. No scene background, no
+environment, no narrative panels, no duplicate inconsistent versions, no extra characters,
+no watermark, no logo.
+```
+
+**Product version** (e-commerce, SaaS device, packaging): swap TURNAROUND for front / ¾ / side /
+back / top at identical scale, EXPRESSION STUDIES for material close-ups (finish, texture, seams,
+logo placement), ACTION POSES for 3 in-use states; keep SILHOUETTE, DETAIL CALLOUTS and PALETTE.
+
+**Environment reference** (optional second anchor): a clean plate of the location — for web, the
+client's real space or an approved ChatGPT Images 2.5 plate. In the storyboard's REFERENCE PRIORITY:
+*"First provided image controls C1 identity; second provided image controls environment anchors:
+[floor, fixed landmarks, skyline, practical lights, surfaces]."* Then name those anchors' screen
+positions in ENVIRONMENT LOCK and SPATIAL CONTINUITY LOCK (e.g. "tanks stay screen right, skyline
+background, practical light screen left, wet deck foreground").
+
+**MUST READ contrast:** state what the sequence IS and what it is NOT ("a disciplined pencak silat
+power-reveal … NOT generic waterbending, slow tai-chi flow, or a dance number") — it stops the
+model defaulting to the nearest cliché.
 
 ## 3. Storyboard sheet prompts (ChatGPT Images 2.5)
 
