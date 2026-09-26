@@ -19,6 +19,8 @@ skills that don't exist. Full report: `references/forensic-audit-v2.md`.
 | `runtime/cwb-modules.{js,css}` | 36 modules, one `@module` block each |
 | `SKILL.md` | Loader stub (the filename every skill loader requires) — points here |
 | `templates/starter.html` | Page skeleton: SEO head, fail-open gate, island nav, hero |
+| `templates/direction-brief.yaml` | P0 output: answers, analyzed references, synthesis, proposed tokens |
+| `references/direction-intake.md` | P0 questionnaire (uploads: images, links, videos) + reference-analysis protocol |
 | `templates/build-manifest.yaml` | Per-build plan: tier, modules, budgets, assets, gate status |
 | `scripts/assemble.mjs` | Inline only the modules + GSAP plugins the page uses → one file |
 | `scripts/verify.mjs` | 5-pass Chromium QA → `qa/REPORT.md`, exit 1 on blockers |
@@ -33,17 +35,17 @@ Load reference files when their phase starts — not all up front.
 ## 1. Pipeline position and routing
 
 ```
-S1 BRIEF lead-to-brief ─┐
-brand-extractor (URL) ──┼─► S2 DIRECTION ui-ux-designer (+ ui-ux-pro-max DB)
-                        │     [S2.5 google-stitch — Premium only]
-                        └─► S3 BUILD  ← THIS SKILL ─► S4 QA GATE (this skill) ─► S5 sa-deploy-operator
-                                                               ─► S6 voice ─► S7 outreach ─► S8 log
+P0 DIRECTION INTAKE (this skill, always first) ◄── uploads: images · links · videos
+   pre-filled by: lead-to-brief · brand-extractor · ui-ux-designer handoff (if they exist)
+   → Direction Brief → P1–P4 BUILD (this skill) → P5 QA GATE (this skill)
+   → S5 sa-deploy-operator → S6 voice → S7 outreach → S8 log
 ```
 
 Route each concern to the skill that owns it. Pull on demand; never restate their content here.
 
 | Concern | Owner (verified to exist) | When to load |
 |---|---|---|
+| Analyzing uploaded references (images, sites, videos, Figma) | `brand-extractor`, `extract-design-system`, `defuddle`, `firecrawl-mcp`, `sa-watch`, `sa-video-skill-extractor`, `sa-youtube-cli`, `mobbin-operator`, Figma MCP, Higgsfield `video_analysis_create` | P0 intake |
 | Brief from a lead row | `lead-to-brief` | pipeline builds |
 | Client brand tokens from a URL | `brand-extractor` / `extract-design-system` | client has a site |
 | Creative strategy, references, Site DNA | `spaceage-savo-creative-director-os` | new brand / no direction |
@@ -82,15 +84,16 @@ Route each concern to the skill that owns it. Pull on demand; never restate thei
 
 ## 2. Workflow — seven phases, each with an exit condition
 
-**P0 — Intake.** Identify the source: Handoff Package / Stitch brief / lead brief / client URL /
-raw request. If moodboard, palette, fonts and section list are not all locked → route to
-`ui-ux-designer` (or run the 6 questions below for a fast track). *Exit: inputs named.*
+**P0 — Direction Intake (always first, every build).** Run the questionnaire in
+`references/direction-intake.md` in three rounds: business, proof and personality; then visual,
+motion and content references; then practical details. The person answers and **uploads references —
+images, website links, videos/screen recordings** — each with a note on what they like or want avoided.
+Analyze every reference with the protocol in that file (palette, type, layout, motion inventory
+mapped to catalog modules), then compile `templates/direction-brief.yaml` and show a one-screen
+summary. Existing lead briefs, Brand Token Packages or Handoff Packages pre-fill answers; they
+shorten the intake, never replace it. *Exit: Direction Brief `confirmed: true`.*
 
-> Fast track (only if the user wants speed over a full direction pass): 1 brand personality ·
-> 2 the one feeling on first load · 3 audience + primary action · 4 scroll story beats ·
-> 5 the signature moment · 6 proof the client actually has (reviews, numbers, work).
-
-**P1 — Direction lock.** Write the Design Read (taste-pro §0): audience, promise, three dials
+**P1 — Direction lock.** From the confirmed Direction Brief, write the Design Read (taste-pro §0): audience, promise, three dials
 (VARIANCE / MOTION / DENSITY), moodboard letter, tokens, banned-list check. Confidence < 0.7 on
 any line → ask one batched question. *Exit: tokens filled into `:root`.*
 
@@ -216,16 +219,18 @@ Regression-test the runtime itself: `node tests/make-assets.mjs && node scripts/
 6. Total transfer (desktop, first load) within the tier budget: Factory ≤ 900 KB, Enhanced ≤ 1.5 MB, Cinematic ≤ 3 MB, Flagship by manifest.
 7. `verify.mjs` exit 0 and `qa/REPORT.md` alongside the file.
 
-## 11. Handoff Package fields read
+## 11. Inputs read
 
 ```yaml
+direction_brief (P0, primary)                 → everything below is pre-fill for it
+direction_brief.references[].findings         → P1 tokens, P2 layout + motion plan
+direction_brief.synthesis.hard_bans           → never ship these
+
 handoff_package.brand_personality.moodboard   → P1 Design Read, tokens
 handoff_package.design_system                 → :root tokens (color, type, radius)
 handoff_package.design_system.display_font_type → references/ai-font-packs.md
 handoff_package.modules_selected              → map to v3 names via references/modules.md (v2 numbers 01–30 are preserved)
 handoff_package.user_flow                     → section order / beat sheet
-website_build_brief.stitch_variation_chosen   → layout reference
-website_build_brief.sections[].layout_notes   → honor
 build_brief (lead-to-brief)                   → business facts, category, city, SEO keywords, deploy slug
 ```
 

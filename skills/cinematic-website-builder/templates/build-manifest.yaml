@@ -2,7 +2,8 @@
 project:
   client: ""                 # legal business name
   slug: ""                   # deploy slug (lead-to-brief build_brief.deploy)
-  source: handoff_package    # handoff_package | stitch_brief | lead_brief | client_url | fast_track
+  direction_brief: direction-brief.yaml   # P0 output — required, confirmed: true
+  prefilled_from: []         # lead_brief | brand_token_package | handoff_package
   tier: factory              # factory | enhanced | cinematic | flagship
   path: standard             # standard (single-file) | premium (sa-figma-framer-spline) | platform (director)
 
