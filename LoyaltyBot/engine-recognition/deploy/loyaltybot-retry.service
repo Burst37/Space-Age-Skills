@@ -1,0 +1,23 @@
+# Companion oneshot: re-attempts only sites that FAILED in prior runs
+# (auto-signup.py --retry). Pair with loyaltybot-retry.timer for a weekly
+# sweep — new recognition/reliability fixes or a transient site outage can
+# turn yesterday's failure into today's success.
+#
+# Install: see loyaltybot-retry.timer
+
+[Unit]
+Description=LoyaltyBot retry pass (failed sites only)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=CHANGE_ME
+WorkingDirectory=/opt/loyaltybot
+EnvironmentFile=/opt/loyaltybot/.env
+ExecStart=/opt/loyaltybot/.venv/bin/python /opt/loyaltybot/auto-signup.py --headless true --workers 4 --retry
+TimeoutStartSec=0
+Nice=5
+
+[Install]
+WantedBy=multi-user.target

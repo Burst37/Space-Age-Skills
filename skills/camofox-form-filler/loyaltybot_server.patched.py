@@ -136,7 +136,7 @@ def write_cfg(c):
 
         # system
         "capsolver_api_key": g("capsolver_api_key", global_capsolver()),
-        "workers":           int(g("workers", 5)),
+        "workers":           int(g("workers", 2)),
         "delay_seconds":     2.0,
         "results_path":      str(res_path(c["id"])),
         "progress_path":     str(prog_path(c["id"])),
@@ -153,7 +153,8 @@ def _watch_process(cid, proc):
         _, stderr = proc.communicate()
         if proc.returncode != 0 and stderr:
             # Keep last 800 chars of error
-            _errors[cid] = stderr.decode("utf-8", errors="replace")[-800:]
+            with _lock:
+                _errors[cid] = stderr.decode("utf-8", errors="replace")[-800:]
     except Exception:
         pass
 
@@ -178,7 +179,7 @@ def count_previous_results(cid):
     return counts
 
 
-def do_launch(cid, mode="live", workers=5, limit=0):
+def do_launch(cid, mode="live", workers=2, limit=0):
     c = find_client(cid)
     if not c:
         return {"ok": False, "error": "Client not found"}
@@ -231,8 +232,12 @@ def do_launch(cid, mode="live", workers=5, limit=0):
             # Camofox engine: shares dead-urls.json with the Playwright bot.
             # It has no --manual/--headless flags (Camoufox visibility is set
             # by the camofox-browser server, e.g. ENABLE_VNC=1), so manual mode
-            # falls back to a normal live run here.
+            # runs live -- but still on ONE worker, so a human watching over
+            # noVNC has a single tab to follow instead of five racing ones.
             cmd += ["--dead-urls", str(BASE_DIR / "dead-urls.json")]
+            if mode == "manual":
+                workers = 1
+                cmd[cmd.index("--workers") + 1] = "1"
             if limit > 0:
                 cmd += ["--limit", str(limit)]
         else:
@@ -483,7 +488,7 @@ class Handler(BaseHTTPRequestHandler):
         self._json(do_launch(
             p.get("id"),
             p.get("mode", "live"),
-            int(p.get("workers", 5)),
+            int(p.get("workers", 2)),
             int(p.get("limit", 0)),
         ))
 
@@ -493,7 +498,7 @@ class Handler(BaseHTTPRequestHandler):
             results.append(do_launch(
                 c["id"],
                 p.get("mode", "live"),
-                int(p.get("workers", 5)),
+                int(p.get("workers", 2)),
                 int(p.get("limit", 0)),
             ))
         self._json({"ok": True, "results": results})
@@ -655,7 +660,7 @@ if __name__ == "__main__":
                     "skills":                cfg.get("skills", ""),
                     "linkedin_url":          cfg.get("linkedin_url", ""),
                     "capsolver_api_key":     cfg.get("capsolver_api_key", ""),
-                    "workers":               cfg.get("workers", 5),
+                    "workers":               cfg.get("workers", 2),
                 }
                 save_clients([c])
                 write_cfg(c)
