@@ -846,3 +846,88 @@ CWB.define('intro-gate', {
   }
 });
 /* @end intro-gate */
+
+/* @module video-hero | id: 37 | plugins: — | cost: 4 */
+CWB.define('video-hero', {
+  init: function (el, api) {
+    /* HTML carries autoplay/muted/loop/playsinline + poster, so the video plays even if JS
+       fails. JS adds: reduced-motion + save-data → poster only, offscreen pause, and a
+       visible pause control (WCAG 2.2.2 for motion > 5 s). */
+    var video = api.$('.vhero__video'), btn = api.$('.vhero__toggle');
+    if (!video) return;
+    var KEY = 'cwb-hero-paused', userPaused = false;
+    try { userPaused = sessionStorage.getItem(KEY) === '1'; } catch (e) {}
+    function setBtn() {
+      if (!btn) return;
+      var paused = video.paused;
+      btn.setAttribute('aria-pressed', String(paused));
+      btn.setAttribute('aria-label', paused ? 'Play background video' : 'Pause background video');
+      el.classList.toggle('is-paused', paused);
+    }
+    function play() { var p = video.play(); if (p && p.catch) p.catch(function () { setBtn(); }); }
+    if (api.cond.reduce || api.env.saveData || userPaused) {
+      video.removeAttribute('autoplay'); video.pause(); setBtn();
+    }
+    if (btn) api.on(btn, 'click', function () {
+      if (video.paused) { userPaused = false; play(); } else { userPaused = true; video.pause(); }
+      try { sessionStorage.setItem(KEY, userPaused ? '1' : '0'); } catch (e) {}
+      setBtn();
+    }, false);
+    api.on(video, 'play', setBtn); api.on(video, 'pause', setBtn);
+    var io = new IntersectionObserver(function (e) {
+      if (!e[0].isIntersecting) { if (!video.paused) video.pause(); }
+      else if (!userPaused && !api.cond.reduce && !api.env.saveData) play();
+    }, { threshold: 0.05 });
+    io.observe(el);
+    setBtn();
+    return function () { io.disconnect(); };
+  }
+});
+/* @end video-hero */
+
+/* @module voice-agent | id: 38 | plugins: — | cost: 0 */
+CWB.define('voice-agent', {
+  init: function (el, api) {
+    /* The provider SDK loads only when the visitor presses the button — zero cost on page load.
+       Only the PUBLIC key belongs here. Private keys never ship in client code. */
+    var btn = api.$('.voice__btn'), status = api.$('.voice__status'), fallback = api.$('.voice__fallback');
+    var provider = api.data('provider', 'vapi');
+    var pub = String(api.data('public-key', '')), assistant = String(api.data('assistant-id', ''));
+    var configured = provider === 'custom' || (pub && assistant && !/\{\{|^pk_x+$/i.test(pub + assistant));
+    var client = null, active = false, busy = false;
+    function say(t) { if (status) status.textContent = t; }
+    function state(s) { el.setAttribute('data-state', s); btn.setAttribute('aria-pressed', String(s === 'live')); }
+    function fail(msg) { busy = false; active = false; state('error'); say(msg); if (fallback) fallback.hidden = false; }
+    state('idle');
+    if (!configured) { console.warn('CWB voice-agent: missing public key / assistant id — showing fallback only'); fail(''); return; }
+
+    function load() {
+      if (provider === 'custom') return Promise.resolve(null);
+      return import('https://cdn.jsdelivr.net/npm/@vapi-ai/web@2.7.1/+esm').then(function (m) {
+        var Vapi = (m.default && m.default.default) || m.default;
+        var c = new Vapi(pub);
+        c.on('call-start', function () { busy = false; active = true; state('live'); say('Connected — go ahead and talk.'); });
+        c.on('call-end', function () { active = false; state('idle'); say('Call ended.'); });
+        c.on('volume-level', function (v) { el.style.setProperty('--level', Math.min(1, v * 1.6).toFixed(3)); });
+        c.on('error', function (e) { console.error('voice-agent', e); fail('Voice is unavailable right now.'); });
+        return c;
+      });
+    }
+    api.on(btn, 'click', function () {
+      if (busy) return;
+      if (active) { busy = true; say('Ending call…'); (client && client.stop ? client.stop() : Promise.resolve()).finally(function () { busy = false; }); return; }
+      busy = true; state('connecting'); say('Connecting… allow microphone access when asked.');
+      (client ? Promise.resolve(client) : load()).then(function (c) {
+        client = c;
+        if (provider === 'custom') {
+          /* Gemini Flash Live / own runtime: sa-voice-agent-builder listens for this event. */
+          el.dispatchEvent(new CustomEvent('cwb:voice-start', { bubbles: true, detail: { el: el } }));
+          busy = false; return;
+        }
+        return c.start(assistant);
+      }).catch(function (e) { console.error('voice-agent', e); fail('Voice is unavailable right now.'); });
+    }, false);
+    return function () { if (client && active && client.stop) client.stop(); };
+  }
+});
+/* @end voice-agent */
