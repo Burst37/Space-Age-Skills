@@ -84,8 +84,9 @@ Routing rules:
 
 Record the choice per slot in `assets.yaml` (`model:` and `platform:`) so a rebuild regenerates with the same model.
 
-**Multi-shot hero films and T3 scroll films** follow `references/storyboard-to-video.md`:
-identity sheet → storyboard sheet (ChatGPT Images 2.5) → Seedance handoff prompt.
+**Storyboard generator (on deck):** when a video slot needs several shots or a story (a hero film, a
+product reveal, a T3 scroll film), pull in `references/storyboard-to-video.md` — identity sheet →
+storyboard sheet (ChatGPT Images 2.5) → Seedance handoff. Single-shot loops skip it.
 
 Always generate the **anchor still first**, approve it, then animate from it (image-to-video).
 Text-to-video for a hero produces identity/geometry drift you can't fix in CSS.

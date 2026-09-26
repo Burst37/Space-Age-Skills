@@ -3,7 +3,7 @@
 ## Unreleased
 - **Model roster updated** (asset-pipeline §3): Higgsfield MCP default, OpenArt as second platform. Images: ChatGPT Images 2.5 (default, gold standard), Nano Banana Pro, Grok Imagine 1.5 (OpenArt). Video: MiniMax H3 (default hero loop, start = end frame), Seedance 2.5 (narrative/scroll film, extension), Seedance 2.0 (identity-consistent, 4K). Per-slot `platform:` / `model:` in `assets.yaml`.
 - **Prompt tokens** (`references/prompt-tokens.md`): meta + cinematography token library from Mr. Black's Meta Token guide, mapped to the current roster, with shot recipes per web slot.
-- **Storyboard → video** (`references/storyboard-to-video.md`): identity sheet → previs storyboard sheet → Seedance handoff, from Mr. Black's Drive prompt library and the Seedance 2.5 Director's Engine, adapted for hero films and scroll films.
+- **Storyboard generator, on deck** (`references/storyboard-to-video.md`): pulled in only when a hero or section video needs several shots or a story; identity sheet → previs storyboard sheet → Seedance handoff, from Mr. Black's Drive prompt library and the Seedance 2.5 Director's Engine, adapted for hero films and scroll films.
 - **Runtime:** `video-hero` and `voice-agent` modules added (house standard, WIP).
 
 ## 3.1.0 — 2026-09-26

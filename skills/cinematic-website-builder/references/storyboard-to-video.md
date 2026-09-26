@@ -1,6 +1,10 @@
-# Storyboard → Video — the Space Age method (asset phase)
+# Storyboard Generator — on deck (asset phase)
 
-Mr. Black's production method for every multi-shot video on a site, distilled from his prompt
+**This is an on-deck tool, not a pipeline step.** Most builds never touch it. Pull it in only when a
+section's video needs more than one shot or has to tell a story — typically the hero. It can also be
+called on its own: "storyboard this hero", "give me a storyboard for the product section".
+
+Mr. Black's production method for multi-shot video, distilled from his prompt
 library (Google Drive): *Storyboard Cinematic Video Prompt for GPT Image 2.0* (NOX/LUMOS),
 *GPT Image 2 Prompt for Storyboard — Endless Bedroom*, *GPT Image 2 Prompt for storyboard (Haze)*,
 *Chatgpt Image 2.0 Storyboard prompt*, *Northgate UGC storyboard prompt*, *Video and Storyboard
@@ -9,12 +13,20 @@ Prompt for GPT IMAGE 2.0 and SEEDANCE 2.0*, *Consistent character with Storyboar
 (Banyu), and the *Seedance 2.5 Director's Engine*.
 Models are the current roster (`asset-pipeline.md` §3); tokens come from `prompt-tokens.md`.
 
-## 1. When to use it
+## 1. When to pull it in
+
+Decide per video slot while filling `assets.yaml` (P3). Default is **no storyboard**.
+
+| Video slot needs… | Storyboard? | Path |
+|---|---|---|
+| One continuous shot — a loop, a slow push-in, ambient motion (most hero sections) | **No** | Anchor still → MiniMax H3, start frame = end frame |
+| Several shots, a reveal, a character or product doing something, a mini story | **Yes** | Full chain below |
+
+Typical "yes" cases:
 
 | Asset | Path |
 |---|---|
-| Single-shot hero **loop** (most SMB sites) | No storyboard. Anchor still → MiniMax H3, start frame = end frame. |
-| Multi-shot **hero film** (brand, AI services, hospitality, launches) | **Full chain below.** |
+| Multi-shot **hero film** (brand, AI services, hospitality, launches) | Full chain below. |
 | **T3 scroll film** (`frame-scrub`, `sticky-narrative`) | Full chain; each panel = one scroll beat. |
 | Product ad / campaign section | Full chain; commercial board (§3B) for client sign-off, previs board (§3A) for generation. |
 
