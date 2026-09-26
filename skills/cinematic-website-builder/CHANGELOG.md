@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+- **Model roster updated** (asset-pipeline §3): Higgsfield MCP default, OpenArt as second platform. Images: Nano Banana Pro (default), ChatGPT Images 2.5, Grok Imagine 1.5 (OpenArt). Video: MiniMax H3 (default hero loop, start = end frame), Seedance 2.5 (narrative/scroll film, extension), Seedance 2.0 (identity-consistent, 4K). Per-slot `platform:` / `model:` in `assets.yaml`.
+- **Runtime:** `video-hero` and `voice-agent` modules added (house standard, WIP).
+
 ## 3.1.0 — 2026-09-26
 - **Removed Google Stitch** from the pipeline.
 - **New P0 Direction Intake**, always the first step: two-round questionnaire (no deadline/approval/revision filler), with image / link / video uploads as design and UI/UX direction, a per-type reference-analysis protocol, and a `direction-brief.yaml` output confirmed before any build work.

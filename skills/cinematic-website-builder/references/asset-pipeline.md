@@ -35,26 +35,52 @@ slots:
     duration_s: 8
     loopable: true
     faces: false             # background loops: no faces
+    platform: higgsfield     # higgsfield | openart
+    model: minimax_h3        # from the roster in §3
     alt: "…specific description…"
     status: pending          # pending → generated → qc_pass → encoded → hosted
 ```
 
-## 3. Generate — route by capability, resolve the model at run time
+## 3. Generate — the Space Age model roster
 
-Model IDs drift. Never hard-code them. Ask Higgsfield for the current best fit:
+**Platforms:** Higgsfield (default — scripted through the Higgsfield MCP, fully automatable) and
+OpenArt (web app — for models Higgsfield doesn't carry, or when the client's work already lives there).
+Either way, every output is downloaded and re-hosted under `/assets/` (§7).
 
-```
-mcp__Higgsfield__models_explore { action: "recommend", ... describe: type, aspect, duration, quality tier }
-```
+### Image models
 
-| Need | Capability to request | Prompt skill (SA) |
+| Model | Higgsfield id | Use it for | Why |
+|---|---|---|---|
+| **Nano Banana Pro** (default) | `nano_banana_pro` | hero anchor stills, product, editorial, people, anything with legible text | top photoreal quality, text rendering, 4K, 16:9 · 9:16 · 21:9 |
+| **ChatGPT Images 2.5** | `gpt_image_2_5` | editing/compositing the client's real photos, graphic and typographic assets, OG images, UI mockups | strongest instruction-following edits, reference images, odd aspects (27:16, 16:27) |
+| **Grok Imagine 1.5** | OpenArt (not on Higgsfield; nearest there: `grok_image_2_0`) | bold, expressive, high-contrast art direction — brand, AI-services and creative sites | the look Nano Banana tends to play too safe on |
+
+### Video models
+
+| Model | Higgsfield id | Use it for | Why |
+|---|---|---|---|
+| **MiniMax H3** (default) | `minimax_h3` (`minimax_h3_max` for fast drafts) | the house-standard **hero loop** | start + end keyframes: pass the anchor still as *both* → seamless loop; 2K; 21:9 |
+| **Seedance 2.5** | `seedance_2_5` | narrative heroes, T3 scroll-film shots, extending a clip for a longer scrub, editing a generated clip | text-to-video + omni-reference, video extension and video edit, up to 1080p |
+| **Seedance 2.0** | `seedance_2_0` | product and people who must stay identical across shots (multi-SKU, founders, artists), 4K masters | identity consistency, 4K, native audio if ever needed |
+
+Routing rules:
+- **Image → video, never text → video for a hero.** Anchor still (Nano Banana Pro) → approve → animate (MiniMax H3).
+- **Continuity across shots** (scroll film, sticky narrative): Seedance 2.5 with the previous shot's last frame as the next start frame.
+- **Same product/person in several shots:** Seedance 2.0 with the approved stills as `image_references`.
+- **Many variants:** `generate_image_batch` / `generate_video_batch` → `jobs_wait` → `show_generation_by_ids`.
+- **Upscale / reframe / extend canvas:** `upscale_image`, `upscale_video`, `reframe`, `outpaint_image`.
+- If a named model is ever missing, `mcp__Higgsfield__models_explore { action: "search", query: "<model name>" }` finds its current id — don't silently swap to a different model.
+
+| Need | Model | Prompt skill (SA) |
 |---|---|---|
-| Hero still, product, editorial | photoreal image, 16:9 + 9:16 | `cinematic-prompt-director`, `banana-pro-director-30` |
-| Recurring person / artist / founder | identity-locked character sheet first | `character-builder` → then still/video |
-| Silent background loop | image-to-video, slow camera, loopable | `cinema-director-v3` |
-| Narrative hero / scroll-film shots | image-to-video with start/end frames (continuity) | `cinema-director-v3`, `seedance-2-5-prompting`, `scroll-world` |
-| Many variants at once | `generate_image_batch` / `generate_video_batch` → `jobs_wait` | — |
-| Upscale / reframe | `upscale_image`, `reframe`, `outpaint_image` | — |
+| Hero still, product, editorial | Nano Banana Pro | `cinematic-prompt-director`, `banana-pro-director-30` |
+| Client photo edits, graphics, OG | ChatGPT Images 2.5 | `cinematic-prompt-director` |
+| Bold brand/AI-services art direction | Grok Imagine 1.5 (OpenArt) | `cinematic-prompt-director` |
+| Recurring person / artist / founder | character sheet → Seedance 2.0 | `character-builder` |
+| Hero loop (every site) | MiniMax H3, start = end frame | `cinema-director-v3` |
+| Narrative hero / scroll-film shots | Seedance 2.5 (start/end frames, extension) | `cinema-director-v3`, `seedance-2-5-prompting`, `scroll-world` |
+
+Record the choice per slot in `assets.yaml` (`model:` and `platform:`) so a rebuild regenerates with the same model.
 
 Always generate the **anchor still first**, approve it, then animate from it (image-to-video).
 Text-to-video for a hero produces identity/geometry drift you can't fix in CSS.
@@ -120,7 +146,7 @@ For reduced motion or save-data, swap to the poster (`matchMedia` → `video.pau
 
 ## 7. Host
 
-Higgsfield output URLs are **presigned and expire.** Download every asset, place under
+Higgsfield and OpenArt output URLs are **presigned or session-bound and expire.** Download every asset, place under
 `/assets/`, reference relative paths. `verify.mjs` blocks on any `X-Amz-Signature` /
 `Expires=` / `token=` URL. OG image: 1200×630 JPG under `/assets/og.jpg`.
 

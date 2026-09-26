@@ -73,7 +73,7 @@ pre-fill answers and only ask what's missing or unconfirmed — the intake is sh
 28. ● Pages or sections you need (home, services, menu, gallery, pricing, about, FAQ, contact, booking…).
 29. Do you have copy, or should it be written? Tone: formal · warm · bold · playful · technical.
 30. Hero media: photo, looping video, product render, illustration, AI-generated scene, or type-only?
-31. Should we generate custom imagery/video (Higgsfield)? Any people, products or locations that must appear? *(upload anchors)*
+31. Should we generate custom imagery/video (Higgsfield / OpenArt)? Any people, products or locations that must appear? *(upload anchors)*
 32. Integrations: booking tool, shop, forms/CRM, chat/voice agent, analytics, newsletter.
 
 ---
