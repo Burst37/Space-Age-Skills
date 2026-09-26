@@ -63,12 +63,9 @@ content:
   integrations: []
 
 practical:
-  deadline: ""
   tier: ""                   # factory | enhanced | cinematic | flagship
   domain: ""
   compliance: []
-  approver: ""
-  revision_rounds: 0
 
 open_questions: []
 confirmed: false             # true only after the person approves the one-screen summary

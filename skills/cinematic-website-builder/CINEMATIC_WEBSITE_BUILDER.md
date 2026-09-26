@@ -85,8 +85,8 @@ Route each concern to the skill that owns it. Pull on demand; never restate thei
 ## 2. Workflow — seven phases, each with an exit condition
 
 **P0 — Direction Intake (always first, every build).** Run the questionnaire in
-`references/direction-intake.md` in three rounds: business, proof and personality; then visual,
-motion and content references; then practical details. The person answers and **uploads references —
+`references/direction-intake.md` in two rounds: business, proof, personality and practical details
+first; then visual, motion and content references. The person answers and **uploads references —
 images, website links, videos/screen recordings** — each with a note on what they like or want avoided.
 Analyze every reference with the protocol in that file (palette, type, layout, motion inventory
 mapped to catalog modules), then compile `templates/direction-brief.yaml` and show a one-screen

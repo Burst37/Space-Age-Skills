@@ -13,8 +13,9 @@ pre-fill answers and only ask what's missing or unconfirmed — the intake is sh
 
 ## How to run it
 
-1. **Send the questionnaire in rounds, not as one wall.** Round 1 = Sections A–C. Round 2 = D–F.
-   Round 3 = G–H. Each round is one message; the person answers in one reply and attaches files there.
+1. **Send the questionnaire in two rounds, not as one wall.** Round 1 = Sections A–D (business,
+   proof, feeling, practical). Round 2 = Sections E–G (visual, motion, content references). Each round
+   is one message; the person answers in one reply and attaches files there.
 2. **Uploads:** in chat, drag files in (images, screenshots, PDFs, short video clips) or paste links
    (websites, YouTube, Instagram, TikTok, Dribbble, Behance, Pinterest, Figma, Google Drive, Loom).
    In Claude Code, file paths or a folder (`./references/`) work too.
@@ -50,34 +51,30 @@ pre-fill answers and only ask what's missing or unconfirmed — the intake is sh
 14. If your brand were a film, car, hotel or fashion house, which one and why?
 15. Light or dark, or no preference? Any colors you love or will not accept?
 
-### Section D — Visual references (● at least 3, up to 12)
-16. ● **Websites you love** — links. For each: what exactly you like (hero? scroll feel? type? colors?).
-17. **Images** — screenshots, moodboards, Pinterest pins, photography, packaging, interiors, posters. *(upload)*
-18. **Competitor or peer sites** — links, marked `LOOK`, `LAYOUT` or `AVOID`.
-19. **Anything you dislike** — sites/images that feel wrong for you, and why. *(upload / link, tag `AVOID`)*
+### Section D — Practical
+16. Tier: Factory · Enhanced · Cinematic · Flagship (Claude recommends one if blank — see playbook §3).
+17. Domain and hosting (or deploy with `sa-deploy-operator` to Vercel).
+18. Accessibility or legal must-haves (ADA/WCAG, cookie consent, medical/financial disclaimers).
+19. Anything else that matters that we haven't asked?
 
-### Section E — Motion and interaction references
-20. **Videos or screen recordings** of sites/apps whose motion you love — Loom, MP4/MOV, YouTube/IG/TikTok links. Say the timestamp if it's one moment ("0:14, the way the photos fan out").
-21. Motion level: 1 still and quiet → 5 cinematic, scroll-driven, immersive.
-22. Any effect you already have in mind? Describe it in plain words (Claude names it via `animation-vocabulary`).
-23. Anything that annoys you on other sites (autoplay video, popups, heavy scroll-jacking, slow loading)?
+### Section E — Visual references (● at least 3, up to 12)
+20. ● **Websites you love** — links. For each: what exactly you like (hero? scroll feel? type? colors?).
+21. **Images** — screenshots, moodboards, Pinterest pins, photography, packaging, interiors, posters. *(upload)*
+22. **Competitor or peer sites** — links, marked `LOOK`, `LAYOUT` or `AVOID`.
+23. **Anything you dislike** — sites/images that feel wrong for you, and why. *(upload / link, tag `AVOID`)*
 
-### Section F — Content and structure
-24. ● Pages or sections you need (home, services, menu, gallery, pricing, about, FAQ, contact, booking…).
-25. Do you have copy, or should it be written? Tone: formal · warm · bold · playful · technical.
-26. Hero media: photo, looping video, product render, illustration, AI-generated scene, or type-only?
-27. Should we generate custom imagery/video (Higgsfield)? Any people, products or locations that must appear? *(upload anchors)*
-28. Integrations: booking tool, shop, forms/CRM, chat/voice agent, analytics, newsletter.
+### Section F — Motion and interaction references
+24. **Videos or screen recordings** of sites/apps whose motion you love — Loom, MP4/MOV, YouTube/IG/TikTok links. Say the timestamp if it's one moment ("0:14, the way the photos fan out").
+25. Motion level: 1 still and quiet → 5 cinematic, scroll-driven, immersive.
+26. Any effect you already have in mind? Describe it in plain words (Claude names it via `animation-vocabulary`).
+27. Anything that annoys you on other sites (autoplay video, popups, heavy scroll-jacking, slow loading)?
 
-### Section G — Practical
-29. ● Deadline and launch date.
-30. Tier: Factory · Enhanced · Cinematic · Flagship (Claude recommends one if blank — see playbook §3).
-31. Domain and hosting (or deploy with `sa-deploy-operator` to Vercel).
-32. Accessibility or legal must-haves (ADA/WCAG, cookie consent, medical/financial disclaimers).
-
-### Section H — Final check
-33. Anything we haven't asked that matters?
-34. Who approves the design, and how many revision rounds are expected?
+### Section G — Content and structure
+28. ● Pages or sections you need (home, services, menu, gallery, pricing, about, FAQ, contact, booking…).
+29. Do you have copy, or should it be written? Tone: formal · warm · bold · playful · technical.
+30. Hero media: photo, looping video, product render, illustration, AI-generated scene, or type-only?
+31. Should we generate custom imagery/video (Higgsfield)? Any people, products or locations that must appear? *(upload anchors)*
+32. Integrations: booking tool, shop, forms/CRM, chat/voice agent, analytics, newsletter.
 
 ---
 

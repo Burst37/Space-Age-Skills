@@ -2,7 +2,7 @@
 
 ## 3.1.0 — 2026-09-26
 - **Removed Google Stitch** from the pipeline.
-- **New P0 Direction Intake**, always the first step: 34-question questionnaire in rounds, with image / link / video uploads as design and UI/UX direction, a per-type reference-analysis protocol, and a `direction-brief.yaml` output confirmed before any build work.
+- **New P0 Direction Intake**, always the first step: two-round questionnaire (no deadline/approval/revision filler), with image / link / video uploads as design and UI/UX direction, a per-type reference-analysis protocol, and a `direction-brief.yaml` output confirmed before any build work.
 
 ## 3.0.0 — 2026-09-26 — forensic rebuild
 - **Runtime kernel** (`runtime/cwb-runtime.js`): module isolation via `CWB.define` + `gsap.matchMedia`, fail-open motion gate with watchdog, live env gating (reduced motion, fine pointer, viewport, save-data, low-power), auto-cleanup of listeners/loops, offscreen pausing, post-font/load `ScrollTrigger.refresh()`.
