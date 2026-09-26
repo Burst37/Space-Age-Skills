@@ -37,6 +37,8 @@ slots:
     faces: false             # background loops: no faces
     platform: higgsfield     # higgsfield | openart
     model: minimax_h3        # from the roster in §3
+    tokens: hero-loop        # shot recipe from prompt-tokens.md §4
+    storyboard: none         # none | path to board (storyboard-to-video.md) for multi-shot clips
     alt: "…specific description…"
     status: pending          # pending → generated → qc_pass → encoded → hosted
 ```
@@ -82,12 +84,17 @@ Routing rules:
 
 Record the choice per slot in `assets.yaml` (`model:` and `platform:`) so a rebuild regenerates with the same model.
 
+**Multi-shot hero films and T3 scroll films** follow `references/storyboard-to-video.md`:
+identity sheet → storyboard sheet (ChatGPT Images 2.5) → Seedance handoff prompt.
+
 Always generate the **anchor still first**, approve it, then animate from it (image-to-video).
 Text-to-video for a hero produces identity/geometry drift you can't fix in CSS.
 
 ### Prompt contract (Space Age standing rule — non-negotiable)
 
-Every image/video prompt is **≥ 150 words** and contains all of:
+Every image/video prompt is **≥ 150 words**, takes its camera, lens, lighting, grade, movement,
+style and meta tokens from **`references/prompt-tokens.md`** (token library + shot recipes per web slot),
+and contains all of:
 
 - **Subject** — for people: height, build, eye color, hair, facial features, expression, wardrobe; for products: material, finish, scale cues
 - **Camera** — exact body (e.g. ARRI Alexa 35, Sony Venice 2, Blackmagic URSA Cine 17K) + lens (e.g. ZEISS Supreme Prime 50mm T1.5) + aperture

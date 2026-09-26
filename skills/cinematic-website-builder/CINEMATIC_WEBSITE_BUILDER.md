@@ -25,6 +25,8 @@ skills that don't exist. Full report: `references/forensic-audit-v2.md`.
 | `scripts/assemble.mjs` | Inline only the modules + GSAP plugins the page uses → one file |
 | `scripts/verify.mjs` | 5-pass Chromium QA → `qa/REPORT.md`, exit 1 on blockers |
 | `references/modules.md` | Catalog: markup contracts, cost, degradation, recipes |
+| `references/storyboard-to-video.md` | Identity sheet → storyboard sheet → Seedance handoff for every multi-shot hero or scroll film |
+| `references/prompt-tokens.md` | Meta + cinematography token library and shot recipes for every image/video prompt |
 | `references/asset-pipeline.md` | Media tiers, model roster (Higgsfield + OpenArt), prompt contract, ffmpeg encodes |
 | `references/qa-gate.md` | Stage 4 gate, rubric, manual checks, delivery package |
 | `references/ai-font-packs.md` | SA AI display-type packs, accessible patterns |
