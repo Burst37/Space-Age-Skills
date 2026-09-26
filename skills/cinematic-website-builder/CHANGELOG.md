@@ -5,7 +5,7 @@
 - **All 30 v2 modules rebuilt** (same IDs) + 6 new: `reveal`, `line-reveal` (SplitText masks), `frame-scrub` (progressive canvas sequence), native `view()` reveal + scroll progress (CSS-only), `velocity-skew` (with return-to-rest), `intro-gate`, cross-document page transitions, `magnetic` split out of the cursor.
 - **Stack**: GSAP 3.12.5 → 3.15.0 with the now-free plugins; native-first CSS (scroll/view timelines, View Transitions, `@property`, scroll-snap).
 - **Tooling**: `assemble.mjs` (ships only used modules/plugins, reports motion cost), `verify.mjs` (5-pass Playwright QA, blocking checks, screenshots, report).
-- **Docs**: SKILL.md spine with verified routing to 30+ SA skills and a precedence table; catalog, asset pipeline (prompt contract, ffmpeg encodes, media tiers), QA gate, AI font packs.
+- **Docs**: playbook (`CINEMATIC_WEBSITE_BUILDER.md`, with a `SKILL.md` loader stub) with verified routing to 30+ SA skills and a precedence table; catalog, asset pipeline (prompt contract, ffmpeg encodes, media tiers), QA gate, AI font packs.
 - **Removed**: hard-coded brand colors and SA/LoyaltyBot copy in modules, seven dangling skill references, `scroll-behavior: smooth` mandate, font-pack sales content, banned fonts in pairing tables.
 - See `references/forensic-audit-v2.md` for the full defect list and `proof/REPORT.md` for the passing run.
 

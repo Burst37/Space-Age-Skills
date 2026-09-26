@@ -6,7 +6,7 @@ expects, and how it degrades. Activate a module with `data-cwb="name"` on its ro
 (space-separate to stack: `data-cwb="magnetic burst"`). `scripts/assemble.mjs` ships only the
 blocks and GSAP plugins a page uses.
 
-Legend — **Cost**: motion-budget points (SKILL.md §4). **Fine**: needs a mouse/trackpad; on touch it
+Legend — **Cost**: motion-budget points (CINEMATIC_WEBSITE_BUILDER.md §4). **Fine**: needs a mouse/trackpad; on touch it
 stays inert and the content still works. **RM**: what reduced-motion users get.
 
 ## Index

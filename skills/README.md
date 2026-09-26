@@ -22,7 +22,7 @@ and which are the original author's work.
 
 | Skill | What it is |
 |-------|-----------|
-| [`cinematic-website-builder`](./cinematic-website-builder/SKILL.md) | v3 forensic rebuild — runtime kernel + 36 isolated modules, asset pipeline, `assemble.mjs` single-file builder and `verify.mjs` 5-pass Playwright QA gate. Stage 3–4 of the SA site pipeline. Audit: [`forensic-audit-v2.md`](./cinematic-website-builder/references/forensic-audit-v2.md) |
+| [`cinematic-website-builder`](./cinematic-website-builder/CINEMATIC_WEBSITE_BUILDER.md) | v3 forensic rebuild — runtime kernel + 36 isolated modules, asset pipeline, `assemble.mjs` single-file builder and `verify.mjs` 5-pass Playwright QA gate. Stage 3–4 of the SA site pipeline. Audit: [`forensic-audit-v2.md`](./cinematic-website-builder/references/forensic-audit-v2.md) |
 
 ## Reference repos used as inspiration
 
