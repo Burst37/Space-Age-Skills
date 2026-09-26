@@ -1,0 +1,46 @@
+# CWB v3 build manifest — fill in P2, update through P6. Lives next to the built file.
+project:
+  client: ""                 # legal business name
+  slug: ""                   # deploy slug (lead-to-brief build_brief.deploy)
+  direction_brief: direction-brief.yaml   # P0 output — required, confirmed: true
+  prefilled_from: []         # lead_brief | brand_token_package | handoff_package
+  tier: factory              # factory | enhanced | cinematic | flagship
+  path: standard             # standard (single-file) | premium (sa-figma-framer-spline) | platform (director)
+
+design_read:                 # P1 — taste-pro §0
+  audience: ""
+  promise: ""                # the outcome headline in one line
+  moodboard: ""              # A–N from ui-ux-designer
+  dials: { variance: 6, motion: 6, density: 4 }
+  confidence: 0.0            # < 0.7 on any line → ask before building
+
+narrative:                   # P2
+  recipe: LOCAL_BUSINESS     # director §7 recipe family
+  beats: [hook, problem, proof, offer, cta]
+  signature_moment: ""       # the one effect people will describe
+
+motion_budget:
+  limit: 30                  # factory 15–30 · enhanced 25–45 · cinematic 40–70 · flagship 60–100
+  modules:                   # name: cost  (assemble.mjs prints the real total)
+    line-reveal: 3
+    reveal: 2
+  total: 5
+
+media:
+  tier: T1                   # T0–T4 (references/asset-pipeline.md)
+  manifest: assets.yaml
+
+budgets:
+  transfer_kb_desktop: 900
+  lcp_ms_field: 2500
+  cls_field: 0.1
+
+gate:                        # P5 — references/qa-gate.md
+  verify_exit_code: null
+  rubric_avg: null
+  manual_checks_done: false
+  open_issues: []
+
+deploy:
+  url: ""
+  verified: false

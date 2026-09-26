@@ -1,0 +1,71 @@
+# Direction Brief — output of the Direction Intake (references/direction-intake.md).
+# P1 reads this to lock tokens; P2 reads it to pick tier, story and modules.
+business:
+  name: ""
+  offer: ""
+  location: ""               # city / service area / online
+  audience: ""
+  primary_action: ""         # book | call | buy | sign_up | quote | subscribe
+  differentiator: ""
+  price_position: ""         # budget | mid | premium | luxury
+
+proof:                       # real only — never invented
+  reviews: []                # { quote, author, source }
+  numbers: []                # { value, label, source }
+  media: []                  # paths to real work/team/product photos & video
+  badges: []
+
+personality:
+  feels_like: []             # 3 words
+  never_feels_like: []       # 3 words
+  first_3_seconds: ""        # awe | trust | excitement | calm | intrigue | hunger | status
+  analogy: ""                # "Aesop meets a Swiss watch boutique"
+  theme: ""                  # dark | light | either
+  colors_love: []
+  colors_ban: []
+
+references:                  # one entry per uploaded image / link / video
+  - id: ref1
+    type: website            # image | website | video | social_video | figma | pdf | board
+    source: ""               # path or URL (+ timestamp for video, e.g. "0:14")
+    tags: [LOOK]             # LOOK | LAYOUT | MOTION | COPY | FEATURE | AVOID
+    liked: ""                # the person's own words
+    disliked: ""
+    findings:                # Claude's analysis — observations, not adjectives
+      palette: []
+      type: ""
+      layout: ""
+      motion: []             # named with animation-vocabulary, mapped to catalog modules
+      texture: ""
+    take: ""                 # the principle we carry forward (never a copy)
+
+synthesis:
+  repeated_traits: []        # what shows up across references = the real taste
+  hard_bans: []              # from AVOID refs + never_feels_like
+  moodboard: ""              # A–N (ui-ux-designer) or "custom"
+  dials: { variance: 0, motion: 0, density: 0 }
+  tokens_proposed:
+    colors: {}               # bg, surface, fg, fg_muted, accent, accent_2 …
+    fonts: { display: "", body: "", mono: "" }   # checked against the banned list
+  motion_plan:
+    level: 0                 # 1–5 from the questionnaire
+    modules: []              # catalog names + cost
+    signature_moment: ""
+    custom_effects: []       # reference motions not in the catalog → gsap-supercharged / routed skill
+
+content:
+  sections: []
+  copy_source: ""            # provided | write
+  tone: ""
+  hero_media: ""             # photo | loop | render | illustration | ai_scene | type_only
+  generate_media: false
+  anchors: []                # people/products/places that must appear (uploaded)
+  integrations: []
+
+practical:
+  tier: ""                   # factory | enhanced | cinematic | flagship
+  domain: ""
+  compliance: []
+
+open_questions: []
+confirmed: false             # true only after the person approves the one-screen summary
