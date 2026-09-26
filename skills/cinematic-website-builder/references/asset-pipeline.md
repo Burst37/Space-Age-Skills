@@ -51,9 +51,9 @@ Either way, every output is downloaded and re-hosted under `/assets/` (§7).
 
 | Model | Higgsfield id | Use it for | Why |
 |---|---|---|---|
-| **Nano Banana Pro** (default) | `nano_banana_pro` | hero anchor stills, product, editorial, people, anything with legible text | top photoreal quality, text rendering, 4K, 16:9 · 9:16 · 21:9 |
-| **ChatGPT Images 2.5** | `gpt_image_2_5` | editing/compositing the client's real photos, graphic and typographic assets, OG images, UI mockups | strongest instruction-following edits, reference images, odd aspects (27:16, 16:27) |
-| **Grok Imagine 1.5** | OpenArt (not on Higgsfield; nearest there: `grok_image_2_0`) | bold, expressive, high-contrast art direction — brand, AI-services and creative sites | the look Nano Banana tends to play too safe on |
+| **ChatGPT Images 2.5** (default — gold standard) | `gpt_image_2_5` | hero anchor stills, product, editorial, people, text-in-image, editing/compositing the client's real photos, OG images, UI mockups | best overall quality and instruction-following, strongest edits, reference images, 4K, odd aspects (21:9, 27:16, 16:27) |
+| **Nano Banana Pro** | `nano_banana_pro` | second opinion on photoreal heroes, dense diagrams/infographics, fast variant batches | strong photoreal and text rendering, 4K, unlimited-plan eligible |
+| **Grok Imagine 1.5** | OpenArt (not on Higgsfield; nearest there: `grok_image_2_0`) | bold, expressive, high-contrast art direction — brand, AI-services and creative sites | a looser, more graphic look than the other two |
 
 ### Video models
 
@@ -64,7 +64,7 @@ Either way, every output is downloaded and re-hosted under `/assets/` (§7).
 | **Seedance 2.0** | `seedance_2_0` | product and people who must stay identical across shots (multi-SKU, founders, artists), 4K masters | identity consistency, 4K, native audio if ever needed |
 
 Routing rules:
-- **Image → video, never text → video for a hero.** Anchor still (Nano Banana Pro) → approve → animate (MiniMax H3).
+- **Image → video, never text → video for a hero.** Anchor still (ChatGPT Images 2.5) → approve → animate (MiniMax H3).
 - **Continuity across shots** (scroll film, sticky narrative): Seedance 2.5 with the previous shot's last frame as the next start frame.
 - **Same product/person in several shots:** Seedance 2.0 with the approved stills as `image_references`.
 - **Many variants:** `generate_image_batch` / `generate_video_batch` → `jobs_wait` → `show_generation_by_ids`.
@@ -73,8 +73,8 @@ Routing rules:
 
 | Need | Model | Prompt skill (SA) |
 |---|---|---|
-| Hero still, product, editorial | Nano Banana Pro | `cinematic-prompt-director`, `banana-pro-director-30` |
-| Client photo edits, graphics, OG | ChatGPT Images 2.5 | `cinematic-prompt-director` |
+| Hero still, product, editorial, client photo edits, graphics, OG | ChatGPT Images 2.5 | `cinematic-prompt-director` |
+| Photoreal alternate / infographic / fast variants | Nano Banana Pro | `cinematic-prompt-director`, `banana-pro-director-30` |
 | Bold brand/AI-services art direction | Grok Imagine 1.5 (OpenArt) | `cinematic-prompt-director` |
 | Recurring person / artist / founder | character sheet → Seedance 2.0 | `character-builder` |
 | Hero loop (every site) | MiniMax H3, start = end frame | `cinema-director-v3` |

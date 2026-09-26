@@ -61,7 +61,7 @@ Route each concern to the skill that owns it. Pull on demand; never restate thei
 | Real 3D, liquid glass, Framer physics, Figma tokens | `sa-figma-framer-spline` | Premium path |
 | Gesture/hand cursor | `add-hand-tracking` | explicit request |
 | Image/video prompts | `cinematic-prompt-director`, `banana-pro-director-30`, `cinema-director-v3`, `seedance-2-5-prompting`, `character-builder` | asset phase |
-| Image/video generation | Higgsfield MCP (default) or OpenArt. Images: Nano Banana Pro · ChatGPT Images 2.5 · Grok Imagine 1.5. Video: MiniMax H3 (hero loop) · Seedance 2.5 · Seedance 2.0 — roster in `references/asset-pipeline.md` §3 | asset phase |
+| Image/video generation | Higgsfield MCP (default) or OpenArt. Images: ChatGPT Images 2.5 (default) · Nano Banana Pro · Grok Imagine 1.5. Video: MiniMax H3 (hero loop) · Seedance 2.5 · Seedance 2.0 — roster in `references/asset-pipeline.md` §3 | asset phase |
 | Copy that doesn't read as AI | `stop-slop-pro` | every build |
 | Local SEO + GEO schema | `sa-local-seo-geo` | every public site |
 | Design critique loop | `design-review-pro`, `design-loop` | QA pass 3 / Flagship |
