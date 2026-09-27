@@ -8,6 +8,23 @@ this folder is the index, not a rewrite.
 ## What's here
 
 ### `data/`
+
+**Current list (2026-09-27): `loyalty-bot-master-cleaned.csv`** — 2,159 rows,
+exported from `loyalty-bot-master-cleaned.xlsx` (the user's LLM-purged list,
+uploaded to Drive 2026-09-27). The `.xlsx` is kept alongside it because it has
+two extra sheets the CSV doesn't: a 5-row duplicate-URL log and a 543-row
+"PDF-only links (review)" sheet.
+
+- The CSV's headers are renamed to what `load_programs()` reads
+  (`Category, Brand_Name, Program_Name, Direct_Sign-up_URL`). The xlsx's own
+  headers (`Program / Offer`, `Direct URL`) are not recognized by the engine.
+- It has no `Auto_Signup_Feasible` column, so run the bot with
+  `--include-infeasible` or every row is skipped.
+- **1,820 of the 2,159 URLs are bare homepages** (e.g. `https://www.tiffany.com`),
+  not signup pages. Only 339 have a signup path. The review sheet holds 311
+  deep signup links that were set aside rather than merged in.
+
+Older lists, kept for reference:
 Pulled from Google Drive (`chuma.black314@gmail.com`), de-duplicated
 (each existed in 2-3 copies across different Drive folders):
 
