@@ -1,0 +1,83 @@
+{
+  "01_trivial": {
+    "path": "fixtures/forms/01_trivial.html",
+    "expected": [
+      "email",
+      "first_name",
+      "last_name",
+      "password"
+    ]
+  },
+  "02_label_only": {
+    "path": "fixtures/forms/02_label_only.html",
+    "expected": [
+      "email",
+      "first_name",
+      "last_name",
+      "password",
+      "phone"
+    ]
+  },
+  "03_wrapping_label": {
+    "path": "fixtures/forms/03_wrapping_label.html",
+    "expected": [
+      "email",
+      "first_name",
+      "last_name",
+      "password",
+      "zip"
+    ]
+  },
+  "04_consent_checkbox": {
+    "path": "fixtures/forms/04_consent_checkbox.html",
+    "expected": [
+      "__consent__",
+      "email",
+      "first_name",
+      "password"
+    ]
+  },
+  "05_split_dob": {
+    "path": "fixtures/forms/05_split_dob.html",
+    "expected": [
+      "__dob__",
+      "email",
+      "state"
+    ]
+  },
+  "06_odd_wording": {
+    "path": "fixtures/forms/06_odd_wording.html",
+    "expected": [
+      "email",
+      "first_name",
+      "last_name",
+      "password"
+    ]
+  },
+  "07_email_only": {
+    "path": "fixtures/forms/07_email_only.html",
+    "expected": [
+      "email"
+    ]
+  },
+  "08_decoy_hidden": {
+    "path": "fixtures/forms/08_decoy_hidden.html",
+    "expected": [
+      "email",
+      "first_name",
+      "password"
+    ]
+  },
+  "09_shadow": {
+    "path": "fixtures/forms/09_shadow.html",
+    "expected": [
+      "email",
+      "first_name",
+      "password"
+    ]
+  },
+  "10_junk_no_form": {
+    "path": "fixtures/forms/10_junk_no_form.html",
+    "expected": []
+  }
+}

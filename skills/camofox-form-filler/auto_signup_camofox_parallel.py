@@ -15,19 +15,16 @@ injection needed.
 
 CapSolver note
 --------------
-camofox-browser's REST API does not expose a generic JS-eval/page-script
-endpoint, so CapSolver token *injection* (auto-solving reCAPTCHA/hCaptcha/
-Turnstile) is not implemented here. In practice Camoufox's fingerprint
-spoofing means far fewer CAPTCHA challenges are served in the first place;
-any that do appear fall back to the same noVNC manual-solve flow as
-camofox_client/auto_signup_camofox.py (`ENABLE_VNC=1` on the camofox server).
+CapSolver is not integrated in this runner. Current upstream Camofox versions
+do offer evaluation, but that does not establish that a challenge can or
+should be automated. A manual noVNC flow requires ENABLE_VNC=1 on the server.
 
 Outputs match auto-signup-parallel-FIXED.py so the existing dashboard.html
 and loyaltybot_server.py status/results endpoints work unmodified:
   - results CSV columns: url,brand,program,status,worker,error,timestamp
   - progress.json: {running, start_time, stats{total,processed,success,
     failed,captcha,skipped}, current_workers[], log[], eta_seconds}
-  - dead-urls.json: {"urls": [...]} -- shared 3-strike retirement list
+  - dead-urls.json: {"urls": [...]} -- curated exclusion list
 
 Usage
 -----
@@ -36,7 +33,7 @@ Usage
         --csv loyalty-rewards-MASTER.csv \\
         --progress progress_tyjuan01.json \\
         --results signup-results_tyjuan01.csv \\
-        --workers 5 --delay 1.5
+        --workers 2 --delay 1.5
 
     python auto_signup_camofox_parallel.py --dry-run --limit 5
     python auto_signup_camofox_parallel.py --retry --workers 3
@@ -47,6 +44,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import queue
 import re
 import sys
@@ -55,26 +53,34 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from camofox_client import CamofoxClient, CamofoxError, parse_snapshot
+from camofox_client import CamofoxClient, CamofoxError
 from auto_signup_camofox import (
-    CAPTCHA_PATTERNS,
-    INTERACTIVE_ROLES,
-    SUBMIT_PATTERNS,
+    count_form_fields,
+    fill_form,
+    find_submit_ref,
     flat_config,
-    get_value,
     load_config,
     load_dead_urls,
     load_programs,
-    match_field,
     is_feasible,
     retire_repeated_failures,
+    safe_error,
     save_dead_urls,
-    slugify,
+    session_user_id,
+    snapshot_has_captcha,
+    snapshot_items,
     sort_by_priority,
+    verify_submission,
+    wait_for_form,
 )
 
-DEFAULT_WORKERS = 5
+DEFAULT_WORKERS = 2
 DEFAULT_DELAY_SECONDS = 1.5
+MAX_CONSECUTIVE_BROWSER_FAILURES = 3
+BROWSER_CLOSED = re.compile(
+    r"browser closed|target closed|context closed|page closed|browser has been closed|"
+    r"connection refused|econnrefused", re.IGNORECASE,
+)
 RESULTS_FIELDNAMES = ["url", "brand", "program", "status", "worker", "error", "timestamp"]
 
 NO_FORM_MAX_STRIKES = 2
@@ -86,7 +92,7 @@ RETRYABLE_STATUSES = {"failed", "timeout", "navigation_error", "captcha_failed",
 # which is the difference between "no form fields found" and a success on the
 # many retail sites that hide signup behind a person-icon or "Sign In" modal.
 MIN_FORM_FIELDS = 2
-MAX_NAV_HOPS = 2  # how many signup-link clicks to chase before giving up
+MAX_NAV_HOPS = 4  # account icon -> login modal -> registration link -> form
 
 # Cookie/consent banners block interaction; dismiss before scanning for a form.
 CONSENT_PATTERNS = re.compile(
@@ -95,13 +101,62 @@ CONSENT_PATTERNS = re.compile(
     re.IGNORECASE,
 )
 
-# Links/buttons that lead from a landing page TO the signup form.
-SIGNUP_LINK_PATTERNS = re.compile(
-    r"create\s+(an\s+)?account|sign\s*up|register|join(\s+(now|free))?|"
-    r"become\s+a\s+member|enroll|get\s+started|create\s+profile|new\s+customer|"
-    r"new\s+user|don'?t\s+have\s+an\s+account|not\s+a\s+member|sign\s*in|log\s*in",
+# Links/buttons that lead from a landing page TO the signup form, in priority
+# order. These used to be one alternation containing both "create account" and
+# "sign in", and the hop loop took the first MATCHING ITEM IN DOCUMENT ORDER --
+# so a header "Sign In" link almost always beat the "Create Account" button
+# further down the page and the run landed on a login form it could never
+# complete. Now registration links are tried first and login links only as a
+# fallback (many sites put registration behind the login modal).
+PRIMARY_SIGNUP_LINK_PATTERNS = re.compile(
+    r"create\s+(an\s+)?(account|profile)|sign\s*up|register|join(\s+(now|free|today))?|"
+    r"become\s+a\s+member|enroll|new\s+customer|new\s+user|"
+    r"don'?t\s+have\s+an\s+account|not\s+a\s+member",
     re.IGNORECASE,
 )
+FALLBACK_SIGNUP_LINK_PATTERNS = re.compile(
+    r"sign\s*in|log\s*in|get\s+started|my\s+account|rewards",
+    re.IGNORECASE,
+)
+ACCOUNT_ENTRY_PATTERNS = re.compile(
+    r"(?<![a-z])(?:account|profile|user|person|member|login|log[-_ ]?in)(?![a-z])",
+    re.IGNORECASE,
+)
+UNRELATED_ACTION_PATTERNS = re.compile(
+    r"cart|checkout|wishlist|search|sign[-_ ]?out|log[-_ ]?out",
+    re.IGNORECASE,
+)
+
+# The accessibility tree can show a head-silhouette control as an unnamed
+# button. Read its visible DOM attributes, link target and icon name, then
+# click the unique CSS path using Camofox's existing click route. Never click
+# every unnamed header icon: the neighboring controls may be search or cart.
+ACCOUNT_ICON_DOM_QUERY = r"""(() => {
+  const nodes = Array.from(document.querySelectorAll('a,button,[role="button"]')).slice(0, 300);
+  const path = (el) => {
+    const parts = [];
+    while (el && el.nodeType === 1) {
+      const tag = el.tagName.toLowerCase();
+      const siblings = el.parentElement ? Array.from(el.parentElement.children).filter(n => n.tagName === el.tagName) : [el];
+      parts.unshift(tag + ':nth-of-type(' + (siblings.indexOf(el) + 1) + ')');
+      el = el.parentElement;
+    }
+    return parts.join(' > ');
+  };
+  return nodes.filter(el => {
+    const box = el.getBoundingClientRect();
+    return box.width > 0 && box.height > 0 && getComputedStyle(el).visibility !== 'hidden' && !el.closest('form');
+  }).map(el => {
+    const icon = el.querySelector('svg,img,[data-icon]');
+    const hint = [el.getAttribute('aria-label'), el.getAttribute('title'), el.getAttribute('href'),
+      typeof el.className === 'string' ? el.className : '',
+      icon && icon.getAttribute('aria-label'), icon && icon.getAttribute('class'),
+      icon && icon.getAttribute('data-icon'), icon && icon.getAttribute('alt'),
+      icon && icon.querySelector('use') && (icon.querySelector('use').getAttribute('href') || icon.querySelector('use').getAttribute('xlink:href'))
+    ].filter(Boolean).join(' ').slice(0, 280);
+    return {selector: path(el), hint, text: (el.innerText || '').trim().slice(0, 90), icon: !!icon};
+  }).filter(x => x.icon && /(?:^|[^a-z])(account|profile|user|person|member|login)(?:$|[^a-z])/i.test(x.hint)).slice(0, 12);
+})()"""
 
 _progress_lock = threading.Lock()
 _results_lock = threading.Lock()
@@ -111,11 +166,31 @@ _current_workers: dict[int, dict] = {}
 _no_form_strikes: dict[str, int] = {}
 
 
+class BrowserCrashGuard:
+    """Stop taking new work when the shared browser is repeatedly unavailable."""
+
+    def __init__(self, threshold: int = MAX_CONSECUTIVE_BROWSER_FAILURES):
+        self.threshold = threshold
+        self.streak = 0
+        self.stopped = threading.Event()
+        self.lock = threading.Lock()
+
+    def record(self, status: str, error: str) -> bool:
+        with self.lock:
+            if status in ("navigation_error", "timeout") and BROWSER_CLOSED.search(error):
+                self.streak += 1
+                if self.streak >= self.threshold:
+                    self.stopped.set()
+            else:
+                self.streak = 0
+            return self.stopped.is_set()
+
+
 def append_progress_log(worker: int, brand: str, program: str, status: str, message: str = "") -> None:
     global _progress_log
     with _progress_lock:
         _progress_log.append({
-            "time": datetime.utcnow().strftime("%H:%M:%S"),
+            "time": datetime.now(timezone.utc).strftime("%H:%M:%S"),
             "worker": worker,
             "brand": brand,
             "program": program,
@@ -140,15 +215,19 @@ def write_progress(progress_path: Path, running: bool, stats: dict, start_time: 
         ]
         data = {
             "running": running,
-            "start_time": datetime.utcfromtimestamp(start_time).strftime("%Y-%m-%dT%H:%M:%SZ") if start_time else None,
-            "stats": {k: stats.get(k, 0) for k in ("total", "processed", "success", "failed", "captcha", "skipped")},
+            "start_time": datetime.fromtimestamp(start_time, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ") if start_time else None,
+            "stats": {k: stats.get(k, 0) for k in ("total", "processed", "success", "failed", "captcha", "skipped", "dry_run")},
             "current_workers": workers_list,
             "log": list(_progress_log),
             "eta_seconds": eta_seconds,
         }
     try:
-        with open(progress_path, "w", encoding="utf-8") as f:
+        # The dashboard polls this while several workers are active. Replace
+        # one complete JSON document atomically so it never sees a half-write.
+        tmp_path = progress_path.with_name(progress_path.name + f".{threading.get_ident()}.tmp")
+        with open(tmp_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
+        os.replace(tmp_path, progress_path)
     except OSError as exc:
         print(f"WARN: failed to write {progress_path}: {exc}")
 
@@ -205,57 +284,16 @@ def mark_url_dead(dead_urls_path: Path, dead_urls: set[str], url: str) -> None:
 
 
 def check_no_form_strike(dead_urls_path: Path, dead_urls: set[str], url: str, brand: str, worker: int, log) -> None:
-    _no_form_strikes[url] = _no_form_strikes.get(url, 0) + 1
-    if _no_form_strikes[url] >= NO_FORM_MAX_STRIKES:
-        mark_url_dead(dead_urls_path, dead_urls, url)
-        log(f"  [W{worker}] no-form {NO_FORM_MAX_STRIKES}-strike retirement: {brand} -> {url}")
-
-
-def fill_form(client: CamofoxClient, tab_id: str, user_id: str, flat_cfg: dict, log) -> int:
-    snap = client.snapshot(tab_id, user_id)
-    items = parse_snapshot(snap.get("snapshot", ""))
-
-    filled = 0
-    for item in items:
-        if item.role not in INTERACTIVE_ROLES:
-            continue
-        field = match_field(item.label)
-        if not field:
-            continue
-
-        value = flat_cfg.get("password") if field == "password" else get_value(flat_cfg, field)
-        if not value:
-            continue
-
-        try:
-            client.type(tab_id, user_id, item.ref, str(value))
-            filled += 1
-            log(f"  filled {item.role} '{item.label}' ({item.ref}) <- {field}")
-        except CamofoxError as e:
-            log(f"  WARN could not type into {item.ref}: {e}")
-
-    return filled
-
-
-def find_submit_ref(client: CamofoxClient, tab_id: str, user_id: str) -> str | None:
-    snap = client.snapshot(tab_id, user_id)
-    for item in parse_snapshot(snap.get("snapshot", "")):
-        if item.role in ("button", "link") and SUBMIT_PATTERNS.search(item.label):
-            return item.ref
-    return None
-
-
-def count_form_fields(items: list) -> int:
-    return sum(1 for it in items if it.role in INTERACTIVE_ROLES and match_field(it.label))
+    with _dead_urls_lock:
+        _no_form_strikes[url] = _no_form_strikes.get(url, 0) + 1
+        strikes = _no_form_strikes[url]
+    if strikes >= NO_FORM_MAX_STRIKES:
+        log(f"  [W{worker}] no form observed {strikes} times: {brand} -> {url}; retained for review")
 
 
 def dismiss_cookie_banner(client: CamofoxClient, tab_id: str, user_id: str, log) -> None:
     """Click the first consent/accept control so it stops covering the form."""
-    try:
-        items = parse_snapshot(client.snapshot(tab_id, user_id).get("snapshot", ""))
-    except CamofoxError:
-        return
-    for item in items:
+    for item in snapshot_items(client, tab_id, user_id):
         if item.role in ("button", "link") and CONSENT_PATTERNS.search(item.label):
             try:
                 client.click(tab_id, user_id, ref=item.ref)
@@ -266,46 +304,118 @@ def dismiss_cookie_banner(client: CamofoxClient, tab_id: str, user_id: str, log)
             return
 
 
-def navigate_to_form(client: CamofoxClient, tab_id: str, user_id: str, worker: int, log) -> int:
-    """If the landing page has too few form fields, click a Sign Up / Create
-    Account / Sign In link to reach the real signup form. Returns the field
-    count once a form is found (or the best count after MAX_NAV_HOPS)."""
-    items = parse_snapshot(client.snapshot(tab_id, user_id).get("snapshot", ""))
+def navigation_targets(client: CamofoxClient, tab_id: str, user_id: str, items: list) -> list[tuple[int, str, str]]:
+    """Rank visible registration links ahead of account icons and login."""
+    targets: list[tuple[int, str, str]] = []
     fields = count_form_fields(items)
-    if fields >= MIN_FORM_FIELDS:
-        return fields
-
-    tried: set[str] = set()
-    for _ in range(MAX_NAV_HOPS):
-        target = None
-        for item in items:
-            if item.role not in ("button", "link") or item.ref in tried:
+    has_login_button = any(it.role == "button" and re.search(r"sign\s*in|log\s*in", it.label, re.I)
+                           for it in items)
+    for it in items:
+        if it.role not in ("button", "link") or UNRELATED_ACTION_PATTERNS.search(it.label):
+            continue
+        if PRIMARY_SIGNUP_LINK_PATTERNS.search(it.label):
+            # A Sign Up button on an already visible registration form is a
+            # submit action; never press it while hunting for a form.
+            if it.role == "button" and fields >= MIN_FORM_FIELDS and not has_login_button:
                 continue
-            # Never click a submit-looking control during navigation -- only
-            # links that take us to a registration form.
-            if SIGNUP_LINK_PATTERNS.search(item.label) and not SUBMIT_PATTERNS.search(item.label) \
-                    or re.search(r"create\s+(an\s+)?account|sign\s*up|register|join", item.label, re.IGNORECASE):
-                target = item
-                break
+            targets.append((100, "ref", it.ref))
+        elif ACCOUNT_ENTRY_PATTERNS.search(it.label):
+            targets.append((70, "ref", it.ref))
+        elif FALLBACK_SIGNUP_LINK_PATTERNS.search(it.label):
+            targets.append((40, "ref", it.ref))
+
+    # The links endpoint includes hrefs absent from many accessibility names.
+    try:
+        links = client.links(tab_id, user_id).get("links", [])
+    except (CamofoxError, AttributeError, TypeError):
+        links = []
+    for link in links:
+        if not isinstance(link, dict) or not link.get("ref"):
+            continue
+        hint = f"{link.get('text') or ''} {link.get('href') or ''}"
+        if UNRELATED_ACTION_PATTERNS.search(hint):
+            continue
+        if PRIMARY_SIGNUP_LINK_PATTERNS.search(hint):
+            targets.append((90, "ref", str(link["ref"])))
+        elif ACCOUNT_ENTRY_PATTERNS.search(hint):
+            targets.append((65, "ref", str(link["ref"])))
+
+    # Account icon classes and SVG names are sometimes the only semantic clue.
+    # This is read-only page evaluation; interaction still uses client.click.
+    try:
+        icons = client.evaluate(tab_id, user_id, ACCOUNT_ICON_DOM_QUERY)
+    except (CamofoxError, AttributeError, TypeError):
+        icons = []
+    for icon in icons if isinstance(icons, list) else []:
+        if not isinstance(icon, dict) or not icon.get("selector"):
+            continue
+        hint = str(icon.get("hint") or "")
+        if ACCOUNT_ENTRY_PATTERNS.search(hint) and not UNRELATED_ACTION_PATTERNS.search(hint):
+            targets.append((60, "selector", str(icon["selector"])))
+
+    # Stable ordering makes retries explainable. Refs are preferred to CSS
+    # selectors when both describe the same visible control.
+    return sorted(set(targets), reverse=True)
+
+
+def is_login_form(items: list) -> bool:
+    return count_form_fields(items) >= MIN_FORM_FIELDS and any(
+        it.role == "button" and re.search(r"sign\s*in|log\s*in", it.label, re.I)
+        for it in items
+    )
+
+
+def has_registration_link(items: list) -> bool:
+    return any(it.role == "link" and PRIMARY_SIGNUP_LINK_PATTERNS.search(it.label)
+               for it in items)
+
+
+def navigate_to_form(client: CamofoxClient, tab_id: str, user_id: str, worker: int, log) -> list:
+    """If the landing page has too few form fields, click through to the real
+    signup form. Returns the snapshot items of the best page reached.
+
+    The old guard read `A and not B or C`, which Python groups as
+    `(A and not B) or C` -- the `or` branch re-admitted exactly the submit-like
+    controls the `not B` was there to exclude, so the hop could click a
+    "Sign Up" submit button on a half-filled form. The selection is now
+    explicit and ordered.
+    """
+    items = snapshot_items(client, tab_id, user_id)
+    # A login panel has enough fields to pass the old threshold, but it is
+    # still the wrong form. Prefer an explicit registration link on that page.
+    if (count_form_fields(items) >= MIN_FORM_FIELDS and
+            not is_login_form(items) and not has_registration_link(items)):
+        return items
+
+    tried: set[tuple] = set()
+    best = items
+    for _ in range(MAX_NAV_HOPS):
+        fingerprint = tuple((it.role, it.ref, it.label) for it in items)
+        target = next((t for t in navigation_targets(client, tab_id, user_id, items)
+                       if (fingerprint, t[1], t[2]) not in tried), None)
         if not target:
             break
-        tried.add(target.ref)
-        log(f"  [W{worker}] hop -> clicking '{target.label}' ({target.ref}) to reach form")
+
+        _, method, locator = target
+        tried.add((fingerprint, method, locator))
+        log(f"  [W{worker}] hop -> opening {method} {locator} to reach registration")
         try:
-            client.click(tab_id, user_id, ref=target.ref)
-            client.wait(tab_id, user_id, timeout_ms=2500)
+            client.click(tab_id, user_id, **{method: locator})
         except CamofoxError:
-            pass
-        items = parse_snapshot(client.snapshot(tab_id, user_id).get("snapshot", ""))
-        fields = count_form_fields(items)
-        if fields >= MIN_FORM_FIELDS:
-            return fields
-    return fields
-
-
-def snapshot_has_captcha(client: CamofoxClient, tab_id: str, user_id: str) -> bool:
-    snap = client.snapshot(tab_id, user_id)
-    return bool(CAPTCHA_PATTERNS.search(snap.get("snapshot", "")))
+            continue
+        # Give the destination (often a modal rendered client-side) time to
+        # draw its fields instead of snapshotting a still-empty page.
+        items = wait_for_form(client, tab_id, user_id, 8.0, MIN_FORM_FIELDS)
+        if count_form_fields(items) >= MIN_FORM_FIELDS:
+            # Head silhouette often opens a *login* modal first. Follow its
+            # Create Account link rather than filling and submitting login.
+            if not is_login_form(items) and not has_registration_link(items):
+                return items
+        if count_form_fields(items) > count_form_fields(best):
+            best = items
+    # No registration route was found: avoid treating login credentials as a
+    # successful signup just because its form has two fields.
+    return [] if is_login_form(best) else best
 
 
 def wait_out_captcha(client: CamofoxClient, tab_id: str, user_id: str, timeout_s: int, worker: int, log) -> bool:
@@ -320,11 +430,12 @@ def wait_out_captcha(client: CamofoxClient, tab_id: str, user_id: str, timeout_s
 
 
 def process_entry(client: CamofoxClient, row: dict, flat_cfg: dict, worker: int, dry_run: bool,
-                   captcha_timeout: int, dead_urls_path: Path, dead_urls: set[str], log) -> tuple[str, str]:
+                   captcha_timeout: int, dead_urls_path: Path, dead_urls: set[str], log,
+                   page_timeout: float = 20.0) -> tuple[str, str]:
     brand = row.get("brand", "")
     program = row.get("program", "")
     url = row["url"]
-    user_id = f"loyaltybot-{slugify(brand or program or url)}"
+    user_id = session_user_id(row, flat_cfg)
     session_key = "signup"
 
     tab_id = None
@@ -332,28 +443,39 @@ def process_entry(client: CamofoxClient, row: dict, flat_cfg: dict, worker: int,
         try:
             tab_id = client.create_tab(user_id, session_key, url)
         except CamofoxError as e:
-            return "navigation_error", str(e)
+            return "navigation_error", safe_error(e, flat_cfg)
 
-        try:
-            client.wait(tab_id, user_id, timeout_ms=3000)
-        except CamofoxError:
-            pass
+        # Wait for the page to actually render a form rather than snapshotting
+        # a blank document after a fixed 3s sleep.
+        quick_wait = min(page_timeout, 4.0)
+        wait_for_form(client, tab_id, user_id, quick_wait, return_on_signup_link=True)
 
         # Clear consent banners, then chase a Sign Up / Create Account link if
         # the landing page has too few fields to be the actual signup form.
         dismiss_cookie_banner(client, tab_id, user_id, log)
-        navigate_to_form(client, tab_id, user_id, worker, log)
+        items = navigate_to_form(client, tab_id, user_id, worker, log)
+        if not items and page_timeout > quick_wait:
+            # Slow JavaScript sites can render their account controls after the
+            # quick pass. Preserve the configured wait budget, then try once.
+            wait_for_form(client, tab_id, user_id, page_timeout - quick_wait,
+                          return_on_signup_link=True)
+            items = navigate_to_form(client, tab_id, user_id, worker, log)
 
-        filled = fill_form(client, tab_id, user_id, flat_cfg, log)
+        filled_refs: set[str] = set()
+        filled = fill_form(client, tab_id, user_id, flat_cfg, log, filled_refs, items)
         log(f"  [W{worker}] filled {filled} field(s) -- {brand}")
 
         if filled == 0:
+            # A CAPTCHA wall renders no form. Reporting that as "no form
+            # fields found" retired live sites as permanently dead.
+            if snapshot_has_captcha(client, tab_id, user_id):
+                return "captcha_skipped", "blocked by captcha before form"
             check_no_form_strike(dead_urls_path, dead_urls, url, brand, worker, log)
-            return "failed", "no form fields found"
+            return "navigation_review", "registration path or form not found"
 
         if snapshot_has_captcha(client, tab_id, user_id):
             if wait_out_captcha(client, tab_id, user_id, captcha_timeout, worker, log):
-                filled += fill_form(client, tab_id, user_id, flat_cfg, log)
+                filled += fill_form(client, tab_id, user_id, flat_cfg, log, filled_refs)
             else:
                 return "captcha_skipped", "captcha not solved"
 
@@ -364,32 +486,47 @@ def process_entry(client: CamofoxClient, row: dict, flat_cfg: dict, worker: int,
         if not submit_ref:
             return "failed", "submit button not found"
 
-        client.click(tab_id, user_id, ref=submit_ref)
         try:
-            client.wait(tab_id, user_id, timeout_ms=3000)
+            client.click(tab_id, user_id, ref=submit_ref)
+        except CamofoxError as e:
+            # A timed-out click may have submitted successfully. An automatic
+            # retry could create a second account or duplicate enrollment.
+            return "unverified", "submit click uncertain: " + safe_error(e, flat_cfg)
+        try:
+            client.wait(tab_id, user_id, timeout_ms=5000)
         except CamofoxError:
             pass
 
-        if snapshot_has_captcha(client, tab_id, user_id):
-            return "captcha_skipped", "captcha after submit"
-
-        return "success", ""
+        return verify_submission(client, tab_id, user_id)
     except CamofoxError as e:
-        return "timeout", str(e)
+        return "timeout", safe_error(e, flat_cfg)
+    except Exception as e:
+        # Anything unexpected is this site's problem, not the run's.
+        return "failed", safe_error(e, flat_cfg)
     finally:
         if tab_id:
             try:
                 client.close_tab(tab_id, user_id)
-            except CamofoxError:
+            except Exception:
                 pass
+        # Drop the per-brand browser session too. Keeping one session alive per
+        # brand across 500+ sites exhausts the camofox server's memory and
+        # every later site then fails to open a tab at all.
+        try:
+            client.close_session(user_id)
+        except Exception:
+            pass
 
 
 def worker_loop(worker_id: int, work_queue: "queue.Queue[dict]", flat_cfg: dict, args, stats: dict,
                  results_path: Path, progress_path: Path, dead_urls_path: Path, dead_urls: set[str],
-                 start_time: float, log) -> None:
+                 start_time: float, log, record_failures: list[str] | None = None,
+                 crash_guard: BrowserCrashGuard | None = None) -> None:
     client = CamofoxClient(base_url=args.camofox_url)
 
     while True:
+        if crash_guard and crash_guard.stopped.is_set():
+            return
         try:
             row = work_queue.get_nowait()
         except queue.Empty:
@@ -397,31 +534,61 @@ def worker_loop(worker_id: int, work_queue: "queue.Queue[dict]", flat_cfg: dict,
 
         brand = row.get("brand", "")
         program = row.get("program", "")
-        url = row["url"]
+        url = row.get("url", "")
 
         with _progress_lock:
             _current_workers[worker_id] = {"brand": brand, "status": "running"}
 
-        status, error = process_entry(client, row, flat_cfg, worker_id, args.dry_run,
-                                        args.captcha_timeout, dead_urls_path, dead_urls, log)
+        # An exception escaping process_entry used to kill this thread outright:
+        # the row it had already popped was lost with no result row written, and
+        # the run finished with fewer workers than it started with -- silently
+        # capping throughput and the success count.
+        try:
+            status, error = process_entry(
+                client, row, flat_cfg, worker_id, args.dry_run, args.captcha_timeout,
+                dead_urls_path, dead_urls, log, args.page_timeout,
+            )
+        except Exception as e:
+            status, error = "failed", "worker error: " + safe_error(e, flat_cfg)
+            log(f"[W{worker_id}] unexpected error on {url}: {error}")
 
-        append_result(results_path, url, brand, program, status, worker_id, error)
-        append_progress_log(worker_id, brand, program, status, error)
+        try:
+            append_result(results_path, url, brand, program, status, worker_id, error)
+            append_progress_log(worker_id, brand, program, status, error)
+        except Exception as e:
+            log(f"[W{worker_id}] ERROR result not saved for {url}: {safe_error(e, flat_cfg)}")
+            if record_failures is not None:
+                with _results_lock:
+                    record_failures.append(url)
+            with _progress_lock:
+                _current_workers[worker_id] = {"brand": brand, "status": "result_write_failed"}
+            # The URL has no result row, so the next run can retry it. Never
+            # report it as processed or silently finish with exit code zero.
+            return
 
         with _progress_lock:
             stats["processed"] += 1
-            if status in ("success", "dry_run"):
+            if status == "success":
                 stats["success"] += 1
+            elif status == "dry_run":
+                stats["dry_run"] = stats.get("dry_run", 0) + 1
+            elif status == "captcha_skipped":
+                # Checked BEFORE the generic captcha test: `"captcha" in status`
+                # matched captcha_skipped first, so the "skipped" counter on the
+                # dashboard was permanently stuck at zero.
+                stats["skipped"] += 1
             elif "captcha" in status:
                 stats["captcha"] += 1
-            elif status == "captcha_skipped":
-                stats["skipped"] += 1
             else:
                 stats["failed"] += 1
             _current_workers[worker_id] = {"brand": brand, "status": "idle"}
 
         write_progress(progress_path, True, stats, start_time)
         log(f"[W{worker_id}] {brand} -- {program} -> {status}" + (f" ({error})" if error else ""))
+
+        if crash_guard and crash_guard.record(status, error):
+            log("Browser repeatedly closed; pausing the batch with remaining URLs unattempted")
+            return
 
         if args.delay:
             time.sleep(args.delay)
@@ -437,11 +604,16 @@ def run(args: argparse.Namespace) -> int:
 
     dead_urls = load_dead_urls(dead_urls_path)
     dead_urls = retire_repeated_failures(results_path, dead_urls)
+    if getattr(args, "ignore_dead_urls", False):
+        dead_urls = set()  # audit/retry legacy entries retired by transient errors
 
     programs = load_programs(Path(args.csv))
     rows = [r for r in programs if r.get("url") and (args.include_infeasible or is_feasible(r))]
     rows = sort_by_priority(rows)
     rows = [r for r in rows if r["url"] not in dead_urls]
+    # One URL can appear several times in a master CSV. Concurrent signups to
+    # it with the same client account race each other and corrupt outcomes.
+    rows = list({r["url"]: r for r in reversed(rows)}.values())[::-1]
 
     if args.retry:
         retryable = load_failed_urls(results_path)
@@ -457,7 +629,7 @@ def run(args: argparse.Namespace) -> int:
     client = CamofoxClient(base_url=args.camofox_url)
     client.wait_for_browser()
 
-    stats = {"total": len(batch), "processed": 0, "success": 0, "failed": 0, "captcha": 0, "skipped": 0}
+    stats = {"total": len(batch), "processed": 0, "success": 0, "failed": 0, "captcha": 0, "skipped": 0, "dry_run": 0}
     start_time = time.time()
 
     print(f"Running {len(batch)} signups via camofox at {client.base_url} with {args.workers} worker(s)")
@@ -468,11 +640,13 @@ def run(args: argparse.Namespace) -> int:
         work_queue.put(row)
 
     threads = []
+    record_failures: list[str] = []
+    crash_guard = BrowserCrashGuard()
     for worker_id in range(1, args.workers + 1):
         t = threading.Thread(
             target=worker_loop,
             args=(worker_id, work_queue, flat_cfg, args, stats, results_path, progress_path,
-                  dead_urls_path, dead_urls, start_time, print),
+                  dead_urls_path, dead_urls, start_time, print, record_failures, crash_guard),
             daemon=True,
         )
         t.start()
@@ -482,8 +656,14 @@ def run(args: argparse.Namespace) -> int:
         t.join()
 
     write_progress(progress_path, False, stats, start_time)
-    print(f"Done. {stats['success']} success, {stats['failed']} failed, "
+    print(f"Done. {stats['success']} success, {stats['dry_run']} dry run, {stats['failed']} failed, "
           f"{stats['captcha']} captcha, {stats['skipped']} skipped. Results -> {results_path}")
+    if record_failures:
+        print(f"ERROR: {len(record_failures)} result row(s) could not be saved; run incomplete")
+        return 2
+    if crash_guard.stopped.is_set():
+        print("ERROR: browser crash circuit opened; batch incomplete. Repair browser and resume remaining URLs")
+        return 3
     return 0
 
 
@@ -499,11 +679,16 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--start-index", type=int, default=0, help="Start from this row in the CSV")
     parser.add_argument("--dry-run", action="store_true", help="Fill forms but don't submit")
     parser.add_argument("--retry", action="store_true", help="Only re-run previously failed/timeout/captcha URLs")
+    parser.add_argument("--ignore-dead-urls", action="store_true", help="Revisit legacy dead-urls.json entries for audit")
+    parser.add_argument("--page-timeout", type=float, default=20.0,
+                        help="Seconds to wait for a form to render before giving up on a site")
     parser.add_argument("--captcha-timeout", type=int, default=120, help="Seconds to wait for manual CAPTCHA solve")
     parser.add_argument("--delay", type=float, default=DEFAULT_DELAY_SECONDS, help="Seconds each worker waits between sites")
     parser.add_argument("--include-infeasible", action="store_true", help="Also process rows where Auto_Signup_Feasible != Yes")
     parser.add_argument("--camofox-url", default=None, help="camofox-browser base URL (default: $CAMOFOX_URL or http://localhost:9377)")
     args = parser.parse_args(argv)
+    if args.workers < 1 or args.delay < 0 or args.page_timeout < 0:
+        parser.error("workers must be >= 1; delay and page-timeout must be >= 0")
     return run(args)
 
 

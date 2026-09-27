@@ -1,0 +1,10 @@
+<!doctype html><meta charset=utf-8><body>
+<div id=host></div>
+<script>
+const h=document.getElementById('host').attachShadow({mode:'open'});
+h.innerHTML='<input type=email name=email placeholder=Email>'+
+'<input type=password name=password placeholder=Password>'+
+'<input type=text name=first placeholder="First name">'+
+'<button>Create</button>';
+</script>
+</body>

@@ -1,20 +1,6 @@
 ---
 name: camofox-form-filler
-description: >
-  Anti-detection browser automation for high-success automated form filling
-  (signups, loyalty/rewards enrollment, onboarding forms). Wraps
-  camofox-browser (Camoufox-based, fingerprint-spoofed Firefox + REST API +
-  accessibility-snapshot element refs) and provides a Python client plus a
-  drop-in replacement for Playwright-based signup scripts such as
-  LoyaltyBot's `auto-signup-playwright.py`. Use when an existing Playwright/
-  Selenium/Chromium form-filler has a low success rate because sites detect
-  the automated browser (Cloudflare challenges, "verify you are human",
-  blocked/blank pages). Trigger on: "camofox", "anti-detection browser",
-  "form filler success rate", "LoyaltyBot", "auto signup bot getting
-  blocked", "bypass bot detection for form filling".
-source: https://github.com/jo-inc/camofox-browser
-stack: Python 3.10+ (client/runner) + Node.js 18+ (camofox-browser server)
-requires: camofox-browser server running (npm install && npm start), Python `requests`
+description: Fill and measure client-authorized loyalty signup forms with the camofox-browser REST API. Use to diagnose LoyaltyBot form discovery, field matching, registration navigation, result verification, retries, and large-batch reliability.
 ---
 
 # Camofox Form Filler — Anti-Detection Signup Automation
@@ -108,9 +94,9 @@ It reads the same `config.json` (first_name, last_name, email, phone,
 password, date_of_birth, address.*) and the same
 `loyalty-rewards-MASTER.csv` (Category, Brand Name, Program Name, Direct
 Sign-Up URL, Auto_Signup_Feasible), and writes
-`signup-results-camofox.csv` with the same `url, brand, program, status,
-timestamp` columns the dashboard already reads — `status` is one of
-`success`, `dry_run`, `captcha_skipped`, `failed`.
+`signup-results-camofox.csv` with the seven columns
+`url,brand,program,status,worker,error,timestamp`. A `dry_run` indicates form
+fill only. `verification_required` and `unverified` are not completed signups.
 
 ## How field filling works
 
@@ -153,23 +139,21 @@ changes:
   column and reproduces the same smart queue (`sort_by_priority` /
   `get_priority` — no-barrier sites first, SSN/payment/in-store-only sites
   last).
-- **Results**: writes the real 7-column schema
-  `url,brand,program,status,worker,error,timestamp` (not the simplified
-  5-column one `auto_signup_camofox.py` uses).
+- **Results**: both runners write the 7-column schema
+  `url,brand,program,status,worker,error,timestamp`.
 - **Progress**: writes `progress_<id>.json` with the same
   `{running, start_time, stats{total,processed,success,failed,captcha,
   skipped}, current_workers[], log[], eta_seconds}` shape the dashboard
   already polls.
-- **Dead URLs**: shares `dead-urls.json` with the Playwright engine — same
-  3-strike (overall failure) and 2-strike (no-form-fields-in-session)
-  retirement rules, via `load_dead_urls` / `retire_repeated_failures` /
-  `check_no_form_strike`.
+- **Dead URLs**: honors manually curated `dead-urls.json`; transient form,
+  CAPTCHA, and network failures do not automatically retire URLs. Use
+  `--ignore-dead-urls` to audit entries retired by earlier versions.
 - **Workers**: `--workers N` spawns N threads, each with its own
-  `CamofoxClient`; per-brand session persistence (`userId =
-  loyaltybot-<slugified-brand>`) means concurrent workers never collide on
-  the same camofox profile.
-- **Retry**: `--retry` re-processes only URLs whose last status was
-  `failed`/`timeout`/`navigation_error`/`captcha_failed`/`captcha_skipped`.
+  `CamofoxClient`; browser profile identifiers include a digest of client
+  email and target URL to isolate clients and repeated brands.
+- **Retry**: `--retry` re-processes recorded failures and challenges.
+  Review pending verification and uncertain submissions manually before any
+  resubmission, because the first request may already have created an account.
 
 To wire it in, change the `do_launch()` subprocess command in
 `loyaltybot_server.py` from `auto-signup-parallel-FIXED.py` to
@@ -181,32 +165,24 @@ ideally behind a per-client `"engine": "camofox" | "playwright"` flag in
 
 ### CapSolver caveat
 
-camofox-browser's REST API has no generic JS-eval endpoint, so this engine
-**cannot** auto-inject CapSolver tokens the way `auto-signup-parallel-FIXED.py`
-does. In practice this matters less than it sounds: most of the production
-failures (≈88% of 511 processed rows in one real run) were `"no form fields
-found"` or 60-second timeouts — i.e. Playwright/Chromium getting
-blocked/blank-paged before a CAPTCHA was ever served — which is exactly what
-Camoufox's fingerprint spoofing targets. Any CAPTCHA that *does* render still
-falls back to the noVNC manual-solve flow (`ENABLE_VNC=1`), same as
-`auto_signup_camofox.py`.
+This engine does not integrate CapSolver. Current upstream releases expose an
+evaluation endpoint, so the older claim that the REST API cannot evaluate
+JavaScript is obsolete. CAPTCHA and no-form outcomes need separate review;
+the previous 511-row Playwright run does not establish Camoufox's live rate.
+Where a program requires a human challenge, use its normal manual route.
 
-## Per-brand session persistence
+## Session isolation
 
-Each row uses `userId = loyaltybot-<slugified-brand>`. camofox persists that
-user's cookies/localStorage across runs
-(`~/.camofox/profiles/<hashed-userId>/storage_state.json`), so:
-
-- A brand that required a manual CAPTCHA solve once (via VNC) won't need it
-  again on the next run — the authenticated/cleared session carries over.
-- Re-running `--start-index` to retry failures doesn't re-trigger
-  first-visit bot checks for brands that already succeeded.
+Each row uses a stable per-client and per-URL identifier. Depending on the
+camofox server's session deletion semantics, closing the session may remove
+its cookies/localStorage. Do not assume a solved challenge survives a rerun.
+Test persistence against the server version actually deployed before relying
+on cookies across runs. Each completed row closes its tab and session.
 
 ## Tuning for higher success rates
 
-- **Run with `ENABLE_VNC=1` for the first pass** on any brand that comes
-  back `captcha_skipped`, solve it once visually, then re-run — the
-  persisted profile usually clears the challenge on subsequent visits.
+- **Run a supervised manual pass** for `captcha_skipped` rows where the
+  program supports it; verify completion independently.
 - **Add a proxy** (`PROXY_HOST`/`PROXY_PORT`/...) if many `failed` rows are
   concentrated on sites known to geo-fence or rate-limit by IP.
 - **Increase `--delay`** between sites — bursty traffic from one IP/profile
@@ -227,6 +203,10 @@ user's cookies/localStorage across runs
 | `auto_signup_camofox.py` | Single-process signup runner + shared helpers (`FIELD_PATTERNS`, `flat_config`, smart-queue/dead-URL helpers) reused by the parallel engine |
 | `auto_signup_camofox_parallel.py` | Multi-worker engine matching LoyaltyBot_V3's `auto-signup-parallel-FIXED.py` CLI/file contract (nested config, 7-column results CSV, `progress_<id>.json`, `dead-urls.json`) — drop-in replacement for `do_launch()` |
 | `loyaltybot_server.patched.py` | Reference patch of LoyaltyBot_V3's `loyaltybot_server.py` with a per-client `"engine": "camofox"\|"playwright"` toggle wired into `do_launch()` (client name defaults scrubbed). Diff against your local copy or drop in. |
+| `purge_master_csv.py` | Drops dead/retired/structurally-unfit rows from `loyalty-rewards-MASTER.csv` (dead-URL retirement, optional live HTTP check, dealership/in-store junk filter) |
+| `test_camofox_engine.py` | Offline regression suite (scripted fake camofox client — no server or network needed) |
+| `score_results.py` | Count unique URLs and separate filled forms from confirmed signups |
+| `FIXES.md` | Full writeup of the 23 engine bugs fixed in the success-rate pass, with the failure analysis and test coverage map |
 | `program.md` | Karpathy-autoresearch fixed-budget A/B loop to measure success_rate per engine/config change |
 | `requirements.txt` | Python deps (`requests`) |
 
@@ -238,3 +218,74 @@ user's cookies/localStorage across runs
   detection for automated signups/form filling.
 - User wants to add proxy + GeoIP + persistent sessions to an existing
   automated signup pipeline.
+
+---
+
+## Reliability fixes (success-rate pass)
+
+23 bugs fixed across `camofox_client.py`, `auto_signup_camofox.py`,
+`auto_signup_camofox_parallel.py`, `loyaltybot_server.patched.py`.
+
+**Full writeup with every bug and its fix: [`FIXES.md`](FIXES.md).**
+
+Short version — the failures were three stacked layers, each losing most of
+what the layer above handed it:
+
+1. **Most sites never produced a form.** The snapshot parser understood one of
+   three formats, only the first page of a paginated snapshot was read, and
+   pages were snapshotted before JS-rendered forms drew. A CAPTCHA wall was
+   also misreported as "no form fields found", so the 2-strike rule
+   permanently retired live sites.
+2. **Forms that were found often couldn't submit.** Checkboxes were never
+   ticked, `<select>` was typed into, `spinbutton`/`textarea` were ignored,
+   and two regex precedence bugs wrote values into the wrong fields.
+3. **Outcomes were recorded wrong.** Any page without a CAPTCHA counted as
+   `success`; worker threads died on unhandled exceptions and dropped their
+   rows silently; browser sessions were never closed, so long runs starved the
+   camofox server and finished with fewer workers than they started with.
+
+Regression suite: `test_camofox_engine.py` — 29 tests, no server or network
+needed (scripted fake client).
+
+```
+python3 test_camofox_engine.py
+python3 -m unittest test_camofox_engine -v
+```
+
+### New flag
+`--page-timeout` (default 20s) on both engines — how long to wait for a form to render.
+
+---
+
+## Purging dead/junk rows: `purge_master_csv.py`
+
+Run against the real `loyalty-rewards-MASTER.csv` on the client's machine
+(not present in either sandbox repo). Three filters, all report-then-apply:
+
+1. **Dead-URL retirement** — rows already 3-strike/no-form-strike retired in
+   `dead-urls.json` from real runs (optionally re-mined from a results CSV
+   with `--results`).
+2. **Live-check** (`--live-check`, off by default) — HEAD/GET each remaining
+   URL and drop DNS failures, connection errors, and 404/410/5xx.
+3. **Structural junk** — car dealership / franchise brands (Nissan, Toyota,
+   Ford, ...) and categories (`Automotive`, `auto financing`, `rent-to-own`,
+   `timeshare`) and any barrier reading "in-store signup only" / "requires a
+   visit". These aren't bugs to fix — a dealership "rewards" page is a lead
+   form or financing application gated behind visiting a specific store, not
+   a self-service signup. Add more with `--exclude-brand`/`--exclude-category`
+   (comma-separated, additive to the built-in list).
+
+```
+python purge_master_csv.py --csv loyalty-rewards-MASTER.csv                 # dry run + report
+python purge_master_csv.py --csv loyalty-rewards-MASTER.csv --live-check    # + real HTTP check
+python purge_master_csv.py --csv loyalty-rewards-MASTER.csv --apply         # writes cleaned CSV
+```
+
+`--apply` always writes a `.bak` of the original first (skip with
+`--no-backup`) and a `purge-report.csv` of everything removed and why.
+
+**Bug found and fixed while building this**: writing the cleaned CSV back to
+the same path being read (the default, in-place purge) truncated the file
+mid-`DictReader`-iteration — every row after the truncation point vanished
+instead of being evaluated. Fixed by reading every row into memory before any
+write. Covered by `test_camofox_engine.py::TestPurgeMasterCsv`.
