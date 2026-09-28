@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<!-- Add data-cwb-smooth to <html> ONLY with a documented reason (Lenis). Native scroll is the default. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{{Business}} — {{Primary outcome in ≤ 55 chars}}</title>
+  <meta name="description" content="{{150–160 chars: outcome + service + city. No fake claims.}}">
+  <link rel="canonical" href="{{https://domain/}}">
+  <meta name="theme-color" content="#0f1117">
+  <meta name="color-scheme" content="dark light">
+
+  <!-- Open Graph / social (1200×630 image, re-hosted — never a presigned URL) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{Title}}">
+  <meta property="og:description" content="{{Description}}">
+  <meta property="og:url" content="{{https://domain/}}">
+  <meta property="og:image" content="{{https://domain/assets/og.jpg}}">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+
+  <!-- Fonts: one provider, ≤ 2 families, ≤ 4 files. Fontshare/Bunny are drop-in; self-host for Premium. -->
+  <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=satoshi@400,500,700&display=swap">
+
+  <!-- LCP: preload ONLY the first-viewport hero media, with real dimensions on the element -->
+  <link rel="preload" as="image" href="/assets/hero.avif" type="image/avif" fetchpriority="high">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+
+  <!-- Fail-open motion gate: pre-reveal CSS applies only while html.cwb-js is present. -->
+  <script>
+    (function (d) {
+      d.classList.add('cwb-js');
+      setTimeout(function () { if (!d.classList.contains('cwb-booted')) d.classList.remove('cwb-js'); }, 3000);
+    })(document.documentElement);
+  </script>
+
+  <!-- @cwb:css -->
+
+  <!-- Structured data: generate with sa-local-seo-geo (LocalBusiness/Organization + FAQPage). Must validate. -->
+  <script type="application/ld+json">
+  { "@context": "https://schema.org", "@type": "{{LocalBusiness subtype}}", "name": "{{Business}}", "url": "{{https://domain/}}" }
+  </script>
+</head>
+<body data-cwb="reveal">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="island" data-cwb="island-nav">
+    <nav class="island__bar" aria-label="Primary">
+      <a class="island__logo" href="/">{{Brand}}</a>
+      <div class="island__menu" id="island-menu">
+        <div class="island__menu-inner">
+          <ul>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#work">Work</a></li>
+            <li><a href="#proof">Reviews</a></li>
+          </ul>
+          <a class="btn" href="#contact">{{Primary CTA verb}}</a>
+        </div>
+      </div>
+      <button class="island__toggle" aria-expanded="true" aria-controls="island-menu">Menu</button>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- HERO: headline states the OUTCOME; CTA visible in the first viewport at 390px. -->
+    <section class="hero section" aria-labelledby="hero-title">
+      <div class="wrap">
+        <p class="eyebrow">{{Category · City}}</p>
+        <h1 id="hero-title" data-cwb="line-reveal" data-trigger="load">{{Outcome headline}}</h1>
+        <p data-reveal>{{One-sentence value proposition}}</p>
+        <a class="btn" href="#contact" data-cwb="magnetic">{{Primary CTA verb}}</a>
+        <img src="/assets/hero.avif" alt="{{Specific, descriptive alt}}" width="1920" height="1080" fetchpriority="high" decoding="async">
+      </div>
+    </section>
+
+    <!-- Compose sections from references/modules.md. Budget: see SKILL.md §Motion budget. -->
+  </main>
+
+  <footer class="section">
+    <div class="wrap"><!-- NAP must match GBP exactly (sa-local-seo-geo) --></div>
+  </footer>
+
+  <!-- @cwb:js -->
+</body>
+</html>
