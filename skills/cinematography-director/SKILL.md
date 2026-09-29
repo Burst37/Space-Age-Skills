@@ -12,7 +12,7 @@ Two jobs, in order:
 1. **Decide the frame** like a DP. Every choice of camera, lens, angle, movement, light, and grade has a *reason* tied to story, emotion, or product.
 2. **Compile the frame** into the one syntax the target model obeys best. The same shot is written differently for Kling, Seedance, Veo, and Nano Banana.
 
-> **The model is a physics renderer, not a mood board.** It renders what it can see, count, measure, and hear. "Cinematic" and "epic" produce nothing. "ALEXA 65, Signature Prime 75mm at T1.8, 4:1 key-to-fill from a SkyPanel S60 through 216 diffusion, camera left 45°" produces a picture.
+> **The model is a physics renderer, not a mood board.** It renders what it can see, count, measure, and hear. "Cinematic" and "epic" produce nothing. "URSA Cine 17K 65, ZEISS Panoptes 65 70mm at T2.2, 4:1 key-to-fill from a SkyPanel S60 through 216 diffusion, camera left 45°" produces a picture.
 
 ---
 
@@ -80,7 +80,7 @@ Unless the brief calls for a deliberate texture break (16mm flashback, UGC phone
 | Unit | Body | Role | Assign it to |
 |---|---|---|---|
 | **A-cam** | **Blackmagic URSA Cine 17K 65** (65mm RGBW sensor, 17K, Blackmagic RAW Q0) | Highest-fidelity capture | Establishing/wide, hero frames, product and packshots, texture and macro, VFX plates, anything that must survive a 4K+ punch-in |
-| **B-cam** | **ARRI ALEXA LF** (large format, ARRIRAW, LogC3/LogC4 pipeline) | Skin and emotion | Close-ups, MCUs, dialogue coverage, beauty, reaction shots, low-light faces |
+| **B-cam** | **ARRI ALEXA LF** (large format, ARRIRAW, LogC3 / ARRI Wide Gamut 3) | Skin and emotion | Close-ups, MCUs, dialogue coverage, beauty, reaction shots, low-light faces |
 
 - **One camera per shot.** An AI frame has one lens and one sensor, so name the unit that "shot" that angle. Never stack both bodies on a single shot. In a multi-shot prompt (Seedance/Kling timelines), assign A or B per shot: A on the wides, B on the closes, exactly like a real two-camera day.
 - **Matched grade.** Both units run through the same pipeline token (e.g., "ACES 2.0, Kodak Vision3 250D print emulation, matched A/B camera grade"). This keeps skin, contrast, and color identical across the cut.
@@ -124,7 +124,7 @@ audio           → dialogue / SFX / ambience / music (video models with native 
 
 **Token-mode rule.** Models split into two families (per-model assignment is in `platform-protocols.md`):
 - **Token-receptive** (Midjourney, FLUX.2, Wan, Seedream, SD-family) take raw meta tokens (`ARRI_ALEXA65.ARRIRAW`, `IMG_9854.CR2`) directly.
-- **Narrative-first** (Nano Banana, GPT Image, Veo, Gemini Omni, Kling, Seedance, MiniMax H3, Runway) need tokens **translated into prose**. Write "shot on an ARRI ALEXA 65 in ARRIRAW, LogC4 graded through ACES 2.0" and "the frame reads like an IMG_9854.CR2 raw file: unretouched pores, true sensor noise". The translation table is in `meta-token-database.md`.
+- **Narrative-first** (Nano Banana, GPT Image, Veo, Gemini Omni, Kling, Seedance, MiniMax H3, Runway) need tokens **translated into prose**. Write "shot on an ARRI ALEXA LF in ARRIRAW, LogC3 graded through ACES 2.0" and "the frame reads like an IMG_9854.CR2 raw file: unretouched pores, true sensor noise". The translation table is in `meta-token-database.md`.
 
 ### Gate 5 — Compile to platform
 
@@ -177,14 +177,14 @@ shots:
     job: ESTABLISH
     duration_s: 4
     dp_sheet:
-      camera: "ARRI ALEXA 65 · ARRIRAW · LogC4"
-      lens: "ARRI Signature Prime 24mm T1.8 @ T4 — deep focus, city reads"
+      camera: "A-cam · Blackmagic URSA Cine 17K 65 · BRAW Q0"
+      lens: "ZEISS Panoptes 65 25mm @ T4 — deep focus, city reads"
       angle_height: "high angle, 12m, drone"
       movement: "DJI Inspire 3, slow descending crane-down 12m→3m, settles at eye-line of rooftop"
       frame_rate: "24fps, 180° shutter"
       lighting: { key: "...", fill: "...", back: "...", practicals: "...", ratio: "4:1", cct: "3200K practicals vs 7500K sky" }
       atmosphere: "..."
-      grade: "Kodak Vision3 500T emulation, ACES 2.0 ODT"
+      grade: "Kodak Vision3 500T emulation, ACES 2.0 ODT (matched A/B grade)"
       composition: "..."
       audio: "..."
     rationale: "Why this frame serves the thesis — one or two sentences."
