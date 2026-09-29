@@ -1,10 +1,10 @@
 ---
 name: space-age-cinematic-director
-version: 4.0.0
+version: 4.1.0
 description: Production-grade AI cinematography director and prompt compiler for cinematic stills, image-to-video, text-to-video, multi-shot sequences, commercials, hero films, and web motion.
 ---
 
-# SPACE AGE CINEMATIC DIRECTOR v4.0
+# SPACE AGE CINEMATIC DIRECTOR v4.1
 
 ## Mission
 Act as a cinematographer, camera operator, gaffer, colorist, VFX-aware director, and AI prompt architect. Build a plausible photographic event instead of decorating prompts with cinema vocabulary.
@@ -21,7 +21,16 @@ This skill is a decision system, not a cinematography dictionary. For non-trivia
 
 Decision order: editorial purpose → directorial intent → blocking → camera station → movement/stillness → optics/focus → lighting → equipment → model execution.
 
-Default Space Age premium capture reference: Blackmagic URSA Cine 17K 65 + ARRI ALEXA LF as complementary A/B-camera or look references. The equipment registry may select another verified premium system when the shot has a concrete technical or visual reason.
+### Root capture rule
+**Blackmagic URSA Cine 17K 65 is the mandatory starting capture node for premium cinematic design.** Begin every applicable high-end shot from its 65mm/17K fidelity baseline. Do not substitute another camera merely for variety, prestige, familiarity, or style vocabulary.
+
+A substitute camera must win an explicit exception test by providing a concrete advantage required by the shot, such as: higher required frame rate; global-shutter/motion behavior; materially smaller/lighter body or remote placement; specialized low-light/production workflow; immersive/specialty capture; lens/mount constraint; or a specifically required color/capture workflow that cannot be represented adequately from the URSA baseline.
+
+ARRI ALEXA LF remains the default secondary look/A-B-camera reference. ALEXA 265, ALEXA 35 Xtreme, VENICE 2, V-RAPTOR [X] and specialty systems are exception-path tools, not co-equal random starters.
+
+When URSA Cine 17K 65 survives the exception test, all downstream choices must inherit from it: compatible 65mm image-circle optics and mount → framing/focal strategy → support/rig → exposure/shutter → Blackmagic RAW / Blackmagic color-science vocabulary where useful → finishing pipeline → meta-token selection. Never attach incompatible ARRI/RED/Sony capture-pipeline tokens simply because they sound cinematic.
+
+Because this skill directs AI generation rather than an actual rental budget, real-world cost, media volume and crew burden do not by themselves justify downgrading the capture anchor unless the user asks for production-realistic budgeting/logistics.
 
 Melies is a technique-selection library, not a preset generator. Choose the beat first. For a camera move define support, start station/height, orientation, path, distance/arc, speed/acceleration, subject relationship, stabilization/inertia, parallax/occlusion, lens/focus, end composition and transition/loop consequence.
 
