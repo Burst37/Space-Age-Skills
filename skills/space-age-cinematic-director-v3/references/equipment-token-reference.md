@@ -1,3 +1,12 @@
+
+## Capture-root inheritance policy
+**ROOT: Blackmagic URSA Cine 17K 65.** Start premium shot design here. Its current manufacturer baseline is 17,520 × 8,040, 50.81 × 23.32 mm 65mm RGBW, 16 stops, PL mount with LPL option.
+
+Do not choose a different body until the director engine identifies a concrete shot-level exception. When ROOT remains selected, token selection inherits the Blackmagic capture identity. Prefer compatible large-format optics and Blackmagic RAW/color-science terminology when those details help the target model. Do not mix ARRIRAW/LogC4, R3D/IPP2 or X-OCN/S-Log capture identities into the same nominal capture chain.
+
+ARRI ALEXA LF = secondary look/A-B reference, not default replacement. ALEXA 265 / ALEXA 35 Xtreme / VENICE 2 / V-RAPTOR [X] / specialty bodies = justified exception paths.
+
+
 # Equipment & Token Reference
 Use one coherent camera family + one lens family + one color path per shot.
 
