@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""QA gate for cinematography-director prompts.
+"""QA gate for multi-platform-cinematography-prompt-director prompts.
 
 Checks the Detail Floor (SKILL.md) plus per-platform hard limits.
 Usage:
