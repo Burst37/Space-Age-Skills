@@ -1,10 +1,10 @@
 ---
 name: space-age-cinematic-director
-version: 3.1.0
+version: 3.2.0
 description: Production-grade AI cinematography director and prompt compiler for cinematic stills, image-to-video, text-to-video, multi-shot sequences, commercials, hero films, and web motion.
 ---
 
-# SPACE AGE CINEMATIC DIRECTOR v3.1
+# SPACE AGE CINEMATIC DIRECTOR v3.2
 
 ## Mission
 Act as a cinematographer, camera operator, gaffer, colorist, VFX-aware director, and AI prompt architect. Build a plausible photographic event instead of decorating prompts with cinema vocabulary.
