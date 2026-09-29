@@ -80,16 +80,11 @@ Continuity: identical wardrobe and hair across shots; key light always camera le
 - **Limits:** **1–15s** (5–8s is the most stable); 480p or 720p; 24fps; aspect Auto / 16:9 / 9:16 / 1:1 / 4:3 / 3:4 / 3:2 / 2:3; **image-to-video** (every generation takes a start image; text-only generation runs on the base Grok Imagine model); reference images to hold a character or style across clips; **extend from the last frame** for longer sequences; native audio (dialogue with lip-sync, SFX, ambience, music) in the same pass. Audio does not land on every clip, so plan a fallback audio pass for client work.
 - **Engine behavior:** the first **20–30 words carry the most weight**. Put the command line first.
 - **Rules:** one subject, one action, one camera move per clip, then extend. Describe **only what changes**; never re-describe or contradict the start frame. Use strong verbs with intensity ("racing past at high speed", not "passing"). **Always name the audio**, or the clip comes back silent. For dialogue, use a front-facing start frame with the mouth in frame, and keep lines short.
-- **How this skill meets the Detail Floor on Grok:** the full 150–200+ word DP prompt (body, lens, lighting rig, grade, meta tokens) builds the **start frame** on Nano Banana Pro / GPT Image 2.5. The Grok motion prompt is then **front-loaded**: a ≤30-word command line, then the physics, light changes, audio, and locks that bring it to the floor. Every added line describes motion or sound, never the look.
+- **Prompt length — follow Grok's own guidance: 30–60 words.** This is the one exception to the 150–200+ word Detail Floor. The floor applies in full to the **start-frame** prompt (body, lens, lighting rig, grade, meta tokens) built on Nano Banana Pro / GPT Image 2.5. The Grok motion prompt itself stays 30–60 words, front-loaded: the first sentence carries subject + action + one named camera move, and the rest adds only secondary motion, a light change, and the audio.
 
-**Template**
+**Template (30–60 words total)**
 ```
-[COMMAND LINE ≤30 words: subject + one action verb with intensity + one named camera move with endpoint + primary sound.]
-Motion: [secondary motion — hair, fabric, particles, liquid — with physics].
-Camera: [rig + speed + start → end; what stays fixed in frame].
-Light: [only the changes — a flicker, a sweep, a half-stop rise at Xs].
-Audio: [dialogue "short line" / SFX timed / ambience / music].
-Hold: [start-frame identity, wardrobe, and grade unchanged; no new objects].
+[Subject] [one action verb with intensity]; [one named camera move with speed and endpoint]. [Secondary motion with physics — hair, fabric, rain, liquid]; [one light change with timing]. Audio: [dialogue "short line" / key SFX / ambience or music].
 ```
 
 ### Google Omni — Gemini Omni Flash (`gemini-omni-1.1-flash`, I/O 2026-05-19) — omni-input + conversational editing
@@ -181,7 +176,7 @@ This is the core Grok Imagine workflow, and it also applies to Omni `image_to_vi
 - Seedance 2.5: seed.bytedance.com ("One-take creation, flexible referencing"), fal.ai, higgsfield.ai prompting guides
 - MiniMax H3: kapwing.com "How to Prompt MiniMax H3"; platform.minimax.io API docs
 - Gemini Omni Flash: ai.google.dev/gemini-api/docs/omni (official: 3–10s, extend to 40s, `<IMAGE_REF_n>` ×3, `[0-3s]` timecodes, no audio refs); DeepMind model card
-- Grok Imagine Video 1.5: replicate.com/xai/grok-imagine-video-1.5 (I2V schema: 1–15s, 480p/720p, 7 aspect ratios); morphic.com and imagine.art 1.5 guides (front-load the first 20–30 words; one action + one move; always name the audio); GA 2026-06-16
+- Grok Imagine Video 1.5: replicate.com/xai/grok-imagine-video-1.5 (I2V schema: 1–15s, 480p/720p, 7 aspect ratios); morphic.com, imagine.art, and grokaiimagegenerator.net 1.5 guides (30–60 words covers most use cases; front-load the first 20–30 words; one action + one move; always name the audio); GA 2026-06-16
 - Sora sunset: OpenAI notices (app closed 2026-04-26, API sunset 2026-09-24)
 - Leaderboards: llm-stats.com video/image arenas, Artificial Analysis
 - Image models: GPT Image 2.5 (2026-09-08), Nano Banana Pro, Midjourney V8.2, FLUX.2, Seedream 5.0 Pro (buildmvpfast.com Sep 2026 roundup)

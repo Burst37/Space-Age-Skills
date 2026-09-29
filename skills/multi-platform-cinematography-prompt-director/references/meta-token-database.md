@@ -533,7 +533,7 @@ Narrative models read tokens as noise or literal text. Translate each one into a
 | Seedream 5.0 Pro | Narrative + exact on-image text in quotes |
 | Seedance 2.5 / 2.0 | `@Image1…`, `@Video1…`, `@Audio1…` roles; `0–5s:` timestamps |
 | MiniMax H3 | Natural-language camera (no brackets); preservation levels; `[5.4s]` audio beats |
-| Grok Imagine Video 1.5 | I2V; ≤30-word command line first; one action + one move; always name the audio; 1–15s |
+| Grok Imagine Video 1.5 | I2V; 30–60 word motion prompt, key instruction in the first sentence; one action + one move; always name the audio; 1–15s |
 | Gemini Omni Flash | `[0-3s]` timecodes; `<IMAGE_REF_0>`–`<IMAGE_REF_2>`; "In a single continuous shot"; 3–10s, extend to 40s |
 | Outside the lineup | Veo, Kling, Runway, Luma, Wan, Happy Horse, Hailuo 02: only on explicit request (see `platform-protocols.md`) |
 

@@ -76,7 +76,8 @@ P = {
     "seedance-2.5":   dict(kind="video", max_s=30, img=30, total=50, mode="narrative", status="HOUSE"),
     "seedance-2.0":   dict(kind="video", max_s=15, img=9, total=12, mode="narrative", status="HOUSE"),
     "minimax-h3":     dict(kind="video", max_s=15, total=12, mode="narrative", status="HOUSE", no_brackets=True),
-    "grok-imagine-1.5": dict(kind="video", max_s=15, mode="narrative", status="HOUSE", front_load=30, needs_audio=True),
+    "grok-imagine-1.5": dict(kind="video", max_s=15, mode="narrative", status="HOUSE", front_load=30, needs_audio=True,
+                             words=(30, 60), motion_only=True),
     "gemini-omni-flash": dict(kind="video", max_s=10, img=3, mode="narrative", status="HOUSE"),
     # Stills
     "nano-banana-pro": dict(kind="image", mode="narrative", status="HOUSE"),
@@ -126,40 +127,50 @@ def lint(text, platform, min_words, image_to_video):
 
     # detail floor
     words = len(re.findall(r"\b[\w'’./-]+\b", raw_text))
-    add("PASS" if words >= min_words else "FAIL", f"word count {words} (floor {min_words})")
+    if cfg.get("words"):
+        lo, hi = cfg["words"]
+        add("PASS" if lo <= words <= hi else "FAIL",
+            f"word count {words} ({platform} guidance: {lo}–{hi}; the Detail Floor lives in the start frame)")
+    else:
+        add("PASS" if words >= min_words else "FAIL", f"word count {words} (floor {min_words})")
+    if cfg.get("motion_only"):
+        add("PASS", "camera, lens, lighting rig, director/DP, meta tokens: carried by the start frame")
 
-    if not image_to_video:
+    look = not image_to_video and not cfg.get("motion_only")
+    if look:
         add("PASS" if any_hit(CAMERAS, text) else "FAIL", "camera body named")
     a, b = re.search(HOUSE_A, text, re.I), re.search(HOUSE_B, text, re.I)
     multishot = len(set(re.findall(r"Shot\s?(\d+)", text))) >= 2
     if a and b and not multishot:
         add("WARN", "both House cameras in one single-shot prompt — one camera per shot")
-    elif not (a or b) and not image_to_video:
+    elif not (a or b) and look:
         add("WARN", "House Package not used — state the override reason in the shot rationale")
 
-    if not image_to_video:
+    if look:
         add("PASS" if re.search(LENS_FOCAL, text) else "FAIL", "lens focal length")
         add("PASS" if re.search(LENS_STOP, text) else "WARN", "lens T-stop / aperture")
-    add("PASS" if any_hit(FIXTURES, text) else "FAIL", "named lighting fixture / motivated source")
-    if image_to_video:
-        add("PASS", "light modifier (carried by the start frame)")
-    else:
-        add("PASS" if any_hit(MODIFIERS, text) else "WARN", "light modifier")
-    add("PASS" if any_hit(PLACEMENT, text) else "WARN", "light placement / direction")
+    if not cfg.get("motion_only"):
+        add("PASS" if any_hit(FIXTURES, text) else "FAIL", "named lighting fixture / motivated source")
+        if image_to_video:
+            add("PASS", "light modifier (carried by the start frame)")
+        else:
+            add("PASS" if any_hit(MODIFIERS, text) else "WARN", "light modifier")
+        add("PASS" if any_hit(PLACEMENT, text) else "WARN", "light placement / direction")
 
-    d, p = any_hit(DIRECTORS, text), any_hit(DPS, text)
-    if d and p:
-        add("PASS", "director + DP influence")
-    else:
-        add("FAIL" if not (d or p) else "WARN", f"director {'✓' if d else '✗'} / DP {'✓' if p else '✗'}")
+        d, p = any_hit(DIRECTORS, text), any_hit(DPS, text)
+        if d and p:
+            add("PASS", "director + DP influence")
+        else:
+            add("FAIL" if not (d or p) else "WARN", f"director {'✓' if d else '✗'} / DP {'✓' if p else '✗'}")
 
     meta = {m.strip().lower() for m in hits(META[:4], raw_text, 0) + hits(META[4:], text)}
     n = len(meta)
-    if image_to_video:
+    if image_to_video or cfg.get("motion_only"):
         add("PASS", f"meta tokens ~{n} (look carried by the start frame)")
     else:
         add("PASS" if n >= 3 else "WARN", f"meta tokens ~{n} (want 3–5)")
-    add("PASS" if any_hit(ATMOSPHERE, text) else "WARN", "atmosphere / environment conditions")
+    if not cfg.get("motion_only"):
+        add("PASS" if any_hit(ATMOSPHERE, text) else "WARN", "atmosphere / environment conditions")
 
     if cfg["kind"] == "video":
         add("PASS" if any_hit(MOVEMENT, text) else "FAIL", "camera movement (or explicit locked-off)")
@@ -190,7 +201,7 @@ def lint(text, platform, min_words, image_to_video):
         first = re.split(r"(?<=[.!?])\s|\n", raw_text.strip(), maxsplit=1)[0]
         fw = len(re.findall(r"\b[\w'’-]+\b", first))
         ok = fw <= cfg["front_load"] and any_hit(MOVEMENT, first.replace("_", " "))
-        add("PASS" if ok else "WARN", f"command line {fw} words (≤{cfg['front_load']}, must name the camera move)")
+        add("PASS" if ok else "WARN", f"first sentence {fw} words (≤{cfg['front_load']}, must name the camera move)")
     if cfg.get("needs_audio") and not re.search(r"audio|sound|sfx|dialogue|ambience|ambient|music|\"", text, re.I):
         add("WARN", "no audio named — Grok returns silent clips without an audio cue")
     if cfg.get("needs_ar") and "--ar" not in text:

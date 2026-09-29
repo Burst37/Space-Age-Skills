@@ -47,7 +47,7 @@ Establish five facts. Infer what you can, and ask **once**, in one batched line,
 
 | Fact | Why it changes the prompt |
 |---|---|
-| **Target model + version** | **House video lineup only:** Seedance 2.5 = 30s / 30 images + 10 video + 10 audio refs (sequence default). Seedance 2.0 = 15s / 9 images. MiniMax H3 = 5–15s / 12 refs with preservation levels. Grok Imagine Video 1.5 = 1–15s image-to-video, 720p, native audio. Gemini Omni Flash = 3–10s (extend to 40s) / 3 subject refs / conversational edits. The ceilings change the shot count and the reference strategy. Other video models are outside the lineup; compile for them only when the user names one. |
+| **Target model + version** | **House video lineup only:** Seedance 2.5 = 30s / 30 images + 10 video + 10 audio refs (sequence default). Seedance 2.0 = 15s / 9 images. MiniMax H3 = 5–15s / 12 refs with preservation levels. Grok Imagine Video 1.5 = 1–15s image-to-video, 720p, native audio, 30–60 word motion prompts. Gemini Omni Flash = 3–10s (extend to 40s) / 3 subject refs / conversational edits. The ceilings change the shot count and the reference strategy. Other video models are outside the lineup; compile for them only when the user names one. |
 | **Deliverable** | A still, a single clip, a multi-shot sequence, or a campaign set |
 | **Aspect + duration** | 9:16 reframes blocking vertically, while 2.39:1 wants anamorphic lateral staging |
 | **References on hand** | Face / product / location / style / motion / audio refs. What is locked vs. what is invented |
@@ -138,7 +138,7 @@ audio           → dialogue / SFX / ambience / music (video models with native 
 
 Open the model's section in `platform-protocols.md` and use its template verbatim: order, labels, timecode format, reference syntax, audio syntax, negative handling, and parameters. **Never cross-contaminate syntax.** For example, bracket camera commands degrade MiniMax H3, `<IMAGE_REF_0>` only means something to Gemini Omni, and inline negatives work on Omni but are ignored or inverted by FLUX.2.
 
-**Front-load rule (Grok Imagine).** Grok weights its first 20–30 words most heavily. Open with a ≤30-word command line (subject + action + one named move + primary sound), then add the physics, light changes, and audio that bring it to the Detail Floor.
+**Grok Imagine rule.** Follow Grok's own guidance: the motion prompt is **30–60 words**, and the first sentence carries subject + action + one named camera move, because Grok weights its first 20–30 words most. The full Detail Floor goes into the start-frame still prompt instead.
 
 **Image-to-video rule.** When a start frame exists, the image already carries the look, so **do not re-describe it**. Spend the words on motion, performance, physics, camera path, light *changes*, and audio. Re-describing the frame causes the model to fight its own reference.
 
@@ -168,6 +168,8 @@ Every compiled prompt is **150–200+ words** and contains all seven:
 7. **Technical**: movement, color grade / stock, frame rate, and effects
 
 For product-only, landscape, or abstract shots, item 1 becomes the **Subject lock**: material, finish, dimensions, label and logo placement, and condition.
+
+**One exception — Grok Imagine Video 1.5:** its motion prompt is 30–60 words, per xAI's own guidance. The Detail Floor applies in full to the start-frame still that Grok animates.
 
 The word floor measures **density, not padding**. If a prompt is under 150 words, add missing physical information: textures, light behavior on specific surfaces, secondary action, and sound. Never pad with adjectives. For I2V, the 150+ words go to motion, physics, performance, camera path, and audio (see Gate 5).
 

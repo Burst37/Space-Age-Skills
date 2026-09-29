@@ -91,19 +91,14 @@ Constraints: photoreal, no on-screen text beyond the etched lettering, no music,
 
 ## Example 5 — Still-to-motion · Grok Imagine Video 1.5 (start frame = the KAI Shot 4 still)
 
-**Workflow:** the full 150–200+ word DP prompt builds the start frame on Nano Banana Pro (B-cam ARRI ALEXA LF, Canon K35 55mm, neon + Titan tube rig, Vision3 500T grade). Grok then animates it. The first line is the **≤30-word command line**, because Grok weights its first 20–30 words most. Every line after it adds motion, light *change*, or sound, never a re-description of the look.
+**Workflow:** the full 150–200+ word DP prompt builds the start frame on Nano Banana Pro (B-cam ARRI ALEXA LF, Canon K35 55mm, neon + Titan tube rig, Vision3 500T grade, Wong Kar-wai · Arkapaw anchor). Grok then animates it with a **30–60 word motion prompt**, per xAI's own guidance. The first sentence carries subject + action + one named move, because Grok weights its first 20–30 words most. The rest adds only secondary motion, one light change, and the audio; the look is never re-described.
 
 `lint: PASS [grok-imagine-1.5 --i2v]`
 ```
-KAI throws his head back and belts the chorus in hammering rain; slow dolly push-in from medium to close-up, stopping on his eyes; roaring rain and raw vocals.
-Motion: rain drops burst off his shoulders and the black leather bomber in bright backlit sprays, his shoulder-length locs swing heavy and wet with each beat, the silver Cuban chain lifts and slaps against the white tank, and his breath clouds in the cold air between lines. Water sheets off the ledge behind him in a continuous curtain.
-Camera: a B-cam push on a Chapman dolly at a steady, very slow speed over 7 seconds; his face stays centered and grows from chest-up to a tight close-up; the horizon stays level with no shake.
-Light: the cyan Astera Titan tube rim from behind at 150 degrees flickers once at 3 seconds as lightning floods the skyline blue-white for three frames, then the magenta neon practicals camera left take over again, painting the rain streaks pink.
-Audio: KAI sings "I was born under these lights" with full chest voice, lip-synced; the rain roars on the rooftop metal; a distant thunder crack lands at 3 seconds; the song's bass bleeds from an unseen speaker.
-Hold: the start frame's identity, wardrobe, rooftop layout, Kodak Vision3 500T grade, and Arkapaw-warm skin rendering stay unchanged through the Wong Kar-wai neon night; no new objects enter the frame.
+KAI throws his head back and belts the chorus in hammering rain; slow dolly push-in from chest-up to a tight close-up, stopping on his eyes. Rain sprays off his shoulders, wet locs swing, the chain slaps his chest; lightning flashes blue-white at 3 seconds. Audio: he sings "I was born under these lights," rain roars, thunder cracks.
 ```
 
-Grok notes: one action (the belt) + one move (the push-in), 7s inside the stable 5–8s window. The audio is named explicitly, or the clip may come back silent. Extend from the last frame for the next beat instead of packing a second action into this clip.
+Grok notes: 57 words, with one action (the belt) and one move (the push-in). Generate at 7s, inside the stable 5–8s window. The audio is named explicitly, or the clip may come back silent. Extend from the last frame for the next beat instead of packing a second action into this clip.
 
 ---
 
