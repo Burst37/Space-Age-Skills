@@ -28,6 +28,7 @@ Two jobs, in order:
 | `references/shot-grammar.md` | Shot sizes, angles, 86+ movement types, composition, time and motion, in-camera effects, transitions, atmosphere, viral looks |
 | `references/platform-protocols.md` | **Always, before compiling.** Covers each model's limits, syntax, and templates, plus the routing table |
 | `references/genre-recipes.md` | When the brief matches a genre: music video, luxury product, fashion, sports, automotive, food, horror, sci-fi, documentary, UGC, and more |
+| `references/melies-integration.md` | **Gates 1 and 3.** Melies live technique reference: look board, per-shot technique check, failure-mode fixes, viral looks |
 | `references/examples.md` | First use in a session, or when unsure of output shape |
 | `scripts/lint_prompt.py` | **Always, before delivering.** It is the QA gate |
 
@@ -62,6 +63,8 @@ Write three lines before any shot:
 - **Visual thesis**: the one idea the camera expresses. Example: "Isolation inside abundance, told with long lenses and negative space."
 - **Look anchor**: one director + one DP, a film-stock/grade, and a lighting philosophy. Every shot inherits this unless it deliberately breaks it, and a break must be stated with its reason.
 
+Then post a **Melies look board**: 2–4 technique-page links (genre, palette, signature move) for the user to approve by eye before any credits are spent. Skip it if the user supplied references or said "just go". See `melies-integration.md`.
+
 ### Gate 2 — Coverage plan
 
 Break the concept into shots. Give each shot a **job** from this list: `ESTABLISH · ORIENT · INTRODUCE · DETAIL · REVEAL · TENSION · INTIMACY · ACTION · REACTION · PRODUCT-HERO · TRANSITION · PAYOFF`.
@@ -90,6 +93,8 @@ Unless the brief calls for a deliberate texture break (16mm flashback, UGC phone
 - **Override:** the user names a different body, or `decision-engine.md §1` identifies a texture intent the House Package can't deliver. State the override and its reason in the shot's `rationale`.
 
 For every shot, fill the **DP Sheet** using `decision-engine.md` and `lighting-playbook.md`. Every field carries a reason: if you can't say why, the choice is decoration, so change it.
+
+**Melies technique check.** For each shot's primary technique, fetch its Melies page (`melies-integration.md`). Use it to confirm the Narrative Function matches the shot's job, to pick the exact sibling from "Compared with Similar Shots", and to fold every "What Usually Goes Wrong" item into the prompt as a lock or physics line. Record the link as `melies_ref`. Read and paraphrase only; never paste Melies text.
 
 ```
 camera_body     → texture intent (skin roll-off / hyper-detail / grit / slo-mo / UGC)
@@ -190,6 +195,8 @@ shots:
       composition: "..."
       audio: "..."
     rationale: "Why this frame serves the thesis — one or two sentences."
+    melies_ref: "https://melies.co/cinematic-techniques/camera-movement/<technique>"
+    melies_fixes: [ "failure modes folded into the prompt (paraphrased)" ]
     prompt: |
       <compiled, platform-native, 150–200+ words>
     negative: "<only if the platform supports it>"

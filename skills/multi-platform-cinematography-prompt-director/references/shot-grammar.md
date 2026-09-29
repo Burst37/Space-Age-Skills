@@ -1,6 +1,6 @@
 # Shot Grammar — The Director's Vocabulary
 
-Organized in the 13-category taxonomy used by professional technique libraries (cf. melies.co/cinematic-techniques, which catalogs 424 techniques). The definitions and prompt phrasings here are this skill's own. Every entry gives **what it does** and **the exact phrase that makes a model render it**.
+Organized in the 13-category taxonomy used by professional technique libraries (cf. melies.co/cinematic-techniques, which catalogs 424 techniques). For the live visual reference and failure-mode check on any technique here, see `melies-integration.md`. The definitions and prompt phrasings here are this skill's own. Every entry gives **what it does** and **the exact phrase that makes a model render it**.
 
 ---
 
