@@ -28,7 +28,7 @@ Two jobs, in order:
 | `references/shot-grammar.md` | Shot sizes, angles, 86+ movement types, composition, time and motion, in-camera effects, transitions, atmosphere, viral looks |
 | `references/platform-protocols.md` | **Always, before compiling.** Covers each model's limits, syntax, and templates, plus the routing table |
 | `references/genre-recipes.md` | When the brief matches a genre: music video, luxury product, fashion, sports, automotive, food, horror, sci-fi, documentary, UGC, and more |
-| `references/melies-integration.md` | **Gates 1 and 3.** Melies live technique reference: look board, per-shot technique check, failure-mode fixes, viral looks |
+| `references/melies-integration.md` | **Gates 1–3.** Melies live technique library: Technique Scout (a rare-technique palette by shot job, Standard vs. Bold picks), look board, per-shot technique check, failure-mode fixes, viral looks |
 | `references/examples.md` | First use in a session, or when unsure of output shape |
 | `scripts/lint_prompt.py` | **Always, before delivering.** It is the QA gate |
 
@@ -75,6 +75,7 @@ Coverage rules (the full list is in `decision-engine.md`):
 - **One primary camera move per shot**, always with an explicit **endpoint**. AI models fail on compound moves and open-ended motion.
 - **Duration budget.** 2–4s for a punch, 5–8s for a beat, and 10s+ only for a one-take with internal choreography.
 - **Respect model ceilings.** Split into multiple generations rather than overstuff one.
+- **Standard vs. Bold (Technique Scout).** For every REVEAL, TENSION, ACTION, PRODUCT-HERO, TRANSITION, or PAYOFF shot, offer a Standard pick plus a Bold pick from the rarely used Melies palette (dolly zoom in/out, yoyo zoom, crane over the head, lazy Susan, through-object in/out, super dolly, eyes-in, and more), each with its Melies link. One Bold pick per shot. See `melies-integration.md` Hook 0.
 
 ### Gate 3 — DP decisions (per shot)
 
