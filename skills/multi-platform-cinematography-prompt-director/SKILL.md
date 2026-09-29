@@ -88,7 +88,7 @@ Unless the brief calls for a deliberate texture break (16mm flashback, UGC phone
 | **A-cam** | **Blackmagic URSA Cine 17K 65** (65mm RGBW sensor, 17K, Blackmagic RAW Q0) | Highest-fidelity capture | Establishing/wide, hero frames, product and packshots, texture and macro, VFX plates, anything that must survive a 4K+ punch-in |
 | **B-cam** | **ARRI ALEXA LF** (large format, ARRIRAW, LogC3 / ARRI Wide Gamut 3) | Skin and emotion | Close-ups, MCUs, dialogue coverage, beauty, reaction shots, low-light faces |
 
-- **One camera per shot.** An AI frame has one lens and one sensor, so name the unit that "shot" that angle. Never stack both bodies on a single shot. In a multi-shot prompt (Seedance/Kling timelines), assign A or B per shot: A on the wides, B on the closes, exactly like a real two-camera day.
+- **One camera per shot.** An AI frame has one lens and one sensor, so name the unit that "shot" that angle. Never stack both bodies on a single shot. In a multi-shot prompt (Seedance timelines), assign A or B per shot: A on the wides, B on the closes, exactly like a real two-camera day.
 - **Matched grade.** Both units run through the same pipeline token (e.g., "ACES 2.0, Kodak Vision3 250D print emulation, matched A/B camera grade"). This keeps skin, contrast, and color identical across the cut.
 - **65mm glass rule.** The A-cam's 65mm sensor needs 65-format coverage: ZEISS Panoptes 65, Panavision Sphero 65 / Ultra Panavision 70, Hawk65, or ARRI Prime 65 S. The B-cam takes LF glass: ARRI Signature/Ensō Primes, Cooke S8/i FF, or ZEISS Supreme / Horizon Anamorphic. Where the look must match, choose sister sets (e.g., Panoptes 65 on A + Supreme Prime on B, both ZEISS rendering).
 - **Override:** the user names a different body, or `decision-engine.md §1` identifies a texture intent the House Package can't deliver. State the override and its reason in the shot's `rationale`.
@@ -131,12 +131,12 @@ audio           → dialogue / SFX / ambience / music (video models with native 
 ```
 
 **Token-mode rule.** Models split into two families (per-model assignment is in `platform-protocols.md`):
-- **Token-receptive** (Midjourney, FLUX.2, Wan, Seedream, SD-family) take raw meta tokens (`ARRI_ALEXA65.ARRIRAW`, `IMG_9854.CR2`) directly.
+- **Token-receptive** (Midjourney, FLUX.2, Seedream, SD-family) take raw meta tokens (`ARRI_ALEXA65.ARRIRAW`, `IMG_9854.CR2`) directly.
 - **Narrative-first** (Nano Banana, GPT Image, Seedance, MiniMax H3, Grok Imagine, Gemini Omni) need tokens **translated into prose**. Write "shot on an ARRI ALEXA LF in ARRIRAW, LogC3 graded through ACES 2.0" and "the frame reads like an IMG_9854.CR2 raw file: unretouched pores, true sensor noise". The translation table is in `meta-token-database.md`.
 
 ### Gate 5 — Compile to platform
 
-Open the model's section in `platform-protocols.md` and use its template verbatim: order, labels, timecode format, reference syntax, audio syntax, negative handling, and parameters. **Never cross-contaminate syntax.** For example, bracket camera commands work on Hailuo 02 but degrade MiniMax H3, and negative prompts help Wan but are ignored or inverted by FLUX.2.
+Open the model's section in `platform-protocols.md` and use its template verbatim: order, labels, timecode format, reference syntax, audio syntax, negative handling, and parameters. **Never cross-contaminate syntax.** For example, bracket camera commands degrade MiniMax H3, `<IMAGE_REF_0>` only means something to Gemini Omni, and inline negatives work on Omni but are ignored or inverted by FLUX.2.
 
 **Front-load rule (Grok Imagine).** Grok weights its first 20–30 words most heavily. Open with a ≤30-word command line (subject + action + one named move + primary sound), then add the physics, light changes, and audio that bring it to the Detail Floor.
 
