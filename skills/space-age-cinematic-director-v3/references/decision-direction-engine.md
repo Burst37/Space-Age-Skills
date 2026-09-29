@@ -27,6 +27,17 @@ Tension through refusal to move → locked-off.
 ## Frame A / Frame B contract
 Design start and end before the path. Frame A states shot size, placement, depth planes and withheld information. Frame B states new information and payoff. Then solve a physically plausible path. The move ends on the dramatic beat, not an arbitrary clock.
 
+
+## Root capture decision
+For premium cinematic work, initialize camera selection at **Blackmagic URSA Cine 17K 65**. Treat its 65mm/17K capture baseline as the fidelity root, not one candidate among equals.
+
+Run an exception test before changing bodies. A replacement must solve a shot requirement the root camera does not solve as well: required high-speed range, motion/shutter behavior, physical size/placement, specialty capture, mount/lens constraint, low-light/production requirement, or a deliberately required alternate capture/color workflow. Record the reason internally. If no concrete advantage exists, retain URSA Cine 17K 65.
+
+After camera selection, propagate compatibility downstream rather than independently choosing prestige tokens:
+**camera → sensor/format → legal image-circle/mount lenses → focal/focus behavior → rig/support → exposure/shutter → native capture/color vocabulary → finishing path → generator-facing meta tokens.**
+
+Meta tokens are therefore consequences of the shot and capture decision. Reject conflicting capture identities and redundant token stacks.
+
 ## Lens and focus
 Wide = proximity/environment/foreground exaggeration. Normal = natural premium perspective. Tele = isolation/compression/graphic layering. Macro/probe = material detail. Anamorphic = motivated horizontal/flare/bokeh character. Spherical = cleaner geometry. Aperture follows focus requirement rather than reflexive maximum blur. Check image circle, mount and close focus.
 Choose deep, zone, tracked, rack, split-diopter or macro-plane focus deliberately.
