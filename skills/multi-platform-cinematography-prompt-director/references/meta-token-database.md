@@ -16,7 +16,7 @@
 ### How to use
 1. Pick **one token per relevant category** from the ★ tier (House Package first; see SKILL.md Gate 3).
 2. Assemble with the **Master Formula v3** (SKILL.md Gate 4).
-3. **Token-receptive** models (Midjourney, FLUX.2, Wan, Seedream, SD-family) take raw tokens. **Narrative-first** models (Veo, Gemini Omni, Seedance, MiniMax H3, Kling, Runway, Nano Banana, GPT Image) need the **§12 translation** into prose.
+3. **Token-receptive** models (Midjourney, FLUX.2, Seedream, SD-family) take raw tokens. **Narrative-first** models (all five house video models — Seedance 2.5/2.0, MiniMax H3, Grok Imagine 1.5, Gemini Omni Flash — plus Nano Banana and GPT Image) need the **§12 translation** into prose.
 
 ---
 
@@ -500,7 +500,7 @@ These encode sensor, codec, and archive signatures present in the training data.
 
 Narrative models read tokens as noise or literal text. Translate each one into a sentence that describes **what the token does to the image**.
 
-| Raw token | Prose for Veo / Gemini Omni / Seedance / MiniMax H3 / Kling / Runway / Nano Banana / GPT Image |
+| Raw token | Prose for Seedance / MiniMax H3 / Grok Imagine / Gemini Omni / Nano Banana / GPT Image |
 |---|---|
 | `BLACKMAGIC_URSA_CINE_17K_65.BRAW.Q0` | "Shot on a Blackmagic URSA Cine 17K 65 in Blackmagic RAW at maximum quality, the 65mm sensor giving pore-level detail and a wide frame that still falls off softly behind the subject." |
 | `ARRI_ALEXA_LF.ARRIRAW.LogC3` | "Captured on an ARRI ALEXA LF in ARRIRAW, with ARRI's signature skin tones and a gentle, filmic highlight roll-off." |
@@ -528,16 +528,14 @@ Narrative models read tokens as noise or literal text. Translate each one into a
 |---|---|
 | Midjourney V8.x | `--ar 16:9 --style raw --s 50–250`, optional `--sref` / `--oref` (verify current params in the UI) |
 | FLUX.2 | Positive phrasing only; structured JSON prompts and HEX colors are supported |
-| Wan 3.0 | Negative prompt field supported |
 | Nano Banana Pro / 2 | Narrative sentences only; no keyword lists |
 | GPT Image 2 / 2.5 | A structured spec-sheet paragraph; exact text in quotes |
 | Seedream 5.0 Pro | Narrative + exact on-image text in quotes |
 | Seedance 2.5 / 2.0 | `@Image1…`, `@Video1…`, `@Audio1…` roles; `0–5s:` timestamps |
-| Veo 3.1 | Prose or JSON; quoted dialogue with speaker; 8s |
 | MiniMax H3 | Natural-language camera (no brackets); preservation levels; `[5.4s]` audio beats |
-| Hailuo 02 (legacy) | `[Push in]`-style bracket commands, ≤3 combined |
-| Kling 4.0 (announced) | Timecoded segments `0–5s:`; up to 10 keyframes, 15 refs (provisional) |
-| Runway Gen-4.5 | Positive, simple; I2V = motion only |
+| Grok Imagine Video 1.5 | I2V; ≤30-word command line first; one action + one move; always name the audio; 1–15s |
+| Gemini Omni Flash | `[0-3s]` timecodes; `<IMAGE_REF_0>`–`<IMAGE_REF_2>`; "In a single continuous shot"; 3–10s, extend to 40s |
+| Outside the lineup | Veo, Kling, Runway, Luma, Wan, Happy Horse, Hailuo 02: only on explicit request (see `platform-protocols.md`) |
 
 ---
 

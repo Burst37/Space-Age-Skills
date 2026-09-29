@@ -34,7 +34,7 @@ Format: **Anchor** (director · DP) → **A-cam glass / B-cam glass** → **Ligh
 - **Grade:** Kodak Vision3 500T, crushed blacks, saturated color, `bold_moody_grade`
 - **Meta:** `neon_practical_accent` `volumetric_shafts_haze` `C004_C009_1201BG.R3D` `a24_indie_film_still` `anamorphic_2.39:1_scope`
 - **Audio:** the track (provided as `@Audio` ref) and lip-sync on the chorus lines, quoted
-- **Pitfalls:** lip-sync drift on long takes. Keep singing shots ≤8s on Veo, or use a Seedance `@Audio` ref with the exact quoted lyric.
+- **Pitfalls:** lip-sync drift on long takes. Lip-sync to the real track on Seedance 2.5 with an `@Audio` ref and the exact quoted lyric. On Grok Imagine or Omni, keep sung lines short (≤8s) and front-facing.
 
 ### 4. Sports / athletic hero (Nike-grade)
 - **Anchor:** Michael Bay low-angle orbit (restrained) · Claudio Miranda clean high-key action

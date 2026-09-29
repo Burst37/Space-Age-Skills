@@ -124,7 +124,7 @@ Slugs are live under `https://melies.co/cinematic-techniques/<category>/<slug>`.
 
 ### Feasibility gate for Bold picks
 - **One Bold pick per shot.** Never stack two rare techniques in one generation.
-- Compound optical moves (dolly zoom, yoyo zoom, 3D rotation) are the hardest for video models. Prefer **Seedance 2.5 or Veo 3.1**, keep the shot to ≤6s, and state the start state, the end state, and what stays fixed ("his face stays the same size in frame the whole time").
+- Compound optical moves (dolly zoom, yoyo zoom, 3D rotation) are the hardest for video models. Prefer **Seedance 2.5 with a `@Video` or `@Clay Render` camera-path reference** (or MiniMax H3), keep the shot to ≤6s, and state the start state, the end state, and what stays fixed ("his face stays the same size in frame the whole time").
 - If a Bold pick fails twice in generation, fall back to the Standard pick and note it in `generation_notes`.
 
 ---
@@ -172,4 +172,4 @@ Add the reference to each shot in the Director's Package:
 
 ## Melies as a generator (optional)
 
-Melies also offers its own generator (each technique page has a "create this effect" CTA). It is **not** in this skill's routing table: the user's production defaults stay Seedance 2.5 / Veo 3.1 / MiniMax H3. Use Melies generation only if the user asks for it, and compile with the target model's protocol from `platform-protocols.md` if Melies exposes which model it runs.
+Melies also offers its own generator (each technique page has a "create this effect" CTA). It is **not** in this skill's routing table: the user's house video lineup stays Seedance 2.5 / 2.0, MiniMax H3, Grok Imagine Video 1.5, and Gemini Omni Flash. Use Melies generation only if the user asks for it, and compile with the target model's protocol from `platform-protocols.md` if Melies exposes which model it runs.

@@ -6,24 +6,27 @@ Status markers: **GA** = generally available · **BETA** = limited access · **A
 
 ---
 
-## Routing table — which model for which job
+## House video lineup — the only video models this skill routes to
+
+**Seedance 2.5 · Seedance 2.0 · MiniMax H3 · Grok Imagine Video 1.5 · Google Omni (Gemini Omni Flash).**
+
+Everything else (Veo 3.1, Kling, Runway, Luma, Wan, Happy Horse, Hailuo 02, Sora) is **outside the house lineup**: behind these five or unused. See the end of the video section. Compile for an outside model only when the user explicitly names it.
+
+## Routing table — which house model for which job
 
 ### Video
 | Job | 1st pick | 2nd pick | Why |
 |---|---|---|---|
-| Multi-shot narrative / music video sequence up to 30s | **Seedance 2.5** | Kling 4.0 (when GA) | 30s one-take, 30 image + 10 video + 10 audio refs, timestamps |
-| Dialogue, lip-sync, native audio realism | **Veo 3.1** | Seedance 2.5 / MiniMax H3 | Best prompt adherence plus native audio |
-| Identity/product preservation with fine control of what transfers | **MiniMax H3** | Seedance 2.5 | Explicit preservation levels per reference |
-| Omni-reference remix (image + video + audio together) | **Gemini Omni Flash** | Seedance 2.5 | Accepts mixed refs in one prompt |
-| Granular creative control (motion brush, scene consistency) | **Runway Gen-4.5** | — | The editor-grade toolset |
-| HDR/EXR pipeline, VFX-friendly plates | **Luma Ray3** | — | 16-bit HDR output, keyframes |
-| Open-weight / self-hosted / fine-tunable | **Wan 3.0** | — | Top open model |
-| E-commerce / short-drama with a recurring subject | **Happy Horse 1.0** | Seedance 2.5 | 1–9 subject refs, cheap per second |
-| Fast previz / animatic | Seedance 2.0 Fast / Kling 3.0 Turbo (LEGACY) | — | Cheap iteration only; never final |
-| Editing existing footage | Seedance 2.5 edit modes · Runway | — | |
-| Higgsfield workflow (any of the above via Higgsfield) | → `cinema-director-v3` | | House Seedance spine |
-
-**Not recommended:** **Kling 3.0 / 3.0 Omni / Turbo** — LEGACY, behind the frontier; previz only. **Sora 2** — SUNSET: app closed 2026-04-26 and API sunset 2026-09-24, so never start new work on it.
+| Multi-shot narrative / music video sequence up to 30s | **Seedance 2.5** | Seedance 2.0 (≤15s) | 30s one-take, 30 image + 10 video + 10 audio refs, timestamps, `@Clay Render` camera paths |
+| Performance / lip-sync to a real track or voice | **Seedance 2.5** (`@Audio` ref) | MiniMax H3 (voice ref + `[t]` audio beats) | The only house models that take audio references |
+| Identity / product preservation with fine control of what transfers | **MiniMax H3** | Seedance 2.5 | Explicit preservation levels per reference |
+| Dialogue written in the prompt (no audio ref), conversational edits, extension to 40s | **Gemini Omni Flash** | Seedance 2.5 | Multi-turn editing that preserves unmentioned elements; extends up to 40s |
+| Animating a hero still fast (social cuts, product loops, portrait motion) | **Grok Imagine Video 1.5** | Gemini Omni Flash (image_to_video) | I2V-first, 1–15s, native audio, 7 aspect ratios, extend from last frame |
+| Compound optical moves (dolly zoom, yoyo zoom, 3D rotation) | **Seedance 2.5** with a `@Video` / `@Clay Render` camera-path ref | MiniMax H3 | A camera-path reference beats text for complex optics |
+| Editing existing footage | **Gemini Omni Flash** (`edit`) | Seedance 2.5 edit modes | Conversational, change-only edits |
+| Fast previz / animatic | **Seedance 2.0 Fast** · **Gemini Omni 360p draft** | Grok Imagine 480p | Cheap iteration; recompile finals |
+| 4K delivery | **Gemini Omni Flash** (4K upscale) | Seedance 2.5 + external upscale | |
+| Higgsfield workflow (Seedance via Higgsfield) | → `cinema-director-v3` | | House Seedance spine |
 
 ### Stills
 | Job | 1st pick | 2nd pick |
@@ -35,13 +38,13 @@ Status markers: **GA** = generally available · **BETA** = limited access · **A
 | Marketing layouts mixing text and imagery | **Seedream 5.0 Pro** | GPT Image 2.5 |
 | High-volume variants | **Nano Banana 2** | FLUX.2 |
 | Higgsfield face-lock, character sheets, outfit swaps | → `banana-pro-director-30` | |
-| Start frames for video (I2V) | Nano Banana Pro / GPT Image 2.5 at the video's aspect | |
+| Start frames for video (Grok / Omni / H3 I2V) | Nano Banana Pro / GPT Image 2.5 at the video's aspect | |
 
 ---
 
-## VIDEO
+## VIDEO — house lineup
 
-### Seedance 2.5 (ByteDance / Dreamina) — GA · primary sequence engine
+### Seedance 2.5 (ByteDance / Dreamina) — primary sequence engine
 - **Limits:** up to **30s** single pass; refs up to **30 images + 10 videos + 10 audio**; multi-round extension to multi-minute; T2V, R2V, extension, and edit modes; `@Clay Render` refs for 3D blocking/pose/camera path.
 - **Syntax:** `@Image1`, `@Video1`, `@Audio1`, and each must be **given a role**. Time ranges are written `0–5s:`. Multi-shot sections are labeled `Shot 1 … Hard cut.`
 - **Formula:** Format → Subject + Action → Reference roles → Timeline → Camera → Continuity → Audio → Constraints.
@@ -60,32 +63,12 @@ Audio: [0–6s ambience], [7.5s SFX], [NAME, low and tired]: "line".
 Continuity: identical wardrobe and hair across shots; key light always camera left; screen direction left to right.
 ```
 
-### Seedance 2.0 — GA · budget/fast sequences
+### Seedance 2.0 — budget/fast sequences
 - **Limits:** **15s**; up to **9 image** refs (+ up to 3 video + 3 audio, 12 files total); T2V/I2V/R2V.
 - The same syntax as 2.5. Anything past 15s splits into two generations with an end-frame → start-frame handoff.
 - 2.0 Fast is good for previz.
 
-### Veo 3.1 (Google DeepMind) — GA · dialogue and audio king
-- **Limits:** 4/6/8s per generation (extend for longer); 720p/1080p/4K; 16:9 or 9:16; native audio (dialogue, SFX, ambience); "ingredients" up to 3 reference images; first + last frame control.
-- **Syntax:** rich prose **or** structured JSON. Dialogue goes in quotes with the speaker and delivery, and you can add "(no subtitles)". Audio is written as separate sentences: `SFX:`, `Ambient:`.
-- **Rules:** one continuous shot per generation (it cuts poorly inside 8s). Front-load the subject and action. The camera sentence gets its own line.
-
-**JSON template**
-```json
-{
-  "shot": {"size": "MCU", "angle": "eye level, 1.6m", "duration_s": 8, "aspect": "16:9"},
-  "subject": "[identity lock: height, build, eyes, hair, face, expression, wardrobe]",
-  "action": "[start → trajectory → end]",
-  "environment": "[setting + source-bound atmosphere]",
-  "camera": "[body prose], [lens prose + T-stop], [move + rig + speed + endpoint]",
-  "lighting": "[key/fill/back fixtures, modifiers, placement, CCT, ratio]",
-  "style": "[director + DP], [grade/stock], [translated meta tokens]",
-  "audio": {"dialogue": "[NAME, hushed]: \"line\" (no subtitles)", "sfx": "[timed]", "ambience": "[bed]"},
-  "constraints": "photoreal, no on-screen text, no music"
-}
-```
-
-### MiniMax H3 / Hailuo 3.0 — GA (Jul 2026) · preservation control
+### MiniMax H3 / Hailuo 3.0 (Jul 2026) — preservation control
 - **Limits:** 5–15s; 24fps; up to 2K (API); up to 12 reference files (images/video/audio); native stereo; first + last frame.
 - **Formula:** References → Retention → Scene → Timeline → Camera → Audio → Constraints.
 - **Preservation levels** (per reference): `fully_preserved` · `partially_preserved` · `attribute_transfer` · `weak_reference`. Always say what to **ignore**, e.g. "Image 2: attribute_transfer — preserve the jacket's color, material, and cut, not the person wearing it."
@@ -93,44 +76,55 @@ Continuity: identical wardrobe and hair across shots; key light always camera le
 - **Audio:** timestamped beats in four layers: `[5.4s] The glass touches the table with a quiet ceramic click.` Dialogue / SFX / ambience / music are kept separate.
 - Describe actions as trajectories, and separate subject motion, camera motion, and edits.
 
-### Hailuo 02 / Director — LEGACY
-- Bracket commands in the prompt, ≤3 combined: `[Push in]` `[Pull out]` `[Pan left]` `[Pan right]` `[Tilt up]` `[Tilt down]` `[Truck left]` `[Truck right]` `[Pedestal up]` `[Pedestal down]` `[Zoom in]` `[Zoom out]` `[Shake]` `[Tracking shot]` `[Static shot]`.
-- Use only if the user is locked to 02; otherwise move to H3.
+### Grok Imagine Video 1.5 (xAI, GA 2026-06-16) — still-to-motion engine
+- **Limits:** **1–15s** (5–8s is the most stable); 480p or 720p; 24fps; aspect Auto / 16:9 / 9:16 / 1:1 / 4:3 / 3:4 / 3:2 / 2:3; **image-to-video** (every generation takes a start image; text-only generation runs on the base Grok Imagine model); reference images to hold a character or style across clips; **extend from the last frame** for longer sequences; native audio (dialogue with lip-sync, SFX, ambience, music) in the same pass. Audio does not land on every clip, so plan a fallback audio pass for client work.
+- **Engine behavior:** the first **20–30 words carry the most weight**. Put the command line first.
+- **Rules:** one subject, one action, one camera move per clip, then extend. Describe **only what changes**; never re-describe or contradict the start frame. Use strong verbs with intensity ("racing past at high speed", not "passing"). **Always name the audio**, or the clip comes back silent. For dialogue, use a front-facing start frame with the mouth in frame, and keep lines short.
+- **How this skill meets the Detail Floor on Grok:** the full 150–200+ word DP prompt (body, lens, lighting rig, grade, meta tokens) builds the **start frame** on Nano Banana Pro / GPT Image 2.5. The Grok motion prompt is then **front-loaded**: a ≤30-word command line, then the physics, light changes, audio, and locks that bring it to the floor. Every added line describes motion or sound, never the look.
 
-### Kling 4.0 (Kuaishou) — ANNOUNCED 2026-09-28/29 · staged template
-- **Status:** 4.0 Flash is in closed beta for Black Gold annual members; full release is slated for **October 2026**. The API contract is unpublished. **Do not promise client output on it until the user confirms access.**
-- **Announced specs (provisional):** up to **30s** single generation; multi-shot continuation to ~**2 min**; **Omni Reference up to 15 multimodal refs**; **up to 10 keyframes**; up to **4K, 10-bit HDR**; stereo audio; improved multilingual lip sync.
-- **Provisional syntax** (carried from Kling's documented grammar and launch materials): order is Scene → Characters → Action → Camera → Audio & Style. Timecoded segments are written `0–5s:`. Speaker-labeled dialogue is written `[Character A: descriptor, voice tone]: "line"`, and sound effects `SFX: …`. Always give motion endpoints; open-ended motion hangs.
-- **Keyframes:** list them as `KF1 @0s: [frame description] · KF2 @6s: …` and describe the motion *between* keyframes.
-- Re-verify on GA and update this section.
+**Template**
+```
+[COMMAND LINE ≤30 words: subject + one action verb with intensity + one named camera move with endpoint + primary sound.]
+Motion: [secondary motion — hair, fabric, particles, liquid — with physics].
+Camera: [rig + speed + start → end; what stays fixed in frame].
+Light: [only the changes — a flicker, a sweep, a half-stop rise at Xs].
+Audio: [dialogue "short line" / SFX timed / ambience / music].
+Hold: [start-frame identity, wardrobe, and grade unchanged; no new objects].
+```
 
-### Kling 3.0 / 3.0 Omni / 3.0 Turbo — LEGACY (previz only)
-- 15s max; ≤6 shots via `Shot 1 (0–3s): …`; native audio; negative field available.
-- Only for cheap animatics. Recompile the final version for Seedance 2.5 / Veo 3.1 / MiniMax H3.
+### Google Omni — Gemini Omni Flash (`gemini-omni-1.1-flash`, I/O 2026-05-19) — omni-input + conversational editing
+- **Limits:** **3–10s** per generation, **extend to 40s** total (append-only); 360p draft / 720p default / 1080p and 4K upscaled; 16:9 or 9:16; 24fps.
+- **Tasks:** `text_to_video` · `image_to_video` (1 image, or 2 for first/last frame) · `reference_to_video` (**up to 3 subject images**, addressed in the prompt as `<IMAGE_REF_0>`, `<IMAGE_REF_1>`, `<IMAGE_REF_2>`) · `edit` · `extend`.
+- **Audio:** described in text only (**no audio-reference uploads**). Dialogue, SFX, and music are written in the prompt; English is the evaluated language.
+- **Syntax:** timecodes `[0-3s] action`; natural timing ("After 3 seconds, a woman enters"); say **"In a single continuous shot"** when you want no cuts; inline negatives are supported ("No dialogue"). On-screen text renders when quoted exactly.
+- **Editing:** multi-turn via `previous_interaction_id`. Write **change-only** instructions; unmentioned elements are preserved. Voice editing isn't supported, and dialogue can't be added to an uploaded clip of someone talking.
+- Every clip carries a SynthID watermark. Editing and extending uploads are unavailable in the EEA, Switzerland, and the UK.
 
-### Gemini Omni Flash (Google, May 2026) — GA
-- Accepts text + images + audio + video refs in one prompt, and outputs high-res video with audio.
-- **Rules:** describe the whole scene (subject, action, setting, light, camera). **Say "one continuous shot"** when you want no cuts. Assign a role to each attached ref. Direct the audio explicitly, including music if wanted. Outputs carry a SynthID watermark.
+**Template**
+```
+In a single continuous shot, [subject identity lock — or <IMAGE_REF_0> as NAME, preserving face, hair, and wardrobe] [action] in [environment + source-bound atmosphere].
+Camera: [body prose], [lens prose + T-stop], [move + rig + speed + endpoint].
+Light: [key/fill/back fixtures, modifiers, placement, CCT, ratio].
+Style: [director + DP], [grade/stock prose], [2–3 translated meta tokens].
+[0-3s] [beat]. [3-7s] [beat]. [7-10s] [beat].
+Audio: NAME, [delivery]: "line". SFX: [timed]. Ambience: [bed]. [Music or "No music"].
+```
 
-### Runway Gen-4.5 — GA · control
-- Positive phrasing only; keep it simple and focused on motion.
-- **I2V: describe motion, camera, and performance, and never re-describe the image.** Use references for consistency and motion brushes in the UI.
-- The Detail Floor still applies: spend the 150+ words on physics, micro-performance, camera path, and light changes.
+---
 
-### Luma Ray3 family — GA · HDR plates
-- Native 16-bit HDR (EXR) output; draft mode for iteration; keyframes (start/end); a reasoning-driven prompt interpreter.
-- Write the full cinematic paragraph; name the HDR highlight intent ("specular highlights preserved above 1000 nits for HDR finishing").
+## Outside the house lineup (compile only on explicit request)
 
-### Wan 3.0 (Alibaba, open weights) — GA · open pipeline
-- Prompt extension on; long descriptive English/Chinese prompts; **negative prompt supported and useful** (warped hands, flicker, text, watermark, low quality).
-- Token-receptive, so raw meta tokens are OK.
-
-### Happy Horse 1.0 (Alibaba) — GA
-- Prompts up to **2,500 characters**; T2V, I2V, and R2V with **1–9 subject refs**; 720p/1080p.
-- Best for e-commerce and short drama with a recurring subject. Be specific on subject, camera move, light, and mood.
-
-### Sora 2 — SUNSET
-- The API was retired 2026-09-24. Migrate existing Sora prompts to Veo 3.1 (dialogue) or Seedance 2.5 (sequences).
+| Model | Status | If the user insists, compile with |
+|---|---|---|
+| Veo 3.1 | Behind the house lineup | Prose or JSON; 4/6/8s; quoted dialogue with speaker; up to 3 ingredient images |
+| Kling 4.0 | ANNOUNCED 2026-09-28/29; 4.0 Flash closed beta; GA slated Oct 2026 | Scene → Characters → Action → Camera → Audio & Style; `0–5s:` segments; `KF1 @0s:` keyframes; 30s / 15 refs / 10 keyframes (provisional). Re-evaluate for the house lineup at GA. |
+| Kling 3.0 / Omni / Turbo | Legacy | `Shot 1 (0–3s):`; 15s; ≤6 shots |
+| Runway Gen-4.5 | Outside | Positive phrasing; I2V = motion only |
+| Luma Ray3 | Outside | Full paragraph; name the HDR intent |
+| Wan 3.0 | Outside (open weights) | Long prompt + negative field; token-receptive |
+| Happy Horse 1.0 | Outside | ≤2,500 chars; 1–9 subject refs |
+| Hailuo 02 | Legacy (superseded by H3) | `[Push in]`-style brackets, ≤3 combined |
+| Sora 2 | **SUNSET** (API retired 2026-09-24) | Do not use; recompile for Seedance 2.5 or Gemini Omni Flash |
 
 ---
 
@@ -171,7 +165,9 @@ A [shot size] [angle] photograph of [subject identity lock], [action / pose / ex
 
 ## I2V hand-off protocol (still → video)
 
-1. Generate the start frame on Nano Banana Pro or GPT Image 2.5 at the **video's exact aspect ratio**.
+This is the core Grok Imagine workflow, and it also applies to Omni `image_to_video` and H3 first-frame clips.
+
+1. Generate the start frame on Nano Banana Pro or GPT Image 2.5 at the **video's exact aspect ratio**, using the full 150–200+ word DP prompt.
 2. The video prompt **does not re-describe** the frame. It writes: what moves, how (physics), where the camera goes (endpoint), what light changes, and what is heard.
 3. Carry the identity-lock string and the grade line verbatim, so a model that re-renders stays anchored.
 4. For a last-frame-controlled clip, generate the end frame from the start frame via an edit (the same seed/refs) so geometry matches.
@@ -184,7 +180,8 @@ A [shot size] [angle] photograph of [subject identity lock], [action / pose / ex
 - Kling 3.0 Turbo / Omni: atlascloud.ai (2026-06-17 launch)
 - Seedance 2.5: seed.bytedance.com ("One-take creation, flexible referencing"), fal.ai, higgsfield.ai prompting guides
 - MiniMax H3: kapwing.com "How to Prompt MiniMax H3"; platform.minimax.io API docs
-- Veo 3.1 / Gemini Omni Flash: Google DeepMind docs; atlabs.ai, openart.ai Omni Flash guides
+- Gemini Omni Flash: ai.google.dev/gemini-api/docs/omni (official: 3–10s, extend to 40s, `<IMAGE_REF_n>` ×3, `[0-3s]` timecodes, no audio refs); DeepMind model card
+- Grok Imagine Video 1.5: replicate.com/xai/grok-imagine-video-1.5 (I2V schema: 1–15s, 480p/720p, 7 aspect ratios); morphic.com and imagine.art 1.5 guides (front-load the first 20–30 words; one action + one move; always name the audio); GA 2026-06-16
 - Sora sunset: OpenAI notices (app closed 2026-04-26, API sunset 2026-09-24)
 - Leaderboards: llm-stats.com video/image arenas, Artificial Analysis
 - Image models: GPT Image 2.5 (2026-09-08), Nano Banana Pro, Midjourney V8.2, FLUX.2, Seedream 5.0 Pro (buildmvpfast.com Sep 2026 roundup)

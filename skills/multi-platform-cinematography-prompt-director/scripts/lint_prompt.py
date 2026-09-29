@@ -72,26 +72,29 @@ IP_RISK = [r"disney \.com", r"dcstudios \.com", r"sonypictures \.com", r"the ave
 # --- platform table ----------------------------------------------------------
 
 P = {
-    # name: kind, max_s, max_image_refs, max_total_refs, max_shots, token_mode, status
-    "seedance-2.5":   dict(kind="video", max_s=30, img=30, total=50, mode="narrative", status="GA"),
-    "seedance-2.0":   dict(kind="video", max_s=15, img=9, total=12, mode="narrative", status="GA"),
-    "veo-3.1":        dict(kind="video", max_s=8, img=3, mode="narrative", status="GA"),
-    "minimax-h3":     dict(kind="video", max_s=15, total=12, mode="narrative", status="GA", no_brackets=True),
-    "hailuo-02":      dict(kind="video", max_s=10, mode="narrative", status="LEGACY", brackets_max=3),
+    # House video lineup
+    "seedance-2.5":   dict(kind="video", max_s=30, img=30, total=50, mode="narrative", status="HOUSE"),
+    "seedance-2.0":   dict(kind="video", max_s=15, img=9, total=12, mode="narrative", status="HOUSE"),
+    "minimax-h3":     dict(kind="video", max_s=15, total=12, mode="narrative", status="HOUSE", no_brackets=True),
+    "grok-imagine-1.5": dict(kind="video", max_s=15, mode="narrative", status="HOUSE", front_load=30, needs_audio=True),
+    "gemini-omni-flash": dict(kind="video", max_s=10, img=3, mode="narrative", status="HOUSE"),
+    # Stills
+    "nano-banana-pro": dict(kind="image", mode="narrative", status="HOUSE"),
+    "nano-banana-2":  dict(kind="image", mode="narrative", status="HOUSE"),
+    "gpt-image-2.5":  dict(kind="image", mode="narrative", status="HOUSE"),
+    "midjourney-v8":  dict(kind="image", mode="tokens", status="HOUSE", needs_ar=True),
+    "flux-2":         dict(kind="image", mode="tokens", status="HOUSE", positive=True),
+    "seedream-5":     dict(kind="image", mode="narrative", status="HOUSE"),
+    # Outside the house video lineup (explicit request only)
+    "veo-3.1":        dict(kind="video", max_s=8, img=3, mode="narrative", status="OUTSIDE"),
     "kling-4":        dict(kind="video", max_s=30, total=15, mode="narrative", status="ANNOUNCED"),
-    "kling-3":        dict(kind="video", max_s=15, shots=6, mode="narrative", status="LEGACY"),
-    "gemini-omni-flash": dict(kind="video", mode="narrative", status="GA"),
-    "runway-gen-4.5": dict(kind="video", mode="narrative", status="GA", positive=True),
-    "luma-ray3":      dict(kind="video", mode="narrative", status="GA"),
-    "wan-3":          dict(kind="video", mode="tokens", status="GA"),
-    "happy-horse-1":  dict(kind="video", img=9, mode="narrative", status="GA", max_chars=2500),
+    "kling-3":        dict(kind="video", max_s=15, shots=6, mode="narrative", status="OUTSIDE"),
+    "runway-gen-4.5": dict(kind="video", mode="narrative", status="OUTSIDE", positive=True),
+    "luma-ray3":      dict(kind="video", mode="narrative", status="OUTSIDE"),
+    "wan-3":          dict(kind="video", mode="tokens", status="OUTSIDE"),
+    "happy-horse-1":  dict(kind="video", img=9, mode="narrative", status="OUTSIDE", max_chars=2500),
+    "hailuo-02":      dict(kind="video", max_s=10, mode="narrative", status="OUTSIDE", brackets_max=3),
     "sora-2":         dict(kind="video", mode="narrative", status="SUNSET"),
-    "nano-banana-pro": dict(kind="image", mode="narrative", status="GA"),
-    "nano-banana-2":  dict(kind="image", mode="narrative", status="GA"),
-    "gpt-image-2.5":  dict(kind="image", mode="narrative", status="GA"),
-    "midjourney-v8":  dict(kind="image", mode="tokens", status="GA", needs_ar=True),
-    "flux-2":         dict(kind="image", mode="tokens", status="GA", positive=True),
-    "seedream-5":     dict(kind="image", mode="narrative", status="GA"),
 }
 
 
@@ -115,11 +118,11 @@ def lint(text, platform, min_words, image_to_video):
     # status
     st = cfg["status"]
     if st == "SUNSET":
-        add("FAIL", f"{platform} is sunset — recompile for veo-3.1 or seedance-2.5")
+        add("FAIL", f"{platform} is sunset — recompile for seedance-2.5 or gemini-omni-flash")
     elif st == "ANNOUNCED":
-        add("WARN", f"{platform} is announced, not GA — specs provisional; confirm user access before promising output")
-    elif st == "LEGACY":
-        add("WARN", f"{platform} is legacy — previz only; recompile finals for a frontier model")
+        add("WARN", f"{platform} is announced, not GA, and outside the house lineup — specs provisional")
+    elif st == "OUTSIDE":
+        add("WARN", f"{platform} is outside the house video lineup — use only if the user named it")
 
     # detail floor
     words = len(re.findall(r"\b[\w'’./-]+\b", raw_text))
@@ -138,7 +141,10 @@ def lint(text, platform, min_words, image_to_video):
         add("PASS" if re.search(LENS_FOCAL, text) else "FAIL", "lens focal length")
         add("PASS" if re.search(LENS_STOP, text) else "WARN", "lens T-stop / aperture")
     add("PASS" if any_hit(FIXTURES, text) else "FAIL", "named lighting fixture / motivated source")
-    add("PASS" if any_hit(MODIFIERS, text) else "WARN", "light modifier")
+    if image_to_video:
+        add("PASS", "light modifier (carried by the start frame)")
+    else:
+        add("PASS" if any_hit(MODIFIERS, text) else "WARN", "light modifier")
     add("PASS" if any_hit(PLACEMENT, text) else "WARN", "light placement / direction")
 
     d, p = any_hit(DIRECTORS, text), any_hit(DPS, text)
@@ -163,8 +169,8 @@ def lint(text, platform, min_words, image_to_video):
     if ends and cfg.get("max_s"):
         mx = max(ends)
         add("PASS" if mx <= cfg["max_s"] else "FAIL", f"timeline {mx:g}s (max {cfg['max_s']}s)")
-    imgs = set(re.findall(r"@Image\s?(\d+)|Image\s(\d+)\s?[:=]", text))
-    img_n = len({x for pair in imgs for x in pair if x})
+    imgs = set(re.findall(r"@Image\s?(\d+)|Image\s(\d+)\s?[:=]|<IMAGE REF (\d+)>", text))
+    img_n = len({x for tup in imgs for x in tup if x})
     refs_n = img_n + len(set(re.findall(r"@(?:Video|Audio)\s?\d+", text)))
     if cfg.get("img") and img_n > cfg["img"]:
         add("FAIL", f"{img_n} image refs (max {cfg['img']})")
@@ -180,6 +186,13 @@ def lint(text, platform, min_words, image_to_video):
         add("WARN", f"{len(brackets)} bracket commands (≤{cfg['brackets_max']} combined recommended)")
     if cfg.get("positive") and re.search(r"\b(no|not|without|don't|never|avoid)\b", text, re.I):
         add("WARN", f"negations found — {platform} prefers positive phrasing")
+    if cfg.get("front_load"):
+        first = re.split(r"(?<=[.!?])\s|\n", raw_text.strip(), maxsplit=1)[0]
+        fw = len(re.findall(r"\b[\w'’-]+\b", first))
+        ok = fw <= cfg["front_load"] and any_hit(MOVEMENT, first.replace("_", " "))
+        add("PASS" if ok else "WARN", f"command line {fw} words (≤{cfg['front_load']}, must name the camera move)")
+    if cfg.get("needs_audio") and not re.search(r"audio|sound|sfx|dialogue|ambience|ambient|music|\"", text, re.I):
+        add("WARN", "no audio named — Grok returns silent clips without an audio cue")
     if cfg.get("needs_ar") and "--ar" not in text:
         add("WARN", "no --ar parameter")
     if cfg.get("max_chars") and len(raw_text) > cfg["max_chars"]:

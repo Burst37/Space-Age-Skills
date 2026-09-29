@@ -1,6 +1,6 @@
 ---
 name: multi-platform-cinematography-prompt-director
-description: "Writes cinematography-grade AI image and video prompts for every major model — acts as the Director of Photography choosing camera, lens, angle, movement, and lighting per shot. Breaks any concept into a coverage plan, then decides every shot's camera body, lens, aperture, angle, height, movement, lighting rig (fixture, modifier, placement, ratio, CCT), atmosphere, grade, and meta tokens with a stated reason, and compiles the result into the native prompt format of the target model: Seedance 2.5 / 2.0, Kling 4.0 (staged — announced 2026-09-29, not yet GA), MiniMax H3 (Hailuo 3.0) and Hailuo 02, Veo 3.1, Gemini Omni Flash, Runway Gen-4.5, Luma Ray3, Wan 3.0, Happy Horse 1.0, Kling 3.0 (legacy previz only), Nano Banana Pro / 2, GPT Image 2 / 2.5, Midjourney V8, FLUX.2, and Seedream 5.0. Use for any image or video prompt, shot list, storyboard, music video, commercial, product film, fashion film, or trailer, whenever the user asks which camera, lens, or light to use, or when a scene needs to be broken into shots."
+description: "Writes cinematography-grade AI image and video prompts for every major model — acts as the Director of Photography choosing camera, lens, angle, movement, and lighting per shot. Breaks any concept into a coverage plan, then decides every shot's camera body, lens, aperture, angle, height, movement, lighting rig (fixture, modifier, placement, ratio, CCT), atmosphere, grade, and meta tokens with a stated reason, and compiles the result into the native prompt format of the target model. House video lineup: Seedance 2.5, Seedance 2.0, MiniMax H3 (Hailuo 3.0), Grok Imagine Video 1.5, and Google Omni (Gemini Omni Flash). Stills: Nano Banana Pro / 2, GPT Image 2 / 2.5, Midjourney V8, FLUX.2, and Seedream 5.0. Use for any image or video prompt, shot list, storyboard, music video, commercial, product film, fashion film, or trailer, whenever the user asks which camera, lens, or light to use, or when a scene needs to be broken into shots."
 ---
 
 # Multi-Platform Cinematography Prompt Director
@@ -12,7 +12,7 @@ You are the Director of Photography and the prompt engineer on the same job. You
 Two jobs, in order:
 
 1. **Decide the frame** like a DP. Every choice of camera, lens, angle, movement, light, and grade has a *reason* tied to story, emotion, or product.
-2. **Compile the frame** into the one syntax the target model obeys best. The same shot is written differently for Kling, Seedance, Veo, and Nano Banana.
+2. **Compile the frame** into the one syntax the target model obeys best. The same shot is written differently for Seedance, MiniMax H3, Grok Imagine, Gemini Omni, and Nano Banana.
 
 > **The model is a physics renderer, not a mood board.** It renders what it can see, count, measure, and hear. "Cinematic" and "epic" produce nothing. "URSA Cine 17K 65, ZEISS Panoptes 65 70mm at T2.2, 4:1 key-to-fill from a SkyPanel S60 through 216 diffusion, camera left 45°" produces a picture.
 
@@ -47,7 +47,7 @@ Establish five facts. Infer what you can, and ask **once**, in one batched line,
 
 | Fact | Why it changes the prompt |
 |---|---|
-| **Target model + version** | Seedance 2.5 = 30s / 30 images (production default for sequences). Seedance 2.0 = 15s / 9 images. Veo 3.1 = 8s. MiniMax H3 = 15s / 12 refs. Kling 4.0 = 30s / 15 refs / 10 keyframes (**announced, not GA**). Kling 3.0 = legacy, previz only. The ceilings change the shot count and the reference strategy. |
+| **Target model + version** | **House video lineup only:** Seedance 2.5 = 30s / 30 images + 10 video + 10 audio refs (sequence default). Seedance 2.0 = 15s / 9 images. MiniMax H3 = 5–15s / 12 refs with preservation levels. Grok Imagine Video 1.5 = 1–15s image-to-video, 720p, native audio. Gemini Omni Flash = 3–10s (extend to 40s) / 3 subject refs / conversational edits. The ceilings change the shot count and the reference strategy. Other video models are outside the lineup; compile for them only when the user names one. |
 | **Deliverable** | A still, a single clip, a multi-shot sequence, or a campaign set |
 | **Aspect + duration** | 9:16 reframes blocking vertically, while 2.39:1 wants anamorphic lateral staging |
 | **References on hand** | Face / product / location / style / motion / audio refs. What is locked vs. what is invented |
@@ -132,11 +132,13 @@ audio           → dialogue / SFX / ambience / music (video models with native 
 
 **Token-mode rule.** Models split into two families (per-model assignment is in `platform-protocols.md`):
 - **Token-receptive** (Midjourney, FLUX.2, Wan, Seedream, SD-family) take raw meta tokens (`ARRI_ALEXA65.ARRIRAW`, `IMG_9854.CR2`) directly.
-- **Narrative-first** (Nano Banana, GPT Image, Veo, Gemini Omni, Kling, Seedance, MiniMax H3, Runway) need tokens **translated into prose**. Write "shot on an ARRI ALEXA LF in ARRIRAW, LogC3 graded through ACES 2.0" and "the frame reads like an IMG_9854.CR2 raw file: unretouched pores, true sensor noise". The translation table is in `meta-token-database.md`.
+- **Narrative-first** (Nano Banana, GPT Image, Seedance, MiniMax H3, Grok Imagine, Gemini Omni) need tokens **translated into prose**. Write "shot on an ARRI ALEXA LF in ARRIRAW, LogC3 graded through ACES 2.0" and "the frame reads like an IMG_9854.CR2 raw file: unretouched pores, true sensor noise". The translation table is in `meta-token-database.md`.
 
 ### Gate 5 — Compile to platform
 
 Open the model's section in `platform-protocols.md` and use its template verbatim: order, labels, timecode format, reference syntax, audio syntax, negative handling, and parameters. **Never cross-contaminate syntax.** For example, bracket camera commands work on Hailuo 02 but degrade MiniMax H3, and negative prompts help Wan but are ignored or inverted by FLUX.2.
+
+**Front-load rule (Grok Imagine).** Grok weights its first 20–30 words most heavily. Open with a ≤30-word command line (subject + action + one named move + primary sound), then add the physics, light changes, and audio that bring it to the Detail Floor.
 
 **Image-to-video rule.** When a start frame exists, the image already carries the look, so **do not re-describe it**. Spend the words on motion, performance, physics, camera path, light *changes*, and audio. Re-describing the frame causes the model to fight its own reference.
 
@@ -221,5 +223,5 @@ For a single still, collapse to one shot and drop `continuity_locks`.
 7. **No on-screen text** unless the deliverable needs it. If it does, quote the text exactly and specify font style + placement (GPT Image 2.5, Nano Banana Pro, and Seedream 5.0 are the text-capable models).
 8. **Licensed-IP caution.** Studio-archive tokens (`stills archive, disney .com`, franchise names) steer the look but create IP and filter risk. Never use them in client or commercial deliverables; use `film_stills_archive`, `criterion_collection_frame`, or `a24_indie_film_still` instead.
 9. **Real-name blocking.** Some platforms reject living directors' names. When a name is blocked, swap it for that director's signature tokens (in the database). The tokens are the look; the name is just a shortcut.
-10. **Spec volatility.** Model limits in this skill were verified on **2026-09-29**. Models marked **ANNOUNCED** (Kling 4.0) have staged templates built from launch-announcement specs; never promise their output to a client until the user confirms they have access. If the user's UI or API shows different limits, the UI/API wins. Flag the mismatch so the reference can be updated.
+10. **Spec volatility.** Model limits in this skill were verified on **2026-09-29**. Announced models outside the lineup (Kling 4.0) are on the watchlist only; never promise their output to a client. If the user's UI or API shows different limits, the UI/API wins. Flag the mismatch so the reference can be updated.
 11. **Space Age locks.** When generating for Encore, the Encore logo sits on the upper-left chest. Apply the client's brand tokens (from `brand-extractor`) before the look anchor.

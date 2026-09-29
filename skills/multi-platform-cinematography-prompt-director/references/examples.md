@@ -1,6 +1,6 @@
 # Worked Examples — Linted Golden Prompts
 
-Every prompt below passes `scripts/lint_prompt.py` with 0 FAIL / 0 WARN on its target platform. Use them as the output-shape reference. **Don't reuse them verbatim**: the subjects are placeholders.
+Every prompt below passes `scripts/lint_prompt.py` with 0 FAIL / 0 WARN on its target platform. Video examples use only the house lineup: Seedance 2.5, MiniMax H3, Grok Imagine 1.5, and Gemini Omni Flash. Use them as the output-shape reference. **Don't reuse them verbatim**: the subjects are placeholders.
 
 ---
 
@@ -49,24 +49,21 @@ Director's notes:
 
 ---
 
-## Example 3 — Dialogue beat · Veo 3.1 JSON (House B-cam: skin and emotion)
+## Example 3 — Dialogue beat · Gemini Omni Flash (House B-cam: skin and emotion)
 
-**Brief:** diner confrontation. Visual thesis: *the last warm place before the decision.* Prestige-drama kit (#7), with a CCT split (cool window vs. warm pendant).
+**Brief:** diner confrontation. Visual thesis: *the last warm place before the decision.* Prestige-drama kit (#7), with a CCT split (cool window vs. warm pendant). Omni is the pick because the dialogue is written in the prompt (no voice reference), and follow-up changes can be made as conversational edits.
 
-`lint: PASS [veo-3.1]`
-```json
-{
-  "shot": {"size": "MCU", "angle": "eye level, 1.5m, three-quarter front", "duration_s": 8, "aspect": "16:9"},
-  "subject": "MAYA, 5'6\", slender build, hazel eyes, tight natural coils pinned up with loose strands at the temples, freckles across the nose, small gold hoop earrings, a faded olive work jacket over a cream knit sweater, flour dust on one cuff, exhausted but warm expression",
-  "action": "MAYA sits at a diner booth, both hands around a chipped white mug. She looks down, exhales, then lifts her eyes to the man across from her (off-screen right) and speaks. On the last word she sets the mug down gently and holds his gaze.",
-  "environment": "a late-night roadside diner, rain streaking the window beside her, a red neon OPEN sign glowing backward through the glass, steam curling from the coffee",
-  "camera": "Captured on an ARRI ALEXA LF in ARRIRAW with a Cooke S8/i FF 75mm at T2, focus on her near eye, the window behind melting into warm bokeh; a very slow dolly push-in on a Chapman PeeWee from MCU to CU over 8 seconds, stopping on her eyes",
-  "lighting": "a SkyPanel S60 through 216 diffusion outside the window, camera left at 60 degrees, faking cool 5600K street light; a warm 2700K practical pendant above the booth as a soft top light; the red neon as a motivated rim from behind at 150 degrees; black negative fill camera right for a 4:1 ratio",
-  "style": "Barry Jenkins-style intimacy seen through James Laxton's warm skin rendering, graded like Kodak Vision3 250D through ACES 2.0, fine organic grain, soft halation on the neon, the stillness of a Criterion Collection frame",
-  "audio": {"dialogue": "MAYA, quiet and steady: \"I'm not asking you to stay. I'm asking you to decide.\" (no subtitles)", "sfx": "at 7s the mug touches the table with a soft ceramic knock", "ambience": "rain on glass, a distant fridge hum, faint kitchen clatter"},
-  "constraints": "photoreal, no on-screen text, no music"
-}
+`lint: PASS [gemini-omni-flash]`
 ```
+In a single continuous shot, MAYA, 5'6", slender build, hazel eyes, tight natural coils pinned up with loose strands at the temples, freckles across the nose, small gold hoop earrings, wearing a faded olive work jacket over a cream knit sweater with flour dust on one cuff, sits alone in a late-night roadside diner booth holding a chipped white mug, rain streaking the window beside her, a red neon OPEN sign glowing backward through the glass, steam curling from the coffee.
+Camera: captured on an ARRI ALEXA LF in ARRIRAW with a Cooke S8/i FF 75mm at T2, focus on her near eye and the window melting into warm bokeh; a very slow dolly push-in on a Chapman PeeWee from medium close-up to close-up over the full 10 seconds, stopping on her eyes.
+Light: a SkyPanel S60 through 216 diffusion outside the window, camera left at 60 degrees, faking cool 5600K street light; a warm 2700K practical pendant above the booth as a soft top light; the red neon as a motivated rim from behind at 150 degrees; black negative fill camera right for a 4:1 ratio.
+Style: Barry Jenkins intimacy through James Laxton's warm skin rendering, graded like Kodak Vision3 250D through ACES 2.0, fine organic grain, soft halation on the neon, the stillness of a Criterion Collection frame.
+[0-3s] She looks down into the mug and exhales slowly. [3-7s] She lifts her eyes to the man across from her, off-screen right, and speaks. [7-10s] On the last word she sets the mug down gently and holds his gaze.
+Audio: MAYA, quiet and steady: "I'm not asking you to stay. I'm asking you to decide." SFX: at 8 seconds the mug touches the table with a soft ceramic knock. Ambience: rain on glass, a distant fridge hum, faint kitchen clatter. No music. No subtitles or on-screen text.
+```
+
+Omni notes: "In a single continuous shot" prevents cuts inside the 10s; `[0-3s]` timecodes place the beats; inline negatives ("No music. No subtitles") are supported on Omni. To extend past 10s, use `extend` (up to 40s total).
 
 ---
 
@@ -89,6 +86,24 @@ Style carries from the frame: Fincher precision, Greig Fraser chiaroscuro, ACES 
 Audio: [0.5s] a faint wet slide; [3.0s] a low sub swell begins; [6.2s] a crisp single water tap on stone with a short glassy ring; room tone is near-silent studio air.
 Constraints: photoreal, no on-screen text beyond the etched lettering, no music, no camera shake.
 ```
+
+---
+
+## Example 5 — Still-to-motion · Grok Imagine Video 1.5 (start frame = the KAI Shot 4 still)
+
+**Workflow:** the full 150–200+ word DP prompt builds the start frame on Nano Banana Pro (B-cam ARRI ALEXA LF, Canon K35 55mm, neon + Titan tube rig, Vision3 500T grade). Grok then animates it. The first line is the **≤30-word command line**, because Grok weights its first 20–30 words most. Every line after it adds motion, light *change*, or sound, never a re-description of the look.
+
+`lint: PASS [grok-imagine-1.5 --i2v]`
+```
+KAI throws his head back and belts the chorus in hammering rain; slow dolly push-in from medium to close-up, stopping on his eyes; roaring rain and raw vocals.
+Motion: rain drops burst off his shoulders and the black leather bomber in bright backlit sprays, his shoulder-length locs swing heavy and wet with each beat, the silver Cuban chain lifts and slaps against the white tank, and his breath clouds in the cold air between lines. Water sheets off the ledge behind him in a continuous curtain.
+Camera: a B-cam push on a Chapman dolly at a steady, very slow speed over 7 seconds; his face stays centered and grows from chest-up to a tight close-up; the horizon stays level with no shake.
+Light: the cyan Astera Titan tube rim from behind at 150 degrees flickers once at 3 seconds as lightning floods the skyline blue-white for three frames, then the magenta neon practicals camera left take over again, painting the rain streaks pink.
+Audio: KAI sings "I was born under these lights" with full chest voice, lip-synced; the rain roars on the rooftop metal; a distant thunder crack lands at 3 seconds; the song's bass bleeds from an unseen speaker.
+Hold: the start frame's identity, wardrobe, rooftop layout, Kodak Vision3 500T grade, and Arkapaw-warm skin rendering stay unchanged through the Wong Kar-wai neon night; no new objects enter the frame.
+```
+
+Grok notes: one action (the belt) + one move (the push-in), 7s inside the stable 5–8s window. The audio is named explicitly, or the clip may come back silent. Extend from the last frame for the next beat instead of packing a second action into this clip.
 
 ---
 
