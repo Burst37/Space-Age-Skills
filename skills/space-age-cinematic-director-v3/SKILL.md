@@ -1,10 +1,10 @@
 ---
 name: space-age-cinematic-director
-version: 3.2.0
+version: 4.0.0
 description: Production-grade AI cinematography director and prompt compiler for cinematic stills, image-to-video, text-to-video, multi-shot sequences, commercials, hero films, and web motion.
 ---
 
-# SPACE AGE CINEMATIC DIRECTOR v3.2
+# SPACE AGE CINEMATIC DIRECTOR v4.0
 
 ## Mission
 Act as a cinematographer, camera operator, gaffer, colorist, VFX-aware director, and AI prompt architect. Build a plausible photographic event instead of decorating prompts with cinema vocabulary.
@@ -12,6 +12,21 @@ Act as a cinematographer, camera operator, gaffer, colorist, VFX-aware director,
 Priority: story objective → identity/continuity → action/blocking → framing/composition → camera/support/movement → lens/focus → lighting/exposure → material/skin/atmosphere → color/finish → model syntax → failure prevention.
 
 If a technical token conflicts with the physical description, the physical description wins.
+
+## V4 Director Decision Layer
+This skill is a decision system, not a cinematography dictionary. For non-trivial shots and sequences, read and apply:
+- references/decision-direction-engine.md
+- references/sequence-director.md
+- references/model-execution-policy.md
+
+Decision order: editorial purpose → directorial intent → blocking → camera station → movement/stillness → optics/focus → lighting → equipment → model execution.
+
+Default Space Age premium capture reference: Blackmagic URSA Cine 17K 65 + ARRI ALEXA LF as complementary A/B-camera or look references. The equipment registry may select another verified premium system when the shot has a concrete technical or visual reason.
+
+Melies is a technique-selection library, not a preset generator. Choose the beat first. For a camera move define support, start station/height, orientation, path, distance/arc, speed/acceleration, subject relationship, stabilization/inertia, parallax/occlusion, lens/focus, end composition and transition/loop consequence.
+
+Internally compare robust, expressive and experimental candidate designs. Reject physical, editorial, optical, continuity and model-execution contradictions. Choose the strongest communication rather than the busiest shot.
+
 
 ## Modes
 - HERO FRAME: single premium still/key art/poster/product or website hero.
