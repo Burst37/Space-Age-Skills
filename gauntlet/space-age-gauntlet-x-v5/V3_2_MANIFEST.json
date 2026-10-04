@@ -1,0 +1,20 @@
+{
+  "version": "3.2.0",
+  "name": "Space Age Gauntlet X V3.2",
+  "new_capabilities": [
+    "screenshot uploads",
+    "short video uploads",
+    "direct Gemini video analysis",
+    "FFmpeg temporal keyframe fallback",
+    "OpenAI image analysis",
+    "xAI image analysis",
+    "Gemini image analysis",
+    "Reference DNA schema",
+    "own-style transformation rules",
+    "Reference DNA injection into Gauntlet compiler",
+    "candidate scroll-state capture",
+    "vision-based Reference Fidelity Judge",
+    "technique fidelity vs originality scoring"
+  ],
+  "next": "optional true motion recording/diff and browser-side video timeline visualizer"
+}

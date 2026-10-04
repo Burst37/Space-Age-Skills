@@ -1,0 +1,44 @@
+{
+  "name": "example-site",
+  "goal": "Improve this website until it meets the configured quality bar.",
+  "taskType": "Website / UI",
+  "mode": "Design",
+  "workspace": "./workspace/example-site",
+  "maxRounds": 6,
+  "parallelCandidates": 1,
+  "plateauDelta": 1,
+  "plateauRounds": 2,
+  "hardGate": 90,
+  "referenceGate": 85,
+  "originalityGate": 85,
+
+  "provider": { "builder": "openai", "critic": "gemini", "judge": "xai", "visual": "gemini" },
+  "model": { "builder": "", "critic": "", "judge": "", "visual": "" },
+
+  "checks": ["npm test --if-present", "npm run build --if-present"],
+
+  "web": {
+    "enabled": false,
+    "url": "http://127.0.0.1:3000",
+    "captureScroll": true,
+    "scrollSteps": 8,
+    "maxFrames": 12,
+    "maxEvidenceImages": 10,
+    "sendVideo": true,
+    "viewports": [
+      { "name": "mobile", "width": 390, "height": 844 },
+      { "name": "desktop", "width": 1440, "height": 1000 }
+    ]
+  },
+
+  "snapshot": { "maxFiles": 80, "maxChars": 140000 },
+  "tokenBudget": { "builder": 60000, "critic": 45000, "judge": 15000, "visual": 30000 },
+  "maxOutputTokens": { "builder": 16000, "critic": 4000, "judge": 2000, "visual": 2000 },
+  "pricing": {},
+
+  "git": { "enabled": true, "pushOnShip": false, "remote": "origin" },
+
+  "constraints": [],
+  "protectedPaths": [".git", ".env", ".env.local", "node_modules", "runs"],
+  "prompt": "Paste a compiled gauntlet prompt here."
+}

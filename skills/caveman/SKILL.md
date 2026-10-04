@@ -1,19 +1,33 @@
 ---
 name: caveman
 description: >
-  Ultra-compressed communication mode (SA-caveman) that cuts token usage ~75% while maintaining
-  full technical precision. Use when running long pipeline sessions, batch operations, or any
-  work where token cost / context window space matters. Trigger on: "caveman mode", "compress",
-  "short answers only", "token save mode", "just the code", "no explanation", "be brief",
-  "minimal output", or when a session is approaching context limits. Also auto-suggest this mode
-  when a session is long and work is execution-only (not planning) — e.g. batch website builds,
-  batch outreach runs. Deactivate with "full mode" or "explain this".
-allowed-tools: Read, Bash
+  Token reduction on two fronts. (A) Ultra-compressed chat mode (SA-caveman) that cuts Claude's
+  own output ~75% while keeping full technical precision. (B) Machine-side token budgeting for
+  pipelines that spend tokens on Claude's behalf — builder/critic/judge loops, batch runners,
+  agent gauntlets — where the real burn is 50-200x larger than chat. Trigger on: "caveman mode",
+  "compress", "short answers only", "token save mode", "just the code", "no explanation",
+  "be brief", "minimal output", session approaching context limits, batch execution runs, OR
+  "why is this run so expensive", "reduce token usage", "cut the API bill", "token audit",
+  "the gauntlet costs too much". Deactivate chat mode with "full mode" or "explain this".
+allowed-tools: Read, Grep, Glob, Bash
 ---
 
 # Caveman — Space Age Ultra-Compressed Mode
 
 Adapted from Matt Pocock's `/caveman` skill. Same core mechanic, SA pipeline context added.
+
+Two modes. Know which one is being asked for:
+
+| | Mode A — Chat compression | Mode B — Pipeline budget |
+|---|---|---|
+| Saves | tokens Claude *writes* | tokens the *code* spends |
+| Scale | ~75% of Claude's output | ~74% of a multi-round run |
+| Trigger | "caveman", "be brief" | "token audit", "cut the bill" |
+| Rules | this file | `references/pipeline-token-budget.md` |
+
+Mode A is the default on the trigger words below. Mode B is an **audit task**, not a
+speaking style — read `references/pipeline-token-budget.md`, then apply it to the runner.
+Do not load Mode B references during ordinary chat: they cost more than they save.
 
 ---
 
@@ -93,6 +107,43 @@ BRIEF: [client] | [vertical] | [city] | [tier]
 STACK: [tech] | [cta] | [archetype]
 NEXT: → [skill name]
 ```
+
+---
+
+## Mode B — Pipeline Token Budget (audit task)
+
+When the cost is in a runner rather than in chat, compressing Claude's replies is noise.
+Go after the loop.
+
+**Load `references/pipeline-token-budget.md`** for the 8 rules. Headlines:
+
+1. Never re-send an unchanged file — delta snapshots (75-85% of the snapshot)
+2. Never pretty-print JSON into a prompt (10-20% of every payload)
+3. A passing check has no stdout worth sending (5,028 tok → 9 tok, measured)
+4. Send evidence once, to one reader — no critic/judge duplication
+5. Stable text first, volatile last — or no prefix cache ever hits
+6. Strip non-judgeable fields (screenshot paths, minor a11y, console dumps)
+7. Budget before you spend — throw pre-flight, not post-invoice
+8. Price the ledger or it reports $0 forever
+
+**Drop-in:** `assets/token-budget.mjs` — `deltaSnapshot`, `compressChecks`,
+`compressWebInspection`, `assemblePrompt`, `assertBudget`, `estimateCost`, `PRICE_TABLE`.
+
+**Worked example:** `references/gauntlet-x-v4.md` — the 10 findings in Space Age
+Gauntlet X V4 and the exact edits. 1.48M → ~380k tokens per run.
+
+### Audit order (fastest payback first)
+```
+1. snapshot/context assembly  → is anything re-sent unchanged?
+2. tool output (test/build)   → is success carrying stdout?
+3. prompt ordering            → is a round counter above the payload?
+4. fan-out                    → does N candidates mean N copies of one blob?
+5. ledger                     → does it report a real number?
+```
+
+### Rule that overrides all of the above
+Never compress something a downstream role has to **act on**. Cutting the error line a
+builder needs costs a whole extra round — more than it saved. Cut bytes nobody reads.
 
 ---
 

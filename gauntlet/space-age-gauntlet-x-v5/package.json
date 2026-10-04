@@ -1,0 +1,40 @@
+{
+  "name": "space-age-gauntlet-x-v5",
+  "version": "5.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "runner": "node --env-file-if-exists=.env scripts/gauntlet-runner-v5.mjs",
+    "inspect:web": "node --env-file-if-exists=.env scripts/inspect-web.mjs",
+    "test:e2e": "playwright test",
+    "typecheck": "tsc --noEmit",
+    "analyze:reference": "node --env-file-if-exists=.env scripts/analyze-reference.mjs",
+    "benchmark": "node --env-file-if-exists=.env scripts/benchmark-scout.mjs",
+    "health": "node --env-file-if-exists=.env scripts/provider-health.mjs",
+    "resume": "node --env-file-if-exists=.env scripts/gauntlet-runner-v5.mjs --resume",
+    "audit:web": "node --env-file-if-exists=.env scripts/web-audit.mjs",
+    "runner:v4": "node --env-file-if-exists=.env scripts/gauntlet-runner-v4.mjs",
+    "test:smoke": "node tests/v5-smoke.mjs",
+    "verify:panel": "node --env-file-if-exists=.env scripts/verify-panel.mjs",
+    "doctor": "node --env-file-if-exists=.env scripts/doctor.mjs"
+  },
+  "dependencies": {
+    "next": "^16.3.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "@supabase/supabase-js": "^2.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.9.0",
+    "@axe-core/playwright": "^4.10.0",
+    "lighthouse": "^12.0.0",
+    "chrome-launcher": "^1.0.0"
+  }
+}
