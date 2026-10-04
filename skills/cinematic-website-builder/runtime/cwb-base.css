@@ -1,0 +1,98 @@
+/* ==========================================================================
+   CWB BASE v3 — tokens + base layer. Inline once, before module CSS.
+   Replace every token value with the locked Handoff Package / Brand Token
+   Package values. Modules read ONLY these tokens — never hard-coded hex.
+   ========================================================================== */
+:root {
+  /* Color — OKLCH so mixes and ramps stay perceptually even */
+  --c-bg:        oklch(0.14 0.01 260);
+  --c-bg-2:      oklch(0.18 0.012 260);
+  --c-surface:   oklch(0.22 0.014 260);
+  --c-line:      oklch(1 0 0 / 0.09);
+  --c-fg:        oklch(0.97 0.005 260);
+  --c-fg-muted:  oklch(0.74 0.015 260);  /* ≥4.5:1 on --c-bg */
+  --c-fg-dim:    oklch(0.32 0.01 260);   /* decorative only — never body text */
+  --c-accent:    oklch(0.72 0.19 45);
+  --c-accent-2:  oklch(0.8 0.15 85);
+  --c-accent-3:  oklch(0.62 0.22 20);
+  --c-on-accent: oklch(0.16 0.02 45);
+
+  /* Type — set from ui-ux-designer tokens. No banned faces (see SKILL.md). */
+  --f-display: "Clash Display", "Satoshi", ui-sans-serif, system-ui, sans-serif;
+  --f-body:    "Satoshi", ui-sans-serif, system-ui, sans-serif;
+  --f-mono:    "JetBrains Mono", ui-monospace, monospace;
+  --t-hero:  clamp(3rem, 1.2rem + 8.4vw, 10rem);
+  --t-h2:    clamp(2rem, 1.1rem + 3.6vw, 4.5rem);
+  --t-h3:    clamp(1.25rem, 1rem + 1vw, 1.75rem);
+  --t-body:  clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --t-small: 0.8125rem;
+  --track-display: -0.035em;
+
+  /* Motion — four durations, four curves. A fifth means the component is wrong. */
+  --d-micro: 160ms;  --d-ui: 320ms;  --d-reveal: 800ms;  --d-scene: 1400ms;
+  --e-out:    cubic-bezier(0.22, 1, 0.36, 1);      /* expo-ish out: reveals */
+  --e-in-out: cubic-bezier(0.65, 0, 0.35, 1);      /* scene changes */
+  --e-in:     cubic-bezier(0.5, 0, 0.75, 0);       /* exits */
+  --e-spring: linear(0, 0.36 8%, 0.82 18%, 1.03 27%, 1.08 34%, 1.03 44%, 0.99 55%, 1);
+
+  /* Space + shape */
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 3rem);
+  --section: clamp(5rem, 3rem + 10vw, 12rem);
+  --radius: 18px;
+  --radius-sm: 10px;
+  --max: 1320px;
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+/* NOTE: no `scroll-behavior: smooth` — it fights ScrollTrigger pins and Lenis. */
+body {
+  margin: 0; background: var(--c-bg); color: var(--c-fg);
+  font: 400 var(--t-body)/1.6 var(--f-body);
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+img, video, canvas, svg { display: block; max-width: 100%; }
+img, video { height: auto; }
+h1, h2, h3 { font-family: var(--f-display); letter-spacing: var(--track-display); line-height: 1.02; margin: 0; text-wrap: balance; }
+p { margin: 0; text-wrap: pretty; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--c-accent); outline-offset: 3px; border-radius: 4px; }
+.sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.skip-link { position: absolute; left: 1rem; top: -4rem; z-index: 10000; padding: .75rem 1rem; background: var(--c-fg); color: var(--c-bg); border-radius: var(--radius-sm); }
+.skip-link:focus { top: 1rem; }
+.wrap { width: min(100% - 2 * var(--gutter), var(--max)); margin-inline: auto; }
+.section { padding-block: var(--section); }
+.eyebrow { font: 500 var(--t-small)/1 var(--f-mono); letter-spacing: .18em; text-transform: uppercase; color: var(--c-fg-muted); }
+.btn {
+  display: inline-flex; align-items: center; gap: .6em; padding: 1em 1.6em;
+  border-radius: 999px; border: 0; cursor: pointer; text-decoration: none; font-weight: 600;
+  background: var(--c-accent); color: var(--c-on-accent);
+  transition: transform var(--d-micro) var(--e-out), box-shadow var(--d-ui) var(--e-out);
+}
+.btn:active { transform: scale(0.97); }
+.btn--ghost { background: transparent; color: var(--c-fg); box-shadow: inset 0 0 0 1px var(--c-line); }
+section[id] { scroll-margin-top: 6rem; }
+/* First section clears the fixed island nav */
+.hero { padding-top: max(var(--section), 7.5rem); }
+.below-fold { content-visibility: auto; contain-intrinsic-size: auto 900px; }
+
+/* ---------- Generic pre-reveal (fail-open) ----------
+   [data-reveal] is hidden only when JS is live AND motion is allowed.
+   Prefer module 33 (native view() reveal) — zero JS. */
+@media (prefers-reduced-motion: no-preference) {
+  .cwb-js [data-reveal] { opacity: 0; transform: translateY(28px); }
+}
+
+/* ---------- Accessibility parallel designs ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; scroll-behavior: auto !important; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  :root { --c-line: oklch(1 0 0 / 0.2); }
+}
+@media (prefers-contrast: more) {
+  :root { --c-fg-muted: var(--c-fg); --c-line: oklch(1 0 0 / 0.4); }
+}
