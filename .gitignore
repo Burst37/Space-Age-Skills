@@ -6,3 +6,6 @@ node_modules/
 *.key
 out/
 dist/
+__pycache__/
+*.pyc
+.pytest_cache/
