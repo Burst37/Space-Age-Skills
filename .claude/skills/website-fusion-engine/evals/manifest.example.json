@@ -1,0 +1,48 @@
+{
+  "project": {
+    "name": "Atlas Studio",
+    "domain": "atlasstudio.com",
+    "mode": "controlled-remix",
+    "tier": "flagship",
+    "authorization": "client-approved",
+    "targetStack": "next@15 + tailwind + gsap + lenis",
+    "hosting": "vercel"
+  },
+  "sources": [
+    { "id": "site-a", "type": "url", "location": "https://referenceA.example", "roles": ["layout", "navigation"], "exactness": "close" },
+    { "id": "site-b", "type": "url", "location": "https://referenceB.example", "roles": ["motion", "menu"], "exactness": "exact" }
+  ],
+  "identity": {
+    "name": "Atlas Studio",
+    "tagline": "We build worlds.",
+    "colors": ["#0a0a0a", "#f5f3ee", "#ff5b2e"],
+    "fonts": ["Rajdhani", "Inter"],
+    "logoSource": "uploaded/atlas-logo.svg"
+  },
+  "decisions": {
+    "navigation": "keep",
+    "hero": "adapt",
+    "motion": "keep",
+    "pageTransitions": "keep",
+    "customCursor": "drop"
+  },
+  "assets": {
+    "sources": ["google-drive", "uploaded"],
+    "mustUse": ["uploaded/atlas-logo.svg"],
+    "mustNotUse": [],
+    "generationAllowed": true
+  },
+  "pages": ["/", "/work", "/studio", "/contact"],
+  "applications": [
+    { "type": "forms", "decision": "replace", "with": "resend + zod" },
+    { "type": "cms", "decision": "replace", "with": "sanity" },
+    { "type": "analytics", "decision": "keep", "with": "plausible" }
+  ],
+  "acceptanceCriteria": [
+    "menu open/close motion frame-close to site-b",
+    "hero layout from site-a with new identity",
+    "reduced-motion fallback on all scroll motion",
+    "LCP < 2.5s on mobile"
+  ],
+  "requiredDeliverables": ["source code", "git repository", "deployed preview", "forensic report", "motion map", "QA report"]
+}
