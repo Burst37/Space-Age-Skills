@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.0 — 2026-10-15
+- **Agent Reach integrated** as the P0 web-research layer (`references/web-research-agent-reach.md`): reads pasted reference links (sites via Jina, YouTube transcripts, X / Reddit / Instagram via the doctor-selected backend) and runs a capped competitor + voice-of-customer scan that appends a `research:` block to the Direction Brief. Routing table and P0 updated.
+- **Ponytail + caveman** listed as always-on code and token discipline.
+
 ## Unreleased
 - **Model roster updated** (asset-pipeline §3): Higgsfield MCP default, OpenArt as second platform. Images: ChatGPT Images 2.5 (default, gold standard), Nano Banana Pro, Grok Imagine 1.5 (OpenArt). Video: MiniMax H3 (default hero loop, start = end frame), Seedance 2.5 (narrative/scroll film, extension), Seedance 2.0 (identity-consistent, 4K). Per-slot `platform:` / `model:` in `assets.yaml`.
 - **Prompt tokens** (`references/prompt-tokens.md`): meta + cinematography token library from Mr. Black's Meta Token guide, mapped to the current roster, with shot recipes per web slot.

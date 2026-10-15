@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>CWB v3 Module Gallery — every module on one page</title>
+  <meta name="description" content="Integration fixture for Cinematic Website Builder v3: all modules composed in a single file to prove isolation, fail-open and accessibility.">
+  <link rel="preload" as="image" href="assets/photo-1.svg" fetchpriority="high">
+  <script>
+    (function (d) {
+      d.classList.add('cwb-js');
+      setTimeout(function () { if (!d.classList.contains('cwb-booted')) d.classList.remove('cwb-js'); }, 3000);
+    })(document.documentElement);
+  </script>
+  <!-- @cwb:css -->
+  <style>
+    .hero { min-height: 100vh; display: grid; align-content: center; position: relative; isolation: isolate; }
+    .hero h1 { font-size: var(--t-hero); max-width: 12ch; }
+    .hero .lede { color: var(--c-fg-muted); max-width: 46ch; margin: 1.5rem 0 2rem; }
+    .hero-img { margin-top: 3rem; border-radius: var(--radius); aspect-ratio: 16/9; object-fit: cover; width: 100%; }
+    h2 { font-size: var(--t-h2); margin-bottom: 2rem; }
+    .row { display: flex; flex-wrap: wrap; gap: 3rem; align-items: center; }
+    .stat { font: 700 clamp(2.5rem, 6vw, 5rem)/1 var(--f-display); color: var(--c-accent); }
+    .flip-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+    .scene { min-height: 80vh; display: grid; place-items: center; }
+  </style>
+</head>
+<body data-cwb="reveal cursor">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="scroll-progress" aria-hidden="true"></div>
+  <div class="gate" data-cwb="intro-gate" data-max="900" aria-hidden="true"><span class="gate__mark">CWB</span><span class="gate__bar"></span></div>
+
+  <header class="island" data-cwb="island-nav">
+    <nav class="island__bar" aria-label="Primary">
+      <a class="island__logo" href="#main">CWB v3</a>
+      <div class="island__menu" id="island-menu">
+        <div class="island__menu-inner">
+          <ul><li><a href="#scroll">Scroll</a></li><li><a href="#pointer">Pointer</a></li><li><a href="#ambient">Ambient</a></li></ul>
+          <a class="btn" href="#cta">Start</a>
+        </div>
+      </div>
+      <button class="island__toggle" aria-expanded="true" aria-controls="island-menu">Menu</button>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero section">
+      <div class="mesh" data-cwb="mesh-gradient" aria-hidden="true"><span class="mesh__blob"></span><span class="mesh__blob"></span><span class="mesh__blob"></span><span class="mesh__blob"></span></div>
+      <div class="wrap">
+        <p class="eyebrow">Module gallery · <span data-cwb="scramble">Integration test</span></p>
+        <h1 data-cwb="line-reveal" data-trigger="load">Every module, one page, zero collisions</h1>
+        <p class="lede" data-reveal>If this page renders with no console errors at three viewports, with reduced motion, and with the CDN blocked, the runtime contract holds.</p>
+        <a class="btn" href="#cta" data-cwb="magnetic burst">Fire the burst</a>
+        <img class="hero-img" src="assets/photo-1.svg" alt="Orange gradient test frame one" width="1200" height="900" fetchpriority="high">
+      </div>
+    </section>
+
+    <section class="section" id="scroll"><div class="wrap">
+      <p class="eyebrow" data-nreveal>Native view() reveal</p>
+      <h2 data-cwb="text-fill">Words brighten one by one as this heading travels through the viewport.</h2>
+    </div></section>
+
+    <section class="section"><div class="wrap">
+      <div class="sn" data-cwb="sticky-narrative">
+        <div class="sn__visual">
+          <figure class="sn__frame is-active"><img src="assets/photo-2.svg" alt="Step one visual" width="1200" height="900"></figure>
+          <figure class="sn__frame"><img src="assets/photo-3.svg" alt="Step two visual" width="1200" height="900"></figure>
+          <figure class="sn__frame"><img src="assets/photo-4.svg" alt="Step three visual" width="1200" height="900"></figure>
+        </div>
+        <div class="sn__steps">
+          <article class="sn__step"><h3>Discover</h3><p>One anchored visual, three advancing states.</p></article>
+          <article class="sn__step"><h3>Design</h3><p>Each step swaps one property group.</p></article>
+          <article class="sn__step"><h3>Deliver</h3><p>The story releases the moment it ends.</p></article>
+        </div>
+      </div>
+    </div></section>
+
+    <section class="parallax" data-cwb="parallax" style="height: 80vh">
+      <div data-depth="1"><img src="assets/photo-5.svg" alt="" width="1200" height="900"></div>
+      <div class="parallax__content wrap scene"><h2>Layered depth</h2></div>
+    </section>
+
+    <section class="hpan" data-cwb="horizontal-pan" aria-label="Horizontal gallery">
+      <div class="hpan__track">
+        <article class="hpan__panel"><img src="assets/photo-6.svg" alt="Panel one" width="1200" height="900"><h3 data-hreveal>Panel one</h3></article>
+        <article class="hpan__panel"><img src="assets/photo-7.svg" alt="Panel two" width="1200" height="900"><h3 data-hreveal>Panel two</h3></article>
+        <article class="hpan__panel"><img src="assets/photo-8.svg" alt="Panel three" width="1200" height="900"><h3 data-hreveal>Panel three</h3></article>
+      </div>
+    </section>
+
+    <section class="section"><div class="wrap">
+      <div class="stack" data-cwb="card-stack">
+        <article class="stack__card"><h3>Card one</h3><p>Sticky stacking with scale-back.</p></article>
+        <article class="stack__card"><h3>Card two</h3><p>No JS needed for the stack itself.</p></article>
+        <article class="stack__card"><h3>Card three</h3><p>JS only adds depth.</p></article>
+      </div>
+    </div></section>
+
+    <section class="section"><div class="wrap">
+      <svg data-cwb="svg-draw" viewBox="0 0 800 200" aria-hidden="true"><path data-draw d="M0,100 C200,0 400,200 800,100"/></svg>
+    </div></section>
+
+    <section class="curtain" data-cwb="curtain">
+      <div class="curtain__content"><h2>Behind the curtain</h2></div>
+      <div class="curtain__panel curtain__panel--l" aria-hidden="true"></div>
+      <div class="curtain__panel curtain__panel--r" aria-hidden="true"></div>
+    </section>
+
+    <section class="split" data-cwb="split-scroll" aria-label="Before and after story">
+      <div class="split__col split__col--a"><img src="assets/photo-2.svg" alt="Split A1" width="1200" height="900"><img src="assets/photo-3.svg" alt="Split A2" width="1200" height="900"><img src="assets/photo-4.svg" alt="Split A3" width="1200" height="900"></div>
+      <div class="split__col split__col--b"><img src="assets/photo-5.svg" alt="Split B1" width="1200" height="900"><img src="assets/photo-6.svg" alt="Split B2" width="1200" height="900"><img src="assets/photo-7.svg" alt="Split B3" width="1200" height="900"></div>
+    </section>
+
+    <div data-cwb="color-shift">
+      <section class="scene" data-scene-bg="oklch(0.14 0.01 260)" data-scene-fg="oklch(0.97 0 0)"><h2>Night</h2></section>
+      <section class="scene" data-scene-bg="oklch(0.9 0.05 80)" data-scene-fg="oklch(0.2 0.02 60)"><h2>Day</h2></section>
+      <section class="scene" data-scene-bg="oklch(0.25 0.08 30)" data-scene-fg="oklch(0.95 0.03 80)"><h2>Dusk</h2></section>
+    </div>
+
+    <section class="section" id="pointer"><div class="wrap">
+      <div class="accg" data-cwb="accordion-gallery">
+        <button class="accg__item" aria-expanded="false"><img src="assets/photo-2.svg" alt=""><span class="accg__label">Strategy</span><span class="accg__body">Expands on hover, focus or tap.</span></button>
+        <button class="accg__item" aria-expanded="false"><img src="assets/photo-3.svg" alt=""><span class="accg__label">Design</span><span class="accg__body">Buttons, not divs.</span></button>
+        <button class="accg__item" aria-expanded="false"><img src="assets/photo-4.svg" alt=""><span class="accg__label">Build</span><span class="accg__body">Keyboard complete.</span></button>
+      </div>
+    </div></section>
+
+    <section class="section"><div class="wrap">
+      <div class="compare" data-cwb="compare">
+        <img class="compare__after" src="assets/photo-5.svg" alt="After: finished result">
+        <img class="compare__before" src="assets/photo-6.svg" alt="Before: original state">
+        <input class="compare__range" type="range" min="0" max="100" value="50" aria-label="Compare before and after">
+        <span class="compare__handle" aria-hidden="true"></span>
+      </div>
+    </div></section>
+
+    <section class="trail section" data-cwb="image-trail" data-images="assets/photo-2.svg,assets/photo-3.svg,assets/photo-4.svg,assets/photo-5.svg">
+      <div class="wrap"><h2>Move across this section</h2></div>
+    </section>
+
+    <section class="section"><div class="wrap flip-grid">
+      <article class="flip" data-cwb="flip-card" data-hover>
+        <div class="flip__inner">
+          <div class="flip__front"><h3>Flip card</h3><button class="flip__toggle" aria-expanded="false">Details</button></div>
+          <div class="flip__back"><p>Back face is inert until shown.</p><button class="flip__toggle" aria-expanded="false">Back</button></div>
+        </div>
+      </article>
+    </div></section>
+
+    <section class="section"><div class="wrap">
+      <div class="repel" data-cwb="repel-grid">
+        <span class="repel__tile">A</span><span class="repel__tile">B</span><span class="repel__tile">C</span><span class="repel__tile">D</span><span class="repel__tile">E</span><span class="repel__tile">F</span>
+      </div>
+    </div></section>
+
+    <section class="section"><div class="wrap">
+      <div class="spot" data-cwb="spotlight">
+        <article class="spot__card"><h3>Spotlight</h3><p>A true 1px border lights under the pointer.</p></article>
+        <article class="spot__card"><h3>One listener</h3><p>On the grid, not per card.</p></article>
+        <article class="spot__card"><h3>Tokenized</h3><p>Accent comes from --c-accent.</p></article>
+      </div>
+    </div></section>
+
+    <section class="section"><div class="wrap">
+      <div class="canvas" data-cwb="drag-canvas" tabindex="0" role="region" aria-label="Project canvas, drag or use arrow keys">
+        <div class="canvas__plane">
+          <img src="assets/photo-1.svg" alt="Project 1"><img src="assets/photo-2.svg" alt="Project 2"><img src="assets/photo-3.svg" alt="Project 3"><img src="assets/photo-4.svg" alt="Project 4"><img src="assets/photo-5.svg" alt="Project 5"><img src="assets/photo-6.svg" alt="Project 6">
+          <img src="assets/photo-7.svg" alt="Project 7"><img src="assets/photo-8.svg" alt="Project 8"><img src="assets/photo-1.svg" alt="Project 9"><img src="assets/photo-2.svg" alt="Project 10"><img src="assets/photo-3.svg" alt="Project 11"><img src="assets/photo-4.svg" alt="Project 12">
+        </div>
+      </div>
+    </div></section>
+
+    <section class="section"><div class="wrap">
+      <div class="morph" data-cwb="morph-expand">
+        <button class="morph__card" data-morph-target="case-1"><img src="assets/photo-7.svg" alt=""><span>Open case study</span></button>
+        <dialog class="morph__dialog" id="case-1" aria-label="Case study">
+          <img src="assets/photo-7.svg" alt="Case study hero" width="1200" height="900">
+          <div class="wrap section"><h3>Case study</h3><p>Native dialog: focus trap and Escape for free.</p></div>
+          <button class="btn morph__close">Close</button>
+        </dialog>
+      </div>
+    </div></section>
+
+    <section class="section" id="proof"><div class="wrap row">
+      <div><div class="stat"><span data-cwb="counter">1,280+</span></div><p class="eyebrow">Count style</p></div>
+      <div><div class="stat"><span data-cwb="counter" data-style="odometer">98%</span></div><p class="eyebrow">Odometer style</p></div>
+    </div></section>
+
+    <section class="cf" data-cwb="coverflow" aria-roledescription="carousel" aria-label="Featured work">
+      <div class="cf__track" tabindex="0">
+        <article class="cf__item" aria-roledescription="slide" aria-label="1 of 5"><img src="assets/photo-1.svg" alt="Work 1"></article>
+        <article class="cf__item" aria-roledescription="slide" aria-label="2 of 5"><img src="assets/photo-2.svg" alt="Work 2"></article>
+        <article class="cf__item" aria-roledescription="slide" aria-label="3 of 5"><img src="assets/photo-3.svg" alt="Work 3"></article>
+        <article class="cf__item" aria-roledescription="slide" aria-label="4 of 5"><img src="assets/photo-4.svg" alt="Work 4"></article>
+        <article class="cf__item" aria-roledescription="slide" aria-label="5 of 5"><img src="assets/photo-5.svg" alt="Work 5"></article>
+      </div>
+      <div class="cf__controls"><button class="btn btn--ghost" data-cf="-1" aria-label="Previous slide">←</button><button class="btn btn--ghost" data-cf="1" aria-label="Next slide">→</button></div>
+    </section>
+
+    <section class="section" id="ambient">
+      <div class="marquee" data-cwb="marquee" data-speed="70">
+        <div class="marquee__inner"><ul class="marquee__track"><li>Strategy</li><li>Identity</li><li>Motion</li><li>Web</li><li>Film</li></ul></div>
+      </div>
+    </section>
+
+    <section class="section"><div class="wrap row">
+      <div class="orbit" data-cwb="orbit-text" data-text="Available for projects · Est. 2026 · " role="img" aria-label="Available for projects, established 2026"></div>
+      <h2><span class="glitch" data-cwb="glitch">Signal</span></h2>
+      <p style="font-size: var(--t-h3)">We build <span data-cwb="typewriter" data-phrases='["cinematic sites","scroll films","brand systems"]'>cinematic sites</span></p>
+    </div></section>
+
+    <section class="section"><div class="wrap">
+      <h2 class="stroke" data-cwb="stroke-text">OUTLINE</h2>
+      <div data-cwb="velocity-skew"><p data-skew class="eyebrow">Skews with scroll velocity, then returns to rest</p></div>
+    </div></section>
+
+    <section class="scrub" data-cwb="frame-scrub" data-src="assets/seq/f_{i}.svg" data-count="48" data-pad="3" data-scroll="200" data-mobile-step="2">
+      <canvas class="scrub__canvas" aria-hidden="true"></canvas>
+      <img class="scrub__poster" src="assets/seq/f_001.svg" alt="Orb rising across a dusk sky" width="1280" height="720">
+      <div class="scrub__copy"><h2>Frame-sequence scrub</h2></div>
+    </section>
+
+    <section class="section" id="cta"><div class="wrap"><h2 data-cwb="line-reveal">Ready when you are</h2><a class="btn" href="#main">Back to top</a></div></section>
+  </main>
+
+  <nav class="dock" data-cwb="dock" aria-label="Quick links">
+    <a class="dock__item" href="#scroll" aria-label="Scroll modules"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg><span class="dock__tip" aria-hidden="true">Scroll</span></a>
+    <a class="dock__item" href="#pointer" aria-label="Pointer modules"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4l7 17 2-7 7-2z"/></svg><span class="dock__tip" aria-hidden="true">Pointer</span></a>
+    <a class="dock__item" href="#ambient" aria-label="Ambient modules"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8"/></svg><span class="dock__tip" aria-hidden="true">Ambient</span></a>
+  </nav>
+
+  <!-- @cwb:js -->
+</body>
+</html>

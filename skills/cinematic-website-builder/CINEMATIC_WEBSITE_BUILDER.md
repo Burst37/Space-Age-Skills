@@ -21,6 +21,7 @@ skills that don't exist. Full report: `references/forensic-audit-v2.md`.
 | `templates/starter.html` | Page skeleton: SEO head, fail-open gate, island nav, hero |
 | `templates/direction-brief.yaml` | P0 output: answers, analyzed references, synthesis, proposed tokens |
 | `references/direction-intake.md` | P0 questionnaire (uploads: images, links, videos) + reference-analysis protocol |
+| `references/web-research-agent-reach.md` | P0 web research: read reference links (sites, YouTube, X, Reddit, Instagram) and scan competitors with `agent-reach` |
 | `templates/build-manifest.yaml` | Per-build plan: tier, modules, budgets, assets, gate status |
 | `scripts/assemble.mjs` | Inline only the modules + GSAP plugins the page uses → one file |
 | `scripts/verify.mjs` | 5-pass Chromium QA → `qa/REPORT.md`, exit 1 on blockers |
@@ -47,6 +48,7 @@ Route each concern to the skill that owns it. Pull on demand; never restate thei
 
 | Concern | Owner (verified to exist) | When to load |
 |---|---|---|
+| Reading reference links + competitor / voice-of-customer research (web, YouTube, X, Reddit, Instagram, GitHub) | `agent-reach` — protocol in `references/web-research-agent-reach.md` | P0 intake |
 | Analyzing uploaded references (images, sites, videos, Figma) | `brand-extractor`, `extract-design-system`, `defuddle`, `firecrawl-mcp`, `sa-watch`, `sa-video-skill-extractor`, `sa-youtube-cli`, `mobbin-operator`, Figma MCP, Higgsfield `video_analysis_create` | P0 intake |
 | Brief from a lead row | `lead-to-brief` | pipeline builds |
 | Client brand tokens from a URL | `brand-extractor` / `extract-design-system` | client has a site |
@@ -71,7 +73,8 @@ Route each concern to the skill that owns it. Pull on demand; never restate thei
 | Shopify theme | `shopify-cinematic-builder` | Shopify target |
 | Deploy | `sa-deploy-operator` | after the gate passes |
 | Memory log | `sa-obsidian-vault-ops` | session end |
-| Code discipline | `karpathy-guidelines` | always |
+| Code discipline | `karpathy-guidelines` + `ponytail` (smallest complete change) | always |
+| Token discipline | `caveman` (terse chat) + `ponytail` | always (Tier 0) |
 
 ### Precedence when skills disagree
 
@@ -92,7 +95,8 @@ Route each concern to the skill that owns it. Pull on demand; never restate thei
 first; then visual, motion and content references. The person answers and **uploads references —
 images, website links, videos/screen recordings** — each with a note on what they like or want avoided.
 Analyze every reference with the protocol in that file (palette, type, layout, motion inventory
-mapped to catalog modules), then compile `templates/direction-brief.yaml` and show a one-screen
+mapped to catalog modules); read pasted links and run the competitor scan with `agent-reach`
+(`references/web-research-agent-reach.md`), then compile `templates/direction-brief.yaml` and show a one-screen
 summary. Existing lead briefs, Brand Token Packages or Handoff Packages pre-fill answers; they
 shorten the intake, never replace it. *Exit: Direction Brief `confirmed: true`.*
 
