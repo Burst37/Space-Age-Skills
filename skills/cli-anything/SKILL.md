@@ -41,7 +41,7 @@ Need to drive some software from an agent?
 ├─ Does a matrix cover the whole workflow (video, image, 3d, game, research)?
 │     └─ YES → cli-hub matrix preflight <matrix> → install ONLY the capability you need.
 │
-└─ NO harness → BUILD ONE with the 7-phase SOP (reference/HARNESS.md).
+└─ NO harness → BUILD ONE with the 7-phase SOP (harness/HARNESS.md).
 ```
 
 Checking the registry first is not optional — 79 harnesses plus 24 public CLIs
@@ -89,7 +89,7 @@ install instructions rather than degrading to a fake fallback).
 
 ## Half 2 — Build: the 7-phase harness SOP
 
-Read **`reference/HARNESS.md`** in full before writing code. Condensed:
+Read **`harness/HARNESS.md`** in full before writing code. Condensed:
 
 1. **Codebase analysis** — find the backend engine, map GUI actions → API calls,
    identify the native project format, find the engine's existing CLI, catalog the
@@ -100,15 +100,15 @@ Read **`reference/HARNESS.md`** in full before writing code. Condensed:
 3. **Implementation** — data layer first, then probe/`info` commands, then
    mutations, then a `utils/<software>_backend.py` that shells out to the real
    app, then export, then session persistence (locked JSON saves), then the REPL
-   using `scripts/repl_skin.py`.
+   using `harness/repl_skin.py`.
 4. **Test plan** — write `TEST.md` *before* any test code: inventory, unit plan,
    E2E plan, realistic workflow scenarios.
 5. **Test implementation** — unit (synthetic) → E2E intermediate-file → E2E
    **invoking the real software** → CLI subprocess tests via `_resolve_cli()`.
    No graceful degradation, no skips when the app is missing.
 6. **Test documentation** — append real `pytest -v` output to `TEST.md`.
-   **6.5 — SKILL.md generation** via `scripts/skill_generator.py` +
-   `templates/SKILL.md.template`.
+   **6.5 — SKILL.md generation** via `harness/skill_generator.py` +
+   `harness/templates/SKILL.md.template`.
 7. **PyPI publishing** — PEP 420 namespace package: `cli_anything/` has **no**
    `__init__.py`; `cli_anything/<software>/` does.
 
@@ -137,13 +137,15 @@ be honest backend output, never screen-scraped GUI windows · every
 
 | Path | Use |
 |---|---|
-| `reference/HARNESS.md` | The full 7-phase SOP, patterns, pitfalls, principles, preview protocol |
+| `harness/HARNESS.md` | The full 7-phase SOP, patterns, pitfalls, principles, preview protocol |
 | `reference/cli-hub.md` | `cli-hub` command surface, matrices, previews |
 | `reference/catalog.md` | Registry snapshot by category |
-| `reference/guides/` | Deep dives loaded on demand — see table below |
-| `scripts/skill_generator.py` | Generate a harness `SKILL.md` from CLI metadata |
-| `scripts/repl_skin.py` | Drop-in unified REPL skin (banner, prompt, help, tables) |
-| `templates/SKILL.md.template` | Jinja2 template behind the generator |
+| `harness/guides/` | Deep dives loaded on demand — see table below |
+| `docs/PREVIEW_PROTOCOL.md` | The `preview-bundle/v1` schema the SOP's preview rules require |
+| `harness/skill_generator.py` | Generate a harness `SKILL.md` from CLI metadata |
+| `harness/repl_skin.py` | Drop-in unified REPL skin (banner, prompt, help, tables) |
+| `harness/templates/SKILL.md.template` | Jinja2 template behind the generator |
+| `VENDOR.md` | Upstream path map, local patches, refresh procedure |
 
 | Guide | Read when | Phase |
 |---|---|---|
@@ -173,5 +175,7 @@ same content at the filename Claude Code's loader and agent-core's
 Methodology, guides, generator, and REPL skin are vendored from
 [HKUDS/CLI-Anything](https://github.com/HKUDS/CLI-Anything) (Apache-2.0, see
 `LICENSE`). Tech report: [arXiv:2606.03854](https://arxiv.org/abs/2606.03854).
-Refresh with `git clone --depth 1 https://github.com/HKUDS/CLI-Anything` and
-re-copy `cli-anything-plugin/{HARNESS.md,guides,skill_generator.py,repl_skin.py,templates}`.
+`harness/` mirrors upstream's `cli-anything-plugin/` layout so the generator finds
+its template and the guides' links resolve — **do not flatten it**. See `VENDOR.md`
+for the full path map, the three local patches carried on top of upstream, and the
+refresh procedure.

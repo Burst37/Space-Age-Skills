@@ -12,6 +12,7 @@ The generated SKILL.md files contain:
 """
 
 import ast
+import json
 import re
 from pathlib import Path
 from typing import Optional
@@ -342,23 +343,37 @@ def generate_examples(software_name: str, command_groups: list[CommandGroup]) ->
     """Generate usage examples based on software type and available commands."""
     examples = []
 
-    # Basic project creation example
-    examples.append(Example(
-        title="Create a New Project",
-        description=f"Create a new {software_name} project file.",
-        code=f"""cli-anything-{software_name} project new -o myproject.json
+    def _has_command(group_name: str, command_name: str) -> bool:
+        """True when the parsed CLI actually exposes <group_name> <command_name>."""
+        for group in command_groups:
+            if group.name.lower() != group_name:
+                continue
+            if any(c.name.lower() == command_name for c in group.commands):
+                return True
+        return False
+
+    # Basic project creation example — only when a `project new` command exists.
+    # Stateless API-client harnesses have no project model, and advertising the
+    # command anyway points agents at something that does not exist.
+    if _has_command("project", "new"):
+        examples.append(Example(
+            title="Create a New Project",
+            description=f"Create a new {software_name} project file.",
+            code=f"""cli-anything-{software_name} project new -o myproject.json
 # Or with JSON output for programmatic use
 cli-anything-{software_name} --json project new -o myproject.json"""
-    ))
+        ))
 
-    # REPL usage example
+    # REPL usage example — mention undo/redo only when those commands exist.
+    history_note = ""
+    if _has_command("session", "undo") or _has_command("", "undo"):
+        history_note = "\n# Use 'undo' and 'redo' for history navigation"
     examples.append(Example(
         title="Interactive REPL Session",
-        description="Start an interactive session with undo/redo support.",
+        description="Start an interactive session.",
         code=f"""cli-anything-{software_name}
 # Enter commands interactively
-# Use 'help' to see available commands
-# Use 'undo' and 'redo' for history navigation"""
+# Use 'help' to see available commands{history_note}"""
     ))
 
     # Export example if export commands exist
@@ -428,8 +443,8 @@ def generate_skill_md_simple(metadata: SkillMetadata) -> str:
     """Generate SKILL.md without Jinja2 dependency."""
     lines = [
         "---",
-        f'name: "{metadata.skill_name}"',
-        f'description: "{metadata.skill_description}"',
+        f"name: {json.dumps(metadata.skill_name)}",
+        f"description: {json.dumps(metadata.skill_description)}",
         "---",
         "",
         f"# {metadata.skill_name}",

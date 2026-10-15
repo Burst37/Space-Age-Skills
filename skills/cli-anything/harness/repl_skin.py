@@ -231,7 +231,14 @@ class ReplSkin:
 
         meta_lines: list[str] = []
         meta_lines.extend(_meta_lines("Install:", self.skill_install_cmd))
-        meta_lines.extend(_meta_lines("Global skill:", _display_home_path(self.global_skill_path)))
+        # Show the skill file that __init__ actually resolved (explicit argument,
+        # repo-root canonical copy, or the packaged copy). Only fall back to the
+        # global install path when no real file was found, so agents are never
+        # pointed at a path that does not exist.
+        meta_lines.extend(_meta_lines(
+            "Skill:",
+            _display_home_path(self.skill_path or self.global_skill_path),
+        ))
         print(top)
         print(_box_line(title))
         print(_box_line(ver))
