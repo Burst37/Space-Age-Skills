@@ -80,6 +80,7 @@ Off switch: "full mode" / "normal mode" / "stop ponytail" (session only).
 8. **Obsidian vault** — lives on Windows machine, NOT on VPS. Google Drive is the memory layer.
 9. **Animation naming** — use `animation-vocabulary` when a user describes a motion effect but needs the proper UI/animation term.
 10. **TypeSafe (Jev)** — `typesafe:typesafe-ai` plugin (marketplace `typesafe-ai/skills`), installed user-scope. Use when a feature needs programmable common sense (routing, ranking, extraction, verification) that could become a typed AI judgment instead of an ad hoc LLM prompt-and-parse step. Read TypeSafe's live docs (docs.typesafe.ai) as source of truth when building an integration.
+11. **GUI app automation** — before writing Playwright/subprocess glue for any desktop or GUI-first app (Blender, GIMP, Kdenlive, OBS, LibreOffice, Obsidian, n8n...), load `cli-anything` and run `cli-hub search <app>`. A harness probably already exists — installing beats rebuilding.
 
 ## SESSION END CHECKLIST
 
