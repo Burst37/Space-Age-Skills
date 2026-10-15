@@ -1,0 +1,20 @@
+{"id": "urgency-01", "sender": "Rafi Ellis <rafi.ellis@example.com>", "subject": "Payment system down", "body": "All customers are getting a checkout error right now. Every sale is failing. Can someone investigate immediately?"}
+{"id": "urgency-02", "sender": "Alice Hall <alice.hall@example.com>", "subject": "Archive request", "body": "Whenever you have time later this month, could you send last year's workshop recording? There is no rush."}
+{"id": "urgency-03", "sender": "Dan Reed <dan.reed@example.com>", "subject": "Session starts in 30 minutes", "body": "My paid session starts in half an hour and the joining link does not work."}
+{"id": "urgency-04", "sender": "Leah Ford <leah.ford@example.com>", "subject": "Course recommendation", "body": "Could you suggest which course fits my team before our planning meeting next week?"}
+{"id": "urgency-05", "sender": "Mail Robot <mail.robot@example.com>", "subject": "No reply required", "body": "Your weekly export completed successfully. No reply or action is required."}
+{"id": "urgency-06", "sender": "Yusuf Khan <yusuf.khan@example.com>", "subject": "Invoice due this afternoon", "body": "Accounts needs the corrected invoice by 4pm today to complete payment."}
+{"id": "urgency-07", "sender": "Erin Vale <erin.vale@example.com>", "subject": "Future collaboration", "body": "I am exploring a possible event in six months. Could we exchange ideas sometime this month?"}
+{"id": "urgency-08", "sender": "Hugo Dale <hugo.dale@example.com>", "subject": "Access question", "body": "I cannot find the templates section. Please point me to it when the support team is available this week."}
+{"id": "urgency-09", "sender": "Fraud Alert <fraud.alert@example.com>", "subject": "Account being accessed now", "body": "An unknown person is currently using my account and changing the recovery email. Please help immediately."}
+{"id": "urgency-10", "sender": "Vera Snow <vera.snow@example.com>", "subject": "Confirm today's booking", "body": "Please confirm by the end of today whether tomorrow's workshop will run."}
+{"id": "urgency-11", "sender": "Bulk Offer <bulk.offer@example.com>", "subject": "Unrelated promotion", "body": "Get discounted pills. Buy now. This is an unsolicited bulk advert."}
+{"id": "urgency-12", "sender": "Max Crane <max.crane@example.com>", "subject": "Membership options", "body": "Could you explain the differences between monthly and annual membership this week?"}
+{"id": "urgency-13", "sender": "Poppy Dean <poppy.dean@example.com>", "subject": "Transcript whenever convenient", "body": "I would appreciate the transcript sometime this month. There is no deadline."}
+{"id": "urgency-14", "sender": "Will Nash <will.nash@example.com>", "subject": "Launch link needs fixing today", "body": "Our launch is tomorrow morning. Could you replace the incorrect checkout link before today ends?"}
+{"id": "urgency-15", "sender": "Seth Brooks <seth.brooks@example.com>", "subject": "Customer data visible", "body": "The member portal is currently showing other people's billing records. Please escalate immediately."}
+{"id": "urgency-16", "sender": "Grace Mann <grace.mann@example.com>", "subject": "Question for next lesson", "body": "Could you cover error handling in one of the lessons next month? Happy to wait."}
+{"id": "urgency-17", "sender": "Thank You <thank.you@example.com>", "subject": "Everything works", "body": "Everything is working now. I only wanted to say thank you. No response needed."}
+{"id": "urgency-18", "sender": "Jade Moore <jade.moore@example.com>", "subject": "Supplier form this week", "body": "Please fill out the standard supplier form before Friday. Today is Monday."}
+{"id": "urgency-19", "sender": "Neil Bishop <neil.bishop@example.com>", "subject": "Offer ends tonight", "body": "I need the correct purchase link before the published offer ends at midnight tonight."}
+{"id": "urgency-20", "sender": "Build Notice <build.notice@example.com>", "subject": "Deployment succeeded", "body": "The production deployment succeeded. This is an automated notification with no action needed."}

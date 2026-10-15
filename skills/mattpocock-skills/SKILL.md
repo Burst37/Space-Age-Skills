@@ -1,9 +1,10 @@
 ---
 name: mattpocock-skills
 description: Matt Pocock's "Skills For Real Engineers" — 25 composable engineering and productivity skills for disciplined AI-assisted software development. Covers grilling/alignment interviews, shared-language domain docs (CONTEXT.md/ADRs), spec-to-ticket-to-implementation pipelines, TDD red-green-refactor, two-axis code review, bug diagnosis loops, codebase architecture surveys, merge-conflict resolution, and conversation handoffs. Use when the user wants to align with the agent before coding, turn a conversation into a spec/tickets, drive TDD, run a rigorous code review, diagnose a hard bug, survey a codebase for architecture debt, resolve a merge conflict, or hand off a session to another agent.
-version: 1.0.0
-source: https://github.com/mattpocock/skills
 license: MIT
+metadata:
+  version: 1.0.0
+  source: https://github.com/mattpocock/skills
 ---
 
 ## Overview

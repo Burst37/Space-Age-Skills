@@ -9,10 +9,14 @@
 </p>
 
 <p align="center">
+  <a href="https://trendshift.io/repositories/24387"><img src="https://trendshift.io/api/badge/repositories/24387" alt="Trendshift GitHub Trending #1 Repository of the Day"></a>
+  <a href="https://star-history.com/#Panniantong/Agent-Reach&Date"><img src="https://api.star-history.com/badge?repo=Panniantong/Agent-Reach" alt="Star History Rank" width="196" height="55"></a>
+</p>
+
+<p align="center">
   <a href="../LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="MIT License"></a>
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.10+-green.svg?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.10+"></a>
   <a href="https://github.com/Panniantong/agent-reach/stargazers"><img src="https://img.shields.io/github/stars/Panniantong/agent-reach?style=for-the-badge" alt="GitHub Stars"></a>
-  <a href="https://trendshift.io/repositories/24387"><img src="https://trendshift.io/api/badge/repositories/24387" alt="Trendshift GitHub Trending #1 Repository of the Day"></a>
 </p>
 
 <p align="center">
@@ -20,6 +24,36 @@
 </p>
 
 > **No token or crypto affiliation:** Agent Reach has no official token, coin, investment product, fee-claim program, wallet connection, or Solana/Pump.fun project. Any crypto project using the Agent Reach name, GitHub URL, or author identity is not affiliated with this repository. Do not connect a wallet or claim fees based on messages, posts, or links that say otherwise.
+
+---
+
+## ❤️ Sponsors
+
+> [Want to appear here?](mailto:pnt01@foxmail.com)
+
+<details open>
+<summary>Click to collapse</summary>
+
+<table>
+<tr>
+<td width="180" align="center"><a href="https://www.browseract.ai/Agent"><img src="assets/sponsors/browseract.png" alt="BrowserAct" width="150"></a></td>
+<td><a href="https://www.browseract.ai/Agent">BrowserAct</a> extracts any data you need from complex websites such as Amazon, LinkedIn, X, and Google Maps. Simply describe your extraction request in natural language, and its Agent will explore and test page flows in a real browser, generate a reliable reusable data-collection Bot, and return structured results. There is no need to build a scraper or write code. Built-in stealth browsing, CAPTCHA handling, and high-quality residential proxies help make complex web data extraction more reliable. New users receive 1,000 credits upon registration. <a href="https://www.browseract.ai/Agent">Try it free now</a>.</td>
+</tr>
+<tr>
+<td width="180" align="center"><a href="https://www.tencentcloud.com/act/pro/intl-openclaw?referral_code=G76Y819A&amp;lang=en&amp;pg="><img src="assets/sponsors/tencent-cloud.svg" alt="OpenClaw on Tencent Cloud" width="150"></a></td>
+<td>Deploy OpenClaw on Tencent Cloud Lighthouse in seconds, connect Agent Reach through chat, and add internet access to your OpenClaw setup.</td>
+</tr>
+<tr>
+<td width="180" align="center"><a href="https://www.coreclaw.com/?utm_source=github&amp;utm_medium=referral&amp;utm_campaign=Reach&amp;utm_term=Reach&amp;utm_id=Reach"><img src="assets/sponsors/coreclaw.png" alt="CoreClaw" width="150"></a></td>
+<td><a href="https://www.coreclaw.com/?utm_source=github&amp;utm_medium=referral&amp;utm_campaign=Reach&amp;utm_term=Reach&amp;utm_id=Reach">CoreClaw</a> | Web scraping platform and ready-made data collection tools. CoreClaw provides 100+ ready-made data collection tools for Amazon, TikTok, Google Maps, Instagram, Facebook, YouTube, and more. No code required, with JSON/CSV exports and billing only for successful results. <a href="https://www.coreclaw.com/?utm_source=github&amp;utm_medium=referral&amp;utm_campaign=Reach&amp;utm_term=Reach&amp;utm_id=Reach">Free $3 trial!</a></td>
+</tr>
+<tr>
+<td width="180" align="center"><a href="https://www.ucloud.cn/site/active/astraflow?ytag=geo_waituo_Agent"><img src="assets/sponsors/astraflow.png" alt="AstraFlow" width="150"></a></td>
+<td><a href="https://www.ucloud.cn/site/active/astraflow?ytag=geo_waituo_Agent">AstraFlow ModelVerse</a> provides one-click access to 200+ models, including leading open-source models such as Kimi K3, DeepSeek V4/V3, Qwen 3, GLM5.2, and happyhorse. No training required—ready to use out of the box.</td>
+</tr>
+</table>
+
+</details>
 
 ---
 
@@ -70,7 +104,9 @@ Update Agent Reach: https://raw.githubusercontent.com/Panniantong/agent-reach/ma
 |----------|-------------|:-----:|-------|
 | 🌐 **Web** | Read | Zero config | Any URL → clean Markdown ([Jina Reader](https://github.com/jina-ai/reader) ⭐9.8K) |
 | 🐦 **Twitter/X** | Read · Search | Cookie | Cookie unlocks search, timeline, tweet reading, articles ([twitter-cli](https://github.com/public-clis/twitter-cli)) |
-| 📕 **XiaoHongShu** | Read · Search · Comments | OpenCLI / MCP | Desktop: [OpenCLI](https://github.com/jackwener/opencli) (reuses browser session); Server: [xiaohongshu-mcp](https://github.com/xpzouying/xiaohongshu-mcp) (QR login); legacy xhs-cli still works |
+| 📕 **XiaoHongShu** | Read · Search · Comments | OpenCLI / MCP | OpenCLI uses only an existing user-controlled Chrome session; MCP/legacy tools use a manual Cookie-Editor export |
+| 📘 **Facebook** | Search · Profiles · Feed · Groups list | OpenCLI | Desktop only: [OpenCLI](https://github.com/jackwener/opencli) reuses your logged-in Chrome session |
+| 📷 **Instagram** | User search · Profiles · Recent posts · Explore | OpenCLI | Desktop only: [OpenCLI](https://github.com/jackwener/opencli) reuses your logged-in Chrome session |
 | 💼 **LinkedIn** | Jina Reader (public pages) | Full profiles, companies, job search | Tell your Agent "help me set up LinkedIn" |
 | 💻 **V2EX** | Hot topics · Node topics · Topic detail + replies · User profile | Zero config | Public JSON API, no auth required. Great for tech community content |
 | 📈 **Xueqiu (雪球)** | Stock quotes · Search · Hot posts · Hot stocks | Browser cookie | Tell your Agent "help me set up Xueqiu" |
@@ -103,18 +139,18 @@ Copy this to your AI Agent (Claude Code, OpenClaw, Cursor, etc.):
 Install Agent Reach: https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/install.md
 ```
 
-The Agent auto-installs, detects your environment, and tells you what's ready.
+The Agent installs the Python package, checks your environment, and tells you what's ready. System-level changes require an explicit `--system` flag.
 
 > 🔄 **Already installed?** Update in one command:
 > ```
 > Update Agent Reach: https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/update.md
 > ```
 
-> 🛡️ **Worried about security?** Use safe mode — it won't auto-install system packages, it only tells you what you need:
+> 🛡️ **Safe by default:** `agent-reach install` checks the machine without installing system packages or writing configuration:
 > ```
-> Install Agent Reach (safe mode): https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/install.md
-> Use the --safe flag during install
+> Safely check and install Agent Reach: https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/install.md
 > ```
+> Use `agent-reach install --system` only after explicitly approving system changes.
 
 <details>
 <summary>Manual install</summary>
@@ -134,10 +170,10 @@ npx skills add Panniantong/Agent-Reach@agent-reach
 
 After the Skill is installed, the Agent will auto-detect whether `agent-reach` CLI is available and install it if needed.
 
-> If you install via `agent-reach install`, the skill is registered automatically — no extra steps needed.
+> If you explicitly install external tools with `agent-reach install --system`, the skill is registered automatically. The default read-only check leaves existing files unchanged.
 >
 > Prefer an English-only skill file? Set an English locale or export `AGENT_REACH_LANG=en`
-> before running `agent-reach install --env=auto` or `agent-reach skill --install`.
+> before running `agent-reach install --env=auto --system` or `agent-reach skill --install`.
 > The installed file is always written as `SKILL.md`, so switching languages means rerunning
 > the install command with the new locale and replacing the previously installed skill file.
 </details>
@@ -151,17 +187,11 @@ No configuration needed — just tell your Agent:
 - "Read this link" → `curl https://r.jina.ai/URL` for any web page
 - "What's this GitHub repo about?" → `gh repo view owner/repo`
 - "What does this video cover?" → `yt-dlp --dump-json URL` for subtitles
-- "Read this tweet" → `twitter tweet URL`
+- "Read this tweet" → set `TWITTER_AUTH_TOKEN` / `TWITTER_CT0`, then run `twitter tweet URL`
 - "Subscribe to this RSS" → `feedparser` to parse feeds
 - "Search GitHub for LLM frameworks" → `gh search repos "LLM framework"`
 
 **No commands to remember.** The Agent reads SKILL.md and knows what to call.
-
----
-
-## Capability Boundary: Reading Content vs Operating Web Pages
-
-Some tasks go beyond "reading": operating logged-in web pages, submitting forms, isolating multiple accounts, running parallel browser sessions, or handing off high-friction steps in automation flows such as login, verification, and risk-control prompts. For these "hands-on" browser actions, Agent Reach can be paired with browser automation tools like [BrowserAct](https://www.browseract.ai/Agent) — 30+ prebuilt platform skills, supporting mainstream Agents such as Claude Code, OpenClaw, and Cursor.
 
 ---
 
@@ -171,7 +201,17 @@ Don't use it? Don't configure it. Every step is optional.
 
 ### 🍪 Cookies — Free, 2 minutes
 
-Tell your Agent "help me configure Twitter cookies" — it'll guide you through exporting from your browser. Local computers can auto-import.
+Tell your Agent "help me configure Twitter cookies" — it'll guide you through a
+manual Cookie-Editor export. Agent Reach saves the values for `doctor` to check
+whether credentials are present; `doctor` does not run `twitter status`.
+Direct `twitter` commands still require `TWITTER_AUTH_TOKEN` and `TWITTER_CT0`
+in their process environment.
+
+For XiaoHongShu, Agent Reach never logs the user in or reads browser cookies.
+OpenCLI may use only an existing Chrome session explicitly controlled by the
+user. If none exists, do not automate login; use a manual Cookie-Editor export
+with xiaohongshu-mcp or a legacy tool. `agent-reach configure xhs-cookies`
+does not inject cookies into OpenCLI or Chrome.
 
 ### 🌐 Proxy — $1/month, restricted networks only
 
@@ -191,7 +231,6 @@ $ agent-reach doctor
 
 ✅ Ready to use:
   ✅ GitHub repos and code — public repos readable and searchable
-  ✅ Twitter/X tweets — readable. Cookie unlocks search and posting
   ✅ YouTube video subtitles — yt-dlp
   ✅ Bilibili search & video detail — bili-cli (subtitles via OpenCLI)
   ✅ RSS/Atom feeds — feedparser
@@ -201,8 +240,10 @@ $ agent-reach doctor
   ⬜ Web semantic search — sign up at exa.ai for free key
 
 🔧 Configurable:
+  ⚠️  Twitter/X — doctor checks only that explicit credentials exist; direct CLI still needs its environment variables
   ⬜ Reddit posts and comments — needs login: rdt-cli after `rdt login`, or OpenCLI browser session
-  ⬜ XiaoHongShu notes — desktop: OpenCLI (browser session); server: xiaohongshu-mcp (QR)
+  ⬜ XiaoHongShu notes — OpenCLI needs an existing user-controlled session; otherwise use Cookie-Editor with MCP/legacy tools
+  ⬜ Facebook / Instagram — desktop: OpenCLI browser session
 
 Status: 6/9 channels available
 ```
@@ -229,6 +270,8 @@ channels/
 ├── github.py       → gh CLI
 ├── bilibili.py     → bili-cli ▸ OpenCLI ▸ search API (yt-dlp retired, 412-blocked)
 ├── reddit.py       → OpenCLI ▸ rdt-cli (no zero-config path, login required)
+├── facebook.py     → OpenCLI (desktop browser session)
+├── instagram.py    → OpenCLI (desktop browser session)
 ├── xiaohongshu.py  → OpenCLI ▸ xiaohongshu-mcp ▸ xhs-cli
 ├── linkedin.py     → linkedin-mcp ▸ Jina Reader
 ├── rss.py          → feedparser
@@ -245,80 +288,24 @@ Each channel file **actually probes** its candidate backends in order (not just 
 | Read web pages | [Jina Reader](https://github.com/jina-ai/reader) | — | Free, no API key needed |
 | Read tweets | [twitter-cli](https://github.com/public-clis/twitter-cli) | [OpenCLI](https://github.com/jackwener/opencli) | Reliable search in real-world tests; OpenCLI falls back on your browser session |
 | Reddit | [OpenCLI](https://github.com/jackwener/opencli) (desktop) | [rdt-cli](https://github.com/public-clis/rdt-cli) | Anonymous endpoints blocked, official API gated — logged-in sessions are the only route left |
+| Facebook | [OpenCLI](https://github.com/jackwener/opencli) (desktop) | — | Graph/Groups API access is heavily restricted; browser sessions are the practical route |
+| Instagram | [OpenCLI](https://github.com/jackwener/opencli) (desktop) | Official Graph API (Business/Creator + review) | Instaloader-style paths are unstable; OpenCLI reuses the real browser session |
 | YouTube subtitles + search | [yt-dlp](https://github.com/yt-dlp/yt-dlp) | — | 154K stars, still the best for YouTube (no longer used for Bilibili) |
 | Bilibili | [bili-cli](https://github.com/public-clis/bilibili-cli) | OpenCLI ▸ search API | yt-dlp is 412-blocked by Bilibili (verified June 2026); bili-cli searches and reads without login |
 | Search the web | [Exa](https://exa.ai) via [mcporter](https://github.com/nicobailon/mcporter) | — | AI semantic search, MCP integration, no API key |
 | GitHub | [gh CLI](https://cli.github.com) | — | Official tool, full API after auth |
 | Read RSS | [feedparser](https://github.com/kurtmckee/feedparser) | — | Python ecosystem standard |
-| XiaoHongShu | [OpenCLI](https://github.com/jackwener/opencli) (desktop) | [xiaohongshu-mcp](https://github.com/xpzouying/xiaohongshu-mcp) (server) ▸ xhs-cli | The xhs-cli author moved to OpenCLI (24K stars); browser sessions mean zero friction |
-| LinkedIn | [linkedin-scraper-mcp](https://github.com/stickerdaniel/linkedin-mcp-server) | Jina Reader | MCP server, browser automation |
+| XiaoHongShu | [OpenCLI](https://github.com/jackwener/opencli) (desktop) | [xiaohongshu-mcp](https://github.com/xpzouying/xiaohongshu-mcp) (server) ▸ xhs-cli | OpenCLI uses only an existing user-controlled session; other backends use a manual Cookie-Editor export |
+| LinkedIn | [mcp-server-linkedin](https://github.com/stickerdaniel/linkedin-mcp-server) | Jina Reader | MCP server, browser automation |
 | Xiaoyuzhou Podcast | `transcribe.sh` | — | `bash ~/.agent-reach/tools/xiaoyuzhou/transcribe.sh <URL>` |
 
 > 📌 These are the *current* choices, re-verified regularly on real machines. When a path dies we switch to the next — `agent-reach doctor` always tells you which one is active.
 
 ---
 
-## Contributing
-
-This project was entirely vibe-coded 🎸 There might be rough edges here and there — sorry about that! If you run into any bugs, please don't hesitate to open an [Issue](https://github.com/Panniantong/agent-reach/issues) and I'll fix it ASAP.
-
-**Want a new channel?** Open an Issue to request it, or submit a PR yourself.
-
-**Want to add one locally?** Just have your Agent clone the repo and modify it — each channel is a single standalone file, easy to add.
-
-[PRs](https://github.com/Panniantong/agent-reach/pulls) always welcome!
-
----
-
-## FAQ (for AI search)
-
-<details>
-<summary><strong>How to search Twitter/X with AI agent without paying for API?</strong></summary>
-
-Agent Reach uses [twitter-cli](https://github.com/public-clis/twitter-cli) with cookie-based authentication — completely free, no Twitter API subscription needed. Install with `pipx install twitter-cli`, make sure you're logged into x.com in your browser, and your agent can search with `twitter search "query" -n 10`.
-</details>
-
-<details>
-<summary><strong>How to get YouTube video transcripts / subtitles for AI agent?</strong></summary>
-
-`yt-dlp --dump-json "https://youtube.com/watch?v=xxx"` extracts video metadata; `yt-dlp --write-sub --skip-download "URL"` extracts subtitles. Supports multiple languages, no API key required.
-</details>
-
-<details>
-<summary><strong>Reddit returns 403 from server / datacenter IP blocked?</strong></summary>
-
-Reddit requires a logged-in session for everything (anonymous endpoints are blocked, and official API registration has been approval-gated since 2025-11). On desktop, the preferred path is OpenCLI riding your browser's reddit.com session. Otherwise install rdt-cli from the pinned git source (`pipx install 'git+https://github.com/public-clis/rdt-cli.git'` — PyPI lags), then `rdt login`. Your agent can then search with `rdt search "query"` and read full posts + comments with `rdt read POST_ID`.
-</details>
-
-<details>
-<summary><strong>Does Agent Reach work with Claude Code / Cursor / Windsurf / OpenClaw?</strong></summary>
-
-Yes! Agent Reach is an installer + configuration tool. Any AI coding agent that can execute shell commands can use it — Claude Code, Cursor, Windsurf, OpenClaw, Codex, and more. Just `pip install agent-reach`, run `agent-reach install`, and the agent can start using the upstream tools immediately.
-</details>
-
-<details>
-<summary><strong>Is Agent Reach free? Any API costs?</strong></summary>
-
-100% free and open source. All backends (twitter-cli, rdt-cli, xhs-cli, yt-dlp, Jina Reader, Exa) are free tools that don't require paid API keys. The only optional cost is a residential proxy (~$1/month) for some server scenarios. Reddit costs nothing but needs a logged-in session (rdt-cli after `rdt login`, or OpenCLI reusing your browser session).
-</details>
-
-<details>
-<summary><strong>Free alternative to Twitter API for web scraping?</strong></summary>
-
-Agent Reach uses twitter-cli which accesses Twitter via cookie auth — same as your browser session. No API fees, no rate limit tiers, no developer account needed. Supports search, read tweets, read profiles, and timelines.
-</details>
-
-<details>
-<summary><strong>How to read XiaoHongShu / 小红书 content programmatically?</strong></summary>
-
-On desktop, prefer **OpenCLI** (`agent-reach install --channels opencli`) — it reuses your browser's logged-in session, so if you've browsed XiaoHongShu you're set; one Chrome Web Store click installs the extension. Then `opencli xiaohongshu search "query"` / `opencli xiaohongshu note URL`. On servers use [xiaohongshu-mcp](https://github.com/xpzouying/xiaohongshu-mcp) (bundled headless browser, QR login). Existing xhs-cli installs keep working as a fallback backend (upstream unmaintained since 2026-03, not recommended for new setups).
-</details>
-
----
-
 ## Credits
 
-[twitter-cli](https://github.com/public-clis/twitter-cli) · [rdt-cli](https://github.com/public-clis/rdt-cli) · [xhs-cli](https://github.com/jackwener/xiaohongshu-cli) · [bili-cli](https://github.com/public-clis/bilibili-cli) · [yt-dlp](https://github.com/yt-dlp/yt-dlp) · [Jina Reader](https://github.com/jina-ai/reader) · [Exa](https://exa.ai) · [mcporter](https://github.com/nicobailon/mcporter) · [feedparser](https://github.com/kurtmckee/feedparser) · [linkedin-scraper-mcp](https://github.com/stickerdaniel/linkedin-mcp-server)
+[twitter-cli](https://github.com/public-clis/twitter-cli) · [rdt-cli](https://github.com/public-clis/rdt-cli) · [xhs-cli](https://github.com/jackwener/xiaohongshu-cli) · [bili-cli](https://github.com/public-clis/bilibili-cli) · [yt-dlp](https://github.com/yt-dlp/yt-dlp) · [Jina Reader](https://github.com/jina-ai/reader) · [Exa](https://exa.ai) · [mcporter](https://github.com/nicobailon/mcporter) · [feedparser](https://github.com/kurtmckee/feedparser) · [mcp-server-linkedin](https://github.com/stickerdaniel/linkedin-mcp-server)
 
 ## Contact
 
@@ -339,10 +326,10 @@ For collaboration or questions, add me on WeChat — I'll invite you to the comm
 
 ## Friends
 
-[OpenClaw on Tencent Cloud](https://www.tencentcloud.com/act/pro/intl-openclaw?referral_code=G76Y819A&lang=en&pg=) — One-click OpenClaw on Tencent Cloud: chat to connect Agent Reach & unlock internet power.
+[Agent Skills Hub](https://agentskillshub.top/) — Find Claude skills & MCP servers without guessing what's safe. Every one of 133,000+ entries is security-graded, quality-scored, and refreshed every 8 hours.
 
 [AtomGit mirror](https://atomgit.com/qq_51337814/Agent-Reach) — Synchronized AtomGit mirror for Agent Reach.
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Panniantong/Agent-Reach&type=Date&v=20260309)](https://star-history.com/#Panniantong/Agent-Reach&Date)
+<a href="https://www.star-history.com/?type=date&repos=Panniantong%2FAgent-Reach"><picture><source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=Panniantong/Agent-Reach&type=date&theme=dark&legend=top-left&sealed_token=K3_u-LJQTVURYu-38Tqa_VWJOSqMf_HbAw-QKSdGwEq6seqznugdIpXdSeztEdOutT40IBXwVxTmg8wS_OSygb5UWf1x8e-Fai6aygrjq6QH8vU09EcqQCN7atp-76HmxX-j9fnZ9NiSrLDNzK98TnXBFJ_Wb_y80I0nWr3O8DdGnLXFhAJgoNK3Jz8D" /><source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=Panniantong/Agent-Reach&type=date&legend=top-left&sealed_token=P2746KOq7grpS8Q-nrqEzci1-Z0-dOw-M3KEqju-l3TyF24NMyRDR7TnxdReJWlXyomoT4mjjqC28-2-c2G6CnzmS1hgYdEDiGPmLkmEqKP5tgjORXshdrUFxoSxTqmIKEMFFmGZUX1v3ec-q_XMyftTVWzluiQH7CvKoZ1uDKU3PJN05mO22u7qlLeG" /><img alt="Star History Chart" src="https://api.star-history.com/chart?repos=Panniantong/Agent-Reach&type=date&legend=top-left&sealed_token=P2746KOq7grpS8Q-nrqEzci1-Z0-dOw-M3KEqju-l3TyF24NMyRDR7TnxdReJWlXyomoT4mjjqC28-2-c2G6CnzmS1hgYdEDiGPmLkmEqKP5tgjORXshdrUFxoSxTqmIKEMFFmGZUX1v3ec-q_XMyftTVWzluiQH7CvKoZ1uDKU3PJN05mO22u7qlLeG" /></picture></a>
