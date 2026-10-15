@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Northline Heating &amp; Air — Emergency AC and Furnace Repair, Duluth MN</title>
+<meta name="description" content="Licensed, insured emergency HVAC repair across Duluth and the Twin Ports. Two-hour callback, no overtime charges. Call (218) 555-0140.">
+<style>
+/* ===========================================================================
+   Northline Heating & Air — Benchmark brief 1 (T0 Rapid)
+   Locked artifacts: DESIGN_DNA v1.0, TYPOGRAPHY_SYSTEM v1.0, MOTION_MAP v1.0
+   Type: Archivo (display) / Public Sans (body). Ratio 1.200.
+   Motion score 1. Signature moment: none — correct at this score.
+   =========================================================================== */
+
+/* --- Type: metric-matched fallbacks so swap causes no shift --- */
+@font-face{font-family:"Archivo";src:url("fonts/archivo-var.woff2") format("woff2-variations");
+  font-weight:400 700;font-display:swap;unicode-range:U+0000-00FF,U+2000-206F;}
+@font-face{font-family:"PublicSans";src:url("fonts/public-sans-var.woff2") format("woff2-variations");
+  font-weight:400 600;font-display:swap;unicode-range:U+0000-00FF,U+2000-206F;}
+@font-face{font-family:"Archivo-fb";src:local("Arial");size-adjust:97%;ascent-override:92%;
+  descent-override:24%;line-gap-override:0%;}
+
+:root{
+  /* Ground — warm white, never pure #fff */
+  --bg:#faf8f5; --surface-1:#f2eee8; --surface-inv:#10203a;
+  --border-subtle:#e2dcd2; --border-strong:#8d8577;
+  /* Ink — navy, 7:1+ on --bg */
+  --text-primary:#10203a; --text-secondary:#4a5468; --text-inverse:#faf8f5;
+  /* Action — safety orange is the most saturated thing on the page */
+  --cta:#b8410e; --cta-hover:#8f3209; --brand:#10203a;
+
+  --font-display:"Archivo","Archivo-fb",Arial,sans-serif;
+  --font-body:"PublicSans",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+
+  /* Scale — 1.200 ratio, fluid 375→1440 */
+  --step--1:clamp(0.833rem,0.81rem + 0.10vw,0.875rem);
+  --step-0:clamp(1rem,0.97rem + 0.13vw,1.0625rem);
+  --step-1:clamp(1.2rem,1.14rem + 0.26vw,1.375rem);
+  --step-2:clamp(1.44rem,1.34rem + 0.43vw,1.75rem);
+  --step-3:clamp(1.728rem,1.56rem + 0.72vw,2.25rem);
+  --step-4:clamp(2.074rem,1.81rem + 1.12vw,2.875rem);
+
+  --space-2xs:0.5rem; --space-xs:0.75rem; --space-s:1rem; --space-m:1.5rem;
+  --space-l:2rem; --space-xl:3rem; --space-2xl:4rem;
+  --section-y:clamp(2.5rem,1.8rem + 3.5vw,5rem);
+  --gutter:clamp(1rem,0.6rem + 1.8vw,2rem);
+  --width-content:min(1120px,100% - var(--gutter)*2);
+  --width-prose:min(66ch,100%);
+  --radius:3px; /* subtle family, held throughout */
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0;background:#faf8f5;color:#10203a;font-family:var(--font-body);
+  font-size:var(--step-0);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+h1,h2,h3{font-family:var(--font-display);font-weight:700;margin:0;text-wrap:balance;}
+h1{font-size:var(--step-4);line-height:1.05;letter-spacing:-0.02em;max-width:16ch;}
+h2{font-size:var(--step-3);line-height:1.15;letter-spacing:-0.015em;max-width:22ch;}
+h3{font-size:var(--step-1);line-height:1.25;letter-spacing:-0.01em;}
+p{margin:0;max-width:var(--width-prose);text-wrap:pretty;}
+a{color:inherit;}
+
+/* Focus: never outline:none without a visible replacement */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
+  outline:none;box-shadow:0 0 0 3px #faf8f5,0 0 0 6px #10203a;border-radius:2px;}
+
+.wrap{width:var(--width-content);margin-inline:auto;}
+.skip{position:absolute;left:-9999px;}
+.skip:focus{left:var(--gutter);top:var(--space-2xs);z-index:10;background:#10203a;
+  color:#faf8f5;padding:var(--space-2xs) var(--space-s);}
+
+/* --- Header: phone is visible and tel:-linked on mobile --- */
+.site-head{border-bottom:1px solid var(--border-subtle);background:#faf8f5;
+  position:sticky;top:0;z-index:5;}
+.site-head .wrap{display:flex;align-items:center;justify-content:space-between;
+  gap:var(--space-s);padding-block:var(--space-xs);flex-wrap:wrap;}
+.mark{font-family:var(--font-display);font-weight:700;font-size:var(--step-1);
+  letter-spacing:-0.02em;text-decoration:none;}
+.mark span{color:var(--cta);}
+.head-call{display:inline-flex;align-items:center;gap:var(--space-2xs);
+  font-family:var(--font-display);font-weight:700;font-size:var(--step-1);
+  color:var(--cta);text-decoration:none;min-height:44px;padding-inline:var(--space-2xs);}
+.head-call:hover{color:var(--cta-hover);}
+.head-call small{display:block;font-family:var(--font-body);font-weight:400;
+  font-size:var(--step--1);color:var(--text-secondary);letter-spacing:0;}
+
+/* --- Hero: utility-first. What / who / trust / action, all above fold --- */
+.hero{padding-block:var(--section-y) var(--space-xl);}
+.eyebrow{font-size:var(--step--1);font-weight:600;letter-spacing:0.10em;
+  text-transform:uppercase;color:var(--cta);margin:0 0 var(--space-s);}
+.hero p.lede{font-size:var(--step-1);color:var(--text-secondary);
+  margin-top:var(--space-m);max-width:46ch;}
+.actions{display:flex;flex-wrap:wrap;gap:var(--space-s);margin-top:var(--space-l);}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;
+  padding:0 var(--space-l);border-radius:var(--radius);font-family:var(--font-display);
+  font-weight:700;font-size:var(--step-0);text-decoration:none;
+  transition:background-color 160ms cubic-bezier(0.33,1,0.68,1),
+             color 160ms cubic-bezier(0.33,1,0.68,1);}
+.btn-primary{background:var(--cta);color:#faf8f5;}
+.btn-primary:hover{background:var(--cta-hover);}
+.btn-secondary{background:transparent;color:#10203a;
+  box-shadow:inset 0 0 0 2px var(--border-strong);}
+.btn-secondary:hover{box-shadow:inset 0 0 0 2px #10203a;}
+
+/* Trust strip — licence, insurance, service area above the fold */
+.trust{display:flex;flex-wrap:wrap;gap:var(--space-s) var(--space-l);
+  margin-top:var(--space-xl);padding-top:var(--space-m);
+  border-top:1px solid var(--border-subtle);font-size:var(--step--1);
+  color:var(--text-secondary);}
+.trust b{color:#10203a;font-weight:600;}
+
+/* --- Sections: rhythm varies on background + density + alignment --- */
+section{padding-block:var(--section-y);}
+.band{background:var(--surface-1);border-block:1px solid var(--border-subtle);}
+.band-inv{background:var(--surface-inv);color:var(--text-inverse);}
+.band-inv h2{color:var(--text-inverse);}
+.band-inv p{color:#d6dae2;}
+
+.svc{display:grid;gap:var(--space-l);grid-template-columns:1fr;
+  margin-top:var(--space-xl);}
+@media (min-width:52rem){.svc{grid-template-columns:repeat(3,1fr);gap:var(--space-xl);}}
+.svc article{border-top:2px solid #10203a;padding-top:var(--space-s);}
+.svc p{margin-top:var(--space-2xs);color:var(--text-secondary);font-size:var(--step--1);}
+
+.proof{display:grid;gap:var(--space-l);grid-template-columns:1fr;
+  margin-top:var(--space-xl);}
+@media (min-width:44rem){.proof{grid-template-columns:repeat(3,1fr);}}
+.stat{font-family:var(--font-display);font-weight:700;font-size:var(--step-3);
+  line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;}
+.stat + p{margin-top:var(--space-2xs);font-size:var(--step--1);color:#d6dae2;}
+
+blockquote{margin:0;max-width:52ch;font-size:var(--step-1);line-height:1.45;
+  text-indent:-0.4em;}
+blockquote cite{display:block;margin-top:var(--space-s);font-size:var(--step--1);
+  font-style:normal;color:var(--text-secondary);}
+
+/* --- Form: labels above fields, minimum viable field count --- */
+form{margin-top:var(--space-l);max-width:34rem;}
+.field{margin-bottom:var(--space-m);}
+label{display:block;font-weight:600;font-size:var(--step--1);
+  margin-bottom:var(--space-2xs);}
+input,select{width:100%;min-height:48px;padding:0 var(--space-s);
+  font:inherit;font-size:var(--step-0);color:#10203a;background:#faf8f5;
+  border:2px solid var(--border-strong);border-radius:var(--radius);}
+input:hover,select:hover{border-color:#10203a;}
+.next{font-size:var(--step--1);color:var(--text-secondary);margin-top:var(--space-s);}
+
+.site-foot{border-top:1px solid var(--border-subtle);padding-block:var(--space-xl);
+  font-size:var(--step--1);color:var(--text-secondary);}
+.site-foot a{color:#10203a;}
+
+/* --- Motion score 1. Static state is authored VISIBLE; JS animates from it. --- */
+[data-reveal]{opacity:1;}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.01ms !important;
+    animation-iteration-count:1 !important;transition-duration:0.01ms !important;
+    scroll-behavior:auto !important;}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="mark" href="/">Northline<span>.</span></a>
+    <a class="head-call" href="tel:+12185550140">(218) 555-0140
+      <small>24/7 emergency line</small></a>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Duluth &amp; the Twin Ports</p>
+      <h1>No heat tonight? We answer the phone.</h1>
+      <p class="lede">Emergency furnace and AC repair with a two-hour callback,
+        flat pricing, and no overtime charges after 6pm or on weekends.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="tel:+12185550140">Call now — (218) 555-0140</a>
+        <a class="btn btn-secondary" href="#request">Request a callback</a>
+      </div>
+      <p class="trust">
+        <span><b>MN licence</b> #HV-40118</span>
+        <span><b>Fully insured</b> — $2M liability</span>
+        <span><b>Serving</b> Duluth, Superior, Hermantown, Proctor</span>
+        <span><b>4.9★</b> — 212 Google reviews</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <h2>What we handle</h2>
+      <div class="svc">
+        <article><h3>Furnace repair</h3>
+          <p>No ignition, short cycling, blower failure, cracked heat exchanger
+             diagnosis. Most repairs same visit.</p></article>
+        <article><h3>AC &amp; heat pump</h3>
+          <p>Warm air, refrigerant loss, frozen coils, capacitor and compressor
+             faults. Parts stocked for common units.</p></article>
+        <article><h3>Install &amp; replace</h3>
+          <p>Right-sized replacement with a load calculation, not a guess.
+             Financing available on full systems.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="band-inv">
+    <div class="wrap">
+      <h2>Twenty-two winters in the Northland</h2>
+      <div class="proof" data-reveal>
+        <div><p class="stat">1h 47m</p><p>Average callback time on emergency calls, 2025</p></div>
+        <div><p class="stat">6,400+</p><p>Repairs completed since 2003</p></div>
+        <div><p class="stat">$0</p><p>Overtime surcharge, nights and weekends</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <blockquote>&ldquo;Furnace quit at 11pm at &minus;18&deg;. Northline called back in
+        forty minutes and had us running before 1am. They charged the same as
+        a Tuesday afternoon.&rdquo;
+        <cite>Marla Espinoza — Lakeside, Duluth</cite></blockquote>
+    </div>
+  </section>
+
+  <section class="band" id="request">
+    <div class="wrap">
+      <h2>Request a callback</h2>
+      <p>Not an emergency? Leave your number and we&rsquo;ll call within two hours
+         during business hours.</p>
+      <form action="/callback" method="post">
+        <div class="field">
+          <label for="name">Your name</label>
+          <input id="name" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="phone">Phone number</label>
+          <input id="phone" name="phone" type="tel" inputmode="tel"
+                 autocomplete="tel" required>
+        </div>
+        <div class="field">
+          <label for="issue">What&rsquo;s going on?</label>
+          <select id="issue" name="issue">
+            <option>No heat</option><option>No cooling</option>
+            <option>Strange noise or smell</option><option>Quote for replacement</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" type="submit">Request my callback</button>
+        <p class="next">We&rsquo;ll call you back within two hours, 7am–7pm.
+           For after-hours emergencies please call the line above.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p>Northline Heating &amp; Air · 1420 W Superior St, Duluth, MN 55806 ·
+      <a href="tel:+12185550140">(218) 555-0140</a> · MN licence #HV-40118</p>
+  </div>
+</footer>
+
+<script>
+/* Motion score 1: one quiet reveal on the proof row. Nothing else moves.
+   Static state is visible in CSS — this animates FROM it, so a JS failure or
+   reduced-motion preference leaves the page fully readable. */
+(function () {
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+  if (reduced.matches || !("IntersectionObserver" in window)) return;
+
+  var row = document.querySelector("[data-reveal]");
+  if (!row) return;
+  var kids = Array.prototype.slice.call(row.children);
+
+  kids.forEach(function (el) {
+    el.style.opacity = "0";
+    el.style.transform = "translateY(16px)";
+    el.style.transition = "opacity 600ms cubic-bezier(0.16,1,0.3,1),"
+                        + "transform 600ms cubic-bezier(0.16,1,0.3,1)";
+  });
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      kids.forEach(function (el, i) {
+        el.style.transitionDelay = (i * 80) + "ms";
+        el.style.opacity = "1";
+        el.style.transform = "translateY(0)";
+      });
+      io.disconnect();
+    });
+  }, { threshold: 0.25 });
+  io.observe(row);
+})();
+</script>
+</body>
+</html>

@@ -65,7 +65,7 @@ pip install browserbase playwright
 
 ```bash
 # Browserbase credentials — set in Claude Code / VPS environment
-export BROWSERBASE_API_KEY="bb_live_8jAsnudKvYpjVctGAiijaVENlek"
+export BROWSERBASE_API_KEY="${BROWSERBASE_API_KEY}"
 export BROWSERBASE_PROJECT_ID=""   # inferred from API key if left blank
 
 # Optional — override per-session
@@ -90,7 +90,7 @@ export BB_TIMEOUT="1800"           # seconds (30 min default for Maps scraping)
 
 ## AUTHENTICATION — LIVE SESSION KEY
 
-The live session key `bb_live_8jAsnudKvYpjVctGAiijaVENlek` is pre-authorized.
+The live session key `${BROWSERBASE_API_KEY}` is pre-authorized.
 Use it directly — no OAuth flow needed.
 
 ```javascript
