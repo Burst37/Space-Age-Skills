@@ -17,17 +17,41 @@ Before touching ANY task, run this checklist in order:
 3. `icm-workspace-architect`
 4. `sa-obsidian-vault-ops`
 5. `animation-vocabulary`
+6. `ponytail` — always on, level `full` (smallest complete change)
+7. `caveman` — always on, Mode A chat compression (see *Token discipline*)
 
 ### 3. Identify Project Type → Load Tier 2 Stack
 See SESSION_INIT.md in Google Drive for full routing matrix.
 
 ### 4. Run Session Start Checklist
 - [ ] Drive memory read — today's note loaded
-- [ ] Tier 0 skills loaded
+- [ ] Tier 0 skills loaded (incl. ponytail + caveman, always on)
 - [ ] Project type identified → Tier 2 stack loaded
 - [ ] VPS .env integrity confirmed if needed
 - [ ] Model routing confirmed (claude-opus-4-8 for heavy tasks)
 - [ ] MCP > CLI > SDK > raw key priority confirmed
+
+---
+
+## RULE #2 — TOKEN DISCIPLINE (ALWAYS ON, EVERY PROJECT)
+
+Hardwired. Applies to every session in every repo, no trigger word needed.
+
+**Ponytail** (`skills/ponytail`) — *what code gets written*:
+- Smallest change that fully solves the task. Reuse what the codebase has → stdlib → installed deps → new code last.
+- No unrequested abstractions, options, wrappers or "for later" code. Never add a dependency for a few lines.
+- Never cut: validation at trust boundaries, data-loss error handling, security, accessibility, anything asked for.
+- Non-trivial new logic leaves one small test or assert. Known limits get `// shortcut: <limit>, <when to upgrade>`.
+- End coding replies with one line: what was skipped or not checked, and any risk.
+
+**Caveman** (`skills/caveman`, Mode A) — *how much Claude says*:
+- No preamble, no recap, no filler. Status as done / failed / blocked. Errors as one-line cause + fix.
+- Lead with the result; bullets over paragraphs.
+- Pipelines and batch runs: also apply Mode B (`skills/caveman/references/pipeline-token-budget.md`).
+
+**Never compress:** client deliverables (decks, PDFs, meal plans, sites, copy), commit messages, PR bodies,
+safety or security warnings, and anything the user must act on. Those stay complete and clear.
+Off switch: "full mode" / "normal mode" / "stop ponytail" (session only).
 
 ---
 
