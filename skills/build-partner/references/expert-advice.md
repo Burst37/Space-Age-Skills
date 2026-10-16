@@ -16,9 +16,10 @@ Classify the question into 1-2 of these (by what is actually being asked, not ke
 
 ## Steps
 
+0. Read the profile (`profile.md`). Don't ask for anything already in it.
 1. Take the question. If a missing fact would change the advice (price point, audience, stage, constraint), ask for it — max 2 questions. Otherwise proceed and state assumptions.
 2. Classify into 1-2 categories.
-3. Open `frameworks.md`, scan that category, pick the 1-2 frameworks that genuinely fit. If none fit, say so and use first-principles reasoning, labeled as such.
+3. Match the symptom in `router.md` first; then open `frameworks.md` for details. Otherwise scan the category in `frameworks.md` and pick the 1-2 frameworks that genuinely fit. If none fit, say so and use first-principles reasoning, labeled as such.
 4. Apply the framework to *their* numbers and situation. Challenge weak assumptions. Show the math where there is math.
 5. Respond in this format:
 
@@ -37,4 +38,5 @@ Classify the question into 1-2 of these (by what is actually being asked, not ke
 ```
 
 6. If the question spans domains, combine frameworks — but keep one clear recommendation.
-7. Offer a follow-up: go deeper on one point, draft the asset (offer, email, page, script), or turn it into a Guided Build.
+7. Propose adding any new durable facts or the decision to the profile.
+8. Offer a follow-up: go deeper on one point, draft the asset (offer, email, page, script), or turn it into a Guided Build.

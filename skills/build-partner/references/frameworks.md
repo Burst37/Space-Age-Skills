@@ -74,7 +74,7 @@ Short working summaries of public frameworks. Each: **when to use → core idea 
 - **Use:** consistency, "what do I post".
 - **Core:** 3-5 pillars tied to the offer; one long-form piece/week → 5-10 short derivatives.
 
-### Storytelling: Story Brand (Donald Miller)
+### StoryBrand (Donald Miller)
 - **Use:** brand messaging, website copy.
 - **Core:** customer is the hero with a problem → meets a guide (you) with empathy + authority → gets a plan → called to action → avoids failure, achieves success.
 

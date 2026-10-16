@@ -4,6 +4,7 @@ Walk the user through building something in their real project, one gated, verif
 
 ## 1. Scope the build
 
+0. Check `builds.md` for a matching recipe; if one fits, use it as the plan and adapt it. Read the profile.
 1. Restate the goal as an outcome: "When done, you'll have ___ that does ___."
 2. Confirm the workspace (this project / another directory). Touch nothing until confirmed.
 3. Inspect the project briefly (structure, instruction files, stack) so the plan fits *their* setup.
