@@ -24,6 +24,12 @@ and which are the original author's work.
 |-------|-----------|
 | [`cinematic-website-builder`](./cinematic-website-builder/CINEMATIC_WEBSITE_BUILDER.md) | v3 forensic rebuild — runtime kernel + 36 isolated modules, asset pipeline, `assemble.mjs` single-file builder and `verify.mjs` 5-pass Playwright QA gate. Stage 3–4 of the SA site pipeline. Audit: [`forensic-audit-v2.md`](./cinematic-website-builder/references/forensic-audit-v2.md) |
 
+## Pipeline skills
+
+| Skill | Forked from | What was added |
+|-------|-------------|----------------|
+| [`replica-skill-sa`](./replica-skill-sa/SKILL.md) | Jakeschincariol/replica-skill (MIT) | 11 skills merged into one router + per-stage references (-88% always-loaded tokens), deploy parity gate (`--gate`), 4 config/input bug fixes with regression tests, uniform verify-and-status close-out. See [`IMPROVEMENTS.md`](./replica-skill-sa/IMPROVEMENTS.md) |
+
 ## Reference repos used as inspiration
 
 - `multica-ai/andrej-karpathy-skills` — behavioral guidelines for LLM coding (think-before-coding, simplicity, surgical changes, goal-driven execution)
