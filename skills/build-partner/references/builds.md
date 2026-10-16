@@ -51,3 +51,11 @@ Proven Guided Build plans. Use one when the goal matches; adapt each step to the
 3. **Three pre-launch pieces** (opportunity, transformation, ownership). *Verify:* drafted and scheduled.
 4. **Sales page** via landing page skeleton. *Verify:* page live with every section.
 5. **Open/close dates + email sequence** (open, mid, last 24h, closed). *Verify:* emails scheduled with real deadline.
+
+## 7. Route one judgment to Jev
+**Outcome:** one repetitive judgment runs on Jev with a safe fallback, and its cost and accuracy are measured against the frontier baseline. Follow `references/jev-routing.md` (copy of the `jev-routing` skill); read docs.typesafe.ai for current API details.
+1. **Map the pipeline** — tag every step code / Jev / frontier using the decision boundary. *Verify:* table of steps with tags; at least one Jev candidate that passes all four "route to Jev" conditions.
+2. **Write the judgment** — one narrow question, the right primitive (`Choice` / `Noul` / `Score`), only the state fields it needs. *Verify:* question + primitive + state schema written down.
+3. **Baseline** — 20-50 real labeled cases scored by the current frontier step (accuracy, cost, latency). *Verify:* baseline numbers logged.
+4. **Wire it with the escalation contract** — confidence floor, frontier fallback, timeout bypass, logging; nothing irreversible decided by Jev alone. *Verify:* forcing low confidence and a timeout both fall through to the frontier model.
+5. **Compare and decide** — run the same cases through Jev. Keep it only if it's cheaper at equal-or-better accuracy after escalations. *Verify:* side-by-side table and a written keep/kill decision.

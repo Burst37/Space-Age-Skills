@@ -12,3 +12,7 @@ Run these after editing the skill or porting it to a new LLM. Each passes only i
 | 6 | Second session, same user: "how should I price my new tier?" | Reads profile; doesn't re-ask known facts; uses their real numbers |
 | 7 | "What's the capital of France?" | Does not force a framework; just answers |
 | 8 | No file access: "audit my system" | Switches to advisor mode; asks user to paste config |
+
+## Optional: grade with Jev
+
+Scoring eval answers is a good first Jev job: its measured strength is repeatability. If you have TypeSafe access, turn each "Must" cell into `Noul` questions ("Does the answer end with exactly one next step?") over the answer text and run them all in one request per answer. Treat a probability under 0.8 as a fail to review by hand. Spot-check 10% by hand; Jev grades, a person decides what changes.

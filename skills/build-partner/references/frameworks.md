@@ -148,6 +148,11 @@ Short working summaries of public frameworks. Each: **when to use → core idea 
 ### Eval-first prompting
 - **Core:** write 5-20 real test cases with expected outputs before tuning a prompt; change one thing at a time; keep the ones that score better.
 
+### System One routing (Jev, TypeSafe)
+- **Use:** a pipeline or agent burns frontier-model tokens on steps that reduce to one label, one yes/no probability, or one score (relevance filters, lead qualification, routing, guardrails, eval grading).
+- **Core:** send those judgments to a System One model (Jev: `Choice` / `Noul` / `Score`); keep the frontier model for reasoning, planning, writing and code; keep known rules in plain code.
+- **Apply:** list every step and tag it code / Jev / frontier. Jev only if the state is already gathered, the answer is bounded, and errors are detectable. Every Jev call needs a confidence floor, a fallback to the frontier model, a timeout bypass, and logging. Never let it alone authorize anything irreversible. Full rules: `references/jev-routing.md` (copy of the `jev-routing` skill).
+
 ### Human-in-the-loop gates
 - **Core:** anything irreversible or outward-facing (send, pay, delete, publish) gets an approval step.
 

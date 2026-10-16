@@ -17,6 +17,7 @@ Match the user's *symptom*, not their keywords. Pick the first framework listed;
 | Competitors copying / race to the bottom | 7 Powers | Blue Ocean ERRC |
 | Overworked founder, can't scale myself | Leverage | Automate→Augment→Assist |
 | What should I automate with AI? | Automate→Augment→Assist | Workflow before agent |
+| AI costs too high; frontier model doing simple classify/filter/score steps | System One routing (Jev) | Eval-first prompting |
 | My AI/agent output is flaky | Eval-first prompting | Context engineering |
 | Content gets no views | Hook→Retain→Reward | Content Pillars |
 | Don't know what to post | Content Pillars | Jobs to Be Done |

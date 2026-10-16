@@ -44,6 +44,15 @@ If the request is ambiguous, ask once:
 
 Fails a box → revise before sending. Regression tests live in `references/evals.md`.
 
+## Optional: Jev (TypeSafe)
+
+If the host can call TypeSafe's Jev (plugin `typesafe:typesafe-ai` or the API), use it in three places only. Each one must have the fallback, and without Jev the skill behaves exactly as it does now:
+- **Grading evals**: score `evals.md` answers with `Noul`; this is where Jev's repeatability matters most.
+- **Build verify gates (advisory)**: `Noul` on "does the verify criterion hold" over evidence you've already gathered. Below 0.8, or on any irreversible step, verify yourself and show the evidence.
+- **Advising users**: the "System One routing" framework and Build recipe 7 help users move their own pipelines' cheap judgments onto Jev.
+
+Don't use Jev to pick frameworks or write advice. Those calls are few, and they need reasoning and generated text, which is frontier work. Follow `references/jev-routing.md` (copy of the `jev-routing` skill)'s escalation contract and its never-route list.
+
 ## Portability notes
 
 - **Claude Code / Claude.ai Skills:** drop the `build-partner/` folder into your skills directory (or upload the zip).
