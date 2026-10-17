@@ -15,11 +15,15 @@ Writes: `replica/recon.md` (template `templates/recon-map.md`), `replica/feature
    ```
 5. **Components.** Every repeated part: name, variants, states, screens used. Feeds stage 3.
 6. **Data model.** Entities, fields, relations, each with evidence + confidence (high / medium / guess). Guesses marked as guesses.
+   Tag every recon claim **observed** (seen on a screen, doc, or listing; cite source row / S-ID) / **inferred** / **unknown**. Unknowns go in the summary, never filled by guessing.
 7. **Feature matrix** `features.csv`: `feature,area,priority,original,clone,notes`. priority must/should/could. `clone` starts `no` everywhere.
 8. **Not cloneable** -> `skip` rows with reason: licensed content, the network/users, owned data, partner deals, hardware, regulated licences.
 9. **Size.** Counts + hard parts (realtime, sync, payments, calendar/email integrations, offline). S weekend / M weeks / L quarter / XL rescope. No "perfect clone" promises.
 
+**Internals.** Competitor's app: no decompiling or bundle reading, ever (hard rules). Software the user owns or is authorized to examine (own old app, interop target) -> `rea-sa` may supply behaviour evidence; its findings enter as recon rows, never as code.
+
 ## Done when
+- [ ] scope checklist revisited: each question answered / partial / unresolved
 - [ ] every source row has a URL
 - [ ] every screen has states; every flow has edges + click count
 - [ ] `features.csv` loads: `python3 $S/scripts/parity.py replica/features.csv` exits 0 or 1, never 2

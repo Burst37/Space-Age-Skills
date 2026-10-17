@@ -29,6 +29,7 @@ and which are the original author's work.
 | Skill | Forked from | What was added |
 |-------|-------------|----------------|
 | [`replica-skill-sa`](./replica-skill-sa/SKILL.md) | Jakeschincariol/replica-skill (MIT) | 11 skills merged into one router + per-stage references (-88% always-loaded tokens), deploy parity gate (`--gate`), 4 config/input bug fixes with regression tests, uniform verify-and-status close-out. See [`IMPROVEMENTS.md`](./replica-skill-sa/IMPROVEMENTS.md) |
+| [`rea-sa`](./rea-sa/SKILL.md) | morluto/rea (MIT) | Lean entry point for the REA reverse-engineering MCP: 23.5k-char skill body cut to 6.9k (-70%) with verbatim on-demand references, an authorization gate, a clean-room build handoff, a finding-ledger template, and fidelity tests. See [`IMPROVEMENTS.md`](./rea-sa/IMPROVEMENTS.md) |
 
 ## Reference repos used as inspiration
 

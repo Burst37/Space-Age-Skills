@@ -10,7 +10,7 @@ description: >-
   copy or private APIs.
 license: MIT (original by Jake Schincariol, see LICENSE)
 source: https://github.com/Jakeschincariol/replica-skill (v1.0, commit 77c9436)
-version: 1.1.0-sa
+version: 1.1.1-sa
 ---
 # Replica SA: clone any app's features, clean-room
 

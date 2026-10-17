@@ -48,6 +48,10 @@ class Skill(unittest.TestCase):
                                      capture_output=True, text=True)
                 self.assertEqual(out.returncode, 0, f + out.stderr)
 
+    def test_recon_tags_evidence_type(self):  # ported from REA (rea-sa)
+        for rel in ("references/01-recon.md", "templates/recon-map.md"):
+            self.assertRegex(read(rel), r"observed.{0,100}inferred.{0,40}unknown", rel)
+
     def test_original_license_kept(self):
         self.assertIn("Copyright (c) 2026 Jake Schincariol", read("LICENSE"))
 

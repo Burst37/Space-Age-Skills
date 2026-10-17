@@ -41,6 +41,7 @@ F01 {{goal}}
 {{Entity}}  {{fields}}
             evidence: {{screen IDs, help articles}}
             confidence: high | medium | guess
+            type: observed | inferred | unknown
 ```
 
 Relationships: {{User 1-n EventType, EventType 1-n Booking, ...}}
