@@ -73,3 +73,9 @@ Run: `python3 -m unittest discover -s tests -v` -> 64 tests, OK.
 - No `preflight.py` runner wrapping the 5 deploy commands: 5 lines in `references/11-deploy.md` do the job.
 - No colour/word-boundary option in `sweep.py`: the warning covers short names without a new mode.
 - No changes to `imgdiff.py` PNG decoder (interlaced PNGs still refused with a message, as documented).
+
+## v1.1.1 (2026-10-16): ideas ported from REA (via rea-sa)
+- Recon claims tagged **observed / inferred / unknown** (`references/01-recon.md` step 6, `templates/recon-map.md`). Source: REA's evidence model (morluto/rea, MIT).
+- Recon "Done when" now starts with a scope-checklist revisit (answered / partial / unresolved), REA's finish rule.
+- Internals rule: competitor apps stay no-decompile (unchanged hard rule); for software the user owns or is authorized to examine, `rea-sa` may supply behaviour evidence as recon rows, never as code.
+- Test: `tests/test_skill.py::test_recon_tags_evidence_type`. Suite: 65 tests OK.
