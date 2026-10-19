@@ -1,0 +1,212 @@
+{
+ "sub": "high-moderate protein · carb-cycled · gout-safe",
+ "chips": [
+  "4 meals · 8 AM–8 PM",
+  "No beef · No pork"
+ ],
+ "cycle": [
+  "MED",
+  "LOW",
+  "KETO",
+  "HIGH",
+  "LOW",
+  "MED",
+  "KETO"
+ ],
+ "cycleNote": "The same week repeats. Monday and Saturday are medium, Tuesday and Friday low, Wednesday and Sunday keto, Thursday high.",
+ "tierText": {
+  "KETO": "Under 25 g, two days a week. Eggs, egg whites, cottage cheese, mozzarella, whey, chicken or fish, low-carb vegetables, olive oil, walnuts and avocado. No grains or fruit.",
+  "LOW": "About 40 g, two days a week. The same base plus one small fruit or vegetable add-on.",
+  "MED": "About 60 g, two days a week. Base plus a carb side at lunch or dinner, such as quinoa, sweet potato or fruit.",
+  "HIGH": "80 to 100 g, one day a week. Base plus oats or bread at breakfast, a grain or sweet potato at lunch and dinner, and fruit before training. Placed on the heaviest training day."
+ },
+ "rulesTitle": "Gout-safe food rules",
+ "rules": [
+  [
+   "EAT",
+   "var(--p)",
+   [
+    "Egg whites, plain nonfat yogurt, low-fat cottage cheese, part-skim mozzarella, whey isolate",
+    "Low-carb vegetables: kale, zucchini, green beans, broccoli, cucumber, lettuce",
+    "Olive oil, walnuts, almonds, chia, flax, avocado",
+    "Berries and cherries",
+    "Carb days only: oats, quinoa, brown rice, sweet potato, bananas, apples, pears, peaches",
+    "Coffee, tea, lemon, herbs and spices; water of 3 L or more"
+   ]
+  ],
+  [
+   "LIMIT",
+   "var(--c)",
+   [
+    "Whole eggs: 2 or fewer per day",
+    "Chicken breast: 4 oz, 3 times a week",
+    "White fish, baked: 6 oz, 2 times a week",
+    "Salmon 4 oz and tuna 4 oz: once a week each",
+    "Tofu 6 oz: 2 times a week",
+    "Oats: ⅓ cup, about 2 times a week",
+    "One flesh-protein meal per day, never two"
+   ]
+  ],
+  [
+   "AVOID",
+   "var(--keto)",
+   [
+    "Red meat and organ meats",
+    "Sardines, anchovies, mackerel, herring, trout",
+    "Shellfish: shrimp, crab, lobster, scallops",
+    "Turkey, duck, goose, game meats",
+    "Bacon, sausages, hot dogs, processed meats",
+    "Beer and all alcohol",
+    "Soda, energy drinks, sugary drinks, high-fructose corn syrup",
+    "Yeast extracts, meat broths and gravies"
+   ]
+  ]
+ ],
+ "monitoring": [
+  [
+   "Weekly",
+   "Weigh 3 times a week under the same conditions and track the weekly average. Aim for 1.5 to 2 lb a week; slow down if urate or symptoms rise."
+  ],
+  [
+   "Urate and symptoms",
+   "Re-check serum urate around day 30 with the physician. Log joint symptoms and flare timing. Drink 3 L or more a day. No alcohol or sugary drinks."
+  ],
+  [
+   "Training and tolerance",
+   "Strength sessions 3 to 4 times a week. On keto days add salt and fluids and watch for headache or fatigue. Adjust the snack first if hunger or energy slips."
+  ]
+ ],
+ "neverTitle": "Never use (uric acid)",
+ "never": [
+  "Red meat and organ meats, sardines, anchovies, mackerel, herring, trout",
+  "Shellfish: shrimp, crab, lobster, scallops. Turkey, duck, goose, game meats",
+  "Bacon, sausages, hot dogs, processed meats, yeast extracts, meat broths and gravies",
+  "Beer and all alcohol. Soda, energy drinks, sugary drinks, high-fructose corn syrup",
+  "Not used in this plan: legumes, spinach, asparagus, mushrooms, cauliflower and peanut butter"
+ ],
+ "limitNote": "Foods marked Limit have caps for uric acid. One chicken or fish meal a day, and the weekly caps shown on each food.",
+ "tierNote": "Keto days (under 25 g) use only foods tagged Keto. Low days add berries and cherries. Medium and high days add grains, starch and other fruit.",
+ "goal": {
+  "kcal": 1620,
+  "p": 180,
+  "f": 73,
+  "fib": 15
+ },
+ "checkLabel": "Purine check",
+ "checkSuffix": " · no shellfish, organ or red meat.",
+ "track": [
+  [
+   "chicken",
+   "chicken",
+   " oz"
+  ],
+  [
+   "wfish",
+   "white fish",
+   " oz"
+  ],
+  [
+   "salmon",
+   "salmon",
+   " oz"
+  ],
+  [
+   "tuna",
+   "tuna",
+   " oz"
+  ],
+  [
+   "tofu",
+   "tofu",
+   " oz"
+  ],
+  [
+   "egg",
+   "whole eggs",
+   "/2"
+  ]
+ ],
+ "caps": {
+  "chicken": "Limit · 4 oz, 3×/wk",
+  "wfish": "Limit · 6 oz, 2×/wk",
+  "salmon": "Limit · 4 oz, 1×/wk",
+  "tuna": "Limit · 4 oz, 1×/wk",
+  "tofu": "Limit · 6 oz, 2×/wk",
+  "egg": "Limit · 2 whole/day",
+  "oats": "Limit · ⅓ cup, 2×/wk",
+  "avo": "Small · ¼ at a time"
+ },
+ "groups": {
+  "chicken": "Chicken & fish (one meal a day)",
+  "wfish": "Chicken & fish (one meal a day)",
+  "salmon": "Chicken & fish (one meal a day)",
+  "tuna": "Chicken & fish (one meal a day)",
+  "tofu": "Plant protein",
+  "egg": "Eggs & dairy",
+  "white": "Eggs & dairy",
+  "cc": "Eggs & dairy",
+  "yog": "Eggs & dairy",
+  "whey": "Eggs & dairy",
+  "mozz": "Eggs & dairy",
+  "oats": "Grains & starch",
+  "quinoa": "Grains & starch",
+  "brice": "Grains & starch",
+  "sweetp": "Grains & starch",
+  "bread": "Grains & starch",
+  "blueb": "Berries & cherries",
+  "straw": "Berries & cherries",
+  "cherry": "Berries & cherries",
+  "apple": "Other fruit",
+  "banana": "Other fruit",
+  "pine": "Other fruit",
+  "peach": "Other fruit",
+  "pear": "Other fruit"
+ },
+ "groupOrder": [
+  "Chicken & fish (one meal a day)",
+  "Plant protein",
+  "Eggs & dairy",
+  "Grains & starch",
+  "Berries & cherries",
+  "Other fruit"
+ ],
+ "flesh": [
+  "chicken",
+  "wfish",
+  "salmon",
+  "tuna"
+ ],
+ "fleshLabel": "chicken or fish",
+ "fleshDayMax": 1,
+ "weekly": {
+  "chicken": [
+   3,
+   "Chicken"
+  ],
+  "wfish": [
+   2,
+   "White fish"
+  ],
+  "salmon": [
+   1,
+   "Salmon"
+  ],
+  "tuna": [
+   1,
+   "Tuna"
+  ],
+  "tofu": [
+   2,
+   "Tofu"
+  ],
+  "oats": [
+   2,
+   "Oats"
+  ]
+ },
+ "eggDayMax": 2,
+ "ketoLimit": 25,
+ "swapLimits": "Chicken, fish, tofu, egg and oat limits stay in force. A swap that breaks a limit shows a red warning, and keto days warn if carbs pass 25 g.",
+ "footer": "Macros are estimates from standard food-composition values and can vary by 5–10%. Review against current labs, urate-lowering medication and kidney function with the treating physician.",
+ "groceryNote": "Meat and fish are weighed raw. Grains are dry measure. Carb sides (grains, fruit, sweet potato) appear only on medium and high-carb days."
+}

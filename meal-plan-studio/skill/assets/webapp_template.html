@@ -1,0 +1,674 @@
+<title>__CLIENT__ 30-Day Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: a single phone-width column; sticky tab bar; plan view = week pills, day strip, one day at a time with swipe. */
+:root{
+  --bg:#EFF5F1; --surface:#FFFFFF; --surface2:#E4EEE8; --ink:#0F2A20; --muted:#587065; --line:#D2E0D8;
+  --deep:#0E3B2C; --accent:#1B9A60; --on-accent:#FFFFFF;
+  --p:#2FAE6E; --c:#E08A1E; --f:#2B9BC2;
+  --keto:#6A4C93; --low:#2B9BC2; --med:#2FAE6E; --high:#E08A1E;
+  --shadow:0 1px 2px rgba(14,59,44,.08),0 6px 18px rgba(14,59,44,.07);
+  --display:'Bricolage Grotesque','Avenir Next','Segoe UI',system-ui,sans-serif;
+  --body:'Figtree','Segoe UI',system-ui,-apple-system,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#08150F; --surface:#10241A; --surface2:#17301F; --ink:#E7F2EB; --muted:#8FAB9C; --line:#1E3B2C;
+  --deep:#0B2A1F; --accent:#46D38A; --on-accent:#06241A;
+  --p:#46D38A; --c:#F2A93B; --f:#5CC1E0;
+  --keto:#B58CE6; --low:#5CC1E0; --med:#46D38A; --high:#F2A93B;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#08150F; --surface:#10241A; --surface2:#17301F; --ink:#E7F2EB; --muted:#8FAB9C; --line:#1E3B2C;
+  --deep:#0B2A1F; --accent:#46D38A; --on-accent:#06241A;
+  --p:#46D38A; --c:#F2A93B; --f:#5CC1E0;
+  --keto:#B58CE6; --low:#5CC1E0; --med:#46D38A; --high:#F2A93B;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.35); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:760px;margin-inline:auto;padding-inline:16px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--accent)}
+
+/* HERO */
+.hero{background:var(--deep);color:#EAF6EF;padding-block:22px 26px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:var(--herobg) center/cover;opacity:.22}
+.hero .wrap{position:relative}
+.hero h1{font-size:clamp(2.1rem,9vw,3.4rem);line-height:1;font-weight:800;margin-top:8px}
+.hero h1 em{font-style:normal;color:#46D38A}
+.hero p.sub{margin:10px 0 0;color:#CFE5D9;font-size:1.02rem}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:center;margin-top:18px}
+.donut{position:relative;width:100%;max-width:230px;aspect-ratio:1;margin-inline:auto}
+.donut svg{width:100%;height:100%;transform:rotate(-90deg)}
+.donut .mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.donut .mid b{font-family:var(--display);font-size:2.1rem;line-height:1}
+.donut .mid span{font-size:.62rem;letter-spacing:.2em;color:#A7C7B6}
+.legend{display:grid;gap:10px}
+.legend div{display:grid;gap:0}
+.legend small{font-size:.62rem;letter-spacing:.18em;color:#A7C7B6;font-weight:700}
+.legend b{font-family:var(--display);font-size:1.7rem;line-height:1.05}
+.legend i{font-style:normal;font-size:.78rem;color:#A7C7B6}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.chip{border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:6px 12px;font-size:.82rem;color:#E0F0E7;background:rgba(255,255,255,.07)}
+.chip.go{border-color:#46D38A;color:#9AF0C4}
+.hero-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:700;background:#46D38A;color:#06241A;min-height:44px}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.35);color:#EAF6EF}
+.vidbox{margin-top:16px;border-radius:14px;overflow:hidden;background:#000}
+.vidbox video{display:block;width:100%;height:auto}
+
+/* NAV */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.nav button{flex:1 0 auto;background:none;border:0;padding:14px 14px 12px;font-weight:700;color:var(--muted);border-bottom:3px solid transparent;min-height:48px}
+.nav button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.theme{margin-left:auto;flex:0 0 auto!important}
+main{padding-block:16px 40px}
+section[hidden]{display:none}
+
+/* WEEK + DAY STRIP */
+.weeks{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.pill{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:600;font-size:.9rem;white-space:nowrap;min-height:40px}
+.pill[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-top:12px}
+.dchip{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:7px 0 8px;text-align:center;position:relative;min-height:62px}
+.dchip small{display:block;font-size:.62rem;letter-spacing:.1em;color:var(--muted);font-weight:700}
+.dchip b{display:block;font-family:var(--display);font-size:1.15rem;line-height:1.2}
+.dchip::after{content:"";position:absolute;left:10px;right:10px;bottom:5px;height:3px;border-radius:3px;background:var(--tc)}
+.dchip[aria-pressed="true"]{background:var(--tc);border-color:var(--tc);color:#fff}
+.dchip[aria-pressed="true"] small{color:#fff}
+.dchip[aria-pressed="true"]::after{background:#fff}
+.dchip[disabled]{opacity:.35}
+
+/* DAY */
+.dayhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:18px}
+.dayhead h2{font-size:1.9rem;line-height:1.05}
+.dayhead .when{color:var(--muted);font-size:.9rem}
+.tier{border-radius:999px;padding:6px 12px;font-size:.72rem;font-weight:800;letter-spacing:.12em;color:#fff;background:var(--tc);white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.summary{display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr);gap:14px;padding:14px;margin-top:12px;align-items:center}
+.ring{position:relative;aspect-ratio:1;width:100%}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring .mid b{font-family:var(--display);font-size:1.7rem;line-height:1}
+.ring .mid span{font-size:.6rem;letter-spacing:.16em;color:var(--muted);font-weight:700}
+.macros{display:grid;gap:8px}
+.mrow{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:8px;align-items:center;font-size:.92rem}
+.mrow i{width:10px;height:10px;border-radius:50%}
+.mrow b{font-family:var(--mono);font-weight:600}
+.mrow em{font-style:normal;color:var(--muted);font-size:.8rem;margin-left:6px}
+/* FatSecret-style panel */
+.nf{margin-top:12px;padding:12px 14px;border:2px solid var(--ink);border-radius:6px;background:var(--surface)}
+.nf h3{font-size:1.5rem;font-weight:800;line-height:1;border-bottom:8px solid var(--ink);padding-bottom:6px}
+.nf .hint{font-size:.74rem;color:var(--muted);margin-top:4px}
+.nf .big{display:flex;justify-content:space-between;align-items:baseline;border-bottom:4px solid var(--ink);padding:6px 0}
+.nf .big span{font-weight:800;font-size:1.05rem}
+.nf .big b{font-family:var(--display);font-size:2.1rem;line-height:1}
+.nf .r{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid var(--line);font-size:.95rem}
+.nf .r.sub{padding-left:16px;font-size:.88rem;color:var(--muted)}
+.nf .r b{font-weight:700}
+.nf .r span:last-child{font-family:var(--mono);font-weight:600;white-space:nowrap}
+.nf .pur{margin-top:8px;font-size:.78rem;color:var(--muted)}
+.meals{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:14px}
+@media(min-width:700px){.meals{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.meal{overflow:hidden;display:flex;flex-direction:column}
+.meal img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--surface2)}
+.meal .body{padding:12px 14px 14px;display:grid;gap:8px}
+.meal .slot{font-size:.7rem;letter-spacing:.14em;font-weight:800;color:var(--muted)}
+.meal h3{font-size:1.15rem;line-height:1.2}
+.meal .kc{display:flex;align-items:baseline;gap:6px}
+.meal .kc b{font-family:var(--display);font-size:1.5rem}
+.meal .kc span{color:var(--muted);font-size:.85rem}
+.mc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.mc div{border-radius:10px;padding:6px 4px;text-align:center;font-family:var(--mono);font-weight:600;font-size:.95rem;background:color-mix(in srgb,var(--k) 18%,var(--surface));border:1px solid color-mix(in srgb,var(--k) 45%,var(--line))}
+.mc small{display:block;font-family:var(--body);font-size:.6rem;letter-spacing:.12em;color:var(--muted);font-weight:700}
+.ing{margin:0;padding:0;list-style:none;display:grid;gap:3px;font-size:.92rem;border-top:1px dashed var(--line);padding-top:8px}
+.ing li.add{font-weight:700;color:var(--accent)}
+.pager{display:flex;gap:10px;margin-top:16px}
+.pager button{flex:1;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px;font-weight:700;min-height:48px}
+.pager button[disabled]{opacity:.35}
+.rise{animation:rise .5s both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.rise{animation:none}}
+
+/* CALENDAR */
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:12px}
+.cal .dow{font-size:.62rem;letter-spacing:.1em;font-weight:800;color:var(--muted);text-align:center;padding-bottom:2px}
+.cell{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:5px 3px 6px;text-align:center;min-height:78px;display:grid;align-content:start;gap:1px;border-top:4px solid var(--tc)}
+.cell small{font-size:.58rem;color:var(--muted);font-weight:700}
+.cell b{font-family:var(--display);font-size:1rem;line-height:1.1}
+.cell span{font-family:var(--mono);font-size:.62rem;color:var(--ink);font-weight:600}
+.cell .cg{color:var(--tc)}
+.key{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:14px;font-size:.84rem}
+.key span{display:flex;align-items:center;gap:6px}
+.key i{width:12px;height:12px;border-radius:4px;background:var(--tc)}
+.blank{visibility:hidden}
+
+/* GROCERIES + RULES */
+.glist{display:grid;gap:12px;margin-top:12px}
+.gcat{padding:14px}
+.gcat h3{font-size:1.05rem;margin-bottom:6px}
+.gcat div{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--line);font-size:.95rem}
+.gcat div b{font-family:var(--mono);font-weight:600;white-space:nowrap}
+.note{color:var(--muted);font-size:.86rem;margin-top:12px}
+.rules{display:grid;gap:12px}
+.rule{padding:14px}
+.rule h3{font-size:1.15rem;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.rule h3 i{width:12px;height:12px;border-radius:50%;background:var(--k)}
+.rule ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:.95rem}
+.cycle{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:10px}
+.cycle div{border-radius:10px;padding:8px 2px;text-align:center;background:var(--tc);color:#fff}
+.cycle small{display:block;font-size:.6rem;letter-spacing:.1em;font-weight:800}
+.cycle b{display:block;font-family:var(--mono);font-size:.78rem}
+.tiers{display:grid;gap:10px;margin-top:12px}
+.tiers div{border-left:5px solid var(--tc);padding:4px 0 4px 12px;font-size:.93rem}
+.tiers b{display:block;color:var(--tc);letter-spacing:.06em;font-size:.82rem}
+footer{padding:18px 16px 30px;color:var(--muted);font-size:.8rem;max-width:760px;margin-inline:auto}
+
+.swapbar{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--surface2);font-size:.86rem;color:var(--muted)}
+.swapbar button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:8px 12px;font-weight:700;min-height:40px}
+.ing li{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ing li .t{min-width:0}
+.ing li .t em{font-style:normal;font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--on-accent);background:var(--accent);border-radius:6px;padding:2px 6px;margin-left:8px}
+.swb{flex:0 0 auto;border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:999px;padding:6px 12px;font-weight:700;font-size:.78rem;min-height:36px}
+.sheet{position:fixed;inset:0;z-index:50;background:rgba(5,15,10,.55);display:flex;align-items:flex-end;justify-content:center}
+.sheet[hidden]{display:none}
+.sheet-card{width:100%;max-width:640px;max-height:88%;overflow-y:auto;background:var(--bg);border-radius:20px 20px 0 0;padding:16px 16px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 40px rgba(0,0,0,.35);animation:rise .28s both}
+.sh-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;position:sticky;top:-16px;background:var(--bg);padding:2px 0 10px;z-index:1}
+.sh-head h3{font-size:1.35rem;margin-top:4px}
+.sh-sub{color:var(--muted);font-size:.84rem;margin-top:4px}
+.sh-head .x{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 12px;font-weight:700;min-height:40px}
+.opts{display:grid;gap:8px;margin-top:6px}
+.opt{display:grid;gap:6px;text-align:left;width:100%;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:12px 14px}
+.opt .on{display:flex;flex-direction:column;gap:2px}
+.opt .on span{color:var(--muted);font-size:.9rem}
+.opt .dl{display:flex;flex-wrap:wrap;gap:6px}
+.opt .dl i{font-style:normal;font-family:var(--mono);font-size:.74rem;font-weight:600;background:var(--surface2);border-radius:8px;padding:3px 7px}
+.opt .wn{font-size:.8rem;color:var(--muted)}
+.opt .wn.bad{color:#B3261E;font-weight:700}
+:root[data-theme="dark"] .opt .wn.bad{color:#FF8A80}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .opt .wn.bad{color:#FF8A80}}
+.opt.restore{border-color:var(--accent);margin-bottom:8px}
+
+.steps{margin:0;padding-left:20px;display:grid;gap:8px;font-size:.95rem}
+.seg{display:flex;gap:8px;margin-top:14px}
+.fcat{margin-top:16px;overflow:hidden}
+.fcat>h3{padding:12px 14px;font-size:1.1rem;display:flex;justify-content:space-between;align-items:baseline;gap:10px;background:var(--surface2)}
+.fcat>h3 small{font-family:var(--body);font-weight:600;color:var(--muted);font-size:.74rem;text-align:right}
+.fgrp{padding:10px 14px 2px;font-size:.7rem;letter-spacing:.14em;font-weight:800;color:var(--muted);text-transform:uppercase}
+.frow{display:grid;grid-template-columns:minmax(0,1fr);gap:4px;padding:10px 14px;border-bottom:1px solid var(--line)}
+.frow:last-child{border-bottom:0}
+.frow .nm{font-weight:700;min-width:0}
+.frow .am{font-family:var(--mono);font-weight:600;font-size:.86rem;color:var(--accent)}
+.frow .mc2{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.frow .mc2 i{font-style:normal;font-family:var(--mono);font-size:.72rem;font-weight:600;background:var(--surface2);border-radius:8px;padding:3px 7px}
+.tag{font-size:.64rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:6px;padding:3px 6px;color:#fff;background:var(--tg)}
+</style>
+
+<header class="hero" id="hero">
+  <div class="wrap">
+    <div class="eyebrow" style="color:#46D38A">Personalized nutrition plan</div>
+    <h1 id="h1t">30-Day <em>Lean Protein</em> Reset</h1>
+    <p class="sub" id="heroSub"></p>
+    <div class="hero-grid">
+      <div class="donut" aria-label="Average daily macro split">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="60" cy="60" r="48" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="13"/>
+          <circle id="sgP" cx="60" cy="60" r="48" fill="none" stroke="#46D38A" stroke-width="13" stroke-dasharray="0 400"/>
+          <circle id="sgC" cx="60" cy="60" r="48" fill="none" stroke="#F2A93B" stroke-width="13" stroke-dasharray="0 400"/>
+          <circle id="sgF" cx="60" cy="60" r="48" fill="none" stroke="#5CC1E0" stroke-width="13" stroke-dasharray="0 400"/>
+        </svg>
+        <div class="mid"><b id="kc">0</b><span>KCAL / DAY</span></div>
+      </div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="hero-actions">
+      <button class="btn" id="playBtn" type="button">Play intro video</button>
+      <button class="btn ghost" id="startBtn" type="button">Open the plan</button>
+    </div>
+    <div class="vidbox" id="vidbox" hidden>
+      <video id="vid" controls playsinline preload="none" poster="__POSTER__"></video>
+    </div>
+  </div>
+</header>
+
+<nav class="nav" aria-label="Sections"><div class="wrap" role="tablist">
+  <button role="tab" id="t-plan" aria-selected="true" data-tab="plan">Daily plan</button>
+  <button role="tab" id="t-cal" aria-selected="false" data-tab="cal">Calendar</button>
+  <button role="tab" id="t-groc" aria-selected="false" data-tab="groc">Shopping</button>
+  <button role="tab" id="t-foods" aria-selected="false" data-tab="foods">Foods</button>
+  <button role="tab" id="t-rules" aria-selected="false" data-tab="rules">Rules</button>
+  <button class="theme" id="themeBtn" type="button" aria-label="Switch light or dark theme">Theme</button>
+</div></nav>
+
+<main class="wrap" id="main">
+  <section id="plan" aria-labelledby="t-plan">
+    <div class="weeks" id="weeks"></div>
+    <div class="strip" id="strip"></div>
+    <div class="swapbar" id="swapbar"></div>
+    <div id="day"></div>
+    <div class="pager"><button type="button" id="prev">Previous day</button><button type="button" id="next">Next day</button></div>
+  </section>
+  <section id="cal" hidden aria-labelledby="t-cal">
+    <h2 style="font-size:1.6rem">__RANGELABEL__</h2>
+    <p class="note" style="margin-top:4px">Tap a day to open its meals. Each tile shows calories and carbohydrate for that day.</p>
+    <div class="cal" id="calgrid"></div>
+    <div class="key" id="key"></div>
+  </section>
+  <section id="groc" hidden aria-labelledby="t-groc">
+    <div class="weeks" id="gweeks"></div>
+    <div class="glist" id="glist"></div>
+    <p class="note" id="grocNote"></p>
+  </section>
+  <section id="foods" hidden aria-labelledby="t-foods">
+    <h2 style="font-size:1.6rem">Allowed foods and swaps</h2>
+    <div class="card rule" style="margin-top:12px"><h3>How to use this list</h3><ol class="steps">
+      <li><b>Stay in the category.</b> Swap protein for protein, carbs for carbs, vegetables for vegetables, healthy fat for fat. Never across categories.</li>
+      <li><b>Use the Equal amount.</b> Each food shows how much gives the same grams of the matching macro: 25 g of protein, 20 g of carbs, 10 g of fat, or 1 cup of vegetables. Replace the original amount with that amount.</li>
+      <li id="stepLimit"></li>
+      <li id="stepTier"></li>
+      <li><b>Easier in the plan.</b> On any day tap Swap beside an ingredient and the page does the math and the limit check for you.</li>
+    </ol></div>
+    <div class="seg" id="foodseg" role="group" aria-label="Show amounts">
+      <button type="button" class="pill" data-m="eq" aria-pressed="true">Equal amount</button>
+      <button type="button" class="pill" data-m="sv" aria-pressed="false">Per 1 serving</button>
+    </div>
+    <div id="foodlist"></div>
+    <div class="card rule" id="neverCard" style="margin-top:14px"></div>
+  </section>
+  <section id="rules" hidden aria-labelledby="t-rules">
+    <h2 style="font-size:1.6rem">Carb cycling</h2>
+    <p class="note" style="margin-top:4px" id="cycleNote"></p>
+    <div class="cycle" id="cycle"></div>
+    <div class="tiers" id="tiers"></div>
+    <h2 style="font-size:1.6rem;margin-top:24px" id="rulesTitle"></h2>
+    <div class="rules" style="margin-top:12px" id="rulelist"></div>
+    <h2 style="font-size:1.6rem;margin-top:24px">Swapping foods</h2>
+    <div class="rules" style="margin-top:12px"><div class="card rule"><ul id="swapNotes"></ul></div></div>
+    <h2 style="font-size:1.6rem;margin-top:24px">Monitoring</h2>
+    <div class="rules" style="margin-top:12px" id="monlist"></div>
+  </section>
+</main>
+<div id="sheet" class="sheet" hidden></div>
+<footer id="foot"></footer>
+
+<script>
+const DATA=__DATA__;
+const PROFILE=__PROFILE__;
+const IMGS=__IMGS__;
+const DB=__DB__;
+const VID="__VID__";
+const HEROBG="__HERO__";
+document.getElementById('hero').style.setProperty('--herobg','url('+HEROBG+')');
+const TC={KETO:'var(--keto)',LOW:'var(--low)',MED:'var(--med)',HIGH:'var(--high)'};
+const TN=Object.assign({KETO:'Keto',LOW:'Low carb',MED:'Medium carb',HIGH:'High carb'},PROFILE.tierNames||{});
+const TR=Object.assign({KETO:'< 25 g',LOW:'~40 g',MED:'~60 g',HIGH:'80–100 g'},PROFILE.tierRanges||{});
+const TIERS=['KETO','LOW','MED','HIGH'].filter(k=>DATA.days.some(d=>d.tier===k));
+const HASKETO=TIERS.includes('KETO');
+const START=Date.UTC(__STARTUTC__);
+const dt=n=>new Date(START+(n-1)*86400000);
+const fm=(n,o)=>dt(n).toLocaleDateString('en-US',Object.assign({timeZone:'UTC'},o));
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+/* HERO */
+const A=DATA.avg, tot=A.p*4+A.c*4+A.f*9, pc=[A.p*4/tot,A.c*4/tot,A.f*9/tot];
+const CIRC=2*Math.PI*48;
+if(PROFILE.title)$('h1t').innerHTML=PROFILE.title;
+$('legend').innerHTML=[['PROTEIN',A.p+' g',Math.round(pc[0]*100),'#46D38A'],[PROFILE.netCarbs?'AVG NET CARBS':'AVG CARBS',(PROFILE.netCarbs?A.net:A.c)+' g',Math.round(pc[1]*100),'#F2A93B'],['FAT',A.f+' g',Math.round(pc[2]*100),'#5CC1E0']].map(x=>`<div><small>${x[0]}</small><b style="color:${x[3]}">${x[1]}</b><i>${x[2]}% of calories</i></div>`).join('');
+function drawDonut(prog){
+  let acc=0;[['sgP',pc[0]],['sgC',pc[1]],['sgF',pc[2]]].forEach(([id,p])=>{
+    const L=Math.max(0,p*CIRC*prog-3);const el=$(id);
+    el.setAttribute('stroke-dasharray',L+' '+CIRC);el.setAttribute('stroke-dashoffset',-(acc*CIRC+1.5));acc+=p;});
+  $('kc').textContent=Math.round(A.kcal*prog).toLocaleString('en-US');
+}
+(function(){
+  if(reduce){drawDonut(1);return}
+  const t0=performance.now();
+  (function tick(n){const p=Math.min(1,(n-t0)/1600),e=1-Math.pow(1-p,3);drawDonut(e);if(p<1)requestAnimationFrame(tick)})(t0);
+})();
+if(!VID)$('playBtn').hidden=true;
+$('playBtn').addEventListener('click',()=>{
+  const v=$('vid');
+  if(!v.src){v.src='data:video/mp4;base64,'+VID}
+  $('vidbox').hidden=false;
+  v.play().catch(()=>{});
+  $('vidbox').scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});
+});
+$('startBtn').addEventListener('click',()=>{$('main').scrollIntoView({behavior:reduce?'auto':'smooth'})});
+
+/* TABS */
+function tab(name){
+  ['plan','cal','groc','foods','rules'].forEach(k=>{$(k).hidden=k!==name;$('t-'+k).setAttribute('aria-selected',String(k===name))});
+  store.set('tab',name);
+}
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{tab(b.dataset.tab);window.scrollTo({top:$('main').offsetTop-60,behavior:'auto'})}));
+$('themeBtn').addEventListener('click',()=>{
+  const r=document.documentElement,cur=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+  const nx=cur==='dark'?'light':'dark';r.setAttribute('data-theme',nx);store.set('theme',nx);
+});
+{const t=store.get('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}
+
+/* FOOD MATH + SWAPS */
+const FRAC={0.125:'⅛',0.25:'¼',0.375:'⅜',0.5:'½',0.625:'⅝',0.75:'¾',0.875:'⅞'};
+function q2s(q){
+  q=Math.round(q*8)/8;const w=Math.floor(q+1e-9),f=Math.round((q-w)*1000)/1000;
+  const fs=FRAC[f]||'';
+  if(f&&!fs)return String(q);
+  return (w?String(w):'')+fs||'0';
+}
+function disp(k,q){
+  const d=DB[k];
+  if(k==='avo')return q===1?'¼ medium avocado':q2s(q)+' × ¼ avocado';
+  if(d.u==='')return q2s(q)+' '+(q<=1?d.n1:d.n);
+  let u=d.u;if(u!=='oz'&&q>1)u+='s';
+  return q2s(q)+' '+u+' '+d.n;
+}
+const OZG=28.35;
+function dispG(k,q){return DB[k].u==='oz'?disp(k,q)+' ('+Math.round(q*OZG)+' g)':disp(k,q)}
+const mac=(k,q)=>DB[k].m.map(x=>x*q);
+function sumItems(items){const t=[0,0,0,0,0];items.forEach(([k,q])=>{const m=mac(k,q);for(let i=0;i<5;i++)t[i]+=m[i]});return t}
+let SW={};
+try{SW=JSON.parse(store.get('swaps')||'{}')||{}}catch(e){SW={}}
+const swKey=(d,mi,ii)=>d+'|'+mi+'|'+ii;
+const saveSW=()=>store.set('swaps',JSON.stringify(SW));
+function itemsOf(day,mi,SWx){
+  const m=DATA.days[day-1].meals[mi],S=SWx||SW;
+  return m.items.map((it,ii)=>S[swKey(day,mi,ii)]||it);
+}
+const FLESH=PROFILE.flesh||[];
+function getDay(n,SWx){
+  const b=DATA.days[n-1];
+  const meals=b.meals.map((m,mi)=>{
+    const items=itemsOf(n,mi,SWx),t=sumItems(items);
+    const lines=items.map((it,ii)=>({k:it[0],q:it[1],t:disp(it[0],it[1]),add:ii>=m.items.length-m.nadd,sw:!!(SWx||SW)[swKey(n,mi,ii)],ii}));
+    return {slot:m.slot,time:m.time,key:m.key,name:m.name,mi,items,lines,kcal:Math.round(t[0]),p:Math.round(t[1]),c:Math.round(t[2]),f:Math.round(t[3]),fib:Math.round(t[4])};
+  });
+  const sum=k=>meals.reduce((a,m)=>a+m[k],0);
+  const tot={};meals.forEach(m=>m.items.forEach(([k,q])=>{tot[k]=(tot[k]||0)+q}));
+  const parts=(PROFILE.track||[]).filter(x=>tot[x[0]]).map(x=>x[1]+' '+q2s(tot[x[0]])+x[2]);
+  return {day:n,tier:b.tier,ct:b.ct,fast:b.fast,window:b.window,dtype:b.dtype,kcal:sum('kcal'),p:sum('p'),c:sum('c'),f:sum('f'),fib:sum('fib'),check:parts.join(' · ')||'no tracked foods',meals};
+}
+const CATN={protein:'protein',carb:'carbohydrate',veg:'vegetable',fat:'healthy fat'};
+const CATUNIT={protein:'grams of protein',carb:'grams of carbohydrate',fat:'grams of fat',veg:'volume'};
+function swapQty(ok,oq,nk){
+  const o=DB[ok],n=DB[nk];let q;
+  if(o.cat==='veg'){q=oq*(o.vol||1)/(n.vol||1)}
+  else{const ix={protein:1,carb:2,fat:3}[o.cat];const target=o.m[ix]*oq;const per=n.m[ix];if(per<0.3)return null;q=target/per}
+  let note='';
+  if(n.cap&&q>n.cap+1e-9){q=n.cap;note='Held at the '+n.cap+(n.u==='oz'?' oz':'')+' portion cap, so this gives slightly less '+CATN[o.cat]+'.'}
+  const st=n.step;q=Math.max(st,Math.round(q/st)*st);
+  if(n.cap&&q>n.cap)q=n.cap;
+  return {q:q,note:note};
+}
+function weekIssues(dayN,SWx){
+  const w=Math.ceil(dayN/7),days=DATA.weeks[w-1].days,iss=[];
+  const WK=PROFILE.weekly||{},cnt={};Object.keys(WK).forEach(k=>cnt[k]=0);
+  const dayMeals=PROFILE.dayMealMax||{};
+  days.forEach(dn=>{
+    const dd=getDay(dn,SWx);let fm=0,eggs=0;const dayCnt={};
+    dd.meals.forEach(m=>{
+      const ks=new Set(m.items.map(i=>i[0]));
+      if(FLESH.some(f=>ks.has(f)))fm++;
+      Object.keys(WK).forEach(k=>{if(ks.has(k))cnt[k]++});
+      Object.keys(dayMeals).forEach(g=>{if(dayMeals[g][0].some(k=>ks.has(k)))dayCnt[g]=(dayCnt[g]||0)+1});
+      m.items.forEach(([k,q])=>{if(k==='egg')eggs+=q});
+    });
+    if(PROFILE.fleshDayMax&&fm>PROFILE.fleshDayMax)iss.push('Day '+dn+' would have '+fm+' '+(PROFILE.fleshLabel||'animal-protein')+' meals. The limit is '+PROFILE.fleshDayMax+' a day.');
+    Object.keys(dayMeals).forEach(g=>{if((dayCnt[g]||0)>dayMeals[g][1])iss.push('Day '+dn+' would have '+dayCnt[g]+' '+dayMeals[g][2]+' meals. The limit is '+dayMeals[g][1]+' a day.')});
+    if(PROFILE.eggDayMax&&eggs>PROFILE.eggDayMax)iss.push('Day '+dn+' would have '+q2s(eggs)+' whole eggs. The limit is '+PROFILE.eggDayMax+' a day.');
+    {const nc=PROFILE.netCarbs?dd.c-dd.fib:dd.c;if(PROFILE.ketoLimit&&dd.tier==='KETO'&&nc>PROFILE.ketoLimit)iss.push('Day '+dn+(PROFILE.netCarbs?' net carbs':' carbs')+' would be '+nc+' g, over the '+PROFILE.ketoLimit+' g keto limit.')}
+  });
+  Object.keys(WK).forEach(k=>{if(cnt[k]>WK[k][0])iss.push(WK[k][1]+' would be used '+cnt[k]+' times this week. The limit is '+WK[k][0]+'.')});
+  if(PROFILE.eggWeekMax){let e=0;days.forEach(dn=>getDay(dn,SWx).meals.forEach(m=>m.items.forEach(([k,q])=>{if(k==='egg')e+=q})));if(e>PROFILE.eggWeekMax)iss.push('Whole eggs would total '+q2s(e)+' this week. The limit is '+PROFILE.eggWeekMax+'.')}
+  return iss;
+}
+function optionsFor(day,mi,ii){
+  const ok=DATA.days[day-1].meals[mi].items[ii][0],cur=itemsOf(day,mi)[ii];
+  const o=DB[ok],base=weekIssues(day);
+  const res=[];
+  Object.keys(DB).forEach(nk=>{
+    if(DB[nk].cat!==o.cat||nk===cur[0])return;
+    const sq=swapQty(cur[0],cur[1],nk);if(!sq)return;
+    const SWx=Object.assign({},SW);SWx[swKey(day,mi,ii)]=[nk,sq.q];
+    const was=mac(cur[0],cur[1]),now=mac(nk,sq.q);
+    const warn=weekIssues(day,SWx).filter(x=>!base.includes(x));
+    res.push({k:nk,q:sq.q,note:sq.note,d:[now[0]-was[0],now[1]-was[1],now[2]-was[2],now[3]-was[3]],warn:warn});
+  });
+  res.sort((a,b)=>a.warn.length-b.warn.length||Math.abs(a.d[0])-Math.abs(b.d[0]));
+  return {cur:cur,orig:DATA.days[day-1].meals[mi].items[ii],list:res,cat:o.cat};
+}
+const sgn=(x,u)=>{const r=Math.round(x);return (r>0?'+':r<0?'−':'±')+Math.abs(r)+(u||'')};
+function openSheet(day,mi,ii){
+  const o=optionsFor(day,mi,ii),sh=$('sheet');
+  const swapped=!!SW[swKey(day,mi,ii)];
+  const mname=DATA.days[day-1].meals[mi].name;
+  const tm=mac(o.cur[0],o.cur[1]);
+  const matchTxt=o.cat==='veg'?'the same volume':'the same '+CATUNIT[o.cat].replace('grams of ','')+' ('+Math.round(tm[{protein:1,carb:2,fat:3}[o.cat]]||0)+' g)';
+  sh.innerHTML=`<div class="sheet-card" role="dialog" aria-modal="true" aria-labelledby="shTitle">
+    <div class="sh-head"><div><div class="eyebrow">Swap ${CATN[o.cat]}</div><h3 id="shTitle">${esc(disp(o.cur[0],o.cur[1]))}</h3><div class="sh-sub">${esc(mname)} · only ${CATN[o.cat]} options, matched on ${matchTxt}</div></div><button type="button" class="x" id="shClose" aria-label="Close">Close</button></div>
+    ${swapped?`<button type="button" class="opt restore" data-restore="1"><b>Back to the original</b><span>${esc(disp(o.orig[0],o.orig[1]))}</span></button>`:''}
+    <div class="opts">${o.list.map((x,i)=>`<button type="button" class="opt" data-i="${i}"><span class="on"><b>${esc(DB[x.k].n.replace(/^./,c=>c.toUpperCase()))}</b><span>${esc(dispG(x.k,x.q))}</span></span><span class="dl"><i>${sgn(x.d[0],' kcal')}</i><i>${sgn(x.d[1],'P')}</i><i>${sgn(x.d[2],'C')}</i><i>${sgn(x.d[3],'F')}</i></span>${x.note?`<span class="wn">${esc(x.note)}</span>`:''}${x.warn.map(w=>`<span class="wn bad">${esc(w)}</span>`).join('')}</button>`).join('')}</div>
+  </div>`;
+  sh.hidden=false;document.body.style.overflow='hidden';
+  const close=()=>{sh.hidden=true;document.body.style.overflow='';sh.innerHTML=''};
+  $('shClose').addEventListener('click',close);
+  sh.addEventListener('click',e=>{if(e.target===sh)close()},{once:true});
+  sh.querySelectorAll('[data-i]').forEach(b=>b.addEventListener('click',()=>{const x=o.list[+b.dataset.i];SW[swKey(day,mi,ii)]=[x.k,x.q];saveSW();close();refreshAll()}));
+  const r=sh.querySelector('[data-restore]');if(r)r.addEventListener('click',()=>{delete SW[swKey(day,mi,ii)];saveSW();close();refreshAll()});
+  $('shClose').focus();
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('sheet').hidden){$('sheet').hidden=true;document.body.style.overflow='';$('sheet').innerHTML=''}});
+function refreshAll(){dayUI(true);stripUI();buildCal();groc();swapBar()}
+function swapBar(){
+  const n=Object.keys(SW).length;
+  $('swapbar').innerHTML=n?`<span>${n} swap${n>1?'s':''} applied. Totals and the shopping list are updated.</span><button type="button" id="resetSw">Reset all swaps</button>`:`<span>Don't like an ingredient? Tap <b>Swap</b> next to it. You only see options in the same category, matched gram for gram.</span>`;
+  const b=$('resetSw');if(b)b.addEventListener('click',()=>{SW={};saveSW();refreshAll()});
+}
+
+/* PLAN */
+let cur=1,curWeek=1;
+const GOAL=PROFILE.goal;
+function weeksUI(el,sel,fn){
+  el.innerHTML=DATA.weeks.map(w=>`<button type="button" class="pill" data-w="${w.week}" aria-pressed="${w.week===sel}">Week ${w.week}${w.week===5?' (2 days)':''}</button>`).join('');
+  el.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>fn(+b.dataset.w)));
+}
+function stripUI(){
+  const w=DATA.weeks[curWeek-1];
+  const names=['MON','TUE','WED','THU','FRI','SAT','SUN'];
+  $('strip').innerHTML=names.map((n,i)=>{
+    const d=w.days[i];
+    if(!d)return `<button class="dchip" disabled aria-hidden="true"><small>${n}</small><b>–</b></button>`;
+    const day=DATA.days[d-1];
+    return `<button type="button" class="dchip" style="--tc:${TC[day.tier]}" data-d="${d}" aria-pressed="${d===cur}" aria-label="Day ${d}, ${fm(d,{weekday:'long',month:'long',day:'numeric'})}, ${TN[day.tier]}"><small>${n}</small><b>${fm(d,{day:'numeric'})}</b></button>`;
+  }).join('');
+  $('strip').querySelectorAll('[data-d]').forEach(b=>b.addEventListener('click',()=>go(+b.dataset.d)));
+}
+function ring(d,prog){
+  const p=d.p*4,c=d.c*4,f=d.f*9,t=p+c+f,R=48,C=2*Math.PI*R;let acc=0;
+  return [[p/t,'var(--p)'],[c/t,'var(--c)'],[f/t,'var(--f)']].map(([x,col])=>{
+    const L=Math.max(0,x*C*prog-2),o=-(acc*C+1);acc+=x;
+    return `<circle cx="60" cy="60" r="48" fill="none" stroke="${col}" stroke-width="14" stroke-dasharray="${L} ${C}" stroke-dashoffset="${o}"/>`}).join('');
+}
+function dayUI(quiet){
+  const d=getDay(cur),t=d.p*4+d.c*4+d.f*9;
+  const pct=(a,b)=>Math.round(a/b*100)+'%';
+  const anim=(i)=>quiet?'animation:none;':`animation-delay:${reduce?0:60*i}ms`;
+  const meals=d.meals.map((m,i)=>`
+    <article class="card meal rise" style="${anim(i)}">
+      ${IMGS[m.key]?`<img src="${IMGS[m.key]}" alt="${esc(m.name)}" loading="lazy">`:''}
+      <div class="body">
+        <div class="slot">${esc(m.slot.toUpperCase())} · ${esc(m.time)}</div>
+        <h3>${esc(m.name)}</h3>
+        <div class="kc"><b>${m.kcal}</b><span>kcal</span></div>
+        <div class="mc"><div style="--k:var(--p)">${m.p} g<small>PROTEIN</small></div><div style="--k:var(--c)">${m.c} g<small>CARBS</small></div><div style="--k:var(--f)">${m.f} g<small>FAT</small></div></div>
+        <ul class="ing">${m.lines.map(l=>`<li class="${l.add?'add':''}${l.sw?' swapped':''}"><span class="t">${esc(l.t)}${l.sw?'<em>swapped</em>':''}</span><button type="button" class="swb" data-mi="${m.mi}" data-ii="${l.ii}" aria-label="Swap ${esc(l.t)}">Swap</button></li>`).join('')}</ul>
+      </div>
+    </article>`).join('');
+  $('day').innerHTML=`
+    <div class="dayhead" style="--tc:${TC[d.tier]}">
+      <div><h2>Day ${d.day}</h2><div class="when">${fm(d.day,{weekday:'long',month:'short',day:'numeric'})} · Week ${Math.ceil(d.day/7)}${d.fast?' · '+({STR:'Strength',HIIT:'HIIT',REST:'Rest'}[d.dtype]||'')+' day · '+d.fast+' fast, eat '+d.window:''}</div></div>
+      <span class="tier">${TN[d.tier].toUpperCase()} DAY</span>
+    </div>
+    <div class="card summary${quiet?'':' rise'}">
+      <div class="ring"><svg viewBox="0 0 120 120" id="rsvg" aria-hidden="true"></svg><div class="mid"><b id="rk">0</b><span>KCAL</span></div></div>
+      <div class="macros">
+        <div class="mrow"><i style="background:var(--p)"></i><span>Protein</span><span><b>${d.p} g</b><em>${pct(d.p*4,t)}</em></span></div>
+        <div class="mrow"><i style="background:var(--c)"></i><span>Carbs</span><span><b>${d.c} g</b><em>${pct(d.c*4,t)}</em></span></div>
+        <div class="mrow"><i style="background:var(--f)"></i><span>Fat</span><span><b>${d.f} g</b><em>${pct(d.f*9,t)}</em></span></div>
+      </div>
+    </div>
+    <div class="nf${quiet?'':' rise'}">
+      <h3>Nutrition Facts</h3>
+      <div class="hint">Daily total · ${d.meals.length} meals · % of daily target</div>
+      <div class="big"><span>Calories</span><b>${d.kcal.toLocaleString('en-US')}</b></div>
+      <div class="r"><b>Total Fat</b><span>${d.f} g · ${pct(d.f,GOAL.f)}</span></div>
+      <div class="r"><b>Total Carbohydrate</b><span>${d.c} g${PROFILE.netCarbs?'':' · '+pct(d.c,d.ct)}</span></div>
+      <div class="r sub"><span>Dietary Fiber</span><span>${d.fib} g · ${pct(d.fib,GOAL.fib)}</span></div>
+      <div class="r sub"><span>Net Carbs</span><span>${d.c-d.fib} g${PROFILE.netCarbs?' · '+pct(d.c-d.fib,d.ct):''}</span></div>
+      <div class="r"><b>Protein</b><span>${d.p} g · ${pct(d.p,GOAL.p)}</span></div>
+      <div class="pur">Carb target today: ${TR[d.tier]}. ${esc(PROFILE.checkLabel||'Plan check')}: ${esc(d.check)}${esc(PROFILE.checkSuffix||'')}</div>
+    </div>
+    <div class="meals">${meals}</div>`;
+  $('day').querySelectorAll('.swb').forEach(b=>b.addEventListener('click',()=>openSheet(cur,+b.dataset.mi,+b.dataset.ii)));
+  const svg=$('rsvg');
+  if(reduce||quiet){svg.innerHTML=ring(d,1);$('rk').textContent=d.kcal.toLocaleString('en-US')}
+  else{const t0=performance.now();(function tick(n){const p=Math.min(1,(n-t0)/900),e=1-Math.pow(1-p,3);svg.innerHTML=ring(d,e);$('rk').textContent=Math.round(d.kcal*e).toLocaleString('en-US');if(p<1)requestAnimationFrame(tick)})(t0)}
+  $('prev').disabled=cur<=1;$('next').disabled=cur>=30;
+}
+function go(n,scroll){
+  cur=Math.max(1,Math.min(30,n));curWeek=Math.ceil(cur/7);
+  weeksUI($('weeks'),curWeek,w=>{go((w-1)*7+1)});
+  stripUI();dayUI();swapBar();store.set('day',cur);
+  if(scroll)window.scrollTo({top:$('main').offsetTop-60,behavior:'auto'});
+}
+$('prev').addEventListener('click',()=>go(cur-1,true));
+$('next').addEventListener('click',()=>go(cur+1,true));
+(function(){ // swipe between days
+  let x0=null,y0=null;const el=$('plan');
+  el.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+  el.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;
+    if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.6)go(cur+(dx<0?1:-1),true)},{passive:true});
+})();
+
+/* CALENDAR */
+function buildCal(){
+  let h=['MON','TUE','WED','THU','FRI','SAT','SUN'].map(n=>`<div class="dow">${n}</div>`).join('');
+  for(let n=1;n<=30;n++){
+    const d=getDay(n);
+    h+=`<button type="button" class="cell" style="--tc:${TC[d.tier]}" data-d="${d.day}" aria-label="Day ${d.day}, ${fm(d.day,{month:'long',day:'numeric'})}, ${d.kcal} calories, ${d.c} grams carbohydrate"><small>${fm(d.day,{month:'short'}).toUpperCase()}</small><b>${fm(d.day,{day:'numeric'})}</b><span>${d.kcal}</span><span class="cg">C ${d.c}</span></button>`;
+  }
+  $('calgrid').innerHTML=h;
+  $('calgrid').querySelectorAll('[data-d]').forEach(b=>b.addEventListener('click',()=>{tab('plan');go(+b.dataset.d,true)}));
+}
+buildCal();
+$('key').innerHTML=TIERS.map(k=>`<span style="--tc:${TC[k]}"><i></i>${TN[k]} ${TR[k]}</span>`).join('');
+
+/* GROCERIES (recomputed from the current meals, swaps included) */
+let gw=1;
+function groc(){
+  weeksUI($('gweeks'),gw,w=>{gw=w;groc()});
+  const tot={};
+  DATA.weeks[gw-1].days.forEach(dn=>{for(let mi=0;mi<DATA.days[dn-1].meals.length;mi++)itemsOf(dn,mi).forEach(([k,q])=>{tot[k]=(tot[k]||0)+q})});
+  const c=Math.ceil,cups=n=>c(n*4-1e-9)/4;
+  const names={protein:'Proteins',veg:'Vegetables',carb:'Carbs & fruit',fat:'Healthy fats & pantry'};
+  const cat={protein:[],veg:[],carb:[],fat:[]};
+  Object.keys(tot).forEach(k=>{
+    const d=DB[k],q=tot[k];let txt;
+    if(d.lbf)txt=(q*d.lbf/16).toFixed(1)+' lb'+(d.raw?' raw':'');
+    else if(d.dry)txt=(q/d.dry).toFixed(1)+' cups dry';
+    else if(k==='avo')txt=c(q/4-1e-9)+'';
+    else if(d.u==='')txt=c(q-1e-9)+'';
+    else if(d.u==='cup')txt=q2s(cups(q))+(q<=1?' cup':' cups');
+    else if(d.u==='oz')txt=(Math.round(q*2)/2)+' oz';
+    else if(d.u==='slice')txt=c(q-1e-9)+' slices';
+    else if(d.u==='scoop')txt=q2s(c(q*2-1e-9)/2)+' scoops';
+    else txt=c(q-1e-9)+' '+d.u;
+    cat[d.cat].push([(d.u===''?d.n1:d.n).replace(/^./,x=>x.toUpperCase()).replace(/ \(.*\)$/,''),txt]);
+  });
+  Object.keys(cat).forEach(k=>cat[k].sort((x,y)=>x[0].localeCompare(y[0])));
+  $('glist').innerHTML=Object.keys(names).filter(k=>cat[k].length).map(k=>`<div class="card gcat"><h3>${names[k]}</h3>${cat[k].map(r=>`<div><span>${esc(r[0])}</span><b>${esc(r[1])}</b></div>`).join('')}</div>`).join('');
+}
+
+/* FOOD LIST */
+(function(){
+  const CAPS=PROFILE.caps||{};
+  const GRP=PROFILE.groups||{};
+  const ORDER=PROFILE.groupOrder||[];
+  const TARGET={protein:[1,25,'25 g protein'],carb:[2,20,'20 g carbs'],fat:[3,10,'10 g fat']};
+  const TITLE={protein:'Proteins',carb:'Carbohydrates',veg:'Vegetables',fat:'Healthy fats'};
+  const SUB={protein:'Equal amount = 25 g of protein',carb:'Equal amount = 20 g of carbohydrate',veg:'Swap cup for cup',fat:'Equal amount = 10 g of fat'};
+  let mode='eq';
+  function tags(k){
+    const d=DB[k],cat=d.cat,KE=HASKETO?['Keto','var(--keto)']:['Any day','var(--low)'],LO=HASKETO?['Low+','var(--low)']:['Any day','var(--low)'],MH=['Med / High','var(--high)'];
+    if(cat==='fat')return [KE];
+    if(cat==='protein')return [k==='yog'?LO:KE];
+    if(cat==='carb')return [['blueb','straw','cherry'].includes(k)?LO:MH];
+    const perCup=d.m[2]/(d.vol||1);
+    return [perCup<=7.5?KE:LO];
+  }
+  function row(k){
+    const d=DB[k],cat=d.cat;let q=1,amt;
+    if(mode==='eq'&&cat!=='veg'){const [ix,tg]=TARGET[cat];q=tg/d.m[ix];const st=d.step>=1?d.step:(d.step||.25);q=Math.max(st/2,Math.round(q/(st/2))*(st/2));}
+    if(k==='avo'&&mode==='eq'){q=Math.max(1,Math.round(q))}
+    const m=mac(k,q);
+    const am=cat==='veg'?(mode==='eq'?'1 cup':disp(k,1).replace(/^1 /,'1 ')):dispG(k,q);
+    const vegAm=k==='tomato'?'1 medium tomato = ¾ cup':'1 cup';
+    const cap=CAPS[k],over=(mode==='eq'&&d.cap&&q>d.cap+1e-9)?`<span class="tag" style="--tg:#B3261E">Over the cap · use up to ${d.cap}${d.u==='oz'?' oz':''}</span>`:'';
+    return `<div class="frow"><span class="nm">${esc((d.u===''?d.n1:d.n).replace(/^./,c=>c.toUpperCase()))}</span><span class="am">${esc(cat==='veg'?vegAm:am)}</span>
+      <div class="mc2"><i>${Math.round(m[0])} kcal</i><i>${Math.round(m[1]*10)/10} P</i><i>${Math.round(m[2]*10)/10} C</i><i>${Math.round(m[3]*10)/10} F</i>${tags(k).map(x=>`<span class="tag" style="--tg:${x[1]}">${x[0]}</span>`).join('')}${cap?`<span class="tag" style="--tg:#B35C00">${esc(cap)}</span>`:''}${over}</div></div>`;
+  }
+  function render(){
+    let h='';
+    ['protein','carb','veg','fat'].forEach(cat=>{
+      const keys=Object.keys(DB).filter(k=>DB[k].cat===cat);
+      h+=`<div class="card fcat"><h3>${TITLE[cat]}<small>${SUB[cat]}</small></h3>`;
+      if(cat==='protein'||cat==='carb'){
+        ORDER.forEach(g=>{const ks=keys.filter(k=>GRP[k]===g);if(ks.length)h+=`<div class="fgrp">${g}</div>`+ks.map(row).join('')});
+      }else h+=keys.map(row).join('');
+      h+='</div>';
+    });
+    $('foodlist').innerHTML=h;
+  }
+  render();
+  document.querySelectorAll('#foodseg button').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.m;document.querySelectorAll('#foodseg button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));render()}));
+})();
+
+/* RULES */
+(function(){
+  const pat=PROFILE.cycle,dn=['MON','TUE','WED','THU','FRI','SAT','SUN'];
+  $('cycle').innerHTML=pat.map((t,i)=>`<div style="--tc:${TC[t]}"><small>${dn[i]}</small><b>${TR[t].replace(' g','')}</b></div>`).join('');
+  $('tiers').innerHTML=TIERS.map(k=>`<div style="--tc:${TC[k]}"><b>${TN[k].toUpperCase()}</b>${esc((PROFILE.tierText||{})[k]||'')}</div>`).join('');
+  const R=PROFILE.rules;
+  $('rulelist').innerHTML=R.map(([h,k,l])=>`<div class="card rule" style="--k:${k}"><h3><i></i>${h}</h3><ul>${l.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`).join('');
+  const M=PROFILE.monitoring;
+  $('monlist').innerHTML=M.map(([h,t])=>`<div class="card rule"><h3>${esc(h)}</h3><p style="margin:0;font-size:.95rem">${esc(t)}</p></div>`).join('');
+})();
+
+/* PROFILE TEXT */
+$('heroSub').textContent=`__CLIENT__ · ${PROFILE.sub}`;
+$('chips').innerHTML=PROFILE.chips.map(c=>`<span class="chip">${esc(c)}</span>`).join('')+`<span class="chip go">Starts __STARTLABEL__</span>`;
+$('stepLimit').innerHTML='<b>Check the limits.</b> '+esc(PROFILE.limitNote);
+$('stepTier').innerHTML='<b>Match the day\'s carb tier.</b> '+esc(PROFILE.tierNote);
+$('neverCard').innerHTML=`<h3><i style="background:var(--keto)"></i>${esc(PROFILE.neverTitle)}</h3><ul>${PROFILE.never.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
+$('cycleNote').textContent=PROFILE.cycleNote;
+$('rulesTitle').textContent=PROFILE.rulesTitle;
+$('swapNotes').innerHTML=['Tap <b>Swap</b> next to any ingredient on a day. You only see foods from the same category: protein for protein, carbs for carbs, vegetables for vegetables, healthy fat for fat.','Protein is matched gram for gram of protein, carbs by grams of carbohydrate, fat by grams of fat, and vegetables cup for cup.',esc(PROFILE.swapLimits),'Swaps update the day totals, the calendar and the shopping list. They save on this device only.'].map(x=>`<li>${x}</li>`).join('');
+$('foot').textContent=PROFILE.footer;
+$('grocNote').textContent=PROFILE.groceryNote;
+
+/* BOOT */
+{
+  const sd=parseInt(store.get('day')||'1',10);
+  go(sd>=1&&sd<=30?sd:1);groc();
+  const st=store.get('tab');if(st&&['plan','cal','groc','foods','rules'].includes(st))tab(st);
+}
+</script>
