@@ -1,0 +1,6 @@
+{"queries": ["landscaping company", "lawn care service", "landscaper"],
+ "bbox": [32.69, -96.68, 32.86, -96.50], "rows": 3, "cols": 3, "zoom": 14,
+ "city": "Mesquite", "state": "TX", "category": "landscaping",
+ "max_records": 200, "max_minutes": 75,
+ "social_platforms": ["youtube", "facebook", "instagram", "x", "reddit", "linkedin", "tiktok", "pinterest", "lemon8", "threads"],
+ "authorized_social": false}
