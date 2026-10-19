@@ -24,14 +24,14 @@ def run(argv=None):
     sc=sub.add_parser('scrape',help='scrape <source> "<what>" ["<where>"]: one schema, Jev-routed intent, compact output')
     sc.add_argument('source',choices=['maps','web','instagram','reddit','facebook','x','linkedin','youtube']);sc.add_argument('what');sc.add_argument('where',nargs='?',default='')
     sc.add_argument('-n','--limit',type=int,default=20);sc.add_argument('--workdir',default='runs');sc.add_argument('--sheet',nargs='?',const='',metavar='TITLE',help='Google Sheet (needs Sheets token) + XLSX/CSV')
-    sc.add_argument('--authorized',action='store_true',help='login-backed sources: confirms your own session, low-volume research');sc.add_argument('--max-cost',type=float,default=0.0,help='USD cap for billable collectors (default 0 = free only)')
+    sc.add_argument('--authorized',action='store_true',help='login-backed sources: confirms your own session, low-volume research')
     sc.add_argument('--full',action='store_true',help='print every row (default: compact summary, rows stay on disk)')
     jc=sub.add_parser('jev-compare',help='Live Jev vs code baseline on intent cases; logs, agreement, escalation rate');jc.add_argument('cases',help='JSONL of {source,what,where}')
     args=p.parse_args(argv)
     if args.cmd=='scrape':
         from .scrape import scrape,compact
         from pathlib import Path
-        rows,meta=scrape(args.source,args.what,args.where,args.limit,args.workdir,args.authorized,args.max_cost)
+        rows,meta=scrape(args.source,args.what,args.where,args.limit,args.workdir,args.authorized)
         out=compact(rows,meta)
         if args.sheet is not None and rows:
             from .export import write_files,google_sheet

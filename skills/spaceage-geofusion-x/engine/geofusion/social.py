@@ -39,6 +39,9 @@ def doctor(runner=subprocess.run):
     except ValueError: return {}
 
 
+NOT_INSTALLED = re.compile(r'未安装|未配置|未发现|not installed|not configured', re.I)
+
+
 def readiness(platforms, report=None):
     """Per-platform truthful status. Selection in onboarding is not support."""
     report = doctor() if report is None else report
@@ -52,7 +55,8 @@ def readiness(platforms, report=None):
         else:
             c = report[ch]
             if c.get('status') == 'ok' and c.get('active_backend'): st = 'supported'
-            elif ch in LOGIN_CHANNELS: st = 'requires_auth'
+            # gap fix: doctor reports a missing backend on login channels as an auth problem; installing comes before logging in
+            elif ch in LOGIN_CHANNELS and not NOT_INSTALLED.search(c.get('message') or ''): st = 'requires_auth'
             else: st = 'configuration_missing'
             out[p] = {'status': st, 'backend': c.get('active_backend'), 'detail': (c.get('message') or '')[:300]}
     return out

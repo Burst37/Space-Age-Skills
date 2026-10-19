@@ -8,7 +8,6 @@ No TYPESAFE_API_KEY -> code baseline + per-source default, every decision logged
 
 Token discipline (caveman Mode B): raw collector output and all rows stay on disk; stdout is one compact summary.
 """
-import importlib.util
 import json
 import math
 import os
@@ -136,48 +135,37 @@ def parse_json(text):
     return None
 
 
-def social_cmds(source, kind, q, what, where, n, backend=''):
-    """Agent Reach command chain per (source, intent): first is the doctor-reported backend, rest are fallbacks."""
+def social_cmd(source, kind, q, what, where, n, backend=''):
+    """The command Agent Reach documents for the backend its doctor reports (skills/agent-reach/references/social.md, career.md)."""
     b = (backend or '').lower()
     if source == 'instagram':
-        return [['opencli', 'instagram', 'user', what.lstrip('@'), '--limit', str(n), '-f', 'json']] if kind == 'posts' else [['opencli', 'instagram', 'search', q, '-f', 'json']]
-    if source == 'facebook': return [['opencli', 'facebook', 'search', q, '-f', 'json']]
-    if source == 'reddit':
-        chain = [['opencli', 'reddit', 'search', q, '-f', 'json'], ['rdt', 'search', q, '--limit', str(n), '--json']]
-        return chain[::-1] if 'rdt' in b else chain
-    if source == 'x':
-        chain = [['twitter', 'search', q, '-n', str(n), '--json'], ['opencli', 'twitter', 'search', q, '-f', 'json']]
-        return chain[::-1] if 'opencli' in b else chain
+        return ['opencli', 'instagram', 'user', what.lstrip('@'), '--limit', str(n), '-f', 'json'] if kind == 'posts' else ['opencli', 'instagram', 'search', q, '-f', 'json']
+    if source == 'facebook': return ['opencli', 'facebook', 'search', q, '-f', 'json']
+    if source == 'reddit': return ['rdt', 'search', q, '--limit', str(n), '--json'] if 'rdt' in b else ['opencli', 'reddit', 'search', q, '-f', 'json']
+    if source == 'x': return ['opencli', 'twitter', 'search', q, '-f', 'json'] if 'opencli' in b else ['twitter', 'search', q, '-n', str(n), '--json']
     if source == 'linkedin':
         loc = [f'location={where}'] if where else []
-        return {'people': [['mcporter', 'call', 'linkedin.search_people', f'keywords={what}', *loc]],
-                'companies': [['mcporter', 'call', 'linkedin.get_company_profile', f'company_name={what}']],
-                'jobs': [['mcporter', 'call', 'linkedin.search_jobs', f'keywords={what}', *loc, 'max_pages=1']]}[kind]
+        return {'people': ['mcporter', 'call', 'linkedin.search_people', f'keywords={what}', *loc],
+                'companies': ['mcporter', 'call', 'linkedin.get_company_profile', f'company_name={what}'],
+                'jobs': ['mcporter', 'call', 'linkedin.search_jobs', f'keywords={what}', *loc, 'max_pages=1']}[kind]
     raise ValueError(source)
 
 
 def collect_social(source, kind, what, where, n, raw_dir, backend='', runner=subprocess.run):
-    q = f'{what} {where}'.strip()
-    errors = []
-    for i, cmd in enumerate(social_cmds(source, kind, q, what, where, n, backend)):
-        try: out = run_cli(cmd, raw_dir, f'{source}-{i}', runner)
-        except social.SocialUnavailable as e: errors.append(f'{cmd[0]}: {e.status} {e.detail[:120]}'); continue
-        data = parse_json(out)
-        if data is None:
-            rows = [row(source, kind, cmd[0], title=f'{source} result (unparsed)', text=out)] if out.strip() else []
-        else:
-            rows = from_items(data, source, kind, cmd[0])
-        if kind in ('communities', 'profiles') and source in ('reddit', 'x'):  # derived from post search: one row per distinct author/subreddit
-            seen = {}
-            for r in rows:
-                key = r['author'] or r['title']
-                if key and key not in seen:
-                    seen[key] = row(source, kind, r['collector'], title=key, url=f'https://reddit.com/r/{key}' if source == 'reddit' else f'https://x.com/{key}', text=r['title'], metric=1)
-                elif key: seen[key]['metric'] += 1
-            rows = list(seen.values())
-        if rows: return rows[:n], errors
-        errors.append(f'{cmd[0]}: ran but returned no items')
-    return [], errors
+    cmd = social_cmd(source, kind, f'{what} {where}'.strip(), what, where, n, backend)
+    try: out = run_cli(cmd, raw_dir, source, runner)
+    except social.SocialUnavailable as e: return [], [f'{cmd[0]}: {e.status} {e.detail[:120]}']
+    data = parse_json(out)
+    rows = from_items(data, source, kind, cmd[0]) if data is not None else [row(source, kind, cmd[0], title=f'{source} result (unparsed)', text=out)] if out.strip() else []
+    if kind in ('communities', 'profiles') and source in ('reddit', 'x'):  # add-on: Agent Reach only searches posts; derive one row per subreddit/author
+        seen = {}
+        for r in rows:
+            key = r['author'] or r['title']
+            if key and key not in seen:
+                seen[key] = row(source, kind, r['collector'], title=key, url=f'https://reddit.com/r/{key}' if source == 'reddit' else f'https://x.com/{key}', text=r['title'], metric=1)
+            elif key: seen[key]['metric'] += 1
+        rows = list(seen.values())
+    return rows[:n], ([] if rows else [f'{cmd[0]}: ran but returned no items'])
 
 
 def collect_youtube(kind, what, where, n, yt=None):
@@ -192,97 +180,30 @@ def collect_youtube(kind, what, where, n, yt=None):
     return [row('youtube', kind, 'agent-reach:yt-dlp', title=h.get('title'), url=h.get('url'), author=h.get('channel'), published=h.get('published')) for h in hits]
 
 
-def _post(url, body, headers, timeout=60):
-    with urlopen(Request(url, data=json.dumps(body).encode(), headers={'Content-Type': 'application/json', **headers}), timeout=timeout) as r: return json.loads(r.read())
+# Pages that need more than a clean read go to the owning skill; the engine says which one instead of wrapping it.
+ESCALATE = {'js_or_spa': 'firecrawl-mcp or browserbase-scraper', 'bot_protected': 'stealth-browser-automation (camofox) or scrapling',
+            'structured_fields': 'scrapegraph-ai (LLM extraction guided by <where>)'}
 
 
-# Page collectors: each returns (title, text). Keys stay in env, never in rows or logs.
 def page_defuddle(url, runner=subprocess.run):
+    """skills/defuddle: clean markdown, fewest tokens."""
     r = runner(['defuddle', 'parse', web.safe_url(url), '--md'], capture_output=True, text=True, timeout=90)
     if r.returncode or not r.stdout.strip(): raise RuntimeError((r.stderr or 'empty')[-200:])
     m = re.search(r'^#\s+(.+)$', r.stdout, re.M)
     return (m.group(1) if m else domain(url)), r.stdout
 
 
-def page_static(url):
-    res = web.fetch_static(url); p = web.parse(res['html']); return p.title.strip(), ' '.join(p.text)
+def page_jina(url, opener=urlopen):
+    """skills/agent-reach zero-config web read (r.jina.ai)."""
+    with opener(Request('https://r.jina.ai/' + web.safe_url(url), headers={'User-Agent': UA}), timeout=60) as r: md = r.read().decode('utf-8', 'replace')
+    m = re.search(r'^Title:\s*(.+)$', md, re.M)
+    return (m.group(1).strip() if m else domain(url)), md
 
 
-def page_browser(url):
-    res = web.fetch_rendered(url); p = web.parse(res['html']); return p.title.strip(), ' '.join(p.text)
+PAGE = {'defuddle': page_defuddle, 'agent-reach:jina': page_jina}
 
 
-def page_scrapling(url):
-    from scrapling.fetchers import Fetcher
-    pg = Fetcher.get(web.safe_url(url), timeout=20)
-    p = web.parse(str(getattr(pg, 'html_content', None) or pg.body)); return p.title.strip(), ' '.join(p.text)
-
-
-def page_camofox(url, base='http://localhost:9377'):
-    # shortcut: minimal tab+snapshot call per skills/stealth-browser-automation; upgrade if the camofox API changes
-    tab = _post(f'{base}/tabs', {'userId': 'geofusion', 'sessionKey': 'scrape', 'url': web.safe_url(url)}, {})
-    with urlopen(f"{base}/tabs/{tab.get('tabId') or tab.get('id')}/snapshot?userId=geofusion", timeout=60) as r: snap = json.loads(r.read())
-    return snap.get('title', domain(url)), str(snap.get('snapshot') or snap.get('content') or snap)
-
-
-def page_firecrawl(url):
-    d = _post('https://api.firecrawl.dev/v1/scrape', {'url': web.safe_url(url), 'formats': ['markdown']}, {'Authorization': f"Bearer {os.environ['FIRECRAWL_API_KEY']}"})['data']
-    return d.get('metadata', {}).get('title', ''), d.get('markdown', '')
-
-
-def page_browserbase(url):
-    d = _post('https://api.browserbase.com/v1/fetch', {'url': web.safe_url(url), 'format': 'markdown'}, {'X-BB-API-Key': os.environ['BROWSERBASE_API_KEY']})
-    return domain(url), d.get('content', '')
-
-
-def page_scrapegraph(url, what):
-    from scrapegraphai.graphs import SmartScraperGraph
-    res = SmartScraperGraph(prompt=what, source=web.safe_url(url), config={'llm': {'model': 'openai/gpt-4o-mini', 'api_key': os.environ['OPENAI_API_KEY']}}).run()
-    return domain(url), json.dumps(res, ensure_ascii=False)
-
-
-def search_exa(q, n):
-    return [{'title': h['title'], 'url': h['url'], 'text': h['text']} for h in social.exa_search(q, n)['results']]
-
-
-def search_firecrawl(q, n):
-    d = _post('https://api.firecrawl.dev/v1/search', {'query': q, 'limit': n}, {'Authorization': f"Bearer {os.environ['FIRECRAWL_API_KEY']}"})
-    return [{'title': h.get('title', ''), 'url': h.get('url', ''), 'text': h.get('description', '')} for h in d.get('data', [])]
-
-
-def search_browserbase(q, n):
-    d = _post('https://api.browserbase.com/v1/search', {'query': q, 'num_results': n}, {'X-BB-API-Key': os.environ['BROWSERBASE_API_KEY']})
-    return [{'title': h.get('title', ''), 'url': h.get('url', ''), 'text': h.get('snippet') or h.get('description', '')} for h in d.get('results', [])]
-
-
-PAGE = {'web.defuddle': page_defuddle, 'web.static': page_static, 'web.browser': page_browser, 'web.scrapling': page_scrapling, 'web.camofox': page_camofox,
-        'web.firecrawl': page_firecrawl, 'web.browserbase': page_browserbase, 'web.scrapegraph': page_scrapegraph}
-SEARCH = {'search.exa': search_exa, 'web.firecrawl': search_firecrawl, 'web.browserbase': search_browserbase}
-
-
-def probe_tools():
-    """Real, cheap probes (PATH, import spec, localhost port). Health is never assumed."""
-    def port(url):
-        try: urlopen(url, timeout=1); return True
-        except Exception as e: return getattr(e, 'code', None) is not None  # any HTTP answer means the server is up
-    return {'mcporter': bool(shutil.which('mcporter')), 'defuddle': bool(shutil.which('defuddle')), 'scrapling': bool(importlib.util.find_spec('scrapling')),
-            'scrapegraph': bool(importlib.util.find_spec('scrapegraphai')), 'camofox': port('http://localhost:9377/')}
-
-
-def try_chain(decision, fns, call):
-    """Selected capability first, then the fallback chain; first non-empty result wins. Errors are kept for the summary."""
-    errors = []
-    for name in [decision['selected_capability'], *decision['fallback_chain']]:
-        if not name or name not in fns: continue
-        try:
-            out = call(fns[name])
-            if out: return name, out, errors
-            errors.append(f'{name}: empty')
-        except Exception as e: errors.append(f'{name}: {str(e)[:120]}')
-    return None, None, errors
-
-
-def scrape(source, what, where='', n=20, workdir='runs', authorized=False, max_cost_usd=0.0, judge=None, gosom_runner=None, tools=None, social_ready=None, log=lambda m: None):
+def scrape(source, what, where='', n=20, workdir='runs', authorized=False, judge=None, gosom_runner=None, social_ready=None):
     """Returns (rows, meta). rows follow ROW; meta is the compact, agent-facing record of what happened and why."""
     if source not in SOURCES: raise ValueError(f'source must be one of {", ".join(SOURCES)}')
     if not (what or '').strip(): raise ValueError('<what> is required')
@@ -291,7 +212,6 @@ def scrape(source, what, where='', n=20, workdir='runs', authorized=False, max_c
     judge = judge or Judge(log_path=wd / 'judgments.jsonl')
     d = decide(judge, source, what, where)
     meta = {'source': source, 'what': what, 'where': where, **d, 'judge_mode': judge.mode, 'workdir': str(wd), 'errors': []}
-    tools = probe_tools() if tools is None else tools
     rows = []
     if source == 'maps':
         if not where: raise ValueError('maps needs "<where>" (city, area or address)')
@@ -300,7 +220,7 @@ def scrape(source, what, where='', n=20, workdir='runs', authorized=False, max_c
         meta.update(area=place, bbox=bbox, tiles=r_ * c_)
         try: maps.gosom_command(); gosom_ok = True
         except RuntimeError as e: gosom_ok = bool(gosom_runner); meta['errors'].append(str(e)[:200])
-        dec = route({'platform': 'google_maps', 'operation': 'tile'}, registry(gosom_ok=gosom_ok, tools=tools))
+        dec = route({'platform': 'google_maps', 'operation': 'tile'}, registry(gosom_ok=gosom_ok))
         meta['route'] = dec['selected_capability'] or dec['rationale']
         if dec['selected_capability']:
             store = Store(wd / 'geofusion.db')
@@ -311,27 +231,26 @@ def scrape(source, what, where='', n=20, workdir='runs', authorized=False, max_c
             rows = [row('maps', 'businesses', 'gosom', title=b.get('name'), url=b.get('source_url'), text=b.get('category'), location=b.get('address'),
                         phone=b.get('phone'), website=b.get('website'), rating=b.get('rating'), reviews=b.get('review_count')) for b in store.records()][:n if n else None]
     elif source == 'web':
-        caps = registry(tools=tools)
+        name, errs = None, []
         if d['intent'] == 'page':
-            dec = route({'platform': 'websites', 'operation': 'fetch'}, caps, max_cost_usd)
-            def call(f):  # for a URL, <where> doubles as the extraction instruction (used by scrapegraph)
-                t = f(what, where or 'main content') if f is page_scrapegraph else f(what)
-                return t if t[1].strip() else None
-            name, out, errs = try_chain(dec, PAGE, call)
-            if out:
-                (raw / 'page.md').write_text(out[1], encoding='utf-8')
-                rows = [row('web', 'page', name, title=out[0], url=what, website=domain(what), text=out[1])]
+            for name, f in PAGE.items():
+                try: title, text = f(what)
+                except Exception as e: errs.append(f'{name}: {str(e)[:120]}'); continue
+                if text.strip():
+                    (raw / 'page.md').write_text(text, encoding='utf-8')
+                    rows = [row('web', 'page', name, title=title, url=what, website=domain(what), text=text)]; break
+            else: name, meta['next'] = None, ESCALATE
         else:
-            dec = route({'platform': 'web_search', 'operation': 'search'}, caps, max_cost_usd)
-            name, out, errs = try_chain(dec, SEARCH, lambda f: f(f'{what} {where}'.strip(), n))
-            if out:
-                (raw / 'search.json').write_text(json.dumps(out, ensure_ascii=False), encoding='utf-8')
-                rows = [row('web', 'search', name, title=h['title'], url=h['url'], website=domain(h['url']), text=h['text']) for h in out[:n]]
-        meta.update(route=name or dec['rationale']); meta['errors'] += errs
+            name = 'agent-reach:exa'
+            try: hits = social.exa_search(f'{what} {where}'.strip(), n)['results']
+            except Exception as e: hits, errs = [], [f'{name}: {str(e)[:160]}']
+            (raw / 'search.json').write_text(json.dumps(hits, ensure_ascii=False, default=str), encoding='utf-8')
+            rows = [row('web', 'search', name, title=h.get('title'), url=h.get('url'), website=domain(h.get('url', '')), text=h.get('text')) for h in hits[:n]]
+        meta.update(route=name if rows else 'none'); meta['errors'] += errs
     else:
         ready = social_ready if social_ready is not None else social.readiness([source])
-        caps = registry(social_ready=ready, tools=tools)
-        dec = route({'platform': source, 'operation': 'search'}, caps, max_cost_usd, authorized=authorized)
+        caps = registry(social_ready=ready)
+        dec = route({'platform': source, 'operation': 'search'}, caps, authorized=authorized)
         meta['route'] = dec['selected_capability'] or dec['rationale']
         meta['readiness'] = ready.get(source, {}).get('status')
         if not dec['selected_capability']:

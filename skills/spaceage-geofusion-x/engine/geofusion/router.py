@@ -54,11 +54,10 @@ class Capability:
     output_schema: str = 'canonical business / social item with provenance'
 
 
-def registry(env=None, social_ready=None, gosom_ok=None, tools=None):
-    """Capabilities with health filled from real probes passed in by the caller (never assumed). tools: {probe_name: bool}."""
+def registry(env=None, social_ready=None, gosom_ok=None):
+    """Capabilities with health filled from real probes passed in by the caller (never assumed)."""
     env = env if env is not None else os.environ
-    social_ready, tools = social_ready or {}, tools or {}
-    def th(name, missing='configuration_missing'): return 'live' if tools.get(name) else missing
+    social_ready = social_ready or {}
     def sh(p): return {'supported': 'live'}.get(social_ready.get(p, {}).get('status'), social_ready.get(p, {}).get('status', 'unknown'))
     return [
         Capability('maps.gosom.fast', 'gosom', ['google_maps'], ['search', 'tile'], 'none', 'local binary/docker', 0.0, 8, '1 tile at a time',
@@ -67,18 +66,9 @@ def registry(env=None, social_ready=None, gosom_ok=None, tools=None):
         Capability('web.static', 'stdlib', ['websites'], ['fetch', 'audit'], 'none', 'local', 0.0, 2, 'per-domain sequential', 'live'),
         Capability('web.browser', 'playwright', ['websites'], ['fetch', 'audit'], 'none', 'local chromium', 0.0, 8, 'per-domain sequential', 'live'),
         Capability('web.lighthouse', 'lighthouse', ['websites'], ['performance_audit'], 'none', 'local CLI', 0.0, 30, '1 at a time', 'unknown'),
-        Capability('web.firecrawl', 'firecrawl', ['websites', 'web_search'], ['scrape', 'search', 'crawl', 'fetch'], 'api_key', 'SaaS', 0.001, 5, 'plan limits',
+        Capability('web.firecrawl', 'firecrawl', ['websites'], ['scrape', 'search', 'crawl'], 'api_key', 'SaaS', 0.001, 5, 'plan limits',
                    'live' if env.get('FIRECRAWL_API_KEY') else 'configuration_missing', 'billable credits'),
-        Capability('search.exa', 'agent-reach/exa', ['web_search'], ['search'], 'none', 'hosted MCP', 0.0, 4, 'free tier', th('mcporter', 'unknown')),
-        # merged web-scraping skills (Space-Age-Skills/skills/<name>) as page collectors; cheapest live one wins, the rest are fallbacks
-        Capability('web.defuddle', 'defuddle', ['websites'], ['fetch'], 'none', 'local CLI', 0.0, 1.5, 'per-domain sequential', th('defuddle'), 'clean markdown = fewest tokens'),
-        Capability('web.scrapling', 'scrapling', ['websites'], ['fetch'], 'none', 'local python', 0.0, 4, 'per-domain sequential', th('scrapling')),
-        Capability('web.camofox', 'stealth-browser-automation', ['websites'], ['fetch'], 'none', 'localhost:9377', 0.0, 10, 'per-domain sequential', th('camofox'),
-                   'only where the site ToS permits automation; no CAPTCHA/login bypass'),
-        Capability('web.browserbase', 'browserbase-scraper', ['websites', 'web_search'], ['fetch', 'search'], 'api_key', 'SaaS', 0.002, 6, 'plan limits',
-                   'live' if env.get('BROWSERBASE_API_KEY') else 'configuration_missing', 'billable'),
-        Capability('web.scrapegraph', 'scrapegraph-ai', ['websites'], ['fetch'], 'api_key', 'local python + LLM', 0.003, 15, 'LLM limits',
-                   'live' if tools.get('scrapegraph') and env.get('OPENAI_API_KEY') else 'configuration_missing', 'LLM extraction guided by <what>; billable'),
+        Capability('search.exa', 'agent-reach/exa', ['web_search'], ['search'], 'none', 'hosted MCP', 0.0, 4, 'free tier', 'unknown'),
         Capability('social.youtube', 'agent-reach/yt-dlp', ['youtube'], ['search', 'posts', 'profile'], 'none', 'local CLI', 0.0, 5, 'polite', sh('youtube')),
         *[Capability(f'social.{p}', 'agent-reach', [p], ['profile', 'search', 'posts', 'comments'], 'user_session', 'local CLI', 0.0, 5, 'platform limits', sh(p),
                      'user-authorized session only; no MFA/CAPTCHA bypass') for p in ('x', 'facebook', 'instagram', 'reddit', 'linkedin', 'xiaohongshu')],

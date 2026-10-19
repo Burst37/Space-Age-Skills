@@ -36,7 +36,7 @@ python -m geofusion report --workdir runs/mesquite --job mesquite-1 --out runs/m
 ## Environment variables (names only)
 
 `GEOFUSION_GOSOM_BIN`, `GEOFUSION_LIGHTHOUSE`, `CHROME_PATH`, `GEOFUSION_MCPORTER_CONFIG`, `TYPESAFE_API_KEY`, `EXA_API_KEY`,
-`FIRECRAWL_API_KEY`, `BROWSERBASE_API_KEY`, `OPENAI_API_KEY` (scrapegraph-ai only), `GOOGLE_OAUTH_ACCESS_TOKEN`. None are required for the offline tests.
+`FIRECRAWL_API_KEY`, `GOOGLE_OAUTH_ACCESS_TOKEN`. None are required for the offline tests.
 
 ## Licenses
 

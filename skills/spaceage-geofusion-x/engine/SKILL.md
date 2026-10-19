@@ -9,9 +9,9 @@ description: >
   in Mesquite TX and find weak websites", "audit these local competitors", "which plumbers have no site".
   General purpose: local research, competitor analysis, lead lists, reviews, enrichment. One-line scrape of any
   source into a sheet: `geofusion scrape <maps|web|instagram|reddit|facebook|x|linkedin|youtube> "<what>" ["<where>"] --sheet`.
-  Runs real collectors (GoSom Maps, Playwright, Lighthouse, Agent Reach, merged web-scraping skills: defuddle,
-  scrapling, firecrawl, browserbase, camofox stealth browser, scrapegraph-ai); TypeSafe Jev routes intent;
-  reports every platform's true status.
+  Runs GoSom Maps, Playwright and Lighthouse itself; delegates social and web reading to the existing skills
+  (agent-reach, defuddle) and names the heavier scraping skill to use when a page needs one; TypeSafe Jev
+  routes intent; reports every platform's true status.
 platforms: [Claude_Code, Codex, Cursor, Gemini_CLI, Antigravity, any agent with a shell]
 requires: [python>=3.10]
 optional: [go>=1.24 or docker (GoSom), node>=20 (Lighthouse, mcporter), playwright chromium, agent-reach]
@@ -37,36 +37,48 @@ Optional env (names only, never paste values into chat): `TYPESAFE_API_KEY` (Jev
 
 ```bash
 python -m geofusion scrape maps "landscaping" "Mesquite TX" --sheet          # geocode -> bbox -> GoSom tiles
-python -m geofusion scrape web "landscapers" "Mesquite TX"                    # search (Exa / Firecrawl / Browserbase)
-python -m geofusion scrape web "https://example.com/pricing" "pricing table"  # one page; <where> = extraction hint
+python -m geofusion scrape web "landscapers" "Mesquite TX"                    # search (Agent Reach -> Exa)
+python -m geofusion scrape web "https://example.com/pricing"                  # one page (defuddle -> Agent Reach reader)
 python -m geofusion scrape reddit "best lawn service recommendations" "Dallas" --authorized
 python -m geofusion scrape youtube "sod installation" "Texas" -n 10
 ```
 
 Flags: `-n` row cap (20), `--sheet [TITLE]` (native Google Sheet with Sheets token, always XLSX+CSV in `<workdir>/report`),
-`--authorized` (login-backed sources: you confirm it is your own session, low-volume research), `--max-cost USD`
-(billable collectors stay off at the default 0), `--full` (print all rows instead of the compact summary).
+`--authorized` (login-backed sources: you confirm it is your own session, low-volume research),
+`--full` (print all rows instead of the compact summary).
 
 Output: one compact JSON line — `status` (done | blocked | empty), `intent` + `intent_by` (code | jev | default),
 `route` (collector used), `rows`, `errors` (why something was blocked), `top` 5 trimmed rows, `workdir`.
 All rows are in `<workdir>/rows.jsonl`, raw collector output in `<workdir>/raw/`, decisions in `judgments.jsonl`.
 Read those files only when the summary is not enough.
 
-| Source | Collector chain (cheapest live first) | Needs |
-|---|---|---|
-| maps | Nominatim geocode -> GoSom fast mode, tiled | GoSom binary or Docker; `<where>` required |
-| web (query) | Exa via mcporter -> Firecrawl -> Browserbase Search | mcporter; keys for the paid ones + `--max-cost` |
-| web (URL) | defuddle -> static -> scrapling -> Playwright -> camofox -> Firecrawl -> Browserbase Fetch -> scrapegraph-ai | each probed; paid ones need key + `--max-cost` |
-| instagram, facebook | `opencli <p> search` (instagram posts: `opencli instagram user`) | Agent Reach + user's own browser session, `--authorized` |
-| reddit | `opencli reddit search` <-> `rdt search` (doctor's backend first); communities derived from posts | same |
-| x | `twitter search --json` <-> `opencli twitter search` | same |
-| linkedin | `mcporter call linkedin.search_people / get_company_profile / search_jobs` | same |
-| youtube | yt-dlp search (Agent Reach backend); channels derived from videos | yt-dlp |
+The engine owns only what no existing skill does: Maps tiling, the intent decision, one row schema, the sheet
+export and the compact summary. Everything else is delegated to the skill that already does it.
+
+| Source | Delegated to | Engine add-on | Needs |
+|---|---|---|---|
+| maps | — (engine-owned) | Nominatim geocode -> GoSom fast mode, tiled | GoSom binary or Docker; `<where>` required |
+| web (query) | `agent-reach` (Exa via mcporter) | row schema | mcporter |
+| web (URL) | `defuddle`, then `agent-reach` reader (r.jina.ai) | if both fail, `next` names the skill to use (below) | — |
+| instagram, facebook, reddit, x, linkedin | `agent-reach`: the command its doctor's active backend documents | communities/profiles derived from post search (reddit, x) | backend installed + your own login, `--authorized` |
+| youtube | `agent-reach` (yt-dlp) | channels derived from videos | yt-dlp |
+
+When to hand a page to another skill (the agent runs it; the engine does not wrap it):
+
+| Page | Skill |
+|---|---|
+| JS-rendered / single-page app, or a whole-site crawl | `firecrawl-mcp`, or `browserbase-scraper` (hosted browser) |
+| Bot-protected or needs real clicks | `stealth-browser-automation` (camofox), or the Scrapling library |
+| Specific fields from unknown or unstable markup | `scrapegraph-ai` |
+| Social platform not in the list above | `agent-reach` directly |
+
+Add engine code only for a gap a skill cannot cover (e.g. Agent Reach reports a missing backend on login
+channels as `requires_auth`; the engine reports it as `configuration_missing` so you install before logging in).
 
 Routing for `scrape` (code first, Jev only where code cannot decide):
 
 - Code: the source (always the user's), URL vs query, keyword intent baseline (exactly one signal -> decided),
-  health/auth/budget gates via `router.route()`, geocoding, parsing.
+  health/auth gates via `router.route()`, geocoding, parsing.
 - Jev `intent` (Choice over the source's record kinds, floor 0.75): only when the baseline sees zero or several signals.
   No key -> the source's default kind, logged as `default (none)`.
 - Jev `source_fit` (Noul, floor 0.5 on 2·|p−0.5|): advisory hint in the summary when p < 0.5; never switches the source.
