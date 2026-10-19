@@ -75,20 +75,20 @@ def tabs(store, job_id):
     return rows
 
 
-def write_files(rows, outdir):
+def write_files(rows, outdir, order=TAB_ORDER):
     out = Path(outdir); out.mkdir(parents=True, exist_ok=True)
     for name, data in rows.items():
         if not data: continue
         with (out / f"{name.replace(' ', '_').replace('+', 'and')}.csv").open('w', newline='', encoding='utf-8') as f:
             w = csv.DictWriter(f, fieldnames=list(dict.fromkeys(k for r in data for k in r))); w.writeheader(); w.writerows(data)
     (out / 'all_tabs.jsonl').write_text(''.join(json.dumps({'tab': n, **r}, ensure_ascii=False, default=str) + '\n' for n, d in rows.items() for r in d))
-    return xlsx(rows, out / 'geofusion_report.xlsx')
+    return xlsx(rows, out / 'geofusion_report.xlsx', order)
 
 
-def xlsx(rows, path):
+def xlsx(rows, path, order=TAB_ORDER):
     from openpyxl import Workbook
     wb = Workbook(); wb.remove(wb.active)
-    for name in TAB_ORDER:
+    for name in order:
         data = rows.get(name) or [{'Status': 'no rows for this run'}]
         ws = wb.create_sheet(name[:31]); hdr = list(dict.fromkeys(k for r in data for k in r)); ws.append(hdr)
         for r in data: ws.append([v if isinstance(v, (int, float)) or v is None else str(v) for v in (r.get(h) for h in hdr)])
@@ -122,10 +122,10 @@ def _api(method, url, token, body=None):
     with urlopen(req, timeout=60) as r: return json.loads(r.read())
 
 
-def google_sheet(rows, title, token=None):
+def google_sheet(rows, title, token=None, order=TAB_ORDER):
     """Create a native Google Sheet (first tab = Ranked Leads), write all tabs, read every tab back and verify."""
     token = token or google_token(); api = 'https://sheets.googleapis.com/v4/spreadsheets'
-    names = [n for n in TAB_ORDER if rows.get(n)]
+    names = [n for n in order if rows.get(n)]
     ss = _api('POST', api, token, {'properties': {'title': title}, 'sheets': [{'properties': {'title': n[:31], 'index': i}} for i, n in enumerate(names)]})
     data = []
     for n in names:

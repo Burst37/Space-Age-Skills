@@ -16,7 +16,8 @@ JEV_URL = 'https://api.typesafe.ai/v1/systemone'
 # All Jev questions and thresholds live here so they can be reviewed together (TypeSafe skill guidance).
 # Pinned to a versioned model: the floor is tuned against it; switch deliberately, not via the moving `jev-latest` alias.
 JEV_MODEL = 'jev-1.13.0'
-FLOORS = {'category_relevance': 0.75}  # below -> escalate to human/frontier review
+# Choice: returned confidence. Noul: 2*|p-0.5| (uncertainty proxy, not calibrated) — scales differ, floors are per question.
+FLOORS = {'category_relevance': 0.75, 'intent': 0.75, 'source_fit': 0.5}  # below -> escalate to human/frontier review
 QUESTIONS = {
     'category_relevance': lambda target: {
         'type': 'choice',
@@ -24,6 +25,15 @@ QUESTIONS = {
         'criteria': {'relevant': f'Primarily sells or performs {target} services',
                      'adjacent': f'A related trade (e.g. supplier, general contractor, cleaning) that may sometimes do {target} work',
                      'unrelated': f'Not a {target} provider'}},
+    # scrape: which record kind the user wants from the source they named (options come from scrape.INTENTS)
+    'intent': lambda source, options: {
+        'type': 'choice',
+        'instructions': f'Using `what` and `where`, which kind of {source} records is the user asking for?',
+        'criteria': options},
+    # scrape: advisory only — never switches the user's source, only adds a hint to the summary
+    'source_fit': lambda source: {
+        'type': 'noul',
+        'instructions': f'Using `what` and `where`, is {source} a place where these records are likely to be found publicly?'},
 }
 
 
@@ -44,10 +54,11 @@ class Capability:
     output_schema: str = 'canonical business / social item with provenance'
 
 
-def registry(env=None, social_ready=None, gosom_ok=None):
-    """Capabilities with health filled from real probes passed in by the caller (never assumed)."""
+def registry(env=None, social_ready=None, gosom_ok=None, tools=None):
+    """Capabilities with health filled from real probes passed in by the caller (never assumed). tools: {probe_name: bool}."""
     env = env if env is not None else os.environ
-    social_ready = social_ready or {}
+    social_ready, tools = social_ready or {}, tools or {}
+    def th(name, missing='configuration_missing'): return 'live' if tools.get(name) else missing
     def sh(p): return {'supported': 'live'}.get(social_ready.get(p, {}).get('status'), social_ready.get(p, {}).get('status', 'unknown'))
     return [
         Capability('maps.gosom.fast', 'gosom', ['google_maps'], ['search', 'tile'], 'none', 'local binary/docker', 0.0, 8, '1 tile at a time',
@@ -56,9 +67,18 @@ def registry(env=None, social_ready=None, gosom_ok=None):
         Capability('web.static', 'stdlib', ['websites'], ['fetch', 'audit'], 'none', 'local', 0.0, 2, 'per-domain sequential', 'live'),
         Capability('web.browser', 'playwright', ['websites'], ['fetch', 'audit'], 'none', 'local chromium', 0.0, 8, 'per-domain sequential', 'live'),
         Capability('web.lighthouse', 'lighthouse', ['websites'], ['performance_audit'], 'none', 'local CLI', 0.0, 30, '1 at a time', 'unknown'),
-        Capability('web.firecrawl', 'firecrawl', ['websites'], ['scrape', 'search', 'crawl'], 'api_key', 'SaaS', 0.001, 5, 'plan limits',
+        Capability('web.firecrawl', 'firecrawl', ['websites', 'web_search'], ['scrape', 'search', 'crawl', 'fetch'], 'api_key', 'SaaS', 0.001, 5, 'plan limits',
                    'live' if env.get('FIRECRAWL_API_KEY') else 'configuration_missing', 'billable credits'),
-        Capability('search.exa', 'agent-reach/exa', ['web_search'], ['search'], 'none', 'hosted MCP', 0.0, 4, 'free tier', 'unknown'),
+        Capability('search.exa', 'agent-reach/exa', ['web_search'], ['search'], 'none', 'hosted MCP', 0.0, 4, 'free tier', th('mcporter', 'unknown')),
+        # merged web-scraping skills (Space-Age-Skills/skills/<name>) as page collectors; cheapest live one wins, the rest are fallbacks
+        Capability('web.defuddle', 'defuddle', ['websites'], ['fetch'], 'none', 'local CLI', 0.0, 1.5, 'per-domain sequential', th('defuddle'), 'clean markdown = fewest tokens'),
+        Capability('web.scrapling', 'scrapling', ['websites'], ['fetch'], 'none', 'local python', 0.0, 4, 'per-domain sequential', th('scrapling')),
+        Capability('web.camofox', 'stealth-browser-automation', ['websites'], ['fetch'], 'none', 'localhost:9377', 0.0, 10, 'per-domain sequential', th('camofox'),
+                   'only where the site ToS permits automation; no CAPTCHA/login bypass'),
+        Capability('web.browserbase', 'browserbase-scraper', ['websites', 'web_search'], ['fetch', 'search'], 'api_key', 'SaaS', 0.002, 6, 'plan limits',
+                   'live' if env.get('BROWSERBASE_API_KEY') else 'configuration_missing', 'billable'),
+        Capability('web.scrapegraph', 'scrapegraph-ai', ['websites'], ['fetch'], 'api_key', 'local python + LLM', 0.003, 15, 'LLM limits',
+                   'live' if tools.get('scrapegraph') and env.get('OPENAI_API_KEY') else 'configuration_missing', 'LLM extraction guided by <what>; billable'),
         Capability('social.youtube', 'agent-reach/yt-dlp', ['youtube'], ['search', 'posts', 'profile'], 'none', 'local CLI', 0.0, 5, 'polite', sh('youtube')),
         *[Capability(f'social.{p}', 'agent-reach', [p], ['profile', 'search', 'posts', 'comments'], 'user_session', 'local CLI', 0.0, 5, 'platform limits', sh(p),
                      'user-authorized session only; no MFA/CAPTCHA bypass') for p in ('x', 'facebook', 'instagram', 'reddit', 'linkedin', 'xiaohongshu')],
@@ -95,7 +115,7 @@ class Judge:
         req = Request(JEV_URL, data=json.dumps(body).encode(), headers={'Authorization': f"Bearer {os.environ['TYPESAFE_API_KEY']}", 'Content-Type': 'application/json'})
         with urlopen(req, timeout=self.timeout) as r: return json.loads(r.read())
     def choice(self, name, state, question, baseline):
-        """baseline: the deterministic answer or None when code cannot decide. Returns a logged decision."""
+        """baseline: the deterministic answer or None when code cannot decide. Returns a logged decision (Choice, Noul or Score)."""
         floor = self.floor if self.floor is not None else FLOORS[name]
         rec = {'judgment': name, 'state': state, 'at': now(), 'baseline': baseline}
         if baseline is not None: rec.update(answer=baseline, by='code', confidence=1.0)
@@ -105,8 +125,10 @@ class Judge:
             try:
                 resp = self.poster({'state': state, 'model': JEV_MODEL, 'questions': {name: question}})
                 a = resp['answers'][name]
-                rec.update(answer=a['choice'], by='jev', model=resp.get('model'), confidence=a.get('confidence'), probabilities=a.get('probabilities'), ms=round(1000 * (time.monotonic() - t)))
-                if (a.get('confidence') or 0) < floor: rec.update(escalate=True, reason=f'confidence below floor {floor}')
+                if 'noul' in a: answer, conf = a['noul'], round(2 * abs(a['noul'] - 0.5), 3)
+                else: answer, conf = a.get('choice', a.get('score')), a.get('confidence')
+                rec.update(answer=answer, by='jev', model=resp.get('model'), confidence=conf, probabilities=a.get('probabilities'), ms=round(1000 * (time.monotonic() - t)))
+                if (conf or 0) < floor: rec.update(escalate=True, reason=f'confidence below floor {floor}')
             except Exception as e:  # availability blip: bypass, never block or fail closed
                 rec.update(answer=None, by='bypass', escalate=True, reason=f'jev unavailable: {str(e)[:120]}')
         self.log.append(rec)

@@ -11,7 +11,13 @@
 | openpyxl | 3.1.5 | MIT | XLSX export |
 | Scrapling | not pinned | BSD-3-Clause | v0.4 optional single-page adapter (kept, unchanged) |
 | Firecrawl SDK | not pinned | MIT (SDK) | v0.4 optional adapter (kept); needs FIRECRAWL_API_KEY |
-| TypeSafe Jev | API jev-latest | proprietary API | optional judge, POST /v1/systemone |
+| TypeSafe Jev | model pinned jev-1.13.0 | proprietary API | optional judge, POST /v1/systemone (Choice + Noul) |
+| Nominatim (OSM) | public API | ODbL data | `scrape maps` geocode area -> bbox, 1 request per run, identifying User-Agent |
+| defuddle CLI | not pinned | MIT | `scrape web <url>` collector when on PATH (skills/defuddle) |
+| camofox-browser | not pinned | see upstream | `scrape web <url>` collector when localhost:9377 answers (skills/stealth-browser-automation) |
+| Browserbase Fetch/Search API | REST v1 | proprietary API | optional collector; needs BROWSERBASE_API_KEY + `--max-cost` (skills/browserbase-scraper) |
+| ScrapeGraphAI | not pinned | MIT | optional LLM page extraction; needs package + OPENAI_API_KEY + `--max-cost` (skills/scrapegraph-ai) |
+| OpenCLI / rdt-cli / twitter-cli | via Agent Reach | see upstream | social `scrape` readers on the user's own session |
 | Headroom | — | — | not used: not a scraper; no raw-evidence compression is done |
 
 No upstream source is copied into `geofusion/`. Preserve the upstream notices when redistributing binaries.
