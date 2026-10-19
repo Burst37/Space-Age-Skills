@@ -1,14 +1,17 @@
 ---
 name: spaceage-geofusion-x
-version: 0.5.0
+version: 0.6.0
 description: >
   Geographic + web + social business intelligence engine. Use when the user wants Google Maps businesses
   collected for an area (any category), websites audited (technical SEO, local SEO, AI-search readiness,
   Lighthouse, 100-point website quality), "no website" listings verified, social presence matched,
   prospects ranked by opportunity, or a tabbed Google Sheet / CSV / XLSX report — e.g. "scrape landscapers
   in Mesquite TX and find weak websites", "audit these local competitors", "which plumbers have no site".
-  General purpose: local research, competitor analysis, lead lists, reviews, enrichment. Runs real
-  collectors (GoSom Maps, Playwright, Lighthouse, Agent Reach); reports every platform's true status.
+  General purpose: local research, competitor analysis, lead lists, reviews, enrichment. One-line scrape of any
+  source into a sheet: `geofusion scrape <maps|web|instagram|reddit|facebook|x|linkedin|youtube> "<what>" ["<where>"] --sheet`.
+  Runs GoSom Maps, Playwright and Lighthouse itself; delegates social and web reading to the existing skills
+  (agent-reach, defuddle) and names the heavier scraping skill to use when a page needs one; TypeSafe Jev
+  routes intent; reports every platform's true status.
 platforms: [Claude_Code, Codex, Cursor, Gemini_CLI, Antigravity, any agent with a shell]
 requires: [python>=3.10]
 optional: [go>=1.24 or docker (GoSom), node>=20 (Lighthouse, mcporter), playwright chromium, agent-reach]
@@ -17,20 +20,82 @@ optional: [go>=1.24 or docker (GoSom), node>=20 (Lighthouse, mcporter), playwrig
 # SpaceAge GeoFusion X
 
 Executable engine in `engine/` (Python package `geofusion`). This file tells an agent how to drive it.
-State of every feature is in `engine/STATUS.md` — read it before promising anything to the user.
+State of each feature is in the tables below — read them before promising anything to the user.
 
 ## Install (once)
 
 ```bash
 cd skills/spaceage-geofusion-x/engine && ./install.sh      # pinned: GoSom d0b51bc, lighthouse 12.8.2, playwright 1.56.0
 export GEOFUSION_GOSOM_BIN=~/.geofusion/tools/gmaps-scraper GEOFUSION_LIGHTHOUSE=~/.geofusion/tools/node_modules/.bin/lighthouse
-python -m unittest discover -s tests                       # 36 tests, offline
+python -m unittest discover -s tests                       # 51 tests, offline
 ```
 
 Optional env (names only, never paste values into chat): `TYPESAFE_API_KEY` (Jev judgments), `EXA_API_KEY`
 (search beyond free tier), `FIRECRAWL_API_KEY`, `GOOGLE_OAUTH_ACCESS_TOKEN` (Sheets scope), `CHROME_PATH`.
 
-## Workflow
+## Quick scrape (one source, one sheet)
+
+```bash
+python -m geofusion scrape maps "landscaping" "Mesquite TX" --sheet          # geocode -> bbox -> GoSom tiles
+python -m geofusion scrape web "landscapers" "Mesquite TX"                    # search (Agent Reach -> Exa)
+python -m geofusion scrape web "https://example.com/pricing"                  # one page (defuddle -> Agent Reach reader)
+python -m geofusion scrape reddit "best lawn service recommendations" "Dallas" --authorized
+python -m geofusion scrape youtube "sod installation" "Texas" -n 10
+```
+
+Flags: `-n` row cap (20), `--sheet [TITLE]` (native Google Sheet with Sheets token, always XLSX+CSV in `<workdir>/report`),
+`--authorized` (login-backed sources: you confirm it is your own session, low-volume research),
+`--full` (print all rows instead of the compact summary).
+
+Output: one compact JSON line — `status` (done | blocked | empty), `intent` + `intent_by` (code | jev | default),
+`route` (collector used), `rows`, `errors` (why something was blocked), `top` 5 trimmed rows, `workdir`.
+All rows are in `<workdir>/rows.jsonl`, raw collector output in `<workdir>/raw/`, decisions in `judgments.jsonl`.
+Read those files only when the summary is not enough.
+
+The engine owns only what no existing skill does: Maps tiling, the intent decision, one row schema, the sheet
+export and the compact summary. Everything else is delegated to the skill that already does it.
+
+| Source | Delegated to | Engine add-on | Needs |
+|---|---|---|---|
+| maps | — (engine-owned) | Nominatim geocode -> GoSom fast mode, tiled | GoSom binary or Docker; `<where>` required |
+| web (query) | `agent-reach` (Exa via mcporter) | row schema | mcporter |
+| web (URL) | `defuddle`, then `agent-reach` reader (r.jina.ai) | if both fail, `next` names the skill to use (below) | — |
+| instagram, facebook, reddit, x, linkedin | `agent-reach`: the command its doctor's active backend documents | communities/profiles derived from post search (reddit, x) | backend installed + your own login, `--authorized` |
+| youtube | `agent-reach` (yt-dlp) | channels derived from videos | yt-dlp |
+
+When to hand a page to another skill (the agent runs it; the engine does not wrap it):
+
+| Page | Skill |
+|---|---|
+| JS-rendered / single-page app, or a whole-site crawl | `firecrawl-mcp`, or `browserbase-scraper` (hosted browser) |
+| Bot-protected or needs real clicks | `stealth-browser-automation` (camofox), or the Scrapling library |
+| Specific fields from unknown or unstable markup | `scrapegraph-ai` |
+| Social platform not in the list above | `agent-reach` directly |
+
+Add engine code only for a gap a skill cannot cover (e.g. Agent Reach reports a missing backend on login
+channels as `requires_auth`; the engine reports it as `configuration_missing` so you install before logging in).
+
+Routing for `scrape` (code first, Jev only where code cannot decide):
+
+- Code: the source (always the user's), URL vs query, keyword intent baseline (exactly one signal -> decided),
+  health/auth gates via `router.route()`, geocoding, parsing.
+- Jev `intent` (Choice over the source's record kinds, floor 0.75): only when the baseline sees zero or several signals.
+  No key -> the source's default kind, logged as `default (none)`.
+- Jev `source_fit` (Noul, floor 0.5 on 2·|p−0.5|): advisory hint in the summary when p < 0.5; never switches the source.
+- Measure Jev against the baseline: `python -m geofusion jev-compare examples/intent-cases.jsonl` (agreement,
+  rescued cases, escalation rate, accuracy vs `expected`, median latency). Needs `TYPESAFE_API_KEY`.
+
+## Token discipline (caveman + ponytail, always on)
+
+- **Caveman Mode B** (`skills/caveman/references/pipeline-token-budget.md`): the engine prints compact JSON (no
+  pretty-print), text cut to 500 chars per row on disk and 90 in the summary, success is one line; raw evidence goes
+  to disk once and is read only on demand. Do not paste `rows.jsonl` or raw files into chat — quote counts and the `top` rows.
+- **Caveman Mode A** when reporting: status (done / blocked / empty), counts, sheet link, what was not measured and why.
+- **Ponytail** (`skills/ponytail`) when changing the engine: smallest complete change; reuse `web`, `maps`, `social`,
+  `router` before new code; no new dependency for a few lines; keep validation (`web.safe_url` SSRF guard), auth gates
+  and truthful statuses; one small test per new behaviour; mark limits with `# shortcut: <limit>, <when to upgrade>`.
+
+## Workflow (full audit job)
 
 1. **Onboard** — `python -m geofusion onboard` (multi-select objectives, 71-platform catalog + `custom:<name>`,
    access methods, limits). Ask only what the user has not said. Never collect passwords/cookies/tokens in chat.
@@ -74,7 +139,7 @@ No website on Maps → quality `N/A`, never 0.
 
 - Code: thresholds, regex/domain rules, auth gates, budgets, math, dates. `router.route()` filters capabilities by
   platform, operation, live health, authorization and budget before anything else.
-- Jev (`router.Judge`, only with `TYPESAFE_API_KEY`): one bounded choice over gathered fields (category relevance).
+- Jev (`router.Judge`, only with `TYPESAFE_API_KEY`): bounded Choice/Noul over gathered fields (category relevance, scrape intent, source fit).
   Confidence floor 0.75, 4 s timeout → bypass, every judgment logged to `judgments.jsonl`. Never authorizes actions.
 - Frontier model (you): escalated judgments, conflicting evidence, visual review, writing for humans.
 - Missing or prohibited connector: report it. Do not substitute another source silently.

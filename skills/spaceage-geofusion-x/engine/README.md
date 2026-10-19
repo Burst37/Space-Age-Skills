@@ -3,7 +3,7 @@
 Maps + website + social intelligence with durable jobs, provenance, versioned evidence-based scores and tabbed exports.
 Built on the v0.4 engine (store, dedupe, onboarding, catalog kept; its 14 tests still pass).
 v0.6 adds `geofusion scrape <source> "<what>" ["<where>"] --sheet` (8 sources, one row schema, Jev intent routing,
-merged web-scraping skills as collectors, compact token-saving output). What works and what is blocked: `SKILL.md` tables.
+delegates social and web reading to existing skills (agent-reach, defuddle), compact token-saving output). What works and what is blocked: `../SKILL.md` tables.
 
 ## Quickstart
 
