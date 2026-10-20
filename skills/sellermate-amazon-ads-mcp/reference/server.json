@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.sellermate/amazon-ads",
+  "description": "Ask your Amazon Ads account anything and act with guardrails. Remote MCP, OAuth, free to connect.",
+  "version": "1.0.0",
+  "websiteUrl": "https://www.sellermate.ai/product/mcp",
+  "repository": {
+    "url": "https://github.com/SellerMate-AI/amazon-ads-mcp",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://api.sellermate.ai/mcp/sse"
+    },
+    {
+      "type": "sse",
+      "url": "https://api.sellermate.ai/mcp/sse"
+    }
+  ]
+}
