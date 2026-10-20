@@ -51,6 +51,9 @@ stays inert and the content still works. **RM**: what reduced-motion users get.
 | 30 | `stroke-text` | Ambient | 1 | — | static outline | — |
 | 35 | `intro-gate` | Load | 3 | — | skipped | — |
 | 36 | page transition (`--with page-transition`) | Nav · CSS-only | 0 | — | off | none |
+| 37 | `video-hero` | Load · media | 4 | — | poster only | — |
+| 38 | `voice-agent` | Widget | 0 | — | same | — |
+| 39 | `voice-gemini` | Voice adapter | 0 | — | same | — |
 
 **External modules — route, don't reimplement:**
 
@@ -286,6 +289,36 @@ Progressive frame fill (every 8th frame first) so scrubbing works before the set
 <div class="gate" data-cwb="intro-gate" data-max="1800" aria-hidden="true"><span class="gate__mark">Brand</span><span class="gate__bar"></span></div>
 ```
 First element in `<body>`. Hard cap (default 1.8 s), once per session, skipped for RM. **Flagship tier only.**
+
+
+### 37 · video-hero
+```html
+<section class="vhero" data-cwb="video-hero" aria-labelledby="hero-title">
+  <video class="vhero__video" autoplay muted loop playsinline poster="/assets/poster.jpg" width="1920" height="1080" aria-hidden="true">
+    <source src="/assets/hero.webm" type="video/webm"><source src="/assets/hero.mp4" type="video/mp4">
+  </video>
+  <div class="vhero__scrim"></div>
+  <div class="wrap"><h1 id="hero-title">…</h1><p class="vhero__lede">…</p><div class="vhero__ctas"><a class="btn" href="#contact">…</a></div></div>
+  <button class="vhero__toggle" type="button" aria-pressed="false" aria-label="Pause background video"></button>
+</section>
+```
+HTML autoplay works without JS. JS adds: pause button (WCAG 2.2.2, remembered per session), offscreen pause, RM/save-data → poster. Keep the toggle clear of `voice-agent` (both sit bottom-right).
+
+### 38 · voice-agent
+```html
+<div class="voice" data-cwb="voice-agent" data-ready="true">
+  <p class="voice__status" role="status" aria-live="polite"></p>
+  <button class="voice__btn" type="button" aria-pressed="false"><span class="voice__orb" aria-hidden="true"></span><span class="voice__label">Talk to us</span></button>
+  <a class="voice__fallback" href="tel:+1…" hidden>Call us instead</a>
+</div>
+```
+No vendor SDK. Click fires `cwb:voice-start` / `cwb:voice-stop`; an adapter calls `e.detail.state('live'|'idle')`, `say(text)`, `fail(msg)`. No `data-ready="true"` → fallback link only. Default adapter: `voice-gemini` (39).
+
+### 39 · voice-gemini
+```html
+<div class="voice" data-cwb="voice-agent voice-gemini" data-ready="true" data-token-url="/api/voice-token"> … same inner markup as 38 … </div>
+```
+Gemini Live over a raw WebSocket (no SDK in the page). Needs the token endpoint: copy `templates/api/voice-token.mjs` to the site's `api/`, `npm i @google/genai`, set env `GEMINI_API_KEY`, `GEMINI_LIVE_MODEL`, `VOICE_SYSTEM_PROMPT` (client script), `ALLOWED_ORIGIN`, optional `GEMINI_VOICE`. Token is one-use, 60 s to start, 15 min call cap; model/voice/script locked server-side. Mic denied, token down or socket error → fallback link. Click while connecting cancels. One live test call per site before launch.
 
 ---
 

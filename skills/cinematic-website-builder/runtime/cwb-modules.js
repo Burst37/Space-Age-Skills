@@ -888,46 +888,96 @@ CWB.define('video-hero', {
 /* @module voice-agent | id: 38 | plugins: — | cost: 0 */
 CWB.define('voice-agent', {
   init: function (el, api) {
-    /* The provider SDK loads only when the visitor presses the button — zero cost on page load.
-       Only the PUBLIC key belongs here. Private keys never ship in client code. */
+    /* No vendor SDK: the page's own voice runtime (sa-voice-agent-builder, Gemini Flash Live)
+       listens for cwb:voice-start / cwb:voice-stop and reports back through detail.state /
+       detail.say. Without data-ready="true" the widget shows the fallback link only. */
     var btn = api.$('.voice__btn'), status = api.$('.voice__status'), fallback = api.$('.voice__fallback');
-    var provider = api.data('provider', 'vapi');
-    var pub = String(api.data('public-key', '')), assistant = String(api.data('assistant-id', ''));
-    var configured = provider === 'custom' || (pub && assistant && !/\{\{|^pk_x+$/i.test(pub + assistant));
-    var client = null, active = false, busy = false;
     function say(t) { if (status) status.textContent = t; }
     function state(s) { el.setAttribute('data-state', s); btn.setAttribute('aria-pressed', String(s === 'live')); }
-    function fail(msg) { busy = false; active = false; state('error'); say(msg); if (fallback) fallback.hidden = false; }
+    function fail(msg) { state('error'); say(msg || ''); if (fallback) fallback.hidden = false; }
     state('idle');
-    if (!configured) { console.warn('CWB voice-agent: missing public key / assistant id — showing fallback only'); fail(''); return; }
-
-    function load() {
-      if (provider === 'custom') return Promise.resolve(null);
-      return import('https://cdn.jsdelivr.net/npm/@vapi-ai/web@2.7.1/+esm').then(function (m) {
-        var Vapi = (m.default && m.default.default) || m.default;
-        var c = new Vapi(pub);
-        c.on('call-start', function () { busy = false; active = true; state('live'); say('Connected — go ahead and talk.'); });
-        c.on('call-end', function () { active = false; state('idle'); say('Call ended.'); });
-        c.on('volume-level', function (v) { el.style.setProperty('--level', Math.min(1, v * 1.6).toFixed(3)); });
-        c.on('error', function (e) { console.error('voice-agent', e); fail('Voice is unavailable right now.'); });
-        return c;
-      });
-    }
+    if (api.data('ready', '') !== 'true') { console.warn('CWB voice-agent: no voice runtime (data-ready) — showing fallback only'); fail(''); return; }
     api.on(btn, 'click', function () {
-      if (busy) return;
-      if (active) { busy = true; say('Ending call…'); (client && client.stop ? client.stop() : Promise.resolve()).finally(function () { busy = false; }); return; }
-      busy = true; state('connecting'); say('Connecting… allow microphone access when asked.');
-      (client ? Promise.resolve(client) : load()).then(function (c) {
-        client = c;
-        if (provider === 'custom') {
-          /* Gemini Flash Live / own runtime: sa-voice-agent-builder listens for this event. */
-          el.dispatchEvent(new CustomEvent('cwb:voice-start', { bubbles: true, detail: { el: el } }));
-          busy = false; return;
-        }
-        return c.start(assistant);
-      }).catch(function (e) { console.error('voice-agent', e); fail('Voice is unavailable right now.'); });
+      var cur = el.getAttribute('data-state'), live = cur === 'live' || cur === 'connecting';
+      if (!live) { state('connecting'); say('Connecting… allow microphone access when asked.'); }
+      el.dispatchEvent(new CustomEvent(live ? 'cwb:voice-stop' : 'cwb:voice-start', { bubbles: true, detail: { el: el, state: state, say: say, fail: fail } }));
     }, false);
-    return function () { if (client && active && client.stop) client.stop(); };
   }
 });
 /* @end voice-agent */
+
+/* @module voice-gemini | id: 39 | plugins: — | cost: 0 */
+CWB.define('voice-gemini', {
+  init: function (el, api) {
+    /* Gemini Live adapter for voice-agent (same element: data-cwb="voice-agent voice-gemini").
+       No SDK: raw Live API WebSocket. The page never sees the API key — data-token-url
+       (templates/api/voice-token.mjs) returns a one-use ephemeral token with the model,
+       voice and system prompt locked server-side. Mic: 16 kHz PCM16 in; 24 kHz PCM16 out. */
+    var tokenUrl = String(api.data('token-url', '/api/voice-token'));
+    var WS = 'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained?access_token=';
+    var gen = 0, ws = null, mic = null, inCtx = null, outCtx = null, node = null, playAt = 0, playing = [], ui = null;
+    /* Worklet batches 100 ms (1600 samples) per message → ~10 socket sends/s. */
+    var WORKLET = 'registerProcessor("cwb-pcm",class extends AudioWorkletProcessor{constructor(){super();this.b=new Int16Array(1600);this.n=0;this.s=0}process(i){var c=i[0][0];if(c)for(var k=0;k<c.length;k++){var v=Math.max(-1,Math.min(1,c[k]));this.b[this.n++]=v<0?v*32768:v*32767;this.s+=v*v;if(this.n===1600){var o=this.b.buffer;this.port.postMessage({pcm:o,rms:Math.sqrt(this.s/1600)},[o]);this.b=new Int16Array(1600);this.n=0;this.s=0}}return true}})';
+
+    function b64(buf) { var b = new Uint8Array(buf), s = ''; for (var i = 0; i < b.length; i += 0x8000) s += String.fromCharCode.apply(null, b.subarray(i, i + 0x8000)); return btoa(s); }
+    function flush() { playing.forEach(function (n) { try { n.stop(); } catch (e) {} }); playing = []; playAt = 0; }
+    function play(data) {
+      var bin = atob(data), n = bin.length >> 1, buf = outCtx.createBuffer(1, n, 24000), ch = buf.getChannelData(0);
+      for (var i = 0; i < n; i++) { var v = bin.charCodeAt(2 * i) | (bin.charCodeAt(2 * i + 1) << 8); ch[i] = (v > 32767 ? v - 65536 : v) / 32768; }
+      var src = outCtx.createBufferSource(); src.buffer = buf; src.connect(outCtx.destination);
+      playAt = Math.max(playAt, outCtx.currentTime); src.start(playAt); playAt += buf.duration;
+      playing.push(src); src.onended = function () { playing = playing.filter(function (x) { return x !== src; }); };
+    }
+    function stop(msg) {
+      gen++;
+      if (ws) { ws.onclose = null; try { ws.close(); } catch (e) {} ws = null; }
+      if (node) { node.port.onmessage = null; node.disconnect(); node = null; }
+      if (mic) { mic.getTracks().forEach(function (t) { t.stop(); }); mic = null; }
+      flush();
+      [inCtx, outCtx].forEach(function (c) { if (c) c.close(); }); inCtx = outCtx = null;
+      el.style.setProperty('--level', '0');
+      if (ui && msg !== undefined) { ui.state('idle'); ui.say(msg); }
+    }
+    function fail(e) { console.error('voice-gemini', e); stop(); if (ui) ui.fail('Voice is unavailable right now.'); }
+
+    api.on(el, 'cwb:voice-start', function (e) {
+      ui = e.detail; stop(); var my = gen;
+      /* AudioContexts must be created inside the click gesture. */
+      inCtx = new AudioContext({ sampleRate: 16000 }); outCtx = new AudioContext({ sampleRate: 24000 });
+      Promise.all([
+        fetch(tokenUrl, { method: 'POST' }).then(function (r) { if (!r.ok) throw new Error('token ' + r.status); return r.json(); }),
+        navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true } }),
+        inCtx.audioWorklet.addModule(URL.createObjectURL(new Blob([WORKLET], { type: 'text/javascript' })))
+      ]).then(function (r) {
+        if (my !== gen) { r[1].getTracks().forEach(function (x) { x.stop(); }); return; }
+        var t = r[0]; mic = r[1];
+        ws = new WebSocket(WS + encodeURIComponent(t.token));
+        ws.onopen = function () { ws.send(JSON.stringify({ setup: { model: 'models/' + t.model } })); };
+        ws.onerror = function () { fail('socket error'); };
+        ws.onclose = function (ev) { stop(ev.code === 1000 ? 'Call ended.' : 'Call dropped.'); };
+        ws.onmessage = function (ev) {
+          (ev.data instanceof Blob ? ev.data.text() : Promise.resolve(ev.data)).then(function (txt) {
+            var m = JSON.parse(txt), sc = m.serverContent;
+            if (m.setupComplete) {
+              node = new AudioWorkletNode(inCtx, 'cwb-pcm');
+              node.port.onmessage = function (p) {
+                el.style.setProperty('--level', Math.min(1, p.data.rms * 4).toFixed(3));
+                if (ws && ws.readyState === 1) ws.send(JSON.stringify({ realtimeInput: { audio: { data: b64(p.data.pcm), mimeType: 'audio/pcm;rate=16000' } } }));
+              };
+              inCtx.createMediaStreamSource(mic).connect(node);
+              ui.state('live'); ui.say('Connected — go ahead and talk.');
+            }
+            if (sc && sc.interrupted) flush();
+            if (sc && sc.modelTurn) (sc.modelTurn.parts || []).forEach(function (pt) { if (pt.inlineData && /^audio\/pcm/.test(pt.inlineData.mimeType || '')) play(pt.inlineData.data); });
+            if (m.goAway) say('Call ending soon.');
+          }).catch(fail);
+        };
+      }).catch(function (err) { fail(err); if (err && err.name === 'NotAllowedError') ui.say('Microphone blocked — allow it to talk, or use the link.'); });
+    });
+    api.on(el, 'cwb:voice-stop', function () { stop('Call ended.'); });
+    function say(t) { if (ui) ui.say(t); }
+    return function () { stop(); };
+  }
+});
+/* @end voice-gemini */
+
