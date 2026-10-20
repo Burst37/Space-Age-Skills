@@ -7,9 +7,10 @@ Goal: distinctive, fast, accessible, verified site in one HTML file. Cinema = co
 | Path | Use |
 |---|---|
 | `runtime/cwb-runtime.js` · `cwb-base.css` | Kernel (isolation, env gating, fail-open) + tokens |
-| `runtime/cwb-modules.{js,css}` | 38 modules, one `@module` block each |
+| `runtime/cwb-modules.{js,css}` | 39 modules, one `@module` block each |
 | `templates/starter.html` | Page skeleton (SEO head, fail-open gate, nav, hero) |
 | `templates/direction-brief.yaml` · `build-manifest.yaml` | P0 output · per-build plan |
+| `templates/api/voice-token.mjs` | Gemini Live token endpoint (Vercel) for `voice-gemini` |
 | `scripts/assemble.mjs` | Inline only used modules + GSAP plugins → one file |
 | `scripts/verify.mjs` | 5-pass Chromium QA → `qa/REPORT.md`, exit 1 on blockers |
 | `references/` | Load per phase: `direction-intake`, `web-research-agent-reach`, `modules`, `asset-pipeline`, `prompt-tokens`, `storyboard-to-video` (multi-shot video only), `qa-gate`, `ai-font-packs` |
@@ -48,6 +49,7 @@ Budget rules: signature moment ≈ 40 %, rest quiet · never pin consecutive sec
 | 3D / scroll film | `sa-figma-framer-spline`, `scroll-film-studio` |
 | Media | Higgsfield MCP (default) / OpenArt; prompts via `cinematic-prompt-director`, `seedance-2-5-prompting` |
 | Copy · SEO | `stop-slop-pro` · `sa-local-seo-geo` |
+| Voice agent | `voice-agent` + `voice-gemini` modules (Gemini Live; token endpoint `templates/api/voice-token.mjs`) |
 | Critique | `design-review-pro`, `design-loop` |
 | Deploy | `sa-deploy-operator` |
 

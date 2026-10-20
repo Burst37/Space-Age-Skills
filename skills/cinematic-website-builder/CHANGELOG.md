@@ -10,6 +10,7 @@
 - **Storyboard generator, on deck** (`references/storyboard-to-video.md`): pulled in only when a hero or section video needs several shots or a story; identity sheet → previs storyboard sheet → Seedance handoff, from Mr. Black's Drive prompt library and the Seedance 2.5 Director's Engine, adapted for hero films and scroll films.
 - **Runtime:** `video-hero` and `voice-agent` modules added. `video-hero` verified (autoplay, pause button + persistence, offscreen pause, reduced motion → poster, no-JS autoplay).
 - **voice-agent: Vapi removed.** No vendor SDK; needs `data-ready="true"` and the page's own runtime listening for `cwb:voice-start` / `cwb:voice-stop` (detail gives `state`, `say`, `fail`). Without it, shows the fallback link only.
+- **voice-gemini adapter (new, default voice):** Gemini Live via raw WebSocket, no SDK in the page; mic 16 kHz PCM16 in 100 ms chunks, 24 kHz playback with barge-in. `templates/api/voice-token.mjs` issues one-use ephemeral tokens with model/voice/script locked. Tested against a fake Live server: 15/15 (stream, playback, interrupt, end, drop, cancel, token down, mic denied). Not yet tested against real Gemini.
 - **Playbook cut ~60 %** (2.6k → ~1k words); `references/forensic-audit-v2.md` removed (history, not needed to build).
 
 ## 3.1.0 — 2026-09-26

@@ -53,6 +53,7 @@ stays inert and the content still works. **RM**: what reduced-motion users get.
 | 36 | page transition (`--with page-transition`) | Nav · CSS-only | 0 | — | off | none |
 | 37 | `video-hero` | Load · media | 4 | — | poster only | — |
 | 38 | `voice-agent` | Widget | 0 | — | same | — |
+| 39 | `voice-gemini` | Voice adapter | 0 | — | same | — |
 
 **External modules — route, don't reimplement:**
 
@@ -311,7 +312,13 @@ HTML autoplay works without JS. JS adds: pause button (WCAG 2.2.2, remembered pe
   <a class="voice__fallback" href="tel:+1…" hidden>Call us instead</a>
 </div>
 ```
-No vendor SDK. Click fires `cwb:voice-start` / `cwb:voice-stop`; your runtime (`sa-voice-agent-builder`) calls `e.detail.state('live'|'idle')`, `say(text)`, `fail(msg)`. No `data-ready="true"` → fallback link only.
+No vendor SDK. Click fires `cwb:voice-start` / `cwb:voice-stop`; an adapter calls `e.detail.state('live'|'idle')`, `say(text)`, `fail(msg)`. No `data-ready="true"` → fallback link only. Default adapter: `voice-gemini` (39).
+
+### 39 · voice-gemini
+```html
+<div class="voice" data-cwb="voice-agent voice-gemini" data-ready="true" data-token-url="/api/voice-token"> … same inner markup as 38 … </div>
+```
+Gemini Live over a raw WebSocket (no SDK in the page). Needs the token endpoint: copy `templates/api/voice-token.mjs` to the site's `api/`, `npm i @google/genai`, set env `GEMINI_API_KEY`, `GEMINI_LIVE_MODEL`, `VOICE_SYSTEM_PROMPT` (client script), `ALLOWED_ORIGIN`, optional `GEMINI_VOICE`. Token is one-use, 60 s to start, 15 min call cap; model/voice/script locked server-side. Mic denied, token down or socket error → fallback link. Click while connecting cancels. One live test call per site before launch.
 
 ---
 
