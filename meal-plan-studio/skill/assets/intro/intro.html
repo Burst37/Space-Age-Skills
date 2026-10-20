@@ -1,0 +1,151 @@
+<!doctype html><html><head><meta charset="utf-8"><title>intro</title><style>
+html,body{margin:0;background:#05150f;overflow:hidden}
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden;font-family:'Inter','Inter Display','Helvetica Neue',Arial,sans-serif;color:#fff;background:radial-gradient(ellipse at 72% 48%,#115039 0%,#0a2f23 46%,#04130d 100%)}
+.abs{position:absolute;left:0;top:0}
+#hero{width:1920px;height:1080px;object-fit:cover;transform-origin:62% 50%}
+#shade{width:1920px;height:1080px;background:linear-gradient(90deg,rgba(4,19,13,.94) 0%,rgba(4,19,13,.72) 48%,rgba(4,19,13,.38) 100%)}
+canvas{width:1920px;height:1080px}
+.mask{overflow:hidden;position:absolute;white-space:nowrap}
+.mask>div{will-change:transform}
+.t{font-weight:800;letter-spacing:-0.035em;line-height:1}
+.lab{font-weight:600;letter-spacing:.34em;font-size:21px;color:#7fd8a8}
+.leg .k{font-size:19px;font-weight:600;letter-spacing:.3em;color:#a9c9b9}
+.leg .v{font-size:60px;font-weight:800;letter-spacing:-.02em;line-height:1.05}
+.leg .s{font-size:22px;color:#d6e8de}
+.chip{position:absolute;padding:12px 22px;border:1.5px solid rgba(255,255,255,.28);border-radius:40px;font-size:22px;font-weight:600;background:rgba(255,255,255,.07);backdrop-filter:blur(4px);white-space:nowrap}
+.card{position:absolute;width:300px;height:470px;border-radius:22px;overflow:hidden;background:#fff;box-shadow:0 30px 60px rgba(0,0,0,.45);color:#10231b}
+.card img{width:300px;height:300px;object-fit:cover;display:block}
+.card .n{font-weight:800;font-size:23px;line-height:1.15;margin:14px 16px 6px;height:54px;overflow:hidden}
+.card .m{font-size:19px;font-weight:600;margin:0 16px;color:#3e5a4c}
+.card .bar{position:absolute;left:16px;right:16px;bottom:18px;height:10px;border-radius:6px;overflow:hidden;display:flex}
+.cell{position:absolute;width:100px;height:100px;border-radius:20px;border:1.5px solid rgba(255,255,255,.22);background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;color:#8fb7a2}
+.stat .v{font-size:64px;font-weight:800;letter-spacing:-.02em}
+.stat .k{font-size:19px;letter-spacing:.28em;font-weight:600;color:#a9c9b9}
+</style></head><body><div id="stage">
+<img id="hero" class="abs" src="../imgj/HERO.jpg">
+<div id="shade" class="abs"></div>
+<canvas id="cv" class="abs" width="1920" height="1080"></canvas>
+
+<div id="p1" class="abs" style="width:1920px;height:1080px">
+  <div id="lab1" class="lab abs" style="left:140px;top:182px;white-space:nowrap">PERSONALIZED NUTRITION PLAN</div>
+  <div id="rule1" class="abs" style="left:140px;top:226px;height:3px;background:#3FBF7F;width:0"></div>
+  <div class="mask" style="left:140px;top:262px;height:200px"><div id="l1" class="t" style="font-size:190px">30-DAY</div></div>
+  <div class="mask" style="left:140px;top:470px;height:130px"><div id="l2" class="t" style="font-size:112px">LEAN PROTEIN</div></div>
+  <div class="mask" style="left:140px;top:590px;height:200px"><div id="l3" class="t" style="font-size:190px;color:#46d38a">RESET</div></div>
+  <div id="sub" class="abs" style="left:140px;top:820px;font-size:34px;font-weight:500;color:#e4f1ea;white-space:nowrap">Swapna &nbsp;·&nbsp; High protein &nbsp;·&nbsp; Vegan + eggs &nbsp;·&nbsp; Thyroid-friendly</div>
+  <div id="c1" class="chip" style="left:140px;top:900px">Plant protein</div>
+  <div id="c2" class="chip" style="left:420px;top:900px">3 meals · 12–8 PM</div>
+  <div id="c3" class="chip" style="left:712px;top:900px">No cruciferous veg</div>
+  <div id="c4" class="chip" style="left:990px;top:900px;border-color:#46d38a;color:#9af0c4">Starts Mon, Oct 19</div>
+
+  <svg id="donut" class="abs" style="left:930px;top:200px" width="640" height="640" viewBox="0 0 640 640">
+    <circle cx="320" cy="320" r="244" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="64"/>
+    <circle id="sg0" cx="320" cy="320" r="244" fill="none" stroke="#3FBF7F" stroke-width="64" transform="rotate(-90 320 320)"/>
+    <circle id="sg1" cx="320" cy="320" r="244" fill="none" stroke="#F2A93B" stroke-width="64" transform="rotate(-90 320 320)"/>
+    <circle id="sg2" cx="320" cy="320" r="244" fill="none" stroke="#3AA7C9" stroke-width="64" transform="rotate(-90 320 320)"/>
+  </svg>
+  <div id="kc" class="abs" style="left:930px;top:432px;width:640px;text-align:center;font-size:112px;font-weight:800;letter-spacing:-.03em">0</div>
+  <div id="kcl" class="abs" style="left:930px;top:556px;width:640px;text-align:center;font-size:22px;letter-spacing:.34em;font-weight:600;color:#a9c9b9">KCAL / DAY</div>
+  <div id="lg0" class="leg abs" style="left:1620px;top:300px"><div class="k">PROTEIN</div><div class="v" style="color:#46d38a">143 g</div><div class="s">41% of calories</div></div>
+  <div id="lg1" class="leg abs" style="left:1620px;top:470px"><div class="k">AVG CARBS</div><div class="v" style="color:#F7BC5A">79 g</div><div class="s">23% of calories</div></div>
+  <div id="lg2" class="leg abs" style="left:1620px;top:640px"><div class="k">FAT</div><div class="v" style="color:#5CC1E0">57 g</div><div class="s">37% of calories</div></div>
+</div>
+
+<div id="p2" class="abs" style="width:1920px;height:1080px;opacity:0">
+  <div class="mask" style="left:140px;top:104px;height:92px"><div id="h2" class="t" style="font-size:80px">90 meals. Every macro counted.</div></div>
+  <div id="h2s" class="abs" style="left:140px;top:214px;font-size:30px;color:#cfe5d9;white-space:nowrap">18 rotating dishes &nbsp;·&nbsp; plant protein + eggs &nbsp;·&nbsp; carb-cycled</div>
+  <div id="cards"></div>
+</div>
+
+<div id="p3" class="abs" style="width:1920px;height:1080px;opacity:0">
+  <div id="grid"></div>
+  <div id="lgd" class="abs" style="left:140px;top:880px;font-size:24px;color:#cfe5d9;white-space:nowrap;opacity:0"><span style="color:#5CC1E0">&#9632;</span> Low ~72g &nbsp;&nbsp; <span style="color:#46d38a">&#9632;</span> Medium ~82g &nbsp;&nbsp; <span style="color:#F7A93B">&#9632;</span> Higher ~90g</div>
+  <div id="dl" class="lab abs" style="left:934px;top:206px;white-space:nowrap">OCT 19 – NOV 17, 2026</div>
+  <div class="mask" style="left:930px;top:262px;height:220px"><div id="d30" class="t" style="font-size:196px">30 DAYS</div></div>
+  <div id="tag" class="abs" style="left:934px;top:500px;font-size:46px;font-weight:600;line-height:1.25;color:#e6f3ec">Plant protein.<br>Steady energy.<br><span style="color:#46d38a">A leaner you.</span></div>
+  <div id="st" class="abs" style="left:934px;top:770px;width:960px;height:140px">
+    <div class="stat abs" style="left:0;top:0"><div class="v">1,344</div><div class="k">KCAL</div></div>
+    <div class="stat abs" style="left:250px;top:0"><div class="v" style="color:#46d38a">143g</div><div class="k">PROTEIN</div></div>
+    <div class="stat abs" style="left:520px;top:0"><div class="v" style="color:#F7BC5A">79g</div><div class="k">AVG CARBS</div></div>
+    <div class="stat abs" style="left:770px;top:0"><div class="v" style="color:#5CC1E0">57g</div><div class="k">FAT</div></div>
+  </div>
+</div>
+<div id="fade" class="abs" style="width:1920px;height:1080px;background:#0E3B2C;opacity:0"></div>
+</div>
+<script>
+const DATA=%%DATA%%;
+const $=id=>document.getElementById(id);
+const cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const eo=x=>1-Math.pow(1-x,3), eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2, eb=x=>{const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+const ph=(t,a,d,f=eo)=>f(cl((t-a)/d));
+// build cards
+const COL={p:'#3FBF7F',c:'#F2A93B',f:'#3AA7C9'};
+const cardsEl=$('cards');
+DATA.cards.forEach((c,i)=>{
+  const d=document.createElement('div');d.className='card';d.id='cd'+i;
+  const tot=c.p*4+c.c*4+c.f*9;
+  d.innerHTML=`<img src="../imgj/${c.key}.jpg"><div class="n">${c.name}</div><div class="m">${c.kcal} kcal &nbsp;·&nbsp; ${Math.round(c.p)}P &nbsp;${Math.round(c.c)}C &nbsp;${Math.round(c.f)}F</div><div class="bar"><div style="width:${c.p*4/tot*100}%;background:${COL.p}"></div><div style="width:${c.c*4/tot*100}%;background:${COL.c}"></div><div style="width:${c.f*9/tot*100}%;background:${COL.f}"></div></div>`;
+  cardsEl.appendChild(d);
+});
+const TC={KETO:'122,84,170',LOW:'58,167,201',MED:'47,174,110',HIGH:'224,138,30'};
+// grid
+const grid=$('grid');
+for(let i=0;i<30;i++){const c=document.createElement('div');c.className='cell';c.id='ce'+i;c.textContent=i+1;c.style.left=(140+(i%6)*116)+'px';c.style.top=(250+Math.floor(i/6)*116)+'px';grid.appendChild(c);}
+// donut
+const R=244,C=2*Math.PI*R,gap=10,pcts=[0.408,0.226,0.366];
+let acc=0;const starts=[];pcts.forEach(p=>{starts.push(acc);acc+=p;});
+// particles
+const cv=$('cv'),cx=cv.getContext('2d');
+const P=[];let s=7;const rnd=()=>{s=(s*16807)%2147483647;return s/2147483647};
+for(let i=0;i<70;i++)P.push({x:rnd()*1920,y:rnd()*1080,r:1+rnd()*3,sp:12+rnd()*40,ph:rnd()*6.28,a:.15+rnd()*.35});
+function render(t){
+  // hero
+  const hs=1.14-0.1*cl(t/9.5);
+  $('hero').style.transform=`scale(${hs}) translateX(${-t*6}px)`;
+  const ho=t<4.5?0.62:t<7.2?0.62-0.3*ph(t,4.5,.8):0.32;
+  $('hero').style.opacity=ho;
+  // particles
+  cx.clearRect(0,0,1920,1080);
+  P.forEach(p=>{const y=((p.y-t*p.sp)%1080+1080)%1080;const x=p.x+Math.sin(t*.8+p.ph)*24;cx.globalAlpha=p.a*(0.6+0.4*Math.sin(t*2+p.ph));cx.fillStyle='#8be8b5';cx.beginPath();cx.arc(x,y,p.r,0,6.283);cx.fill();});
+  cx.globalAlpha=1;
+  // phase 1
+  const o1=1-ph(t,4.15,.6,eio);
+  $('p1').style.opacity=o1; $('p1').style.transform=`translateY(${-60*ph(t,4.15,.7,eio)}px)`;
+  $('lab1').style.opacity=ph(t,.15,.6); $('lab1').style.letterSpacing=(.34+.2*(1-ph(t,.15,1.2)))+'em';
+  $('rule1').style.width=(620*ph(t,.3,1.0,eio))+'px';
+  const m=(id,a,h)=>{ $(id).style.transform=`translateY(${(1-ph(t,a,.85,eo))*h}px)`; };
+  m('l1',.7,230);m('l2',1.0,150);m('l3',1.3,230);
+  $('sub').style.opacity=ph(t,2.0,.7); $('sub').style.transform=`translateY(${(1-ph(t,2.0,.7))*24}px)`;
+  ['c1','c2','c3','c4'].forEach((id,i)=>{const p=ph(t,2.35+i*.18,.6,eb);$(id).style.opacity=cl(p*1.4);$(id).style.transform=`scale(${.7+.3*p})`;});
+  // donut
+  $('donut').style.opacity=ph(t,.5,.5);
+  $('donut').style.transform=`rotate(${(1-ph(t,.5,1.8,eio))*-40}deg) scale(${.88+.12*ph(t,.5,1.2)})`;
+  pcts.forEach((pc,i)=>{
+    const prog=ph(t,.8+i*.4,1.1,eio); const L=Math.max(0,pc*C*prog-(prog>0?gap:0));
+    const el=$('sg'+i); el.setAttribute('stroke-dasharray',`${L} ${C}`); el.setAttribute('stroke-dashoffset',-(starts[i]*C+gap/2));
+  });
+  const kc=Math.round(1344*ph(t,.9,1.9,eio)); $('kc').textContent=kc.toLocaleString('en-US');
+  $('kc').style.opacity=ph(t,.8,.5); $('kcl').style.opacity=ph(t,1.4,.6);
+  [0,1,2].forEach(i=>{const p=ph(t,1.7+i*.25,.7);$('lg'+i).style.opacity=p;$('lg'+i).style.transform=`translateX(${(1-p)*50}px)`;});
+  // phase 2
+  const o2=ph(t,4.6,.6)*(1-ph(t,6.95,.5,eio)); $('p2').style.opacity=o2;
+  $('h2').style.transform=`translateY(${(1-ph(t,4.75,.8))*110}px)`;
+  $('h2s').style.opacity=ph(t,5.15,.6);
+  DATA.cards.forEach((c,i)=>{
+    const p=ph(t,4.85+i*.16,.95,eb); const drift=-50*cl((t-4.8)/2.4);
+    const rot=(i%2?1:-1)*(2.2-1.6*ph(t,5.4,1.2));
+    $('cd'+i).style.left=(140+i*340+drift)+'px'; $('cd'+i).style.top=(360+(1-p)*520)+'px';
+    $('cd'+i).style.opacity=cl(p*2); $('cd'+i).style.transform=`rotate(${rot}deg)`;
+  });
+  // phase 3
+  const o3=ph(t,7.0,.5)*(1-ph(t,9.1,.4,eio)); $('p3').style.opacity=o3;
+  for(let i=0;i<30;i++){const a=7.15+i*.04;const p=ph(t,a,.35,eb);const e=$('ce'+i);
+    e.style.transform=`scale(${.7+.3*p+(p>0&&p<1?0.12*Math.sin(p*3.14):0)})`;e.style.opacity=cl(p*2);
+    const on=ph(t,a+.05,.25); const tc=TC[DATA.tiers[i]]; e.style.background=`rgba(${tc},${.10+.8*on})`; e.style.borderColor=`rgba(${tc},${.35+.65*on})`; e.style.color=on>.5?'#ffffff':'#c7d9cf';}
+  $('dl').style.opacity=ph(t,7.2,.6);$('lgd').style.opacity=ph(t,8.0,.6);$('d30').style.transform=`translateY(${(1-ph(t,7.2,.9))*270}px)`;
+  $('tag').style.opacity=ph(t,7.9,.7); $('tag').style.transform=`translateY(${(1-ph(t,7.9,.7))*30}px)`;
+  $('st').style.opacity=ph(t,8.3,.6);
+  $('fade').style.opacity=ph(t,9.1,.4,eio);
+}
+window.render=render; render(0);
+</script></body></html>

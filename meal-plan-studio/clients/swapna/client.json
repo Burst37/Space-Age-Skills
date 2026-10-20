@@ -1,0 +1,16 @@
+{
+  "slug": "swapna",
+  "name": "Swapna",
+  "title": "30-Day Keto Reset",
+  "footer": "Swapna Alladi  ·  30-Day Keto Reset",
+  "theme": "thyroid-green",
+  "start": "2026-10-26",
+  "legacy": "Deck built with clients/swapna/deck/build.js before the theme system; kept as delivered. Use studio.py new to start theme-aware clients.",
+  "profile": { "sex": "F", "age": 42, "height": "5'0\"", "weight_lb": 145, "goal_lb": 130, "diet": "Vegan plus eggs, NO soy, no cruciferous vegetables, hypothyroid (levothyroxine 50 mcg), keto-centric with 16:8 / 19:5 fasting" },
+  "week": ["KETO", "KETO", "KETO", "KETO", "KETO", "MED", "KETO"],
+  "qa": {
+    "forbidden": ["soy", "tofu", "tempeh", "edamame", "miso", "broccoli", "cauliflower", "cabbage", "kale", "brussels", "bok choy", "radish", "arugula", "bacon", "pork"],
+    "caps": { "KETO": { "net_max": 30, "protein_min": 125 }, "MED": { "net_max": 63, "protein_min": 125 } },
+    "kcal": [1250, 1500]
+  }
+}

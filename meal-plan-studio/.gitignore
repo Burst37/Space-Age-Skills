@@ -1,0 +1,10 @@
+clients/*/dist/_work/
+clients/*/deck/img*/
+clients/*/deck/plan.json
+clients/*/deck/meta.json
+clients/*/deck/node_modules
+clients/*/intro/_themed*
+clients/*/intro/frames/
+clients/*/intro/*.mp4
+__pycache__/
+clients/*/dist/

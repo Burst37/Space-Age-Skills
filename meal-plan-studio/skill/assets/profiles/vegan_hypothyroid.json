@@ -1,0 +1,183 @@
+{
+ "sub": "high protein · vegan with eggs · thyroid-friendly",
+ "chips": [
+  "3 meals · 12–8 PM",
+  "Vegan + eggs",
+  "No cruciferous vegetables"
+ ],
+ "tierNames": {
+  "LOW": "Low carb",
+  "MED": "Medium carb",
+  "HIGH": "Higher carb"
+ },
+ "tierRanges": {
+  "LOW": "~72 g",
+  "MED": "~82 g",
+  "HIGH": "~90 g"
+ },
+ "cycle": [
+  "MED",
+  "LOW",
+  "HIGH",
+  "LOW",
+  "MED",
+  "LOW",
+  "LOW"
+ ],
+ "cycleNote": "The same week repeats. Monday and Friday are medium, Wednesday is the higher-carb day, and the other days are low. Put the higher-carb day on the heaviest strength session.",
+ "tierText": {
+  "LOW": "About 72 g. Plant protein, eggs, non-cruciferous vegetables and healthy fats, with at most one small fruit or starch side.",
+  "MED": "About 82 g. The same base plus one carb side such as quinoa, sweet potato or fruit.",
+  "HIGH": "About 90 g. Base plus oats or quinoa, sweet potato and fruit around training. One day a week."
+ },
+ "rulesTitle": "Thyroid-friendly food rules",
+ "rules": [
+  [
+   "EAT",
+   "var(--p)",
+   [
+    "Plant protein: tofu, tempeh, edamame, seitan, lentils, chickpeas, black beans, pea protein powder, nutritional yeast",
+    "Eggs and egg whites in moderation",
+    "Non-cruciferous vegetables: spinach, bell peppers, zucchini, mushrooms, tomatoes, carrots, green beans, asparagus, cucumber, lettuce, eggplant, celery",
+    "Healthy fats: olive oil, avocado, almonds, walnuts, chia, flax, hemp, tahini, pumpkin seeds",
+    "Carbs: oats, quinoa, brown rice, sweet potato, sprouted bread, berries, apples, bananas, oranges",
+    "Water 2.5 to 3 L a day"
+   ]
+  ],
+  [
+   "LIMIT",
+   "var(--c)",
+   [
+    "Whole eggs: 2 or fewer a day and 8 or fewer a week",
+    "Soy foods (tofu, tempeh, edamame): no more than 2 soy meals a day, and keep them 4 hours away from levothyroxine",
+    "Legumes: about 40 g of carbohydrate per cup, so portions are measured",
+    "Seitan contains gluten. Swap it out if she is gluten-sensitive",
+    "Raw spinach in moderation, about 2 cups at a time"
+   ]
+  ],
+  [
+   "NOT USED",
+   "var(--keto)",
+   [
+    "Cruciferous vegetables: broccoli, cauliflower, kale, cabbage, Brussels sprouts, bok choy, radishes, arugula",
+    "Dairy: paneer, yogurt, cottage cheese, whey protein, ghee, butter",
+    "Meat, poultry and fish",
+    "Highly processed soy products and soy protein isolates",
+    "Added sugars and sweetened drinks"
+   ]
+  ]
+ ],
+ "monitoring": [
+  [
+   "Weekly",
+   "Weigh in once a week, same time, same day, fasted, and track the 7-day average. At 15 lb in 3 months the target is about 1.25 lb a week. If loss runs faster for more than two weeks, raise calories by 100."
+  ],
+  [
+   "Thyroid timing",
+   "Take thyroid medication (e.g. levothyroxine) on waking with water only and wait 30 to 60 minutes before eating or coffee. Keep soy, iron and calcium 4 hours away from the medication."
+  ],
+  [
+   "Labs and symptoms",
+   "Repeat TSH and free T4 with the physician at about 8 to 12 weeks. Watch energy, sleep, hair, mood and cold tolerance. If they get worse, review calories with the physician."
+  ]
+ ],
+ "neverTitle": "Not used in this plan",
+ "never": [
+  "Cruciferous vegetables: broccoli, cauliflower, kale, cabbage, Brussels sprouts, bok choy, radishes, arugula",
+  "Dairy: paneer, yogurt, cottage cheese, whey protein, ghee, butter",
+  "Meat, poultry and fish",
+  "Highly processed soy products and soy protein isolates",
+  "Added sugars and sweetened drinks"
+ ],
+ "limitNote": "Whole eggs are capped at 2 a day and 8 a week. Tofu, tempeh and edamame count as soy: no more than 2 soy meals a day, and keep them 4 hours away from levothyroxine.",
+ "tierNote": "Low days use base meals only. Medium days add one carb side. The higher-carb day adds oats, quinoa, sweet potato or fruit.",
+ "goal": {
+  "kcal": 1350,
+  "p": 140,
+  "f": 58,
+  "fib": 28
+ },
+ "checkLabel": "Eggs and soy today",
+ "checkSuffix": " · no cruciferous vegetables, dairy, meat or fish.",
+ "track": [
+  [
+   "egg",
+   "whole eggs",
+   "/2"
+  ],
+  [
+   "tofu",
+   "tofu",
+   " oz"
+  ],
+  [
+   "tempeh",
+   "tempeh",
+   " oz"
+  ],
+  [
+   "edamame",
+   "edamame",
+   " cup"
+  ]
+ ],
+ "caps": {
+  "egg": "Limit · 2/day, 8/week",
+  "tofu": "Soy · 2 meals/day max, 4 h from levothyroxine",
+  "tempeh": "Soy · 2 meals/day max, 4 h from levothyroxine",
+  "edamame": "Soy · 2 meals/day max, 4 h from levothyroxine",
+  "seitan": "Contains gluten",
+  "avo": "Small · ¼ at a time",
+  "lentil": "Legume · about 40 g carbs per cup",
+  "chick": "Legume · about 45 g carbs per cup",
+  "bbean": "Legume · about 41 g carbs per cup"
+ },
+ "groups": {
+  "egg": "Eggs",
+  "white": "Eggs",
+  "tofu": "Soy (keep 4 hours from levothyroxine)",
+  "tempeh": "Soy (keep 4 hours from levothyroxine)",
+  "edamame": "Soy (keep 4 hours from levothyroxine)",
+  "seitan": "Other plant protein",
+  "pea": "Other plant protein",
+  "nooch": "Other plant protein",
+  "lentil": "Legumes",
+  "chick": "Legumes",
+  "bbean": "Legumes",
+  "oats": "Grains & starch",
+  "quinoa": "Grains & starch",
+  "brice": "Grains & starch",
+  "sweetp": "Grains & starch",
+  "bread": "Grains & starch",
+  "blueb": "Fruit",
+  "rasp": "Fruit",
+  "apple": "Fruit",
+  "banana": "Fruit",
+  "orange": "Fruit"
+ },
+ "groupOrder": [
+  "Eggs",
+  "Soy (keep 4 hours from levothyroxine)",
+  "Other plant protein",
+  "Legumes",
+  "Grains & starch",
+  "Fruit"
+ ],
+ "flesh": [],
+ "dayMealMax": {
+  "soy": [
+   [
+    "tofu",
+    "tempeh",
+    "edamame"
+   ],
+   2,
+   "soy"
+  ]
+ },
+ "eggDayMax": 2,
+ "eggWeekMax": 8,
+ "swapLimits": "The egg limits (2 a day, 8 a week) and the soy limit (2 soy meals a day) stay in force. A swap that breaks one shows a red warning.",
+ "footer": "Macros are estimates from standard food-composition values and can vary by 5–10%. Review calories, supplements and soy timing with the treating physician, especially while levothyroxine is being adjusted.",
+ "groceryNote": "Dry grains are listed as dry measure. Sweet potato is weighed baked. Buy tofu and tempeh in whatever pack size is closest."
+}

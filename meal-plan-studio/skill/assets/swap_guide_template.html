@@ -1,0 +1,187 @@
+<title>__CLIENT__ Food Swap Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: sticky category tabs, a swap finder card, then a grid of FatSecret-style food cards. */
+:root{
+  --bg:#EFF5F1; --surface:#FFFFFF; --surface2:#E4EEE8; --ink:#0F2A20; --muted:#587065; --line:#D2E0D8; --deep:#0E3B2C; --accent:#1B9A60; --on-accent:#fff;
+  --p:#2FAE6E; --c:#E08A1E; --f:#2B9BC2; --warn:#B3261E; --warnbg:#FBE9E7;
+  --shadow:0 1px 2px rgba(14,59,44,.08),0 6px 18px rgba(14,59,44,.07);
+  --display:'Bricolage Grotesque','Avenir Next','Segoe UI',system-ui,sans-serif; --body:'Figtree','Segoe UI',system-ui,-apple-system,sans-serif; --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#08150F;--surface:#10241A;--surface2:#17301F;--ink:#E7F2EB;--muted:#8FAB9C;--line:#1E3B2C;--deep:#0B2A1F;--accent:#46D38A;--on-accent:#06241A;--p:#46D38A;--c:#F2A93B;--f:#5CC1E0;--warn:#FF8A80;--warnbg:#3A1F1C;--shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.35);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#08150F;--surface:#10241A;--surface2:#17301F;--ink:#E7F2EB;--muted:#8FAB9C;--line:#1E3B2C;--deep:#0B2A1F;--accent:#46D38A;--on-accent:#06241A;--p:#46D38A;--c:#F2A93B;--f:#5CC1E0;--warn:#FF8A80;--warnbg:#3A1F1C;--shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.35);color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;-webkit-text-size-adjust:100%}
+button,select,input{font:inherit;color:inherit}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:900px;margin-inline:auto;padding-inline:16px}
+h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:-.01em;text-wrap:balance}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:#46D38A}
+.hero{background:var(--deep);color:#EAF6EF;padding-block:22px 22px}
+.hero h1{font-size:clamp(1.9rem,8vw,2.9rem);line-height:1.02;font-weight:800;margin-top:8px}
+.hero p{margin:10px 0 0;color:#CFE5D9;max-width:60ch}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:14px;font-size:.84rem}
+.legend span{display:flex;align-items:center;gap:6px}.legend i{width:12px;height:12px;border-radius:4px}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.nav button{flex:1 0 auto;background:none;border:0;padding:14px 14px 12px;font-weight:700;color:var(--muted);border-bottom:3px solid transparent;min-height:48px;cursor:pointer;white-space:nowrap}
+.nav button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.nav button small{font-family:var(--mono);font-size:.7rem;margin-left:4px;opacity:.7}
+main{padding-block:16px 40px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.finder{padding:14px;margin-bottom:14px}
+.finder h2{font-size:1.25rem}.finder p{margin:4px 0 10px;color:var(--muted);font-size:.9rem}
+.frow{display:grid;grid-template-columns:minmax(0,1fr) 96px;gap:8px}
+.frow label{display:grid;gap:3px;font-size:.72rem;letter-spacing:.1em;font-weight:700;color:var(--muted);text-transform:uppercase;min-width:0}
+.frow select,.frow input{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px;min-height:44px}
+.res{display:grid;gap:8px;margin-top:12px}
+.opt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface)}
+.opt b{font-weight:700}.opt .am{font-family:var(--mono);font-weight:600;color:var(--accent);text-align:right;font-size:.9rem}
+.opt .dl{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px}.opt .dl i{font-style:normal;font-family:var(--mono);font-size:.72rem;font-weight:600;background:var(--surface2);border-radius:8px;padding:3px 7px}
+.opt .wn{grid-column:1/-1;font-size:.8rem;color:var(--warn);font-weight:700}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 6px;align-items:center}
+.pill{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:600;font-size:.88rem;cursor:pointer;min-height:40px}
+.pill[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.sep{width:1px;height:24px;background:var(--line);margin:0 4px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+@media(min-width:680px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.food{padding:14px;display:grid;gap:10px;align-content:start}
+.food header{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.food h3{font-size:1.1rem;line-height:1.2}.food .sv{font-size:.82rem;color:var(--muted);margin-top:2px}
+.kcal{text-align:right;flex:0 0 auto}.kcal b{display:block;font-family:var(--display);font-size:1.9rem;line-height:1}.kcal span{font-size:.64rem;letter-spacing:.14em;color:var(--muted);font-weight:700}
+.split{display:flex;height:10px;border-radius:99px;overflow:hidden;background:var(--surface2)}
+.split i{display:block;height:100%}
+.splitlg{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);gap:6px;flex-wrap:wrap}
+.splitlg b{color:var(--ink)}
+.nf{border-top:6px solid var(--ink);margin-top:2px}
+.nf .r{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid var(--line);font-size:.93rem}
+.nf .r.sub{padding-left:14px;color:var(--muted);font-size:.86rem}
+.nf .r b{font-weight:700}.nf .r span:last-child{font-family:var(--mono);font-weight:600}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:.64rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:6px;padding:3px 6px;color:#fff;background:var(--tg,#6A4C93)}
+.note{font-size:.84rem;color:var(--muted)}
+.eq{background:var(--surface2);border-radius:10px;padding:8px 10px;font-size:.86rem}.eq b{font-family:var(--mono);color:var(--accent)}
+footer{padding:6px 16px 36px;max-width:900px;margin-inline:auto;color:var(--muted);font-size:.8rem}
+.themebtn{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:30;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:10px 14px;font-weight:700;box-shadow:var(--shadow);cursor:pointer}
+</style>
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">Alternative selections</div>
+  <h1>__CLIENT__ Food Swap Guide</h1>
+  <p>__INTRO__</p>
+  <div class="legend"><span><i style="background:var(--p)"></i>Protein</span><span><i style="background:var(--c)"></i>Carbohydrate</span><span><i style="background:var(--f)"></i>Fat</span></div>
+</div></header>
+<nav class="nav" aria-label="Food categories"><div class="wrap" role="tablist" id="tabs"></div></nav>
+<main class="wrap">
+  <section class="card finder" aria-labelledby="fh"><h2 id="fh">Swap finder</h2><p id="fsub"></p>
+    <div class="frow"><label>Replacing<select id="fsel"></select></label><label>Servings<input id="fqty" type="number" inputmode="decimal" min="0.25" step="0.25" value="1"></label></div>
+    <div class="res" id="fres" aria-live="polite"></div>
+  </section>
+  <div class="bar" id="bar"></div>
+  <div class="grid" id="grid"></div>
+</main>
+<footer>__FOOTER__</footer>
+<button class="themebtn" id="themebtn" type="button" aria-label="Switch light or dark theme">Theme</button>
+<script>
+const FOODS=__FOODS__;
+const NOTES=__NOTES__;
+const CATS=[['protein','Protein','25 g of protein','p'],['carb','Carbs','20 g of carbohydrate','c'],['veg','Vegetables','1 cup','v'],['fat','Healthy fats','10 g of fat','f']];
+const TAGC={refeed:['Refeed day only','#2F7D4F'],gluten:['Gluten','#6A4C93'],legume:['Legume','#8A5A00'],egg:['Egg limit','#B35C00']};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+{const t=store.get('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}
+$('themebtn').addEventListener('click',()=>{const r=document.documentElement,cur=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');const nx=cur==='dark'?'light':'dark';r.setAttribute('data-theme',nx);store.set('theme',nx)});
+const FR={0.125:'⅛',0.25:'¼',0.333:'⅓',0.375:'⅜',0.5:'½',0.625:'⅝',0.667:'⅔',0.75:'¾',0.875:'⅞'};
+function num(q){q=Math.round(q*8)/8;const w=Math.floor(q+1e-9),f=Math.round((q-w)*1000)/1000;const fs=FR[f]||'';if(f&&!fs)return String(Math.round(q*100)/100);return ((w?String(w):'')+fs)||'0'}
+function unitStr(f,amt){
+  const u=f.u;
+  if(u==='large')return num(amt)+' large '+(amt<=1?'egg':'eggs');
+  if(u==='medium')return num(amt)+' medium';
+  if(u==='oz')return num(amt)+' oz';
+  if(u==='slice')return num(amt)+(amt<=1?' slice':' slices');
+  if(u==='scoop')return num(amt)+(amt<=1?' scoop':' scoops');
+  if(u==='cup')return num(amt)+(amt<=1?' cup':' cups');
+  return num(amt)+' '+u;
+}
+const grams=(f,amt)=>Math.round(f.g*amt/f.amt);
+const net=f=>Math.max(0,f.c-f.fib);
+const fix=x=>Math.round(x*10)/10;
+let cat='protein',sort='plan',per='serving';
+const pf=(f,k)=>per==='100g'?f[k]*100/f.g:f[k];
+function tabs(){
+  $('tabs').innerHTML=CATS.map(([k,n])=>`<button type="button" role="tab" data-c="${k}" aria-selected="${k===cat}">${n}<small>${FOODS.filter(f=>f.cat===k).length}</small></button>`).join('');
+  $('tabs').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{cat=b.dataset.c;sort='plan';store.set('cat',cat);render()}));
+}
+function bar(){
+  const S=[['plan','Plan order'],['protein','Most protein'],['carb','Fewest carbs'],['kcal','Fewest calories'],['fat','Most fat']];
+  $('bar').innerHTML=S.map(([k,n])=>`<button type="button" class="pill" data-s="${k}" aria-pressed="${k===sort}">${n}</button>`).join('')+'<span class="sep"></span>'+[['serving','Per serving'],['100g','Per 100 g']].map(([k,n])=>`<button type="button" class="pill" data-p="${k}" aria-pressed="${k===per}">${n}</button>`).join('');
+  $('bar').querySelectorAll('[data-s]').forEach(b=>b.addEventListener('click',()=>{sort=b.dataset.s;render()}));
+  $('bar').querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{per=b.dataset.p;render()}));
+}
+function list(){
+  const a=FOODS.filter(f=>f.cat===cat);
+  if(sort==='protein')a.sort((x,y)=>pf(y,'p')-pf(x,'p'));
+  if(sort==='carb')a.sort((x,y)=>pf(x,'c')-pf(y,'c'));
+  if(sort==='kcal')a.sort((x,y)=>pf(x,'kcal')-pf(y,'kcal'));
+  if(sort==='fat')a.sort((x,y)=>pf(y,'f')-pf(x,'f'));
+  return a;
+}
+function eqLine(f){
+  if(cat==='veg')return '1 cup'+(f.u==='medium'?' (about 1⅓ medium)':'');
+  const ix={protein:'p',carb:'c',fat:'f'}[cat],tg={protein:25,carb:20,fat:10}[cat];
+  if(f[ix]<0.3)return 'not a meaningful source';
+  const s=tg/f[ix];const amt=f.amt*s;
+  return unitStr(f,amt)+(f.u==='large'?' (daily max 2)':'')+(f.u==='oz'||f.u==='cup'||f.u==='tbsp'?' (≈ '+Math.round(f.g*s)+' g)':'');
+}
+function card(f){
+  const m=pf(f,'f')*9+pf(f,'c')*4+pf(f,'p')*4||1;
+  const pp=Math.round(pf(f,'p')*4/m*100),cp=Math.round(pf(f,'c')*4/m*100),fp=Math.max(0,100-pp-cp);
+  const sv=per==='serving'?`${unitStr(f,f.amt)} · ${f.g} g`:'100 g';
+  const tg=(f.tags||[]).map(t=>`<span class="tag" style="--tg:${TAGC[t][1]}">${TAGC[t][0]}</span>`).join('');
+  const T={protein:['Protein per swap','25 g protein'],carb:['Carbs per swap','20 g carbs'],fat:['Fat per swap','10 g fat'],veg:['Swap cup for cup','1 cup']}[cat];
+  return `<article class="card food"><header><div><h3>${esc(f.n)}</h3><div class="sv">${esc(sv)}</div></div><div class="kcal"><b>${Math.round(pf(f,'kcal'))}</b><span>CALORIES</span></div></header>
+  <div class="split" role="img" aria-label="Calories from protein ${pp} percent, carbohydrate ${cp} percent, fat ${fp} percent"><i style="width:${pp}%;background:var(--p)"></i><i style="width:${cp}%;background:var(--c)"></i><i style="width:${fp}%;background:var(--f)"></i></div>
+  <div class="splitlg"><span><b>${pp}%</b> protein</span><span><b>${cp}%</b> carbs</span><span><b>${fp}%</b> fat</span></div>
+  <div class="nf"><div class="r"><b>Total Fat</b><span>${fix(pf(f,'f'))} g</span></div><div class="r sub"><span>Saturated Fat</span><span>${fix(pf(f,'sat'))} g</span></div>
+  <div class="r"><b>Total Carbohydrate</b><span>${fix(pf(f,'c'))} g</span></div><div class="r sub"><span>Dietary Fiber</span><span>${fix(pf(f,'fib'))} g</span></div><div class="r sub"><span>Sugars</span><span>${fix(pf(f,'sug'))} g</span></div><div class="r sub"><span>Net Carbs</span><span>${fix(Math.max(0,pf(f,'c')-pf(f,'fib')))} g</span></div>
+  <div class="r"><b>Protein</b><span>${fix(pf(f,'p'))} g</span></div></div>
+  ${tg?`<div class="tags">${tg}</div>`:''}
+  <div class="eq">${T[0]}: <b>${esc(eqLine(f))}</b></div>
+  ${f.note?`<div class="note">${esc(f.note)}</div>`:''}</article>`;
+}
+function finder(){
+  const a=FOODS.filter(f=>f.cat===cat);
+  const cur=$('fsel').value;
+  $('fsel').innerHTML=a.map(f=>`<option value="${esc(f.n)}">${esc(f.n)} (${esc(unitStr(f,f.amt))})</option>`).join('');
+  if(a.some(f=>f.n===cur))$('fsel').value=cur;
+  const T={protein:'protein, matched on grams of protein',carb:'carbohydrates, matched on grams of carbohydrate',veg:'vegetables, matched cup for cup',fat:'healthy fats, matched on grams of fat'}[cat];
+  $('fsub').textContent=`Pick what the plan uses and how many servings. You see only other ${T}.`;
+  calc();
+}
+function calc(){
+  const a=FOODS.filter(f=>f.cat===cat),o=a.find(f=>f.n===$('fsel').value)||a[0],q=Math.max(0.25,parseFloat($('fqty').value)||1);
+  const ix={protein:'p',carb:'c',fat:'f'}[cat];
+  const out=[];
+  a.forEach(f=>{
+    if(f===o)return;let s;
+    if(cat==='veg'){const cups=q*(o.u==='medium'?0.75:1);s=cups/(f.u==='medium'?0.75:1)}
+    else{if(f[ix]<0.3)return;s=(o[ix]*q)/f[ix]}
+    const amt=f.amt*s,st=f.u==='cup'?0.25:f.u==='oz'||f.u==='tbsp'||f.u==='scoop'||f.u==='slice'?0.5:0.5;
+    const ramt=Math.max(st,Math.round(amt/st)*st),r=ramt/f.amt;
+    let warn='';
+    if(f.u==='large'&&ramt>2)warn='Over the 2-egg daily limit. Use up to 2 and add another protein.';
+    if((f.tags||[]).includes('refeed'))warn=warn||'Refeed day only: too many carbs for a keto day.';
+    out.push({f,txt:unitStr(f,ramt)+(['oz','cup','tbsp'].includes(f.u)?` (≈ ${Math.round(f.g*r)} g)`:''),d:[f.kcal*r-o.kcal*q,f.p*r-o.p*q,f.c*r-o.c*q,f.f*r-o.f*q],warn,bad:warn.startsWith('Over')});
+  });
+  out.sort((x,y)=>Math.abs(x.d[0])-Math.abs(y.d[0]));
+  const sg=(v,u)=>{const r=Math.round(v);return (r>0?'+':r<0?'−':'±')+Math.abs(r)+u};
+  $('fres').innerHTML=out.map(x=>`<div class="opt"><b>${esc(x.f.n)}</b><span class="am">${esc(x.txt)}</span><span class="dl"><i>${sg(x.d[0],' kcal')}</i><i>${sg(x.d[1],'P')}</i><i>${sg(x.d[2],'C')}</i><i>${sg(x.d[3],'F')}</i></span>${x.warn?`<span class="wn" style="${x.bad?'':'color:var(--muted);font-weight:600'}">${esc(x.warn)}</span>`:''}</div>`).join('');
+}
+function render(){tabs();bar();$('grid').innerHTML=list().map(card).join('');finder()}
+$('fsel').addEventListener('change',calc);$('fqty').addEventListener('input',calc);
+{const c=store.get('cat');if(c&&CATS.some(x=>x[0]===c))cat=c}
+render();
+</script>

@@ -1,0 +1,151 @@
+{
+ "sub": "high protein · ketogenic-centric · vegan with eggs · soy-free · thyroid-smart",
+ "chips": [
+  "Keto: ≤ 30 g net carbs",
+  "16:8 workout days · 19:5 rest days",
+  "Vegan + eggs",
+  "No soy · no crucifers"
+ ],
+ "tierNames": {
+  "KETO": "Keto",
+  "MED": "Refeed"
+ },
+ "tierRanges": {
+  "KETO": "≤ 30 g net",
+  "MED": "~55 g net"
+ },
+ "netCarbs": true,
+ "ketoLimit": 30,
+ "cycle": [
+  "KETO",
+  "KETO",
+  "KETO",
+  "KETO",
+  "KETO",
+  "MED",
+  "KETO"
+ ],
+ "cycleNote": "The same week repeats. Monday to Friday and Sunday are keto. Saturday is the strength-day refeed at about 55 g net carbs. Wednesday and Sunday are rest days with the 19:5 window; the other five days are workout days with the 16:8 window.",
+ "tierText": {
+  "KETO": "30 g net carbs or less (about 50 g total with 20 to 25 g of fiber). Egg whites and eggs, seitan, pea protein, low-carb vegetables, avocado, coconut, nuts and seeds.",
+  "MED": "About 55 g net carbs, once a week on a strength day. The same base plus quinoa, sweet potato, berries or fruit at the later meals. A planned higher-carb day supports hard training and is often used so a slow thyroid is not held at very low carbs all week."
+ },
+ "rulesTitle": "Soy-free, thyroid-smart keto rules",
+ "rules": [
+  [
+   "EAT",
+   "var(--p)",
+   [
+    "Protein: egg whites, whole eggs, seitan, pea protein powder, nutritional yeast, hemp seeds, pumpkin seeds",
+    "Low-carb vegetables: spinach (wilted), zucchini, mushrooms, asparagus, cucumber, celery, romaine, tomato, a little bell pepper",
+    "Fats: olive oil, avocado, coconut milk and oil, olives, macadamias, walnuts, almonds, chia, flax, tahini",
+    "Refeed day only: quinoa, sweet potato, berries, apple, orange, banana, a few lentils",
+    "Water 2.5 to 3 L a day, plus salt to taste (iodized) and electrolytes during the first two weeks"
+   ]
+  ],
+  [
+   "LIMIT",
+   "var(--c)",
+   [
+    "Net carbs: 30 g or less on keto days, about 55 g on the Saturday refeed",
+    "Whole eggs: 2 or fewer a day and 8 or fewer a week (egg whites are not counted)",
+    "Seitan: 8 oz or less a day. It is wheat gluten, so skip it if she is gluten-sensitive",
+    "Pea protein powder: 3 scoops or fewer a day, and 2 or fewer in one meal",
+    "Bell peppers and green beans: about ½ cup at a time on keto days"
+   ]
+  ],
+  [
+   "NOT USED",
+   "var(--keto)",
+   [
+    "Soy in any form: tofu, tempeh, edamame, soy milk, miso, soy sauce, tamari, textured vegetable protein, soy protein and soy lecithin. Read labels",
+    "Cruciferous vegetables: broccoli, cauliflower, cabbage, kale, Brussels sprouts, bok choy, collards, arugula, radishes, turnips, mustard greens",
+    "Other goitrogens: peanuts and millet",
+    "Dairy, meat, poultry and fish",
+    "Added sugars, kelp and other iodine supplements"
+   ]
+  ]
+ ],
+ "monitoring": [
+  [
+   "Eating windows",
+   "Workout days (strength Mon, Thu, Sat; HIIT Tue, Fri): 16:8, eat 12–8 PM, three meals. Rest days (Wed, Sun): 19:5, eat 3–8 PM, two meals. Water, plain sparkling water, black coffee and tea are fine once the levothyroxine wait is over. Train before the first meal when you can."
+  ],
+  [
+   "Weekly",
+   "Weigh in once a week, same day, fasted, and track the 7-day average. After the first one to two weeks of water loss, expect about 0.75 to 1 lb a week. Do not cut below the plan's calories if progress slows; first check sleep, stress, steps and labs with the physician."
+  ],
+  [
+   "Levothyroxine and fasting",
+   "Take levothyroxine 50 mcg every morning on waking with water only, at the same time daily, and wait 30 to 60 minutes before coffee or food. Keep iron, calcium, magnesium and fiber supplements 4 hours after the dose. Stop a fast and eat if she feels dizzy, shaky or has a racing heart."
+  ],
+  [
+   "Labs and symptoms",
+   "Repeat TSH, free T4 and free T3 with the physician at 8 to 12 weeks, with a lipid panel, B12, ferritin, vitamin D and electrolytes. Weight loss can change the dose she needs, so the physician adjusts it, never her. Pause biotin (in B-complex) 3 to 5 days before blood draws. Report a racing heart, tremor or poor sleep, or worse fatigue, cold, constipation or hair loss."
+  ]
+ ],
+ "neverTitle": "Not used in this plan",
+ "never": [
+  "Soy in any form: tofu, tempeh, edamame, soy milk, miso, soy sauce, tamari, textured vegetable protein, soy protein and soy lecithin",
+  "Cruciferous vegetables: broccoli, cauliflower, cabbage, kale, Brussels sprouts, bok choy, collards, arugula, radishes, turnips, mustard greens",
+  "Other goitrogens: peanuts and millet",
+  "Dairy, meat, poultry and fish",
+  "Added sugars, kelp and other iodine supplements"
+ ],
+ "limitNote": "Whole eggs are capped at 2 a day and 8 a week. Seitan is capped at 8 oz a day and pea protein at 3 scoops a day. Keto days stay at 30 g net carbs or less.",
+ "tierNote": "Keto days use the base meals. The refeed day adds the carb sides marked with a plus sign in the meal cards.",
+ "goal": {
+  "kcal": 1390,
+  "p": 137,
+  "f": 77,
+  "fib": 23
+ },
+ "checkLabel": "Today",
+ "checkSuffix": " · no soy, cruciferous vegetables, dairy, meat or fish.",
+ "track": [
+  [
+   "egg",
+   "whole eggs",
+   "/2"
+  ]
+ ],
+ "caps": {
+  "egg": "Limit · 2/day, 8/week",
+  "seitan": "Contains gluten · 8 oz/day max",
+  "pea": "Check label: soy-free · 3 scoops/day max",
+  "avo": "Small · ¼ at a time",
+  "lentil": "Refeed day only · about 40 g carbs per cup",
+  "sweetp": "Refeed day only",
+  "quinoa": "Refeed day only"
+ },
+ "groups": {
+  "egg": "Eggs",
+  "white": "Eggs",
+  "seitan": "Other plant protein",
+  "pea": "Other plant protein",
+  "nooch": "Other plant protein",
+  "lentil": "Legumes (refeed day only)",
+  "sweetp": "Refeed-day carbs",
+  "quinoa": "Refeed-day carbs",
+  "blueb": "Fruit",
+  "rasp": "Fruit",
+  "apple": "Fruit",
+  "banana": "Fruit",
+  "orange": "Fruit"
+ },
+ "groupOrder": [
+  "Eggs",
+  "Other plant protein",
+  "Legumes (refeed day only)",
+  "Refeed-day carbs",
+  "Fruit"
+ ],
+ "flesh": [],
+ "dayMealMax": {},
+ "eggDayMax": 2,
+ "eggWeekMax": 8,
+ "swapLimits": "The egg limits (2 a day, 8 a week) and the keto limit (30 g net carbs) stay in force. A swap that breaks one shows a red warning.",
+ "footer": "Macros are estimates from standard food-composition values and can vary by 5–10%. Review calories, fasting windows, supplements and any dose change with the treating physician, especially while levothyroxine is being adjusted.",
+ "groceryNote": "Spinach is measured raw and wilted in the pan. Sweet potato is weighed baked. Check pea protein and seitan labels for soy.",
+ "title": "30-Day <em>Thyroid-Smart</em> Keto Reset"
+}
