@@ -27,3 +27,6 @@ One 4:3 overhead photo per dish (white plate, light oak table, soft daylight), 2
 
 ## Quality checks before sending
 Caps and floors for every day, forbidden-food scan of meal names and ingredient lines, a photo for every meal, page count, file size, and a look at one day page and one shopping page for clipped text.
+
+## Interactive web experience (the premium deliverable)
+Built from the same plan data as the deck, in the client's theme, by `python studio.py web <client>`: shader background that shifts tone by section, scroll-driven motion, two short motion-graphic films (welcome, how your week works), animated macro ring, week bars that light up by day type, a fasting clock (training, low-carb, keto, with a 16:8 toggle), a liquid-glass dish carousel, a 30-day browser with a day sheet, tickable shopping lists, a like-for-like swap finder and a weight tracker with a plan line. Delivered as a hosted installable app (works offline after the first visit) and as one offline HTML file for email. It runs on current Chrome, Edge, Safari and Firefox on phones, tablets and desktops; videos are muted H.264 720p so iOS plays them inline.

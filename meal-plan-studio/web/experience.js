@@ -73,7 +73,7 @@ void main(){
   const U = n => gl.getUniformLocation(pr, n), u = { R: U('uR'), T: U('uT'), S: U('uS'), M: U('uMix'), Bg: U('uBg'), C1: U('uC1'), C2: U('uC2'), C3: U('uC3'), Rip: U('uRip') };
   const pal = () => { const bg = hexv(cssv('--bg0')), a1 = hexv(cssv('--a1')), a2 = hexv(cssv('--a2')), a3 = hexv(cssv('--a3')), a4 = hexv(cssv('--a4')); const k = (c, m) => c.map(v => v * m);
     return { hero: { bg, c1: a1, c2: a2, c3: a4, mix: 1 }, calm: { bg, c1: k(a1, .75), c2: k(a4, .8), c3: k(a2, .6), mix: .5 }, warm: { bg, c1: a2, c2: a1, c3: a3, mix: .72 }, cool: { bg, c1: a4, c2: a1, c3: a2, mix: .62 } }; };
-  let P = pal(), cur = JSON.parse(JSON.stringify(P.hero)), tgt = P.hero, scale = innerWidth < 700 ? .42 : .55, w = 0, hgt = 0, scrollV = 0, last = 0, slow = 0, frames = 0;
+  let still = false, P = pal(), cur = JSON.parse(JSON.stringify(P.hero)), tgt = P.hero, scale = innerWidth < 700 ? .42 : .55, w = 0, hgt = 0, scrollV = 0, last = 0, slow = 0, frames = 0;
   const rips = Array.from({ length: 6 }, () => ({ x: 0, y: 0, t0: -99 })), rbuf = new Float32Array(18);
   const size = () => { const dpr = Math.min(devicePixelRatio || 1, 2); w = Math.max(2, Math.round(innerWidth * dpr * scale)); hgt = Math.max(2, Math.round(innerHeight * dpr * scale)); cv.width = w; cv.height = hgt; gl.viewport(0, 0, w, hgt); };
   size(); let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { size(); if (RM) draw(7); }, 150); });
@@ -83,14 +83,14 @@ void main(){
     gl.uniform2f(u.R, w, hgt); gl.uniform1f(u.T, t); gl.uniform1f(u.S, scrollV); gl.uniform1f(u.M, cur.mix); gl.uniform3fv(u.Bg, cur.bg); gl.uniform3fv(u.C1, cur.c1); gl.uniform3fv(u.C2, cur.c2); gl.uniform3fv(u.C3, cur.c3); gl.uniform3fv(u.Rip, rbuf); gl.drawArrays(gl.TRIANGLES, 0, 3); };
   let ri = 0, t0 = performance.now();
   const api = {
-    tone(n) { tgt = P[n] || P.calm; if (RM) { cur = JSON.parse(JSON.stringify(tgt)); draw(7); } },
-    ripple(cx, cy) { const m = Math.min(w, hgt), px = (cx / innerWidth) * w, py = (1 - cy / innerHeight) * hgt, r = rips[ri++ % 6]; r.x = (px - .5 * w) / m; r.y = (py - .5 * hgt) / m; r.t0 = (performance.now() - t0) / 1000; if (RM) draw(7 + .3); },
+    tone(n) { tgt = P[n] || P.calm; if (RM || still) { cur = JSON.parse(JSON.stringify(tgt)); draw(7); } },
+    ripple(cx, cy) { const m = Math.min(w, hgt), px = (cx / innerWidth) * w, py = (1 - cy / innerHeight) * hgt, r = rips[ri++ % 6]; r.x = (px - .5 * w) / m; r.y = (py - .5 * hgt) / m; r.t0 = (performance.now() - t0) / 1000; if (RM || still) draw(7 + .3); },
     scroll(v) { scrollV = v; },
     repal() { P = pal(); tgt = P.hero; }
   };
   const loop = now => {
-    requestAnimationFrame(loop); if (document.hidden) return; const mobile = innerWidth < 700; if (mobile && now - last < 33) return;
-    const dt = now - last; last = now; frames++; if (frames > 20 && dt > 34) { slow++; if (slow > 25 && scale > .26) { scale *= .82; size(); slow = 0; } } else if (dt < 22) slow = Math.max(0, slow - 1);
+    if (still) return; requestAnimationFrame(loop); if (document.hidden) return; const mobile = innerWidth < 700; if (mobile && now - last < 33) return;
+    const dt = now - last; last = now; frames++; if (frames > 20 && dt > 34) { slow++; if (slow > 25) { if (scale > .26) { scale *= .82; size(); slow = 0; } else { still = true; cur = JSON.parse(JSON.stringify(tgt)); draw(7); } } } else if (dt < 22) slow = Math.max(0, slow - 1);
     cur = { bg: mixv(cur.bg, tgt.bg, .04), c1: mixv(cur.c1, tgt.c1, .04), c2: mixv(cur.c2, tgt.c2, .04), c3: mixv(cur.c3, tgt.c3, .04), mix: lerp(cur.mix, tgt.mix, .04) };
     draw((now - t0) / 1000); };
   if (RM) draw(7); else requestAnimationFrame(loop);

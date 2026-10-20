@@ -36,7 +36,7 @@ for (const [name, opts] of profiles.map(p => [p[0], p[1]])) {
   await page.click('#sheet [aria-label="Next day"]'); await page.waitForTimeout(300); fx.nextTitle = await page.evaluate(() => document.querySelector('#sheet h3')?.textContent);
   await page.keyboard.press('Escape'); await page.waitForTimeout(300); fx.sheetClosed = await page.evaluate(() => !document.getElementById('sheet').open);
   await page.evaluate(() => document.getElementById('meals').scrollIntoView({ behavior: 'instant' })); await page.waitForTimeout(800);
-  fx.active0 = await page.evaluate(() => document.getElementById('dpos').textContent); await page.click('#dnext'); await page.waitForTimeout(1100); fx.active1 = await page.evaluate(() => document.getElementById('dpos').textContent);
+  fx.active0 = await page.evaluate(() => document.getElementById('dpos').textContent); await page.click('#dnext'); await page.waitForTimeout(2400); fx.active1 = await page.evaluate(() => document.getElementById('dpos').textContent);
   fx.refract = await page.evaluate(() => document.querySelectorAll('.dc.refract').length);
   await page.screenshot({ path: path.join(out, `${name}-carousel2.jpg`), type: 'jpeg', quality: 70 });
   await page.click('#dfilters [data-k=KETO]'); await page.waitForTimeout(500); fx.ketoDishes = await page.evaluate(() => document.querySelectorAll('.dc').length);
