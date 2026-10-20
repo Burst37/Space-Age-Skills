@@ -1,0 +1,153 @@
+{
+ "hero": {
+  "eyebrow": "Personalized nutrition plan",
+  "h1": [
+   "Lean &",
+   "Strong,",
+   "Aleena."
+  ],
+  "tag": "30 days, 90 meals, halal and high protein. Carbs follow your workouts, with keto and fasting days when you want them.",
+  "cta1": "See your week",
+  "cta2": "Watch the intro"
+ },
+ "watch": {
+  "title": "Start here.",
+  "lede": "Two short films: a welcome, and how your week is built.",
+  "chapters": [
+   {
+    "id": "intro",
+    "label": "Welcome",
+    "dur": "0:10"
+   },
+   {
+    "id": "explainer",
+    "label": "How your week works",
+    "dur": "0:13"
+   }
+  ]
+ },
+ "numbers": {
+  "title": "Built around your body and your training.",
+  "lede": "Protein stays high every day to protect muscle while you lose fat. Calories and carbs move with your workouts.",
+  "facts": [
+   [
+    "2.2 g per kg",
+    "protein, every day"
+   ],
+   [
+    "2.5 to 3 L",
+    "water a day, plus electrolytes on keto days"
+   ],
+   [
+    "About 20 g",
+    "fiber from vegetables, berries, chia and flax"
+   ],
+   [
+    "3 meals",
+    "a day, with protein at every one"
+   ]
+  ]
+ },
+ "week": {
+  "title": "Carbs follow your workouts.",
+  "lede": "Monday, Tuesday and Thursday are training days. The rest of the week is built to burn fat, and two of those days are true keto days.",
+  "steps": [
+   {
+    "tier": "HIGH",
+    "title": "Training days",
+    "days": "Mon · Tue · Thu",
+    "body": "Carbs rise to about 95 g, never above 100, so the lifts and the plyo work stay strong. Rice, sweet potato, oats or fruit sit around the workout."
+   },
+   {
+    "tier": "LOW",
+    "title": "Low-carb days",
+    "days": "Fri · Sun",
+    "body": "About 46 g of carbs: lean protein, vegetables and healthy fats. Fasting 16:8 is optional on these days."
+   },
+   {
+    "tier": "KETO",
+    "title": "Keto days",
+    "days": "Wed · Sat",
+    "body": "Net carbs 20 g or less and fat-forward meals: avocado, olive oil, salmon, ribeye, lamb. Built on a 16:8 window from noon to 8 PM."
+   }
+  ]
+ },
+ "clock": {
+  "title": "Fasting, only when you choose it.",
+  "lede": "Pick a day type to see where the eating window sits. Keto days are built on 16:8. Low-carb days can use it. Training days keep the full window so you can fuel and recover.",
+  "notes": {
+   "HIGH": "Eat protein within two hours after training. If you train fasted, make that meal the biggest of the day.",
+   "LOW": "Same three meals, same totals. Move them to noon, 3:30 and 7:30 for 16:8 whenever you feel like fasting.",
+   "KETO": "Meals at 12:00, 3:30 and 7:30 PM. Water, black coffee and plain tea until noon. Prefer to eat early? The same food works at 8:00, 12:30 and 6:30."
+  },
+  "altNote": {
+   "LOW": "16:8 on a low-carb day: first bite at noon, last by 8 PM. Water, black coffee and tea before then."
+  }
+ },
+ "dishes": {
+  "title": "{dishes} dishes you will actually cook.",
+  "lede": "Swipe through the plan. Tap a dish to see exactly what goes in it and which days it lands on."
+ },
+ "days": {
+  "title": "Your 30 days.",
+  "lede": "Every day, every meal, every macro. Tap a day to open it."
+ },
+ "shop": {
+  "title": "Shopping, week by week.",
+  "lede": "Tick things off as they go in the basket. Your ticks stay on this device."
+ },
+ "swap": {
+  "title": "Swap like for like.",
+  "lede": "Pick a food and see the three closest swaps in the same group, with the macro difference."
+ },
+ "track": {
+  "title": "Track your weight.",
+  "lede": "Log it once a week, same morning. The chart shows you against the plan line, and the two-week trend tells you more than any single day."
+ },
+ "rules": {
+  "title": "Your food rules.",
+  "eat": [
+   "Halal lean protein: chicken, turkey, lean beef, lamb, white fish, salmon, shrimp, tuna",
+   "Eggs and egg whites, plain Greek yogurt, cottage cheese, halal-certified whey",
+   "Spinach, peppers, zucchini, mushrooms, tomatoes, cucumber, green beans, asparagus, broccoli, cauliflower",
+   "Olive oil, avocado, almonds, walnuts, chia, flax, tahini, pumpkin seeds",
+   "Training days only: basmati or brown rice, sweet potato, oats, quinoa, pita, fruit"
+  ],
+  "limit": [
+   "Carbs: training days never above 100 g, low-carb days about 45 g, keto days 20 g net or less",
+   "Whole eggs: 3 a day at most",
+   "Whey: 2 scoops a day at most, only to top up protein",
+   "Oils, nuts and seeds are measured, since fat is 9 kcal a gram",
+   "Shrimp is accepted by most, not all, halal schools. Swap for fish if you prefer"
+  ],
+  "avoid": [
+   "Pork, bacon, ham, lard and pork gelatin",
+   "Alcohol, including wine in cooking and alcohol-based vanilla or flavor extracts",
+   "Meat that is not halal-certified or zabiha",
+   "Gelatin or enzymes of unknown origin in yogurt, whey, broth or sauces",
+   "Sugary drinks, juice, desserts and ultra-processed snacks"
+  ],
+  "note": "No pork or pork-derived ingredient appears in any meal, recipe or swap. Buy halal-certified meat and whey, and read labels on yogurt, broth and sauces."
+ },
+ "footer": {
+  "line": "30 days, starting Monday, October 26, 2026. Check in with your dietitian at day 30 to adjust.",
+  "disclaimer": "Prepared as a draft for your dietitian's review. It does not replace individual medical advice."
+ },
+ "tiers": {
+  "HIGH": {
+   "label": "Training day",
+   "short": "Training",
+   "daynote": "Carbs fuel the session. Eat protein within two hours after you train."
+  },
+  "LOW": {
+   "label": "Low-carb day",
+   "short": "Low-carb",
+   "daynote": "Lean protein, vegetables and healthy fats. Optional 16:8."
+  },
+  "KETO": {
+   "label": "Keto day",
+   "short": "Keto",
+   "daynote": "Net carbs 20 g or less, on the 16:8 window (12 to 8 PM). Salt your food and drink your water."
+  }
+ }
+}

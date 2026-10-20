@@ -1,45 +1,325 @@
 {
   "note": "One theme per client so every plan looks different. Fonts are limited to ones that exist in PowerPoint, Keynote and the LibreOffice PDF render (Cambria, Calibri, Arial, Times New Roman). layout = title-slide arrangement (left | right | center). radius = card corner roundness in inches.",
   "themes": [
-    {"key": "thyroid-green", "name": "Thyroid Green", "mood": "calm clinical green",
-     "fonts": {"head": "Cambria", "body": "Calibri"}, "layout": "left", "radius": 0.12,
-     "colors": {"dk1": "1B2B2A", "dk2": "12393F", "lt2": "EDF5F3", "accent1": "2FAE6E", "accent2": "F2A93B", "accent3": "C8423A", "accent4": "3AA7C9", "accent5": "62807C", "accent6": "A6D4CB"},
-     "line": "D3E3DF", "daybg": "F6FAF9", "rule": "A9BDB2", "veg": "6FBF4A",
-     "tiers": {"HIGH": "E08A1E", "LOW": "3AA7C9", "KETO": "7A54AA", "MED": "2FAE6E"}},
-    {"key": "plum-saffron", "name": "Plum & Saffron", "mood": "deep plum with saffron and raspberry",
-     "fonts": {"head": "Times New Roman", "body": "Arial"}, "layout": "center", "radius": 0.16,
-     "colors": {"dk1": "2A1B33", "dk2": "3B1F52", "lt2": "F6EFF9", "accent1": "D9487B", "accent2": "F2A93B", "accent3": "B3261E", "accent4": "6C8EE8", "accent5": "7C6A89", "accent6": "E6CDF0"},
-     "line": "E4D6EC", "daybg": "FBF7FD", "rule": "BBA8C7", "veg": "8FBF5A",
-     "tiers": {"HIGH": "E8742A", "LOW": "5B8DEF", "KETO": "9B3FC2", "MED": "D9487B"}},
-    {"key": "ocean-teal", "name": "Ocean Teal", "mood": "deep sea blue and bright teal",
-     "fonts": {"head": "Arial", "body": "Arial"}, "layout": "right", "radius": 0.06,
-     "colors": {"dk1": "10252E", "dk2": "0B3C5D", "lt2": "E8F3F7", "accent1": "1CA7A6", "accent2": "F5B544", "accent3": "D1495B", "accent4": "3D7DCA", "accent5": "5C7A8A", "accent6": "A9D6E5"},
-     "line": "D0E3EA", "daybg": "F4F9FB", "rule": "A7C2CE", "veg": "5FB36B",
-     "tiers": {"HIGH": "F28F3B", "LOW": "3D7DCA", "KETO": "7B5EA7", "MED": "1CA7A6"}},
-    {"key": "sunset-coral", "name": "Sunset Coral", "mood": "warm wine with coral and gold",
-     "fonts": {"head": "Cambria", "body": "Arial"}, "layout": "left", "radius": 0.2,
-     "colors": {"dk1": "3A1D1D", "dk2": "4A1C2B", "lt2": "FDF0EC", "accent1": "EF6F5E", "accent2": "F7B538", "accent3": "B8283E", "accent4": "4E8FA8", "accent5": "8A6A64", "accent6": "F6C6BC"},
-     "line": "F0D8D1", "daybg": "FFF8F5", "rule": "D1B0A8", "veg": "7DB66A",
-     "tiers": {"HIGH": "F28C28", "LOW": "4E8FA8", "KETO": "8E4A9E", "MED": "EF6F5E"}},
-    {"key": "forest-gold", "name": "Forest Gold", "mood": "evergreen with antique gold",
-     "fonts": {"head": "Times New Roman", "body": "Calibri"}, "layout": "center", "radius": 0.04,
-     "colors": {"dk1": "1D2A20", "dk2": "1F3D2B", "lt2": "F1F2E6", "accent1": "C9A227", "accent2": "E07A3F", "accent3": "A63D2F", "accent4": "4F8F7A", "accent5": "6D7A62", "accent6": "D9E2B8"},
-     "line": "DDE2C8", "daybg": "F8F8EE", "rule": "B9C09E", "veg": "7FA650",
-     "tiers": {"HIGH": "D9822B", "LOW": "4F8F7A", "KETO": "6B4E9B", "MED": "C9A227"}},
-    {"key": "slate-mint", "name": "Slate Mint", "mood": "cool slate with fresh mint",
-     "fonts": {"head": "Calibri", "body": "Calibri"}, "layout": "right", "radius": 0.1,
-     "colors": {"dk1": "1F2A30", "dk2": "263842", "lt2": "EEF3F4", "accent1": "3DBE9B", "accent2": "F2B84B", "accent3": "D0584F", "accent4": "5B9BD5", "accent5": "6B7C85", "accent6": "B7DCD2"},
-     "line": "D7E1E4", "daybg": "F5F8F9", "rule": "B1C0C6", "veg": "77C265",
-     "tiers": {"HIGH": "EE9A3A", "LOW": "5B9BD5", "KETO": "8A63B8", "MED": "3DBE9B"}},
-    {"key": "berry-navy", "name": "Berry Navy", "mood": "midnight navy with berry pink",
-     "fonts": {"head": "Arial", "body": "Cambria"}, "layout": "left", "radius": 0.14,
-     "colors": {"dk1": "1B2236", "dk2": "1B2A49", "lt2": "EEF0F8", "accent1": "C2417C", "accent2": "F0B429", "accent3": "C0392B", "accent4": "3E8EDE", "accent5": "66708A", "accent6": "C9D3F0"},
-     "line": "D8DCEE", "daybg": "F6F7FC", "rule": "B3BAD6", "veg": "6BB36A",
-     "tiers": {"HIGH": "F0922B", "LOW": "3E8EDE", "KETO": "7B4BB5", "MED": "C2417C"}},
-    {"key": "terracotta-sand", "name": "Terracotta & Sand", "mood": "earthy clay with warm sand",
-     "fonts": {"head": "Cambria", "body": "Cambria"}, "layout": "center", "radius": 0.02,
-     "colors": {"dk1": "33241C", "dk2": "5B2E1E", "lt2": "F8EFE3", "accent1": "C8553D", "accent2": "E5A93D", "accent3": "9E2A2B", "accent4": "3F7F8C", "accent5": "8A7160", "accent6": "EBCFB5"},
-     "line": "EAD9C4", "daybg": "FCF7EF", "rule": "CDB79E", "veg": "8AA85A",
-     "tiers": {"HIGH": "E09A3B", "LOW": "3F7F8C", "KETO": "7E4B8F", "MED": "C8553D"}}
+    {
+      "key": "thyroid-green",
+      "name": "Thyroid Green",
+      "mood": "calm clinical green",
+      "fonts": {
+        "head": "Cambria",
+        "body": "Calibri"
+      },
+      "layout": "left",
+      "radius": 0.12,
+      "colors": {
+        "dk1": "1B2B2A",
+        "dk2": "12393F",
+        "lt2": "EDF5F3",
+        "accent1": "2FAE6E",
+        "accent2": "F2A93B",
+        "accent3": "C8423A",
+        "accent4": "3AA7C9",
+        "accent5": "62807C",
+        "accent6": "A6D4CB"
+      },
+      "line": "D3E3DF",
+      "daybg": "F6FAF9",
+      "rule": "A9BDB2",
+      "veg": "6FBF4A",
+      "tiers": {
+        "HIGH": "E08A1E",
+        "LOW": "3AA7C9",
+        "KETO": "7A54AA",
+        "MED": "2FAE6E"
+      },
+      "web": {
+        "display": "Newsreader",
+        "displayFile": "newsreader-latin-wght-normal.woff2",
+        "displayItalicFile": "newsreader-latin-wght-italic.woff2",
+        "displayVariable": true,
+        "body": "Hanken Grotesk",
+        "bodyFile": "hanken-grotesk-latin-wght-normal.woff2"
+      }
+    },
+    {
+      "key": "plum-saffron",
+      "name": "Plum & Saffron",
+      "mood": "deep plum with saffron and raspberry",
+      "fonts": {
+        "head": "Times New Roman",
+        "body": "Arial"
+      },
+      "layout": "center",
+      "radius": 0.16,
+      "colors": {
+        "dk1": "2A1B33",
+        "dk2": "3B1F52",
+        "lt2": "F6EFF9",
+        "accent1": "D9487B",
+        "accent2": "F2A93B",
+        "accent3": "B3261E",
+        "accent4": "6C8EE8",
+        "accent5": "7C6A89",
+        "accent6": "E6CDF0"
+      },
+      "line": "E4D6EC",
+      "daybg": "FBF7FD",
+      "rule": "BBA8C7",
+      "veg": "8FBF5A",
+      "tiers": {
+        "HIGH": "E8742A",
+        "LOW": "5B8DEF",
+        "KETO": "9B3FC2",
+        "MED": "D9487B"
+      },
+      "web": {
+        "display": "Bodoni Moda",
+        "displayFile": "bodoni-moda-latin-wght-normal.woff2",
+        "displayItalicFile": "bodoni-moda-latin-wght-italic.woff2",
+        "displayVariable": true,
+        "body": "Manrope",
+        "bodyFile": "manrope-latin-wght-normal.woff2"
+      }
+    },
+    {
+      "key": "ocean-teal",
+      "name": "Ocean Teal",
+      "mood": "deep sea blue and bright teal",
+      "fonts": {
+        "head": "Arial",
+        "body": "Arial"
+      },
+      "layout": "right",
+      "radius": 0.06,
+      "colors": {
+        "dk1": "10252E",
+        "dk2": "0B3C5D",
+        "lt2": "E8F3F7",
+        "accent1": "1CA7A6",
+        "accent2": "F5B544",
+        "accent3": "D1495B",
+        "accent4": "3D7DCA",
+        "accent5": "5C7A8A",
+        "accent6": "A9D6E5"
+      },
+      "line": "D0E3EA",
+      "daybg": "F4F9FB",
+      "rule": "A7C2CE",
+      "veg": "5FB36B",
+      "tiers": {
+        "HIGH": "F28F3B",
+        "LOW": "3D7DCA",
+        "KETO": "7B5EA7",
+        "MED": "1CA7A6"
+      },
+      "web": {
+        "display": "Sora",
+        "displayFile": "sora-latin-wght-normal.woff2",
+        "displayItalicFile": null,
+        "displayVariable": true,
+        "body": "DM Sans",
+        "bodyFile": "dm-sans-latin-wght-normal.woff2"
+      }
+    },
+    {
+      "key": "sunset-coral",
+      "name": "Sunset Coral",
+      "mood": "warm wine with coral and gold",
+      "fonts": {
+        "head": "Cambria",
+        "body": "Arial"
+      },
+      "layout": "left",
+      "radius": 0.2,
+      "colors": {
+        "dk1": "3A1D1D",
+        "dk2": "4A1C2B",
+        "lt2": "FDF0EC",
+        "accent1": "EF6F5E",
+        "accent2": "F7B538",
+        "accent3": "B8283E",
+        "accent4": "4E8FA8",
+        "accent5": "8A6A64",
+        "accent6": "F6C6BC"
+      },
+      "line": "F0D8D1",
+      "daybg": "FFF8F5",
+      "rule": "D1B0A8",
+      "veg": "7DB66A",
+      "tiers": {
+        "HIGH": "F28C28",
+        "LOW": "4E8FA8",
+        "KETO": "8E4A9E",
+        "MED": "EF6F5E"
+      },
+      "web": {
+        "display": "Playfair Display",
+        "displayFile": "playfair-display-latin-wght-normal.woff2",
+        "displayItalicFile": "playfair-display-latin-wght-italic.woff2",
+        "displayVariable": true,
+        "body": "Nunito Sans",
+        "bodyFile": "nunito-sans-latin-wght-normal.woff2"
+      }
+    },
+    {
+      "key": "forest-gold",
+      "name": "Forest Gold",
+      "mood": "evergreen with antique gold",
+      "fonts": {
+        "head": "Times New Roman",
+        "body": "Calibri"
+      },
+      "layout": "center",
+      "radius": 0.04,
+      "colors": {
+        "dk1": "1D2A20",
+        "dk2": "1F3D2B",
+        "lt2": "F1F2E6",
+        "accent1": "C9A227",
+        "accent2": "E07A3F",
+        "accent3": "A63D2F",
+        "accent4": "4F8F7A",
+        "accent5": "6D7A62",
+        "accent6": "D9E2B8"
+      },
+      "line": "DDE2C8",
+      "daybg": "F8F8EE",
+      "rule": "B9C09E",
+      "veg": "7FA650",
+      "tiers": {
+        "HIGH": "D9822B",
+        "LOW": "4F8F7A",
+        "KETO": "6B4E9B",
+        "MED": "C9A227"
+      },
+      "web": {
+        "display": "Cormorant Garamond",
+        "displayFile": "cormorant-garamond-latin-wght-normal.woff2",
+        "displayItalicFile": "cormorant-garamond-latin-wght-italic.woff2",
+        "displayVariable": true,
+        "body": "Jost",
+        "bodyFile": "jost-latin-wght-normal.woff2"
+      }
+    },
+    {
+      "key": "slate-mint",
+      "name": "Slate Mint",
+      "mood": "cool slate with fresh mint",
+      "fonts": {
+        "head": "Calibri",
+        "body": "Calibri"
+      },
+      "layout": "right",
+      "radius": 0.1,
+      "colors": {
+        "dk1": "1F2A30",
+        "dk2": "263842",
+        "lt2": "EEF3F4",
+        "accent1": "3DBE9B",
+        "accent2": "F2B84B",
+        "accent3": "D0584F",
+        "accent4": "5B9BD5",
+        "accent5": "6B7C85",
+        "accent6": "B7DCD2"
+      },
+      "line": "D7E1E4",
+      "daybg": "F5F8F9",
+      "rule": "B1C0C6",
+      "veg": "77C265",
+      "tiers": {
+        "HIGH": "EE9A3A",
+        "LOW": "5B9BD5",
+        "KETO": "8A63B8",
+        "MED": "3DBE9B"
+      },
+      "web": {
+        "display": "Outfit",
+        "displayFile": "outfit-latin-wght-normal.woff2",
+        "displayItalicFile": null,
+        "displayVariable": true,
+        "body": "Work Sans",
+        "bodyFile": "work-sans-latin-wght-normal.woff2"
+      }
+    },
+    {
+      "key": "berry-navy",
+      "name": "Berry Navy",
+      "mood": "midnight navy with berry pink",
+      "fonts": {
+        "head": "Arial",
+        "body": "Cambria"
+      },
+      "layout": "left",
+      "radius": 0.14,
+      "colors": {
+        "dk1": "1B2236",
+        "dk2": "1B2A49",
+        "lt2": "EEF0F8",
+        "accent1": "C2417C",
+        "accent2": "F0B429",
+        "accent3": "C0392B",
+        "accent4": "3E8EDE",
+        "accent5": "66708A",
+        "accent6": "C9D3F0"
+      },
+      "line": "D8DCEE",
+      "daybg": "F6F7FC",
+      "rule": "B3BAD6",
+      "veg": "6BB36A",
+      "tiers": {
+        "HIGH": "F0922B",
+        "LOW": "3E8EDE",
+        "KETO": "7B4BB5",
+        "MED": "C2417C"
+      },
+      "web": {
+        "display": "Unbounded",
+        "displayFile": "unbounded-latin-wght-normal.woff2",
+        "displayItalicFile": null,
+        "displayVariable": true,
+        "body": "Figtree",
+        "bodyFile": "figtree-latin-wght-normal.woff2"
+      }
+    },
+    {
+      "key": "terracotta-sand",
+      "name": "Terracotta & Sand",
+      "mood": "earthy clay with warm sand",
+      "fonts": {
+        "head": "Cambria",
+        "body": "Cambria"
+      },
+      "layout": "center",
+      "radius": 0.02,
+      "colors": {
+        "dk1": "33241C",
+        "dk2": "5B2E1E",
+        "lt2": "F8EFE3",
+        "accent1": "C8553D",
+        "accent2": "E5A93D",
+        "accent3": "9E2A2B",
+        "accent4": "3F7F8C",
+        "accent5": "8A7160",
+        "accent6": "EBCFB5"
+      },
+      "line": "EAD9C4",
+      "daybg": "FCF7EF",
+      "rule": "CDB79E",
+      "veg": "8AA85A",
+      "tiers": {
+        "HIGH": "E09A3B",
+        "LOW": "3F7F8C",
+        "KETO": "7E4B8F",
+        "MED": "C8553D"
+      },
+      "web": {
+        "display": "DM Serif Display",
+        "displayFile": "dm-serif-display-latin-400-normal.woff2",
+        "displayItalicFile": "dm-serif-display-latin-400-italic.woff2",
+        "displayVariable": false,
+        "body": "Karla",
+        "bodyFile": "karla-latin-wght-normal.woff2"
+      }
+    }
   ]
 }

@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>{{TITLE}}</title>
+<meta name="description" content="{{DESC}}">
+<meta name="theme-color" content="{{THEMECOLOR}}">
+<meta name="robots" content="noindex,nofollow">
+<meta property="og:title" content="{{TITLE}}"><meta property="og:description" content="{{DESC}}"><meta property="og:type" content="website">
+{{HEADLINKS}}
+<script>document.documentElement.className='js'</script>
+<style>{{FONTCSS}}
+:root{{{TOKENS}}}
+{{CSS}}</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to your plan</a>
+<div class="progress" aria-hidden="true"></div>
+<canvas id="gl" aria-hidden="true"></canvas><div class="veil" aria-hidden="true"></div><div class="grain" aria-hidden="true"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs id="svgdefs"></defs></svg>
+
+<nav class="nav glass" aria-label="Sections" id="nav">
+  <b data-t="client.name"></b>
+  <ul id="navlinks"></ul>
+  <button class="menu" id="menubtn" aria-expanded="false" aria-controls="navpanel" aria-label="Open menu"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h14M3 14h14"/></svg></button>
+</nav>
+<div class="navpanel glass" id="navpanel" data-open="false"></div>
+
+<main id="main">
+<header class="hero" id="top" data-tone="hero">
+  <div class="wrap">
+    <p class="eyebrow" data-t="copy.hero.eyebrow"></p>
+    <h1 class="display split" id="h1"></h1>
+    <p class="lede tag" data-t="copy.hero.tag"></p>
+    <div class="ctas"><a class="btn pri" href="#week" data-t="copy.hero.cta1"></a><a class="btn gh glass" href="#watch" data-t="copy.hero.cta2"></a></div>
+    <div class="stats" id="stats"></div>
+  </div>
+  <span class="cue" aria-hidden="true">Scroll</span>
+</header>
+
+<div class="marq" aria-hidden="true"><div id="marq"></div></div>
+
+<section id="watch" data-tone="calm">
+  <div class="wrap two">
+    <div><p class="eyebrow" data-r>Watch</p><h2 class="display" data-r data-t="copy.watch.title"></h2><p class="lede" data-r style="margin-top:1.2rem" data-t="copy.watch.lede"></p><div class="chapters" id="chapters" role="tablist" aria-label="Videos"></div></div>
+    <div data-r>
+      <div class="player glass" id="player" data-playing="false">
+        <video id="vid" playsinline muted loop preload="metadata" aria-label="Plan video"></video>
+        <button class="play" id="playbtn" aria-label="Play video"><span class="glass"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></button>
+        <div class="bar" aria-hidden="true"><i id="vprog"></i></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="numbers" data-tone="warm">
+  <div class="wrap two">
+    <div class="ringbox" data-r>
+      <svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="84" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="22"/><g id="arcs" fill="none" stroke-width="22" stroke-linecap="butt"></g></svg>
+      <div class="mid"><b class="num" id="ringkcal">0</b><span>kcal a day, average</span></div>
+    </div>
+    <div>
+      <p class="eyebrow" data-r>Your numbers</p><h2 class="display" data-r data-t="copy.numbers.title"></h2><p class="lede" data-r style="margin:1.2rem 0 1.6rem" data-t="copy.numbers.lede"></p>
+      <div id="macros"></div><div class="facts" id="facts"></div>
+    </div>
+  </div>
+</section>
+
+<section class="week" id="week" data-tone="warm">
+  <div class="wrap">
+    <p class="eyebrow" data-r>Your week</p><h2 class="display" data-r data-t="copy.week.title"></h2><p class="lede" data-r style="margin:1.2rem 0 2.4rem" data-t="copy.week.lede"></p>
+    <div class="stage" id="stage">
+      <div class="cols glass" id="cols" data-r></div>
+      <div class="steps" id="steps"></div>
+    </div>
+  </div>
+</section>
+
+<section id="clock" data-tone="cool">
+  <div class="wrap">
+    <p class="eyebrow" data-r>Fasting and keto</p><h2 class="display" data-r data-t="copy.clock.title"></h2><p class="lede" data-r style="margin:1.2rem 0 2.4rem" data-t="copy.clock.lede"></p>
+    <div class="clock glass" data-r>
+      <div>
+        <div class="seg" id="seg" role="tablist" aria-label="Day type"></div>
+        <p id="clocknote" class="lede" style="max-width:40ch;margin:0"></p>
+        <div class="sw" id="sw" hidden><button role="switch" aria-checked="false" aria-labelledby="swl" id="swb"></button><span id="swl">Try the 16:8 window on this day</span></div>
+        <ul class="meals" id="clockmeals"></ul>
+      </div>
+      <div class="clockfig"><svg viewBox="0 0 240 240" id="clocksvg" role="img" aria-label="24-hour eating window"></svg><div class="mid"><b class="num" id="cmid"></b><span id="cmid2"></span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="dishes" id="meals" data-tone="cool">
+  <div id="dishbg" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="eyebrow" data-r>Your meals</p><h2 class="display" data-r data-t="copy.dishes.title"></h2><p class="lede" data-r style="margin:1.2rem 0 1.4rem" data-t="copy.dishes.lede"></p>
+    <div class="filters" id="dfilters" role="group" aria-label="Filter dishes by day type"></div>
+  </div>
+  <div class="car" id="car" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Dishes. Swipe or use arrow keys"></div>
+  <div class="wrap carui"><div class="pos" id="dpos" aria-live="polite"></div><div class="arrows"><button class="glass" id="dprev" aria-label="Previous dish"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button class="glass" id="dnext" aria-label="Next dish"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button></div></div>
+</section>
+
+<section id="days" data-tone="calm">
+  <div class="wrap">
+    <p class="eyebrow" data-r>Your 30 days</p><h2 class="display" data-r data-t="copy.days.title"></h2><p class="lede" data-r style="margin:1.2rem 0 0" data-t="copy.days.lede"></p>
+    <div class="filters" id="gfilters" role="group" aria-label="Highlight day types"></div>
+    <div class="grid" id="dowrow" aria-hidden="true"></div>
+    <div class="grid" id="grid" data-r></div>
+    <div class="legend" id="legend"></div>
+  </div>
+</section>
+
+<section id="shop" data-tone="warm">
+  <div class="wrap">
+    <p class="eyebrow" data-r>Shopping</p><h2 class="display" data-r data-t="copy.shop.title"></h2><p class="lede" data-r style="margin:1.2rem 0 0" data-t="copy.shop.lede"></p>
+    <div class="tabs" id="wtabs" role="tablist" aria-label="Week"></div>
+    <div class="prog"><div class="pb"><i id="shopbar"></i></div><span class="mini" id="shopcount" aria-live="polite"></span><button class="chip" id="copylist">Copy what is left</button><button class="chip" id="sharelist" hidden>Share</button></div>
+    <div class="shop" id="shoplists"></div>
+  </div>
+</section>
+
+<section id="swap" data-tone="cool">
+  <div class="wrap">
+    <p class="eyebrow" data-r>Swap guide</p><h2 class="display" data-r data-t="copy.swap.title"></h2><p class="lede" data-r style="margin:1.2rem 0 1.6rem" data-t="copy.swap.lede"></p>
+    <div class="tabs" id="stabs" role="tablist" aria-label="Food group" style="margin-top:0"></div>
+    <label class="search glass"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span class="sr">Search foods</span><input id="fsearch" type="search" placeholder="Search a food" autocomplete="off"></label>
+    <div class="fgrid" id="fgrid"></div>
+    <div class="swapbox glass" id="swapbox" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="rules" data-tone="calm">
+  <div class="wrap">
+    <p class="eyebrow" data-r>Your rules</p><h2 class="display" data-r data-t="copy.rules.title"></h2>
+    <div class="rules" id="rulesgrid" style="margin-top:2.4rem"></div>
+    <p class="mut" style="margin-top:1.4rem;max-width:70ch" data-t="copy.rules.note"></p>
+  </div>
+</section>
+
+<section id="track" data-tone="warm">
+  <div class="wrap">
+    <p class="eyebrow" data-r>Track</p><h2 class="display" data-r data-t="copy.track.title"></h2><p class="lede" data-r style="margin:1.2rem 0 2.4rem" data-t="copy.track.lede"></p>
+    <div class="track glass" data-r>
+      <div>
+        <form id="wform"><div class="trk-in"><label class="sr" for="wval">Weight in pounds</label><input id="wval" type="number" inputmode="decimal" step="0.1" min="60" max="500" placeholder="lb" required><label class="sr" for="wdate">Date</label><input id="wdate" type="date" required><button class="btn pri" type="submit">Log weight</button></div></form>
+        <div class="readout" id="readout"></div>
+        <p class="mini" id="trkmsg" aria-live="polite" style="margin:.9rem 0 0"></p>
+        <p style="margin:.4rem 0 0"><button class="tbtn" id="trkcsv" type="button">Export CSV</button> &nbsp; <button class="tbtn" id="trkclr" type="button">Clear</button></p>
+      </div>
+      <svg id="chart" viewBox="0 0 640 400" role="img" aria-label="Weight against plan"></svg>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap cols2">
+    <div><p class="display" style="font-size:2.4rem" data-t="client.name"></p><p class="mut" data-t="copy.footer.line"></p><p class="mut" style="font-size:.88rem" data-t="copy.footer.disclaimer"></p></div>
+    <div><p class="eyebrow">Jump to</p><div id="footlinks" style="display:grid;gap:.3rem"></div></div>
+    <div><p class="eyebrow">Keep it on your phone</p><p class="mut" style="font-size:.9rem">Open this page, then use your browser's share menu and choose Add to Home Screen. It works offline once opened.</p><button class="chip" id="installbtn" hidden>Install app</button></div>
+  </div>
+</footer>
+
+<dialog class="sheet" id="sheet" aria-labelledby="sheettitle"><div class="in glass" id="sheetin"></div></dialog>
+<noscript><p style="padding:2rem;text-align:center">This plan is interactive. Turn on JavaScript, or ask your dietitian for the PDF.</p></noscript>
+
+<script type="application/json" id="plan-data">{{DATA}}</script>
+<script>{{VENDOR_JS}}</script>
+<script>{{APP_JS}}</script>
+</body>
+</html>

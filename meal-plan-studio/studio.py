@@ -3,6 +3,8 @@
   python studio.py list                          clients, themes, last build
   python studio.py build <client> [--theme K] [--lite] [--no-engine]
   python studio.py qa <client>                   plan caps, forbidden foods, photos, PDF
+  python studio.py web <client> [--theme K] [--videos]   interactive web experience (shader, glass carousel, videos, tools) + offline file
+  python studio.py qa-web <client>               device QA of the web experience (phone, tablet, desktop, reduced motion, JS off)
   python studio.py gallery [<client>]            render the client's deck in all themes -> themes/gallery.jpg
   python studio.py new <slug> --from <client> [--theme K]
 Needs: python3 + Pillow, node (pptxgenjs, jszip, sharp, react, react-dom, react-icons, playwright), LibreOffice (soffice), poppler (pdftoppm).
@@ -100,6 +102,35 @@ def gallery(slug):
             sheet.paste(Image.open(png + '.png').convert('RGB').resize((TW, TH_)), (x0 + j * TW, y0 + 44))
     out = os.path.join(TH, 'gallery.jpg'); sheet.save(out, quality=80); print('wrote', out)
 
+def web(slug, theme=None, videos=False):
+    d, c = client(slug)
+    if not os.path.exists(os.path.join(d, 'deck', 'plan.json')): run([sys.executable, os.path.join('deck', 'prep.py')], cwd=d)
+    media = os.path.join(d, 'dist', 'web', 'media')
+    if videos or not os.path.exists(os.path.join(media, 'intro.mp4')): run([sys.executable, os.path.join(ROOT, 'web', 'build_video.py'), slug] + (['--theme', theme] if theme else []))
+    print(run([sys.executable, os.path.join(ROOT, 'web', 'build_web.py'), slug] + (['--theme', theme] if theme else [])))
+
+def qa_web(slug):
+    d, c = client(slug); idx = os.path.join(d, 'dist', 'web', 'index.html'); out = os.path.join(d, 'dist', 'web_qa')
+    if not os.path.exists(idx): sys.exit('build first: python studio.py web ' + slug)
+    run(['node', os.path.join(ROOT, 'web', 'qa.mjs'), idx, out]); rep = json.load(open(os.path.join(out, 'report.json'))); bad = []
+    for r in rep:
+        p = r['profile']
+        if p == 'js-off':
+            if r['textChars'] < 300: bad.append('js-off: page is empty without JS')
+            continue
+        if r['errs']: bad.append(f'{p}: console errors {r["errs"][:2]}')
+        if r['fails']: bad.append(f'{p}: failed requests {r["fails"][:3]}')
+        if r['overflowX'] > 0: bad.append(f'{p}: horizontal overflow {r["overflowX"]}px')
+        if not r['heroCTA']['visible']: bad.append(f'{p}: hero CTA below the first screen')
+        if not r['fontsOK']: bad.append(f'{p}: web fonts did not load')
+        if r['hiddenReveals']: bad.append(f'{p}: {r["hiddenReveals"]} reveal elements still hidden')
+        if r['imgsBroken']: bad.append(f'{p}: {r["imgsBroken"]} broken images')
+        if r['smallTargets']: bad.append(f'{p}: small tap targets {r["smallTargets"][:4]}')
+        fx = r['fx']
+        if not (fx['sheetOpen'] and fx['meals'] == 3 and fx['sheetClosed'] and fx['active0'] != fx['active1'] and fx['ketoDishes'] > 0 and fx['swapShown'] and 'basket' in fx['shopCount']): bad.append(f'{p}: a feature check failed {fx}')
+    for b in bad: print('FAIL', b)
+    print(f'{slug} web: {"OK" if not bad else str(len(bad)) + " problem(s)"}  (screenshots and report in {out})'); return not bad
+
 def new(slug, src, theme):
     s, c = client(src); t = os.path.join(CL, slug)
     if os.path.exists(t): sys.exit(f'{slug} already exists')
@@ -117,11 +148,14 @@ def lst():
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(); sp = ap.add_subparsers(dest='cmd', required=True)
     b = sp.add_parser('build'); b.add_argument('client'); b.add_argument('--theme'); b.add_argument('--lite', action='store_true'); b.add_argument('--no-engine', action='store_true')
+    w = sp.add_parser('web'); w.add_argument('client'); w.add_argument('--theme'); w.add_argument('--videos', action='store_true'); sp.add_parser('qa-web').add_argument('client')
     sp.add_parser('qa').add_argument('client'); sp.add_parser('list'); sp.add_parser('gallery').add_argument('client', nargs='?', default='aleena')
     n = sp.add_parser('new'); n.add_argument('slug'); n.add_argument('--from', dest='src', default='aleena'); n.add_argument('--theme')
     a = ap.parse_args()
     if a.cmd == 'build': build(a.client, a.theme, a.lite, not a.no_engine); sys.exit(0 if qa(a.client) else 1)
     elif a.cmd == 'qa': sys.exit(0 if qa(a.client) else 1)
+    elif a.cmd == 'web': web(a.client, a.theme, a.videos)
+    elif a.cmd == 'qa-web': sys.exit(0 if qa_web(a.client) else 1)
     elif a.cmd == 'gallery': gallery(a.client)
     elif a.cmd == 'new': new(a.slug, a.src, a.theme)
     else: lst()

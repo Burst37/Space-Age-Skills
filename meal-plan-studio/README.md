@@ -14,10 +14,23 @@ python studio.py build aleena            # engine -> photos -> themed intro -> d
 python studio.py build aleena --lite     # phone-sized PDF (smaller images)
 python studio.py build aleena --theme ocean-teal    # same plan, different look (try before you commit)
 python studio.py qa aleena               # carb caps, protein floors, forbidden foods, photos, page count
+python studio.py web aleena              # interactive web experience: shader bg, scroll motion, liquid-glass carousel, videos, tools
+python studio.py qa-web aleena           # device QA: phone, tablet, desktop, reduced motion, JS off
 python studio.py gallery aleena          # re-render the deck in all 8 themes -> themes/gallery.jpg
 python studio.py new maria --from aleena --theme sunset-coral    # scaffold the next client
 ```
 Outputs land in `clients/<name>/dist/` (full PDF, no-animation PPTX, and the lite PDF). Needs python3 + Pillow, node (`pptxgenjs jszip sharp react react-dom react-icons playwright`), LibreOffice, poppler, and the pptx skill's `apply_theme.js`. Set `STUDIO_NODE_PATH` if the node modules are somewhere unusual.
+
+
+## The web experience (what a client opens on a phone)
+`studio.py web <client>` builds a themed, installable web app from the same plan data as the PDF deck: a living shader background that changes tone by section, scroll-driven motion (GSAP), a liquid-glass dish carousel, two motion-graphic films, a fasting-clock explainer, a 30-day browser with a glass day sheet, tickable shopping lists, a like-for-like swap finder and a weight tracker with a plan line. Output in `clients/<name>/dist/`:
+
+| File | Use |
+|---|---|
+| `web/` (index.html, media/, manifest, service worker) | Host on any static host (Vercel, Netlify, GitHub Pages). Installs to the home screen and works offline after the first visit |
+| `<Name>_Experience_Offline.html` | One file with fonts, photos and videos inlined (about 6 MB). Email it or drop it in a chat |
+
+Works on current Chrome, Edge, Safari and Firefox on phones, tablets and desktops. The glass carousel refracts the background on Chromium and falls back to frosted glass elsewhere; the shader falls back to a gradient without WebGL; reduced motion gets a still shader and no scroll animation; the page is readable with JavaScript off. Videos are H.264 720p with posters, muted and inline so iOS plays them. `qa-web` runs Chromium at iPhone, iPad and desktop sizes (Safari and Firefox are not run here, so check a real iPhone before you hand a client the link).
 
 ## Themes (every client gets a different one)
 ![theme gallery](themes/gallery.jpg)
