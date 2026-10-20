@@ -28,7 +28,7 @@ const cssv = n => getComputedStyle(root).getPropertyValue(n).trim();
 /* ---------- binders ---------- */
 $$('[data-t]').forEach(e => { const v = get(DATA, e.dataset.t); if (v != null) e.textContent = v; });
 { const lines = DATA.copy.hero.h1; const hh = $('#h1'); lines.forEach((ln, i) => { const row = h('span', { class: 'row' }); ln.split(' ').forEach((w, j, a) => { row.append(h('span', { class: 'hw' + (i === lines.length - 1 ? ' em' : '') }, w), j < a.length - 1 ? ' ' : ''); }); hh.append(row); }); $$('.hw.em', hh).forEach(e => { e.innerHTML = '<em>' + esc(e.textContent) + '</em>'; }); }
-$('#stats').append(...[[fmt(DATA.avg.kcal), 'kcal a day'], [DATA.avg.p + ' g', 'protein'], [DATA.avg.c + ' g', 'carbs, average'], [DATA.avg.f + ' g', 'fat']].map(([v, l]) => h('div', { class: 'stat glass', 'data-r': '' }, h('b', { class: 'num', 'data-count': parseFloat(v.replace(/,/g, '')), 'data-suffix': v.replace(/[\d,]/g, '') }, v), h('span', {}, l))));
+$('#stats').append(...[[fmt(DATA.avg.kcal), 'kcal a day'], [DATA.avg.p + ' g', 'protein'], [DATA.avg.c + ' g', 'carbs, average'], [DATA.avg.f + ' g', 'fat']].map(([v, l]) => h('div', { class: 'stat glass' }, h('b', { class: 'num', 'data-count': parseFloat(v.replace(/,/g, '')), 'data-suffix': v.replace(/[\d,]/g, '') }, v), h('span', {}, l))));
 const NAV = [['watch', 'Watch'], ['numbers', 'Numbers'], ['week', 'Week'], ['meals', 'Meals'], ['days', 'Days'], ['shop', 'Shop'], ['swap', 'Swap'], ['track', 'Track']];
 $('#navlinks').append(...NAV.map(([id, l]) => h('li', {}, h('a', { class: 'l', href: '#' + id }, l))));
 $('#navpanel').append(...NAV.map(([id, l]) => h('a', { href: '#' + id }, l)));
@@ -294,6 +294,7 @@ if (HAS_GSAP && window.ScrollTrigger && !RM) {
   const ST = ScrollTrigger, mm = gsap.matchMedia();
   gsap.from('.hero .hw', { yPercent: 115, duration: 1.15, stagger: .09, ease: 'expo.out', delay: .15 });
   gsap.from('.hero .eyebrow,.hero .tag,.hero .ctas', { y: 28, opacity: 0, duration: .9, stagger: .12, ease: 'power3.out', delay: .55 });
+  gsap.from('.hero .stat', { y: 36, opacity: 0, scale: .96, duration: .9, stagger: .1, ease: 'power3.out', delay: .95 });
   ST.batch('[data-r]', { start: 'top 90%', once: true, onEnter: b => gsap.to(b, { opacity: 1, y: 0, duration: .95, stagger: .08, ease: 'power3.out', overwrite: true }) });
   $$('[data-count]').forEach(e => { const to = +e.dataset.count, suf = e.dataset.suffix || ''; if (!isFinite(to)) return; const o = { v: 0 }; ST.create({ trigger: e, start: 'top 92%', once: true, onEnter: () => gsap.to(o, { v: to, duration: 1.6, ease: 'power2.out', onUpdate: () => { e.textContent = (e.id === 'ringkcal' ? fmt(o.v) : fmt(o.v) + (suf ? ' ' + suf.trim() : '')); } }) }); });
   const C = 2 * Math.PI * 84; (window.__arcs || []).forEach((el, i) => { const len = +el.dataset.len; gsap.fromTo(el, { attr: { 'stroke-dasharray': `0 ${C}` } }, { attr: { 'stroke-dasharray': `${len} ${C}` }, ease: 'none', scrollTrigger: { trigger: '.ringbox', start: 'top 85%', end: 'center 45%', scrub: .6 } }); });

@@ -64,13 +64,13 @@ h2.display{font-size:clamp(2.4rem,6.4vw,5.2rem)}
 .navpanel a{display:block;padding:.9rem 1rem;border-radius:16px;text-decoration:none;font-weight:600;font-size:1.05rem}
 @media (min-width:900px){.nav ul{display:flex}.nav .menu{display:none}.navpanel{display:none!important}}
 /* hero */
-.hero{min-height:100svh;display:flex;align-items:flex-end;padding-block:110px 56px}
-.hero .display{font-size:clamp(3.6rem,15.5vw,11.5rem);line-height:.88}
+.hero{min-height:100svh;display:flex;align-items:flex-end;padding-block:92px 36px}
+.hero .display{font-size:clamp(3.4rem,min(15.5vw,15vh),11.5rem);line-height:.88}
 .hero .row{display:block;overflow:hidden;padding-bottom:.08em}
 .hero .hw{display:inline-block;will-change:transform}
 .split{--split:0px;text-shadow:calc(var(--split)*-1) 0 0 color-mix(in oklab,var(--a1) 75%,transparent),var(--split) 0 0 color-mix(in oklab,var(--a4) 75%,transparent)}
-.hero .tag{margin:1.6rem 0 1.8rem}
-.hero .ctas{display:flex;flex-wrap:wrap;gap:.8rem;margin-bottom:2.4rem}
+.hero .tag{margin:1.2rem 0 1.4rem}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:.8rem;margin-bottom:1.8rem}
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:.8rem;max-width:760px}
 @media (min-width:700px){.stats{grid-template-columns:repeat(4,1fr)}}
 .stat{padding:1rem 1.1rem;--gr:22px;overflow:hidden}
@@ -127,7 +127,7 @@ h2.display{font-size:clamp(2.4rem,6.4vw,5.2rem)}
 @media (min-width:900px){.clock{grid-template-columns:1fr 1fr;align-items:center}}
 .seg{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.2rem}
 .clockfig{position:relative;max-width:420px;margin-inline:auto;width:100%;aspect-ratio:1}
-.clockfig svg{width:100%;height:100%}
+.clockfig svg{width:100%;height:100%;overflow:visible}
 .clockfig .mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
 .clockfig .mid b{font-family:var(--display),serif;font-size:clamp(2.2rem,6vw,3.4rem);line-height:1;font-weight:600}
 .clockfig .mid span{font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--soft);font-weight:700}
@@ -143,10 +143,10 @@ h2.display{font-size:clamp(2.4rem,6.4vw,5.2rem)}
 #dishbg{position:absolute;inset:0;z-index:-1;overflow:hidden}
 #dishbg div{position:absolute;inset:-12%;background-size:cover;background-position:center;filter:blur(46px) saturate(1.7) brightness(.62);opacity:0;transition:opacity .9s}
 #dishbg div.on{opacity:1}
-.car{display:flex;gap:clamp(.8rem,2vw,1.6rem);overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;padding:3rem calc(50% - var(--cw)/2) 4rem;perspective:1100px;-webkit-overflow-scrolling:touch;cursor:grab}
+.car{--cw:min(76vw,330px);display:flex;gap:clamp(.8rem,2vw,1.6rem);overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;padding:3rem calc(50% - var(--cw)/2) 4rem;perspective:1100px;-webkit-overflow-scrolling:touch;cursor:grab}
 .car::-webkit-scrollbar{display:none}
 .car.drag{scroll-snap-type:none;cursor:grabbing;scroll-behavior:auto}
-.dc{--cw:min(76vw,330px);flex:0 0 var(--cw);scroll-snap-align:center;position:relative;--gr:34px;text-align:left;transform-style:preserve-3d;will-change:transform,opacity;transition:box-shadow .4s}
+.dc{flex:0 0 var(--cw);scroll-snap-align:center;position:relative;--gr:34px;text-align:left;transform-style:preserve-3d;will-change:transform,opacity;transition:box-shadow .4s}
 .dc .ph{margin:.6rem .6rem 0;border-radius:calc(var(--gr) - 8px);overflow:hidden;aspect-ratio:4/3;background:rgba(255,255,255,.08)}
 .dc .ph img{width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
 .dc .tx{padding:1rem 1.25rem 1.3rem}
@@ -254,7 +254,7 @@ dialog.sheet[open]{animation:rise .5s cubic-bezier(.2,.9,.2,1)}
 .readout span{font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);font-weight:700}
 #chart{width:100%;height:auto;aspect-ratio:16/10;overflow:visible}
 .mini{font-size:.85rem;color:var(--soft)}
-.tbtn{font-size:.85rem;text-decoration:underline;text-underline-offset:3px;color:var(--soft);min-height:44px}
+.tbtn{min-width:44px;padding:0 .4rem;font-size:.85rem;text-decoration:underline;text-underline-offset:3px;color:var(--soft);min-height:44px}
 /* footer */
 footer{padding:4rem 0 6rem;border-top:1px solid rgba(255,255,255,.12)}
 footer .cols2{display:grid;gap:2rem}
