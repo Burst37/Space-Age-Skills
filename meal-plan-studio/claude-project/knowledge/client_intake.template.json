@@ -1,0 +1,41 @@
+{
+  "slug": "firstname",
+  "name": "Firstname",
+  "start": "YYYY-MM-DD (a Monday)",
+  "sex": "F",
+  "age": 0,
+  "height_in": 0,
+  "weight_lb": 0,
+  "goal_weight_lb": 0,
+  "months": 0,
+  "training": [
+    { "days": ["Mon", "Tue", "Thu"], "type": "resistance + plyometrics", "minutes": 60, "intensity": "high" }
+  ],
+  "steps": { "usual": 10000, "other": "30-min walk on the other days" },
+  "diet": {
+    "pattern": "omnivore | pescatarian | vegetarian | vegan | vegan_plus_eggs",
+    "religion": "halal | kosher | none",
+    "exclude": ["pork"],
+    "allergies": [],
+    "loves": [],
+    "meals_per_day": 3
+  },
+  "approach": {
+    "macro_style": "high protein, low carb, moderate fat",
+    "carb_cycle_to_training": true,
+    "training_day_carb_cap_g": 100,
+    "keto": "never | sometimes | always",
+    "keto_days_per_week": 2,
+    "fasting": "never | sometimes | always",
+    "fasting_window": "16:8",
+    "protein_g_per_kg_target": 2.0
+  },
+  "health": {
+    "conditions": [],
+    "medications": [{ "name": "", "dose": "", "unit": "mcg | mg", "timing": "" }],
+    "gates": { "pregnant_or_breastfeeding": false, "under_18": false, "eating_disorder_history": false, "type1_diabetes": false, "insulin_or_sulfonylurea": false, "kidney_disease": false },
+    "labs": []
+  },
+  "deliverables": ["deck_pdf"],
+  "theme": "choose an unused key from 05_themes_and_clients"
+}

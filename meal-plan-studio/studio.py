@@ -87,7 +87,8 @@ def gallery(slug):
     run([sys.executable, os.path.join('deck', 'prep.py')], cwd=d)
     procs = []
     for t in tl:   # sequential: every build writes the same deck/meta.json
-        pdf = build(slug, t['key'], lite=True, engine=False, work=os.path.join(work, t['key']), quiet=True); procs.append((t, pdf))
+        wd = os.path.join(work, t['key']); build(slug, t['key'], lite=True, engine=False, work=wd, quiet=True)
+        procs.append((t, os.path.join(wd, f'{t["key"]}_lite_safe.pdf')))   # per-theme PDF (dist/ holds only the last one)
     pages = [2, 10, 12, 16]; TW, TH_ = 440, 248; font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', 22)
     sheet = Image.new('RGB', (2 * (TW * len(pages) + 20), 4 * (TH_ + 64)), 'white'); dr = ImageDraw.Draw(sheet)
     for i, (t, pdf) in enumerate(procs):
