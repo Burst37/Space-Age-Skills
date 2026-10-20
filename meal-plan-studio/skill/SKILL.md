@@ -1,6 +1,6 @@
 ---
 name: dietitian-meal-plan-builder
-description: Builds a personalized 30-day, phone-friendly meal plan for a dietitian's client, with every day's meals with full macros, Nutrition Facts, month calendar, weekly shopping lists, carb cycling and like-for-like food swaps, as a shareable web page plus a printable PDF. Ready profiles for gout and high uric acid (low-purine, capped chicken, fish, tofu, eggs and oats), for vegan-with-eggs hypothyroid clients (no cruciferous vegetables, soy timing, 3 meals), and for a soy-free ketogenic hypothyroid plan with intermittent fasting (16:8 on workout days, 19:5 on rest days). Use when the user asks for a client meal plan, 30-day or weekly menu with macros, carb-cycling plan, gout or thyroid diet plan, or macro-matched food swaps, even if they never say skill or web page.
+description: Builds a personalized 30-day, phone-friendly meal plan for a dietitian's client, with every day's meals with full macros, Nutrition Facts, month calendar, weekly shopping lists, carb cycling and like-for-like food swaps, as a shareable web page plus a printable PDF. Ready profiles for gout and high uric acid (low-purine, capped chicken, fish, tofu, eggs and oats), for vegan-with-eggs hypothyroid clients (no cruciferous vegetables, soy timing, 3 meals), for a soy-free ketogenic hypothyroid plan with intermittent fasting (16:8 on workout days, 19:5 on rest days), and for a halal (no pork) omnivore plan that cycles carbs to training days with keto and low-carb rest days and optional 16:8 fasting. Use when the user asks for a client meal plan, 30-day or weekly menu with macros, carb-cycling plan, gout or thyroid diet plan, or macro-matched food swaps, even if they never say skill or web page.
 ---
 
 # Dietitian meal plan builder
@@ -75,6 +75,12 @@ Features already in the template: week and day selector with swipe, macro ring, 
 - Also send the page itself as an HTML file (`Name_Plan_Offline_App.html`) so the client can save it and open it offline in Chrome or Safari.
 - If a PowerPoint is requested, remember phone PowerPoint struggles with large files: keep it under about 10 MB, avoid heavy animation, and give the file a unique name ending in `.pptx` (a duplicate download that becomes `name.pptx (2)` no longer ends in `.pptx` and will not open).
 - Mention that the page link is private until the owner shares it from the Share menu.
+
+## Profile: halal omnivore, carb-cycled to training, keto + 16:8 options (v6)
+Engine `scripts/plan_engine_halal_carbcycle.py`. Three day tiers: **HIGH** (training days, total carbs hard-capped under 100 g, about 95 g), **LOW** (about 45 g), **KETO** (net carbs 20 g or less, fat-forward recipes, meals timed for a 16:8 window 12 to 8 PM). The week pattern, kcal per tier and protein floors are in `CFG`. No pork, pork gelatin or alcohol anywhere; whey is halal-certified; shrimp is flagged as swappable. Protein tops up with whey only when a day is short. Keto days use their own recipe pool (`KB`, `KL`, `KD`) so they are real keto meals, not low-carb meals with the carb side removed.
+
+## Themes and the studio project (v6)
+Each client gets a different look: `themes/themes.json` holds 8 themes (palette, font pair, title-slide layout left/right/center, corner radius). `studio.py build <client>` runs engine, photos, themed intro poster, deck, PDF and QA in one command; `studio.py qa` checks carb caps, protein floors, forbidden foods, missing photos and PDF page count from the client's `client.json`. See the project README.
 
 ## Clinical guardrails
 - Thyroid clients: medication on waking with water only, food and coffee 30 to 60 minutes later, iron, calcium, magnesium and fiber supplements 4 hours after the dose. Biotin interferes with thyroid labs: pause 3 to 5 days before a draw. The physician changes the dose, never the client; weight loss can change the dose needed.

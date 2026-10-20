@@ -1,0 +1,26 @@
+{
+  "slug": "aleena",
+  "name": "Aleena",
+  "title": "30-Day Lean & Strong Plan",
+  "footer": "Aleena  ·  30-Day Lean & Strong Carb-Cycle Plan",
+  "theme": "plum-saffron",
+  "start": "2026-10-26",
+  "targets": { "kcal": 1450, "p": 150, "f": 62, "fib": 25 },
+  "profile": {
+    "sex": "F", "age": 35, "height": "5'2\"", "weight_lb": 145, "goal_lb": 125, "months": 4,
+    "diet": "Muslim: halal, no pork. High protein, low carb, moderate fat. Open to keto and intermittent fasting at times.",
+    "training": "Mon/Tue/Thu, 1 h high-intensity resistance + plyometrics",
+    "steps": "10k steps most days, 30-min walk on the others"
+  },
+  "week": ["HIGH", "HIGH", "KETO", "HIGH", "LOW", "KETO", "LOW"],
+  "qa": {
+    "forbidden": ["pork", "bacon", "ham", "lard", "gelatin", "prosciutto", "pancetta", "wine", "beer", "rum", "vodka", "bourbon"],
+    "caps": {
+      "HIGH": { "carb_max": 100, "protein_min": 140 },
+      "LOW": { "carb_max": 55, "protein_min": 140 },
+      "KETO": { "net_max": 20, "protein_min": 120 }
+    },
+    "kcal": [1300, 1600],
+    "deck_slides": 58
+  }
+}
