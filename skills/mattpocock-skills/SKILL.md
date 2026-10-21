@@ -1,91 +1,76 @@
-# mattpocock-skills
+---
+name: mattpocock-skills
+description: Matt Pocock's "Skills For Real Engineers" — 25 composable engineering and productivity skills for disciplined AI-assisted software development. Covers grilling/alignment interviews, shared-language domain docs (CONTEXT.md/ADRs), spec-to-ticket-to-implementation pipelines, TDD red-green-refactor, two-axis code review, bug diagnosis loops, codebase architecture surveys, merge-conflict resolution, and conversation handoffs. Use when the user wants to align with the agent before coding, turn a conversation into a spec/tickets, drive TDD, run a rigorous code review, diagnose a hard bug, survey a codebase for architecture debt, resolve a merge conflict, or hand off a session to another agent.
+license: MIT
+metadata:
+  version: 1.0.0
+  source: https://github.com/mattpocock/skills
+---
 
-Matt Pocock's production Claude skills — TypeScript, tooling, documentation, and developer experience workflows from the creator of Total TypeScript.
+## Overview
 
-## Source
-`mattpocock/skills` on GitHub — clone into `~/.claude/skills/`
+A library of 25 reusable agent skills by Matt Pocock (Total TypeScript / AI Hero), built from real engineering practice rather than "vibe coding." They target four recurring AI-assisted-dev failure modes:
 
-## What This Skill Covers
-- TypeScript error diagnosis and fix patterns
-- Type-safe API design and inference tricks
-- Monorepo setup (Turborepo, pnpm workspaces)
-- Library authoring: tsconfig, bundling, exports map
-- Documentation generation from source
-- Zod schema design and validation patterns
-- tRPC + Next.js type-safe full-stack patterns
+1. **Misalignment** — the agent builds the wrong thing because intent was never pinned down.
+2. **Verbosity** — the agent burns tokens because it doesn't share the project's vocabulary.
+3. **Broken code** — the agent lacks tight feedback loops (tests, types, browser access).
+4. **Architectural rot** — agents accelerate entropy faster than humans can review it.
 
-## Slash Commands
+Skills split into two invocation classes:
 
-### `/ts-fix`
-Diagnose and fix TypeScript errors. Paste the error, get the fix with explanation.
+- **User-invoked** — reachable only when explicitly typed as a slash command (e.g. `/grill-me`). These orchestrate.
+- **Model-invoked** — reachable automatically when the task fits, or explicitly. These hold the reusable discipline (e.g. `/tdd`, `/code-review`).
 
-**Steps:**
-1. Read the full error including the call stack
-2. Identify root cause: type mismatch, missing generic, `any` leak, or structural issue
-3. Apply minimal fix — don't widen types to solve narrowing problems
-4. Add a comment only if the fix is non-obvious
+A user-invoked skill may call a model-invoked one; never the reverse.
 
-### `/ts-types`
-Design or refine a TypeScript type system for a given domain.
+## Skills Included
 
-**Steps:**
-1. Map the domain entities to discriminated unions where applicable
-2. Use `satisfies` over `as` — preserve inference
-3. Avoid enums — use `const` objects with `as const` and `typeof`
-4. Extract reusable utility types
-5. Output the types with brief rationale for each decision
+### Engineering — user-invoked
+- **ask-matt** — router: asks which skill/flow fits the current situation.
+- **grill-with-docs** — alignment interview that also builds/updates the project's domain model (`CONTEXT.md`, ADRs) as it goes.
+- **triage** — moves issues through a state-machine of triage roles.
+- **improve-codebase-architecture** — scans a codebase for "deepening" opportunities (Ousterhout-style deep-module gaps), presents an HTML report, then grills through the one you pick.
+- **setup-matt-pocock-skills** — one-time per-repo setup: issue tracker choice, triage labels, docs location.
+- **to-spec** — synthesizes the current conversation into a spec and publishes it to the issue tracker (no interview).
+- **to-tickets** — breaks a plan/spec/conversation into tracer-bullet tickets with declared blocking edges.
+- **implement** — builds what a spec/tickets describe, driving `/tdd` at agreed seams, closing with `/code-review` before commit.
+- **wayfinder** — plans work too large for one session as a shared map of decision tickets on the issue tracker, resolved one at a time.
 
-### `/monorepo-setup`
-Scaffold a pnpm + Turborepo monorepo.
+### Engineering — model-invoked
+- **prototype** — throwaway prototype (single HTML file, or several toggleable UI variants) to answer a design question.
+- **diagnosing-bugs** — disciplined loop: reproduce red → minimize → hypothesize → instrument → fix → regression-test.
+- **research** — investigates a question against primary sources, writes a cited Markdown file; can run as a background agent.
+- **tdd** — red-green-refactor, one vertical slice at a time.
+- **domain-modeling** — challenges terms against the glossary, stress-tests with edge cases, updates `CONTEXT.md`/ADRs.
+- **codebase-design** — shared vocabulary/discipline for deep modules (small interface, large behavior, clean seam).
+- **code-review** — two-axis review of the diff since a fixed point (coding standards + Fowler smells; spec fidelity), run as parallel sub-agents so neither pollutes the other.
+- **resolving-merge-conflicts** — works an in-progress merge/rebase hunk by hunk, resolved by intent, never `--abort`.
+- **wizard** — generates an interactive bash wizard for steps only a human can do (provisioning, credentials, unfamiliar dashboards, migrations).
 
-**Output:**
-- `pnpm-workspace.yaml`
-- Root `turbo.json` with `build`, `dev`, `lint`, `test` pipelines
-- Shared `tsconfig` package
-- Shared ESLint config package
-- `.npmrc` with `shamefully-hoist=false`
+### Productivity — user-invoked
+- **grill-me** — relentless interview about a plan/design until every branch resolves. Non-code version of grill-with-docs.
+- **handoff** — compacts the current conversation into a handoff doc for another agent/session.
+- **teach** — teaches a concept over multiple sessions using the working directory as stateful memory.
+- **to-questionnaire** — turns an undecidable-alone decision into an async Markdown questionnaire for the right person.
+- **wait-what** — fired when a message doesn't land; re-pitches it in plain language using the project's `CONTEXT.md` vocabulary.
 
-### `/lib-publish`
-Prepare a TypeScript library for npm publishing.
+### Productivity — model-invoked
+- **grilling** — the reusable interview primitive behind grill-me, grill-with-docs, triage, wayfinder, and improve-codebase-architecture.
+- **writing-for-agents** — how to write docs meant to be read by agents: skills, AGENTS.md/CLAUDE.md, pointer-reached docs.
 
-**Checklist:**
-- [ ] `exports` map in package.json (CJS + ESM)
-- [ ] `types` field pointing to `.d.ts`
-- [ ] `files` array — only dist + README
-- [ ] `tsconfig.json` with `declaration: true`, `declarationMap: true`
-- [ ] Bundler: `tsup` or `pkgroll` (not Rollup from scratch)
-- [ ] `prepublishOnly` script runs build + type-check
+## Directory Layout
 
-### `/zod-schema`
-Generate a Zod schema from a description or existing TypeScript type.
-
-**Rules:**
-- Use `.describe()` on every field for LLM-friendly schemas
-- Use `z.discriminatedUnion` over `z.union` when there's a discriminant key
-- Coerce strings to numbers/dates at the boundary, not inside logic
-- Export both the schema and the inferred type: `export type X = z.infer<typeof XSchema>`
-
-## Key Patterns
-
-```typescript
-// Prefer satisfies for config objects — keeps inference, adds type-checking
-const config = {
-  port: 3000,
-  host: "localhost",
-} satisfies ServerConfig;
-
-// Use const enums pattern instead of enums
-const Status = { Active: "active", Inactive: "inactive" } as const;
-type Status = (typeof Status)[keyof typeof Status];
-
-// Generic with constraint — avoid unknown leaking out
-function parse<T extends z.ZodTypeAny>(schema: T, data: unknown): z.infer<T> {
-  return schema.parse(data);
-}
+```
+mattpocock-skills/
+├── SKILL.md          ← this file (router/entry point)
+├── LICENSE            ← MIT, Matt Pocock
+└── skills/
+    ├── engineering/<skill-name>/SKILL.md (+ supporting files)
+    └── productivity/<skill-name>/SKILL.md (+ supporting files)
 ```
 
-## When to Use
-- Building or refactoring TypeScript projects
-- Designing type-safe APIs
-- Setting up new monorepos or libraries
-- Debugging complex TypeScript inference issues
+Setup: run `setup-matt-pocock-skills` once per project before using the other engineering skills — it asks which issue tracker (GitHub/Linear/local files), which triage labels, and where to save docs.
+
+## Attribution
+
+MIT License — Matt Pocock / mattpocock/skills (https://github.com/mattpocock/skills). Imported verbatim (25 shipped skills: engineering + productivity, matching the repo's official plugin manifest). Excludes the upstream `deprecated/`, `in-progress/`, and `misc/` directories, which are not part of the stable release.
