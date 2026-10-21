@@ -96,7 +96,7 @@ def collect(store, job_id, queries, bbox, rows, cols, raw_dir, zoom=14, max_fail
             receipts.append({'tile': key, 'status': 'blocked', 'error': 'circuit_open'}); continue
         try:
             results, meta = run_tile(queries, geo, radius, raw_dir, zoom, runner=runner)
-            ids = {store.upsert(to_record(r, queries, geo, meta)) for r in results if r.get('title')}
+            ids = {store.upsert(to_record(r, queries, geo, meta), job_id) for r in results if r.get('title')}
             payload = {**meta, 'places': len(results), 'unique_ids': len(ids)}
             store.checkpoint(job_id, 'maps', key, 'done', payload); failures_in_row = 0
             receipts.append({'tile': key, 'status': 'done', **payload})

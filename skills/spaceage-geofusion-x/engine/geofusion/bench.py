@@ -8,12 +8,12 @@ def digits(s): return re.sub(r'\D', '', s or '')[-10:]
 
 
 def benchmark(store, job_id, reference=None):
-    recs = list(store.records()); n = len(recs)
-    obs = store.stats()['observations']
+    recs = list(store.records(job_id)); n = len(recs)
+    obs = store.db.execute('SELECT COUNT(*) FROM observations WHERE business_id IN (SELECT business_id FROM job_businesses WHERE job_id=?)', (job_id,)).fetchone()[0]
     fields = ('name', 'phone', 'address', 'website', 'rating', 'review_count', 'category', 'latitude', 'source_id', 'source_url')
     completeness = {f: round(100 * sum(1 for r in recs if r.get(f)) / n, 1) for f in fields} if n else {}
-    scores = [s for s in (store.audit(r['id'], 'scores') for r in recs) if s]
-    audits = [a for a in (store.audit(r['id'], 'website') for r in recs) if a]
+    scores = [s for s in (store.audit(r['id'], 'scores', job_id) for r in recs) if s]
+    audits = [a for a in (store.audit(r['id'], 'website', job_id) for r in recs) if a]
     st = Counter((s['website_status']['maps_website'], s['website_status'].get('verified')) for s in scores)
     lh = Counter('measured' if 'scores' in a['lighthouse'].get(p, {}) else 'not_measured' for a in audits for p in ('mobile', 'desktop'))
     modes = Counter(pg.get('mode', 'error') for a in audits for pg in a['pages'])

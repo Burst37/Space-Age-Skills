@@ -52,6 +52,7 @@ def identity(rec):
     if rec.get('source_id'): basis='id|'+clean(rec.get('source'))+'|'+clean(rec['source_id'])
     elif rec.get('phone') and rec.get('name'): basis='phone|'+norm(rec['phone'])+'|'+norm(rec['name'])
     elif rec.get('website') and rec.get('name') and rec.get('address'): basis='siteaddress|'+domain(rec['website'])+'|'+norm(rec['name'])+'|'+norm(rec['address'])
+    elif rec.get('website') and not (rec.get('name') or rec.get('address')): basis='site|'+domain(rec['website'])
     else: basis='address|'+norm(rec.get('name'))+'|'+norm(rec.get('address'))+'|'+norm(rec.get('city'))
     return hashlib.sha256(basis.encode()).hexdigest()[:32]
 
@@ -66,9 +67,10 @@ class Store:
         CREATE INDEX IF NOT EXISTS observation_business_idx ON observations(business_id);
         CREATE TABLE IF NOT EXISTS jobs (id TEXT PRIMARY KEY, status TEXT NOT NULL, created_at TEXT NOT NULL, metadata TEXT NOT NULL);
         CREATE TABLE IF NOT EXISTS checkpoints (job_id TEXT NOT NULL, step TEXT NOT NULL, key TEXT NOT NULL, status TEXT NOT NULL, payload TEXT NOT NULL, updated_at TEXT NOT NULL, PRIMARY KEY(job_id,step,key));
-        CREATE TABLE IF NOT EXISTS audits (business_id TEXT NOT NULL, kind TEXT NOT NULL, payload TEXT NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY(business_id,kind));''')
+        CREATE TABLE IF NOT EXISTS audits (business_id TEXT NOT NULL, kind TEXT NOT NULL, payload TEXT NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY(business_id,kind));
+        CREATE TABLE IF NOT EXISTS job_businesses (job_id TEXT NOT NULL, business_id TEXT NOT NULL, PRIMARY KEY(job_id,business_id));''')
         self.db.commit()
-    def upsert(self,rec):
+    def upsert(self,rec,job_id=None):
         rec=normalize(rec,rec.get('source','import'))
         key=identity(rec);observed=json.dumps(rec,ensure_ascii=False)
         old=self.db.execute('SELECT payload FROM businesses WHERE id=?',(key,)).fetchone()
@@ -79,6 +81,7 @@ class Store:
             rec=merged
         self.db.execute('INSERT INTO businesses VALUES(?,?,?) ON CONFLICT(id) DO UPDATE SET payload=excluded.payload,updated_at=excluded.updated_at',(key,json.dumps(rec,ensure_ascii=False),now()))
         self.db.execute('INSERT INTO observations(business_id,source,source_url,observed_at,payload) VALUES(?,?,?,?,?)',(key,rec['source'],rec.get('source_url',''),now(),observed))
+        if job_id: self.db.execute('INSERT OR IGNORE INTO job_businesses VALUES(?,?)',(job_id,key))
         self.db.commit()
         return key
     def job(self,job_id,status,metadata=None):
@@ -96,14 +99,17 @@ class Store:
     def checkpoints(self,job_id,step=None):
         q='SELECT step,key,status,payload FROM checkpoints WHERE job_id=?'+(' AND step=?' if step else '')
         return [{'step':r['step'],'key':r['key'],'status':r['status'],**json.loads(r['payload'])} for r in self.db.execute(q,(job_id,step) if step else (job_id,))]
-    def save_audit(self,business_id,kind,payload):
+    def save_audit(self,business_id,kind,payload,job_id=None):
+        if job_id: kind=f'{kind}@{job_id}'  # audits are per job so one job never overwrites another's scores
         self.db.execute('INSERT INTO audits VALUES(?,?,?,?) ON CONFLICT(business_id,kind) DO UPDATE SET payload=excluded.payload,created_at=excluded.created_at',(business_id,kind,json.dumps(payload,ensure_ascii=False),now()))
         self.db.commit()
-    def audit(self,business_id,kind):
+    def audit(self,business_id,kind,job_id=None):
+        if job_id: kind=f'{kind}@{job_id}'
         row=self.db.execute('SELECT payload FROM audits WHERE business_id=? AND kind=?',(business_id,kind)).fetchone()
         return json.loads(row['payload']) if row else None
-    def records(self):
-        for row in self.db.execute('SELECT id,payload FROM businesses ORDER BY id'):
+    def records(self,job_id=None):
+        q='SELECT id,payload FROM businesses ORDER BY id' if not job_id else 'SELECT b.id,b.payload FROM businesses b JOIN job_businesses j ON j.business_id=b.id WHERE j.job_id=? ORDER BY b.id'
+        for row in self.db.execute(q,(job_id,) if job_id else ()):
             yield {'id':row['id'],**json.loads(row['payload'])}
     def stats(self):
         return {'unique_businesses':self.db.execute('SELECT COUNT(*) FROM businesses').fetchone()[0],

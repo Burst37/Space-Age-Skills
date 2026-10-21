@@ -20,8 +20,8 @@ def cell(c):
 def tabs(store, job_id):
     rows = {t: [] for t in TAB_ORDER}
     meta = json.loads(store.db.execute('SELECT metadata FROM jobs WHERE id=?', (job_id,)).fetchone()['metadata'])
-    for b in store.records():
-        s = store.audit(b['id'], 'scores')
+    for b in store.records(job_id):
+        s = store.audit(b['id'], 'scores', job_id)
         prov = b.get('provenance', {})
         base = {'Business': b.get('name'), 'Address': b.get('address'), 'Phone': b.get('phone'), 'Category': b.get('category'),
                 'Google rating': b.get('rating') or NM, 'Review count': b.get('review_count') or NM, 'Maps source URL': b.get('source_url'),
@@ -105,7 +105,7 @@ def verify(rows, readback):
         got = readback.get(name) or readback.get(name[:31])
         hdr = list(dict.fromkeys(k for r in data for k in r))
         report[name] = {'expected_rows': len(data), 'read_rows': len(got) - 1 if got else 0, 'header_ok': bool(got) and [str(h) for h in got[0][:len(hdr)]] == hdr,
-                        'ok': bool(got) and len(got) - 1 >= 1 and [str(h) for h in got[0][:len(hdr)]] == hdr}
+                        'ok': bool(got) and len(got) - 1 == len(data) and [str(h) for h in got[0][:len(hdr)]] == hdr}
     return {'all_ok': all(v['ok'] for v in report.values()), 'tabs': report}
 
 

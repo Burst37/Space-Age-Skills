@@ -15,7 +15,7 @@ ACCESS_METHODS = ['public','authorized_session','approved_api','existing_export'
 
 def parse_csv(value, allowed=None):
     values = [v.strip().lower() for v in value.split(',') if v.strip()]
-    if allowed and any(v not in allowed and not (v.startswith('custom:') and re.fullmatch(r'custom:[a-z0-9][a-z0-9_-]{{1,63}}',v)) for v in values):
+    if allowed and any(v not in allowed and not (v.startswith('custom:') and re.fullmatch(r'custom:[a-z0-9][a-z0-9_-]{1,63}',v)) for v in values):
         raise ValueError('Unknown platform: choose a catalog entry or custom:<platform-name>')
     return list(dict.fromkeys(values))
 

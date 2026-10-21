@@ -191,17 +191,17 @@ class VerifyExportTests(unittest.TestCase):
         from openpyxl import load_workbook
         with tempfile.TemporaryDirectory() as d:
             s = Store(Path(d) / 'g.db')
-            for r in RAW: s.upsert({**r, 'source': 'google_maps_gosom', 'provenance': {'retrieved_at': 't', 'tile': [1, 2], 'queries': ['q']}})
+            for r in RAW: s.upsert({**r, 'source': 'google_maps_gosom', 'provenance': {'retrieved_at': 't', 'tile': [1, 2], 'queries': ['q']}}, 'j')
             s.job('j', 'done', {'seconds': 1})
             ids = {b['name']: b['id'] for b in s.records()}
             a = audit_fixture()
             st = {'maps_website': 'linked', 'in_target_area': True, 'relevance': 'relevant', 'site_kind': 'owned_domain', 'reachable': True, 'verified': 'website_exists'}
             q = scoring.website_quality(a)
             s.save_audit(ids['Sandoval Landscaping'], 'scores', {'website_status': st, 'social': {'readiness': {}}, 'website_quality': q, 'technical_seo': scoring.technical_seo(a),
-                         'local_seo': scoring.local_seo(a, {}), 'ai_search': scoring.ai_search(a), 'social_presence': scoring.social_presence(a, {}), 'opportunity': scoring.opportunity({}, st, q, 'relevant')})
+                         'local_seo': scoring.local_seo(a, {}), 'ai_search': scoring.ai_search(a), 'social_presence': scoring.social_presence(a, {}), 'opportunity': scoring.opportunity({}, st, q, 'relevant')}, 'j')
             st2 = {'maps_website': 'none_linked', 'in_target_area': True, 'relevance': 'relevant', 'verified': 'uncertain', 'evidence': 'e'}
             s.save_audit(ids['Paradise Lawns of Texas'], 'scores', {'website_status': st2, 'social': {'readiness': {}}, 'website_quality': None,
-                         'social_presence': scoring.social_presence(None, {}), 'opportunity': scoring.opportunity({'phone': 1}, st2, None, 'relevant')})
+                         'social_presence': scoring.social_presence(None, {}), 'opportunity': scoring.opportunity({'phone': 1}, st2, None, 'relevant')}, 'j')
             rows = tabs(s, 'j')
             self.assertEqual(rows['Ranked Leads'][0]['Business'], 'Paradise Lawns of Texas')  # highest priority first
             self.assertEqual(len(rows['No Website Linked']), 1); self.assertEqual(len(rows['Website Status Unverified']), 1)
@@ -222,3 +222,20 @@ class VerifyExportTests(unittest.TestCase):
 
 import unittest.mock  # noqa: E402
 if __name__ == '__main__': unittest.main()
+
+
+class ReviewRegressionTests(unittest.TestCase):
+    def test_job_scoping_website_identity_and_row_count(self):
+        from geofusion.core import identity
+        from geofusion.export import verify
+        from geofusion.router import category_relevance, Judge
+        with tempfile.TemporaryDirectory() as d:
+            s = Store(Path(d) / 'g.db')
+            a = s.upsert({'name': 'A Co', 'address': '1 Main', 'source': 'x'}, 'job-a')
+            s.upsert({'name': 'B Co', 'address': '2 Main', 'source': 'x'}, 'job-b')
+            s.save_audit(a, 'scores', {'v': 1}, 'job-a'); s.save_audit(a, 'scores', {'v': 2}, 'job-b')
+            self.assertEqual([r['name'] for r in s.records('job-a')], ['A Co'])
+            self.assertEqual(s.audit(a, 'scores', 'job-a'), {'v': 1})
+        self.assertNotEqual(identity({'website': 'https://one.com'}), identity({'website': 'https://two.com'}))
+        self.assertFalse(verify({'T': [{'a': 1}, {'a': 2}]}, {'T': [['a'], ['1']]})['all_ok'])  # truncated export
+        self.assertNotEqual(category_relevance(Judge(), 'plumbers', 'Ace Plumbing', 'Plumber')['answer'], 'unrelated')

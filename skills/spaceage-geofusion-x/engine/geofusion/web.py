@@ -13,7 +13,7 @@ import tempfile
 import time
 from html.parser import HTMLParser
 from urllib.parse import urljoin, urlparse
-from urllib.request import Request, urlopen
+from urllib.request import HTTPRedirectHandler, Request, build_opener, urlopen
 from .core import SOCIAL, domain, now
 
 UA = 'Mozilla/5.0 (compatible; GeoFusionX/0.5; +research audit)'
@@ -80,9 +80,15 @@ def safe_url(url):
     return url
 
 
+class _SafeRedirect(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        safe_url(newurl)  # revalidate each hop: a public URL must not redirect into private/link-local space
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
 def fetch_static(url, timeout=20):
     started = time.monotonic()
-    with urlopen(Request(safe_url(url), headers={'User-Agent': UA}), timeout=timeout) as r:
+    with build_opener(_SafeRedirect).open(Request(safe_url(url), headers={'User-Agent': UA}), timeout=timeout) as r:
         body = r.read(3_000_000).decode('utf-8', 'replace')
         return {'final_url': r.geturl(), 'status': r.status, 'content_type': r.headers.get('Content-Type', ''), 'html': body,
                 'seconds': round(time.monotonic() - started, 2), 'mode': 'static'}
@@ -94,6 +100,11 @@ def fetch_rendered(url, timeout=45):
     started = time.monotonic()
     with sync_playwright() as p:
         b = p.chromium.launch(); pg = b.new_page(user_agent=UA)
+        def guard(route):  # same trust boundary for every navigation/redirect/subresource
+            try: safe_url(route.request.url)
+            except ValueError: return route.abort()
+            route.continue_()
+        pg.route('**/*', guard)
         resp = pg.goto(safe_url(url), wait_until='networkidle', timeout=timeout * 1000)
         html, final = pg.content(), pg.url; b.close()
     return {'final_url': final, 'status': resp.status if resp else 0, 'content_type': 'text/html', 'html': html,

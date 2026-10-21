@@ -136,6 +136,9 @@ def category_relevance(judge, target, name, category):
     """Is a Maps result in the requested category? Code decides clear cases; only the ambiguous rest goes to Jev."""
     text = f'{name} | {category}'
     primary = (category or '').split(';')[0]
-    if SUPPLIER.search(primary): base = 'adjacent'  # primary category is a supplier, not a service provider
+    words = [w for w in re.findall(r'[a-z]{4,}', (target or '').lower())]
+    if not RELEVANT.search(target or ''):  # rules below are landscaping-specific; other categories match their own words, else go to Jev
+        base = 'relevant' if any(w[:5] in text.lower() for w in words) else None
+    elif SUPPLIER.search(primary): base = 'adjacent'  # primary category is a supplier, not a service provider
     else: base = 'relevant' if RELEVANT.search(text) else 'unrelated' if UNRELATED.search(category or '') else None
     return judge.choice('category_relevance', {'business_name': name, 'maps_categories': category}, QUESTIONS['category_relevance'](target), base)

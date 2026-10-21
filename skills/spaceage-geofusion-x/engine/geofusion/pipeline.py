@@ -84,7 +84,7 @@ def run(config, workdir, job_id, gosom_runner=None, lighthouse=True, log=print):
     yt = social.YouTube() if social_ready.get('youtube', {}).get('status') == 'supported' else None
     city, state = config['city'], config['state']
     target = f'{city}, {state}'.lower()
-    for i, biz in enumerate(list(store.records())):
+    for i, biz in enumerate(list(store.records(job_id))):
         bid = biz['id']
         if store.checkpoint(job_id, 'enrich', bid)[0] == 'done': continue
         if time.monotonic() > deadline or i >= config.get('max_records', 500):
@@ -98,7 +98,7 @@ def run(config, workdir, job_id, gosom_runner=None, lighthouse=True, log=print):
                 scores = {'website_status': {**status, 'verified': 'not_checked', 'skipped': 'outside target city or unrelated category'},
                           'social': {'readiness': {p: v['status'] for p, v in social_ready.items()}}, 'website_quality': None,
                           'social_presence': scoring.social_presence(None, {}), 'opportunity': scoring.opportunity(biz, {'maps_website': 'skipped'}, None, 'unrelated')}
-                store.save_audit(bid, 'scores', scores); store.checkpoint(job_id, 'enrich', bid, 'done', {'name': biz.get('name'), 'skipped': True})
+                store.save_audit(bid, 'scores', scores, job_id); store.checkpoint(job_id, 'enrich', bid, 'done', {'name': biz.get('name'), 'skipped': True})
                 log(f"{biz.get('name')}: skipped (in_area={in_area}, relevance={rel['answer']}) opp=0"); continue
             if biz.get('website'):
                 status['site_kind'] = web.site_kind(biz['website'])
@@ -127,8 +127,8 @@ def run(config, workdir, job_id, gosom_runner=None, lighthouse=True, log=print):
                 scores['website_quality'] = None
             scores['social_presence'] = scoring.social_presence(audit, soc)
             scores['opportunity'] = scoring.opportunity(biz, status, scores['website_quality'], rel['answer'])
-            if audit: store.save_audit(bid, 'website', audit)
-            store.save_audit(bid, 'scores', scores)
+            if audit: store.save_audit(bid, 'website', audit, job_id)
+            store.save_audit(bid, 'scores', scores, job_id)
             store.checkpoint(job_id, 'enrich', bid, 'done', {'name': biz.get('name')})
             log(f"{biz.get('name')}: {status['maps_website']}/{status.get('verified')} opp={scores['opportunity']['opportunity']}")
         except Exception as e:  # one bad business never kills the run
