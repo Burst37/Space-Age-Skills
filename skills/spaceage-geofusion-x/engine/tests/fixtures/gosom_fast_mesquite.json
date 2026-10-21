@@ -1,0 +1,162 @@
+[
+ {
+  "longitude": -96.5899852,
+  "input_id": "q1rVarDmEZePwbkPnqae-Qs",
+  "link": "",
+  "cid": "",
+  "title": "Sandoval Landscaping",
+  "categories": [
+   "Landscaper",
+   "Landscape architect",
+   "Landscape designer",
+   "Lawn sprinkler system contractor",
+   "Property maintenance"
+  ],
+  "category": "",
+  "address": "706 E Kearney St, Mesquite, TX 75149, United States",
+  "web_site": "https://sandovallandscaping.com/",
+  "phone": "+1469-902-4154",
+  "plus_code": "8645QC96+V2",
+  "review_count": 32,
+  "review_rating": 4.6,
+  "reviews_per_rating": null,
+  "latitude": 32.7696274,
+  "longtitude": -96.5899852,
+  "status": "",
+  "description": "",
+  "reviews_link": "",
+  "thumbnail": "",
+  "timezone": "America/Chicago",
+  "price_range": "",
+  "data_id": "0x864ea40955a54fa7:0xe8a7f79a6241d5fc",
+  "street_view_url": "",
+  "place_id": "",
+  "reservations": null,
+  "order_online": null,
+  "menu": {
+   "link": "",
+   "source": ""
+  },
+  "owner": {
+   "id": "",
+   "name": "",
+   "link": ""
+  },
+  "complete_address": {
+   "borough": "",
+   "street": "",
+   "city": "",
+   "postal_code": "",
+   "state": "",
+   "country": ""
+  },
+  "credit_cards_accepted": null,
+  "about": null,
+  "emails": null
+ },
+ {
+  "longitude": -96.5983607,
+  "input_id": "q1rVarDmEZePwbkPnqae-Qs",
+  "link": "",
+  "cid": "",
+  "title": "Paradise Lawns of Texas",
+  "categories": [
+   "Landscaper"
+  ],
+  "category": "",
+  "address": "Mesquite, TX 75187, United States",
+  "web_site": "",
+  "phone": "+1972-203-0669",
+  "plus_code": "8645QCG2+7M",
+  "review_count": 2,
+  "review_rating": 5,
+  "reviews_per_rating": null,
+  "latitude": 32.7757,
+  "longtitude": -96.5983607,
+  "status": "",
+  "description": "",
+  "reviews_link": "",
+  "thumbnail": "",
+  "timezone": "America/Chicago",
+  "price_range": "",
+  "data_id": "0x864ea50aaa2f747f:0x6cca7d423c9de928",
+  "street_view_url": "",
+  "place_id": "",
+  "reservations": null,
+  "order_online": null,
+  "menu": {
+   "link": "",
+   "source": ""
+  },
+  "owner": {
+   "id": "",
+   "name": "",
+   "link": ""
+  },
+  "complete_address": {
+   "borough": "",
+   "street": "",
+   "city": "",
+   "postal_code": "",
+   "state": "",
+   "country": ""
+  },
+  "credit_cards_accepted": null,
+  "about": null,
+  "emails": null
+ },
+ {
+  "longitude": -96.6883716,
+  "input_id": "q1rVarDmEZePwbkPnqae-Qs",
+  "link": "",
+  "cid": "",
+  "title": "North Dallas Landscapes",
+  "categories": [
+   "Landscaper",
+   "Landscape designer",
+   "Lawn care service",
+   "Lawn sprinkler system contractor"
+  ],
+  "category": "",
+  "address": "10050 Cayuga Dr, Dallas, TX 75228, United States",
+  "web_site": "https://northdallaslandscapes.com/contact-us/",
+  "phone": "+1214-275-4998",
+  "plus_code": "8645R8M6+9M",
+  "review_count": 47,
+  "review_rating": 4.7,
+  "reviews_per_rating": null,
+  "latitude": 32.833393099999995,
+  "longtitude": -96.6883716,
+  "status": "",
+  "description": "",
+  "reviews_link": "",
+  "thumbnail": "",
+  "timezone": "America/Chicago",
+  "price_range": "",
+  "data_id": "0x864ea11527eaaaab:0x234c00692cb6b1e",
+  "street_view_url": "",
+  "place_id": "",
+  "reservations": null,
+  "order_online": null,
+  "menu": {
+   "link": "",
+   "source": ""
+  },
+  "owner": {
+   "id": "",
+   "name": "",
+   "link": ""
+  },
+  "complete_address": {
+   "borough": "",
+   "street": "",
+   "city": "",
+   "postal_code": "",
+   "state": "",
+   "country": ""
+  },
+  "credit_cards_accepted": null,
+  "about": null,
+  "emails": null
+ }
+]
