@@ -66,15 +66,24 @@ If `code_only` is True: print `[graphify update] Code-only changes detected - sk
 If `code_only` is False (any changed file is a doc/paper/image): run the full Steps 3A–3C pipeline as normal.
 
 
-If no new files exist (only deletions), create an empty extraction so the merge step can prune:
+If the extraction file is missing, build it before the merge. A code-only run (or a fresh run that cleaned up after the last build) has only `.graphify_ast.json`, so promote the AST output into `.graphify_extract.json`; with neither (only deletions), write an empty extraction so the merge step can still prune:
 
 ```bash
 if [ ! -f graphify-out/.graphify_extract.json ]; then
-    echo '[graphify update] Only deletions -- creating empty extraction for merge.'
     $(cat graphify-out/.graphify_python) -c "
 import json
 from pathlib import Path
-Path('graphify-out/.graphify_extract.json').write_text(json.dumps({'nodes':[],'edges':[],'hyperedges':[],'input_tokens':0,'output_tokens':0}), encoding='utf-8')
+ast_path = Path('graphify-out/.graphify_ast.json')
+out = Path('graphify-out/.graphify_extract.json')
+if ast_path.exists():
+    print('[graphify update] Code-only changes -- promoting AST extraction for merge.')
+    ast = json.loads(ast_path.read_text(encoding='utf-8'))
+    ast.setdefault('nodes', []); ast.setdefault('edges', []); ast.setdefault('hyperedges', [])
+    ast.setdefault('input_tokens', 0); ast.setdefault('output_tokens', 0)
+    out.write_text(json.dumps(ast, ensure_ascii=False), encoding='utf-8')
+else:
+    print('[graphify update] Only deletions -- creating empty extraction for merge.')
+    out.write_text(json.dumps({'nodes':[],'edges':[],'hyperedges':[],'input_tokens':0,'output_tokens':0}), encoding='utf-8')
 "
 fi
 ```

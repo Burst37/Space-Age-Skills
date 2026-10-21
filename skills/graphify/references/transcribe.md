@@ -24,7 +24,7 @@ Set it as `WHISPER_PROMPT` to use in the next command.
 **Step 2 - Transcribe:**
 
 ```bash
-GRAPHIFY_WHISPER_MODEL=base  # or whatever --whisper-model the user passed
+export GRAPHIFY_WHISPER_MODEL=base  # or whatever --whisper-model the user passed
 $(cat graphify-out/.graphify_python) -c "
 import json, os
 from pathlib import Path

@@ -24,7 +24,7 @@ except RuntimeError as e:
 "
 ```
 
-Replace `URL` with the actual URL, `AUTHOR` with the user's name if provided, `CONTRIBUTOR` likewise. If the command exits with an error, tell the user what went wrong - do not silently continue. After a successful save, automatically run the `--update` pipeline on `./raw` to merge the new file into the existing graph.
+Replace `URL` with the actual URL, `AUTHOR` with the user's name if provided, `CONTRIBUTOR` likewise. If the command exits with an error, tell the user what went wrong - do not silently continue. After a successful save, automatically run the `--update` pipeline to merge the new file into the existing graph. Run it against the original scan root stored in `graphify-out/.graphify_root` (`$(cat graphify-out/.graphify_root)`), **not** `./raw`: `./raw` is only where the file was saved, and comparing that subdirectory against the full-project manifest would classify every source outside it as deleted and prune it from the graph.
 
 Supported URL types (auto-detected):
 - YouTube / any video URL → audio downloaded via yt-dlp, transcribed to `.txt` on next run (requires `pip install 'graphifyy[video]'`)
