@@ -1,0 +1,68 @@
+{
+  "name": "reference-driven-premium-site",
+  "goal": "Build a premium cinematic website in my own brand style while transferring the strongest reusable motion and scroll principles from my reference media.",
+  "taskType": "Website / UI",
+  "mode": "War",
+  "workspace": "./workspace/site",
+  "maxRounds": 8,
+  "parallelCandidates": 3,
+  "plateauDelta": 1,
+  "plateauRounds": 2,
+  "hardGate": 92,
+  "referenceGate": 88,
+  "originalityGate": 90,
+  "liveBenchmarkScout": true,
+  "benchmarkProvider": "gemini",
+  "provider": {
+    "builder": "openai",
+    "critic": "gemini",
+    "judge": "xai"
+  },
+  "model": {
+    "builder": "",
+    "critic": "",
+    "judge": ""
+  },
+  "checks": [
+    "npm test --if-present",
+    "npm run build --if-present"
+  ],
+  "web": {
+    "enabled": true,
+    "url": "http://127.0.0.1:3000",
+    "viewports": [
+      {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      {
+        "name": "tablet",
+        "width": 768,
+        "height": 1024
+      },
+      {
+        "name": "desktop",
+        "width": 1440,
+        "height": 1000
+      }
+    ]
+  },
+  "git": {
+    "enabled": true
+  },
+  "constraints": [
+    "Do not literally clone distinctive reference expression.",
+    "Preserve accessibility and performance.",
+    "Mobile is first-class."
+  ],
+  "protectedPaths": [
+    ".git",
+    ".env",
+    ".env.local",
+    "node_modules",
+    "runs"
+  ],
+  "referenceDNA": null,
+  "prompt": "Compile or paste your Gauntlet prompt here."
+}

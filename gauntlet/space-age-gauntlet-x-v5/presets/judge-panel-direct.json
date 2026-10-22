@@ -1,0 +1,40 @@
+{
+  "_comment": "ALL-DIRECT panel. Zero OpenRouter — every seat talks to its own lab's API. This is the production/Hermes default: six labs, six independent transports, no single broker that can take the whole panel down.",
+
+  "judgePanel": [
+    { "id": "sol",      "provider": "openai",    "model": "gpt-5.6-sol",     "weight": 1 },
+    { "id": "gemini",   "provider": "gemini",    "model": "gemini-3.7-flash","weight": 1 },
+    { "id": "kimi",     "provider": "moonshot",  "model": "kimi-k3",         "weight": 1 },
+    { "id": "deepseek", "provider": "deepseek",  "model": "deepseek-chat",   "weight": 1 },
+    { "id": "opus",     "provider": "anthropic", "model": "claude-opus-5",   "weight": 1 },
+    { "id": "grok",     "provider": "xai",       "model": "grok-4.6",        "weight": 1 }
+  ],
+
+  "visualPanel": [
+    { "id": "gemini-vision", "provider": "gemini",    "model": "gemini-3.7-flash", "weight": 1 },
+    { "id": "kimi-vision",   "provider": "moonshot",  "model": "kimi-k3",          "weight": 1 },
+    { "id": "opus-vision",   "provider": "anthropic", "model": "claude-opus-5",    "weight": 1 },
+    { "id": "sol-vision",    "provider": "openai",    "model": "gpt-5.6-sol",      "weight": 1 },
+    { "id": "grok-vision",   "provider": "xai",       "model": "grok-4.6",         "weight": 1 }
+  ],
+
+  "panelQuorum": { "judge": 4, "visual": 3 },
+  "maxJudgeSpread": 25,
+
+  "_keys": {
+    "OPENAI_API_KEY": "sol seat",
+    "GEMINI_API_KEY": "gemini seat + the ONLY native video path",
+    "MOONSHOT_API_KEY": "kimi seat (api.moonshot.ai)",
+    "DEEPSEEK_API_KEY": "deepseek seat (api.deepseek.com) — judge panel only, text-only model",
+    "ANTHROPIC_API_KEY": "opus seat",
+    "XAI_API_KEY": "grok seat"
+  },
+
+  "_notes": [
+    "Six independent transports: no broker outage can take the panel below quorum, and each lab is billed and rate-limited separately.",
+    "deepseek-chat is text-only, so the deepseek seat is judge-panel only. It is also by far the cheapest seat, which is the point of having it.",
+    "Only the gemini seat receives the scroll RECORDING. Every other seat gets sampled keyframes flagged degraded:'video->frames' — not because those models cannot understand video, but because only the Gemini adapter serialises it (Files API). Do not assume a seat sees motion just because its model could.",
+    "Set OPENROUTER_API_KEY as well and the failover chain will use it as a backstop when a direct API is down. Direct is preferred, OpenRouter is the spare tyre.",
+    "For Hermes/VPS: keep these six in the VPS .env. verify:panel and doctor both run headless and exit non-zero on a bad seat, so they drop straight into a preflight step."
+  ]
+}
