@@ -161,10 +161,10 @@
       "status": "connected"
     },
     {
-      "name": "VPS 146.190.78.120",
+      "name": "DigitalOcean VPS 146.190.78.120",
       "cat": "Build",
       "via": "cli",
-      "url": "http://146.190.78.120:3000",
+      "url": "https://cloud.digitalocean.com",
       "cost": null,
       "status": "manual"
     },
@@ -345,10 +345,10 @@
       "status": "manual"
     },
     {
-      "name": "Hermes Agent",
+      "name": "Hermes Agent (DigitalOcean)",
       "cat": "Agents",
       "via": "cli",
-      "url": "",
+      "url": "http://146.190.78.120:3000",
       "cost": null,
       "status": "manual"
     },
