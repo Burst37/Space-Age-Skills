@@ -287,6 +287,102 @@
       "url": "https://carta.com",
       "cost": null,
       "status": "connected"
+    },
+    {
+      "name": "Claude",
+      "cat": "LLMs",
+      "via": "web",
+      "url": "https://claude.ai",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "ChatGPT",
+      "cat": "LLMs",
+      "via": "web",
+      "url": "https://chatgpt.com",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "MiniMax",
+      "cat": "LLMs",
+      "via": "web",
+      "url": "https://www.minimax.io",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "Gemini (app)",
+      "cat": "LLMs",
+      "via": "web",
+      "url": "https://gemini.google.com",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "DeepSeek",
+      "cat": "LLMs",
+      "via": "web",
+      "url": "https://chat.deepseek.com",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "GLM (Z.ai)",
+      "cat": "LLMs",
+      "via": "web",
+      "url": "https://chat.z.ai",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "Kimi",
+      "cat": "LLMs",
+      "via": "web",
+      "url": "https://www.kimi.com",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "Hermes Agent",
+      "cat": "Agents",
+      "via": "cli",
+      "url": "",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "OpenArt",
+      "cat": "Media",
+      "via": "web",
+      "url": "https://openart.ai",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "LoveArt.ai",
+      "cat": "Media",
+      "via": "web",
+      "url": "https://loveart.ai",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "CapCut",
+      "cat": "Media",
+      "via": "web",
+      "url": "https://www.capcut.com",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "ElevenLabs",
+      "cat": "Audio",
+      "via": "web",
+      "url": "https://elevenlabs.io",
+      "cost": null,
+      "status": "manual"
     }
   ],
   "routines": [
