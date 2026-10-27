@@ -8,6 +8,8 @@ license: MIT OR Apache-2.0
 
 Space Age skill for `github.com/storytold/effectcraft` (MIT OR Apache-2.0, see `LICENSE.upstream`). Upstream is a 47 MB Rust workspace, so it is **not vendored**. This skill is the operating guide; the source of truth is upstream `docs/agents.md`, `docs/mcp.md`, `docs/control-protocol.md`.
 
+**Status (upstream's own docs/target-app-parity.md, 2026-10-12): an After Effects 2026 clone, alpha.** Feature breadth ~91%, ready for real client work ~45%. It cannot open `.aep` projects, fidelity vs After Effects is measured for one narrow case, and 200+ issues are open. Use it for generated titles, overlays and scripted renders; do not promise `.aep` round-tripping or pixel-identical After Effects output. AE expressions and ExtendScript-style scripts are the part that carries over best (~65% ready).
+
 Every action is an engine command with a stable id and JSON params. Menus, CLI, MCP and the control channel all run the same commands, so anything a user can do an agent can do.
 
 ## Setup (once)
@@ -57,6 +59,6 @@ Add `--json` for machine output.
 
 - Verify visually: render a frame at the start, middle and end before declaring done.
 - Client deliverables: keep the `.ecproj` plus the export; log the CLI version used.
-- Prefer this over hand-rolled ffmpeg/After Effects JSX for titles and overlays. For footage editing use `capcut-video-director` / `davinci-resolve-director`.
+- Good fit for titles and overlays built from scratch; for existing `.aep` files or exact After Effects looks, use After Effects itself. For footage editing use `capcut-video-director` / `davinci-resolve-director`.
 
 See `references/tools.md` for the tool table.
