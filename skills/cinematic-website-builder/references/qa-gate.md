@@ -9,6 +9,7 @@ A build is **not complete** until it has evidence. "Looks good", "fully tested",
 node scripts/assemble.mjs site/index.src.html -o site/index.html
 node scripts/verify.mjs site/index.html --out site/qa --budget-kb 900
 # Behind a TLS-intercepting proxy (e.g. cloud sandboxes): CWB_EXTRA_CA=/path/proxy-ca.pem node scripts/verify.mjs …
+# Runtime gallery only: add --skip-aeo. Live preview: --aeo-url https://preview.example.com/
 ```
 
 Five Chromium passes: **desktop 1440×900 · tablet 768×1024 (touch) · mobile 390×844 (touch) ·
@@ -20,7 +21,8 @@ culprit elements) · any heading/paragraph/link/button stuck invisible after the
 a module that threw (`.cwb-failed`) · runtime never booted · `cwb-js` still set with CDN blocked ·
 native cursor hidden on touch/RM · load-phase CLS > 0.1 · desktop transfer over budget ·
 missing `lang`/title/description/viewport/h1 · more than one H1 · unparseable JSON-LD ·
-`<img>` without `alt` · presigned/expiring URLs · leftover `{{placeholders}}`.
+`<img>` without `alt` · presigned/expiring URLs · leftover `{{placeholders}}` ·
+SEO/AEO hard gates (see below).
 
 Recorded: LCP, load CLS, scroll-phase CLS, long tasks, transfer KB per pass.
 
@@ -29,6 +31,23 @@ Recorded: LCP, load CLS, scroll-phase CLS, long tasks, transfer KB per pass.
 > entries in the lab; that column is evidence, not a verdict. Before quoting performance to a
 > client, check field data (CrUX / Vercel Speed Insights / RUM). If field CLS > 0.1, first
 > suspect pins: reduce them or set `pinType: 'transform'` under a smooth-scroll setup.
+
+
+## 1b. SEO/AEO pass — `aeo-check.py` (hooked by verify)
+
+On every client build, `verify.mjs` runs `seo-aeo-optimizer/scripts/aeo-check.py`
+against the local preview URL and writes `qa/aeo.json`. Protocol:
+`references/seo-aeo-gate.md`.
+
+**Blocking (exit 1):** content missing from the raw HTML · no Organization /
+LocalBusiness (or vertical subtype) JSON-LD · no `<h1>` · a retrieval AI bot
+blocked in `robots.txt`. Missing `seo-aeo-optimizer` is also blocking unless
+`--skip-aeo` was passed (gallery / runtime regression only).
+
+Recorded (non-blocking): automated score /60, question-heading coverage, `sameAs`
+count, `llms.txt`, author/date flags. Re-run aeo-check on the live URL at ship.
+Field CWV targets remain LCP < 2.5 s, INP < 200 ms, CLS < 0.1 — lab numbers in
+this report are regressions, not field claims.
 
 ## 2. Visual loop — three passes, every build (director §16)
 
@@ -71,14 +90,17 @@ Factory tier average ≥ 3.5, Enhanced ≥ 4.0, Cinematic/Flagship ≥ 4.3.
 - [ ] Contrast of every color-shift scene and every text-over-media state (busiest frame, not the calm one).
 - [ ] Flashing: nothing flashes > 3×/s (glitch is one-shot).
 - [ ] Copy passes `stop-slop-pro` (no AI tells), claims are the client's real numbers, NAP matches GBP.
-- [ ] `sa-local-seo-geo`: JSON-LD validates in Rich Results Test; robots.txt allows AI crawlers.
+- [ ] `seo-aeo-optimizer` / `sa-local-seo-geo`: JSON-LD validates in Rich Results Test; NAP matches GBP; robots.txt allows retrieval AI bots; optional llms.txt; sitemap submitted; IndexNow on deploy.
+- [ ] Service pages have question-shaped H2s with 40–60 word answers in the initial HTML (not JS-injected).
+- [ ] No liquid-glass or 3D goo type on law, SaaS, medical or home-healthcare sites.
 - [ ] Forms/booking reach their real endpoint boundary (never claim a service works because its shell renders).
 - [ ] No secrets in client code; external links `rel="noopener"`; asset licences known.
 
 ## 5. Completion gate
 
-Complete only when: verify passes · visual loop done with evidence · rubric meets tier threshold ·
-manual checks recorded (unresolved items disclosed, not hidden) · assets re-hosted ·
+Complete only when: verify passes (including SEO/AEO hard gates) · visual loop done with evidence ·
+rubric meets tier threshold · manual checks recorded (unresolved items disclosed, not hidden) ·
+assets re-hosted · robots.txt / sitemap / IndexNow handled on ship ·
 deployment verified when deploy was requested.
 
 ## 6. Delivery package
@@ -86,8 +108,13 @@ deployment verified when deploy was requested.
 ```
 /site/index.html          single file (assembled)
 /site/assets/…            re-hosted media, OG image, favicon
+/site/robots.txt          retrieval AI bots allowed
+/site/sitemap.xml         indexable 200s only
+/site/llms.txt            optional
 /site/qa/REPORT.md        verify output + screenshots
-/site/build-manifest.yaml tier, modules, cost, budgets, open issues
+/site/qa/aeo.json         aeo-check.py report
+/handoff/                 brief.md · design-spec.md · page-text.md · wireframe.yaml · motion-plan.yaml · type/ · greybox/ · sections/
+/site/seo/                teardown + blueprint (from seo-aeo-optimizer)
 ```
 Hand off to `sa-deploy-operator` (Stage 5). Log the build to Drive SESSION_MEMORY via `sa-obsidian-vault-ops`.
 
@@ -97,3 +124,24 @@ Same test fails twice · same visual defect survives two targeted fixes · a tec
 the budget on target devices → stop patching. Write the rescue bundle (goal, current state, exact
 failure, attempts, diff, screenshots) and change approach — downgrade the tier, drop the module —
 without silently changing the approved direction.
+
+## v3.3 automated checks (verify.mjs)
+
+| Check | Blocks on | Flag |
+|---|---|---|
+| Passes | desktop, tablet, mobile, reduced (axe here), offline (CDN blocked), wide-1920, wide-2560, narrow-320 (pages with jumbo/custom type) | `--skip-offline`, `--skip-wide`, `--all-passes` |
+| Kernel | page uses `data-cwb` but the runtime never booted; fail-open broken offline | — |
+| Invisible text | text stuck at opacity < 0.1 (ignores collapsed accordions, `inert`, `hidden`, closed `details`, aria-controls regions) | — |
+| axe | serious/critical WCAG 2.2 AA violations | `--skip-axe` |
+| Motion plan | planned library / module (`data-cwb-live`) / CSS timeline missing; > 1 video playing with video-per-section | `--motion-plan` |
+| Type | undeclared family/weight loaded; heading in an undeclared or unloaded (fallback) family; body contrast < 4.5:1 | `--type` |
+| Spacing | text < 16px from the edge on phones; tap targets < 44px; (warn) px paddings outside tokens, off-rhythm section padding | — |
+| Jumbo / custom type | no real DOM text; overflow at 320/390/1440/2560 | — |
+| AI lettering | `<img data-ai-word>` not pass/confirmed in letter-check | `--letters` |
+| Wide | readable text wider than 2400px | — |
+| Weight | desktop first-load KB > budget (lazy media counted per step, not the whole scroll); logo > cap | `--budget-kb`, `--logo-kb` |
+| Head | theme-color, apple-touch-icon, favicon resolving | — |
+| Section diff | rendered section vs `handoff/sections/*.png` mismatch > 12% | `--sections`, `--diff-threshold` |
+| AEO | aeo-check hard gates on money pages | `--money`, `--skip-aeo` |
+
+After verify: `launch-check.mjs` on the live domain (`references/launch-gate.md`).

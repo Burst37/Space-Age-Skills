@@ -1,0 +1,115 @@
+# CWB goldfish reviewer lenses (v3.4). Adapted from Google's Elephant-Goldfish Model (Apache-2.0,
+# github.com/google/elephant-goldfish-model @ e4747323): personas zoom_out, comprehension, design_critic, style,
+# structural + egm-drift-report, rewritten for website hand-off docs. scripts/goldfish.mjs reads this file.
+# rules: CWB files copied into every packet for that lens (paths relative to the skill root).
+common_mandate: |
+  You are a goldfish reviewer. You have NO conversation history, notes, memory or transcripts, and you must not look for
+  them (no RecallMemory, no transcript tools, no inbox). Read only the files in this packet and the URLs listed in
+  SOURCES.md. You are read-only: do not edit, generate, deploy or message anyone.
+  Review as a sharp outsider who has just joined the project. Critique first, no praise, no summaries of what is good.
+  Every finding must point at a place in the target doc (section heading or line) AND at evidence you can cite from
+  this packet (a rule file + its wording, a source file, a URL + what it shows, or a computed number). A finding with no
+  evidence is an opinion: label it severity nit and say "judgment".
+  Severity: blocker = the build will fail a CWB gate, break a hard rule/ban, mislead a customer or create a legal or
+  compliance risk if this doc is built as written. should = a real gap that will cost quality, rankings, conversions or
+  rework. nit = polish or judgment.
+  Do not invent facts about the client. If a fact is missing, the finding is "missing fact" and the fix is "ask".
+  Output: the report table only (format in REPORT_FORMAT.md). At most 10 findings, most severe first.
+lenses:
+  naive-client:
+    title: Naive client (comprehension)
+    from_egm: comprehension
+    gates: [GR1, GR2]
+    rules: [templates/handoff/brief.md, references/direction-intake.md]
+    checks:
+      - "Paraphrase first, under two headings: 'What this site will do' and 'Who it is for' (2-4 sentences each). If you cannot, that section is a blocker. A wrong or empty paraphrase is a finding."
+      - "Every term, service, offer, gate or brand name is defined in the doc or obviously general."
+      - "Facts a copywriter needs are present: audience, promise, proof available, service area, hours, what each phone number is for."
+      - "Contradictions between sections (e.g. 'nonmedical' vs copy that implies health care)."
+  conversion:
+    title: Conversion and clarity
+    from_egm: design_critic
+    gates: [GR1, GR2]
+    rules: [CINEMATIC_WEBSITE_BUILDER.md]
+    checks:
+      - "One primary action per page, written as a verb, reachable in the first 390x844 viewport; secondary actions clearly secondary."
+      - "Headline states the outcome, not the feature; proof sits next to the ask; no invented proof."
+      - "Each page in the sitemap has a job and a next step; no dead ends."
+  search-and-answers:
+    title: Search and AI answers (SEO = AEO)
+    from_egm: structural
+    gates: [GR1, GR2]
+    rules: [references/seo-aeo-gate.md, templates/localbusiness.jsonld, templates/llms.txt, templates/robots.txt]
+    checks:
+      - "G1 evidence exists: top-3 competitor teardown, money keywords, sitemap with page types, schema plan, AI-citation map."
+      - "Entity/NAP complete and identical everywhere; LocalBusiness (not MedicalBusiness for nonmedical care) with geo, areaServed, sameAs, hours."
+      - "Every service page reserves a question H2 + 40-60 word answer capsule; FAQPage only for visible FAQs."
+      - "Preview noindex vs production indexable; robots allows retrieval AI bots; canonical/sitemap/llms.txt on the production host."
+      - "design-spec carries the SEO/AEO plan section (the build chain and verify read it from there)."
+  trust-and-tone:
+    title: Trust, claims and regulated-sector tone
+    from_egm: style
+    gates: [GR1, GR2]
+    rules: [references/subtle-cinematic.md, references/qa-gate.md]
+    checks:
+      - "Every claim (years, licensed, certified, insured, outcomes, numbers) has a source in the doc or is flagged to ask/drop."
+      - "Regulated sectors (home care, law, medical, dental, SaaS, finance, insurance): licence line exactly as issued, no implied clinical care, no guarantees, AI disclosure for generated media and any AI assistant, privacy page, no health data in forms."
+      - "Banned in regulated sectors: liquid-glass, 3D goo, fur/candy/grunge/neon/chrome/glass type. Calm jumbo is allowed."
+      - "Copy reads human (no 'Unlock the power of', no hype adjectives)."
+  accessibility:
+    title: Accessibility
+    from_egm: design_critic
+    gates: [GR2]
+    rules: [references/subtle-cinematic.md, references/spacing-system.md, CINEMATIC_WEBSITE_BUILDER.md]
+    checks:
+      - "Compute contrast for every text/background token pair the doc pairs (>= 4.5:1 body, >= 3:1 large text and focus/UI)."
+      - "Body size (regulated: >= 17px), line-height, measure <= 70ch, small-text floor for eyebrows/legal."
+      - "Tap targets >= 44px, visible focus, reduced-motion parallel design, pause control for any moving media, captions/alt plan."
+  motion-and-performance:
+    title: Motion and performance budget
+    from_egm: zoom_out
+    gates: [GR2]
+    rules: [references/video-per-section.md, references/motion-picker.md, references/subtle-cinematic.md, CINEMATIC_WEBSITE_BUILDER.md]
+    checks:
+      - "Tier budget stated in numbers (first load) and the media plan fits it: one autoplay at a time, lazy data-src, posters <= 120KB, clips <= 2.5MB, logo <= 100KB."
+      - "One signature moment per page; every effect has a one-sentence purpose; no pins on phones; LCP never hidden."
+      - "Video-per-section fit: distinct clip per section (subject, camera move, pacing) and calm loops for regulated sectors."
+      - "Motion stack matches the picker plan (GSAP only where the plan says; soft Lenis desktop-only)."
+      - "YAGNI: anything heavier than the tier needs (3D, scroll films, extra libraries) without a stated reason."
+  brand-and-type:
+    title: Brand, type and spacing system
+    from_egm: structural
+    gates: [GR2]
+    rules: [references/type-picker.md, references/spacing-system.md, references/custom-typography.md, taste-profile.yaml, CINEMATIC_WEBSITE_BUILDER.md]
+    checks:
+      - "Type comes from the type picker: <= 2 families, <= 4 files, none banned, headings in a declared webfont (verify --type blocks system-font headings)."
+      - "Jumbo signature and custom-type style decided (opt in or a written opt-out); regulated sectors use calm forms only."
+      - "Spacing uses the 3.3 tokens (--space-*, one --section-y level, --gutter >= 16px), not raw px."
+      - "Colour: ~8 tokens, <= 3 accents, no leftover framework themes; radii limited to 2-3 values."
+      - "The design-spec follows the template sections 1-11 (tokens, type, spacing, grid, motion, media, SEO/AEO, budgets, pages, decisions)."
+  zoom-out:
+    title: Zoom out (simplicity and fit)
+    from_egm: zoom_out
+    gates: [GR1]
+    rules: [CINEMATIC_WEBSITE_BUILDER.md, taste-profile.yaml]
+    checks:
+      - "Context sufficiency: can you tell what we are building, for whom and why? If not, fail fast."
+      - "Tier fit: is the plan bigger than the client needs (never default to Flagship)?"
+      - "Machine-readable gates: brief front matter has sector, tier, profile, signature_style, custom_type and the gate flags."
+      - "Reuse: catalog modules and templates instead of custom one-offs."
+  drift:
+    title: Drift (built site vs design-spec)
+    from_egm: egm-drift-report
+    gates: [GR3]
+    rules: [CINEMATIC_WEBSITE_BUILDER.md]
+    checks:
+      - "Compare the built pages (preview URL or files) with design-spec.md and page-text.md. Report ONLY differences: tokens, fonts and weights, type sizes, spacing, sections missing or reordered, copy changed, schema fields, media weights, motion not in the plan."
+      - "Each drift: what the spec says, what the build does (with the measured value), and which side should change (spec or build) if obvious."
+      - "If nothing differs, write 'No drift detected'."
+gates:
+  GR1: { after: G1, before: G2, targets: [brief.md], lenses: [naive-client, search-and-answers, trust-and-tone, zoom-out] }
+  GR2: { after: G5, before: G6, targets: [design-spec.md, page-text.md, motion-plan.yaml, wireframe.yaml], lenses: [brand-and-type, accessibility, motion-and-performance, conversion] }
+  GR3: { after: G8, before: G9, targets: [design-spec.md, page-text.md], lenses: [drift] }
+lean:
+  factory: { GR1: [search-and-answers, trust-and-tone], GR2: [brand-and-type, accessibility], GR3: [] }
+  max_rounds: 2

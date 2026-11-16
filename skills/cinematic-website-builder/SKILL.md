@@ -1,21 +1,20 @@
 ---
 name: cinematic-website-builder
-display_name: Space Age Cinematic Website Builder (v3)
-version: 3.2.0
-description: >
-  Build cinematic, production-grade websites as one self-contained HTML file: a tested runtime
-  kernel plus 36 isolated scroll, pointer, click and ambient modules (GSAP 3.15 + native CSS
-  scroll/view timelines), tiered motion budgets, an asset pipeline for Higgsfield/OpenArt media (ChatGPT Images 2.5, Nano Banana Pro, Grok Imagine 1.5,
-  MiniMax H3, Seedance 2.5/2.0), and an
-  automated 5-pass Playwright QA gate. Use for any landing page, website, hero, portfolio, product
-  page or redesign that must feel premium, cinematic or "Awwwards-level". Always opens with a
-  Direction Intake questionnaire where the person uploads images, links and videos as design and
-  UI/UX direction, reads reference links and runs competitor research with Agent Reach; routes motion, taste, SEO, media and deploy to the owning SA skills.
+version: 3.4.0
+description: >-
+  Use this when building a cinematic, production-grade website as one self-
+  contained HTML file or a multi-page Astro/Next.js site: v3.3 runtime kernel plus 42 modules and CSS
+  recipes (GSAP 3.15 + CSS scroll timelines), Chuma's signatures as defaults (video-per-section and jumbo
+  custom type), one hand-off folder (brief, design-spec, page-text, wireframe), gate order intake → top-3
+  teardown + SEO/AEO blueprint → Muse moodboard → motion picker + type picker → grey-box wireframe approval →
+  design-spec → assets → numbered build chain → verify (8 passes, axe, motion/type/spacing/jumbo checks,
+  section diff, AEO) → launch gate → ship. v3.4: goldfish reviews (Elephant-Goldfish Model) — fresh-context reviewers
+  check the brief (GR1), the design-spec (GR2) and built-vs-spec drift (GR3); asks ride with existing approvals. Triggers: landing page, hero, portfolio, product page, local
+  business site, redesign, 'Awwwards-level', 'make it cinematic', 'like Astonishing Touch'.
+source: "Burst37/Space-Age-Skills PR #73@7a669281:skills/cinematic-website-builder (v3.4.0 local upgrade)"
 ---
+# Cinematic Website Builder v3.4.0
 
-# Space Age Cinematic Website Builder v3
-
-This file exists because every skill loader (Claude Code, claude.ai, web-agent `discoverSkills`)
-requires the entry point to be named `SKILL.md`. The playbook itself is
-**[`CINEMATIC_WEBSITE_BUILDER.md`](./CINEMATIC_WEBSITE_BUILDER.md)** — read it in full before
-starting any build. Everything else is linked from there.
+Read `CINEMATIC_WEBSITE_BUILDER.md` first: the gate order, routing, laws and build commands.
+Then load each reference file when its gate starts. Hand-off templates are in `templates/handoff/`, and the worked example is in
+`references/examples/astonishing/`. Goldfish reviews: `references/goldfish-review.md`. Regression: `tests/run-all.sh`. History: `CHANGELOG.md`.

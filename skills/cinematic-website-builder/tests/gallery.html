@@ -3,8 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>CWB v3 Module Gallery — every module on one page</title>
+  <title>CWB v3.3 Module Gallery — every module on one page</title>
   <meta name="description" content="Integration fixture for Cinematic Website Builder v3: all modules composed in a single file to prove isolation, fail-open and accessibility.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <meta name="theme-color" content="#14151a">
   <link rel="preload" as="image" href="assets/photo-1.svg" fetchpriority="high">
   <script>
     (function (d) {
@@ -81,7 +84,7 @@
     </section>
 
     <section class="hpan" data-cwb="horizontal-pan" aria-label="Horizontal gallery">
-      <div class="hpan__track">
+      <div class="hpan__track" tabindex="0" role="group" aria-label="Horizontal gallery, scroll sideways">
         <article class="hpan__panel"><img src="assets/photo-6.svg" alt="Panel one" width="1200" height="900"><h3 data-hreveal>Panel one</h3></article>
         <article class="hpan__panel"><img src="assets/photo-7.svg" alt="Panel two" width="1200" height="900"><h3 data-hreveal>Panel two</h3></article>
         <article class="hpan__panel"><img src="assets/photo-8.svg" alt="Panel three" width="1200" height="900"><h3 data-hreveal>Panel three</h3></article>
@@ -197,6 +200,118 @@
       <div class="cf__controls"><button class="btn btn--ghost" data-cf="-1" aria-label="Previous slide">←</button><button class="btn btn--ghost" data-cf="1" aria-label="Next slide">→</button></div>
     </section>
 
+    <section class="section" id="expand" aria-label="Expanding video panels, bold">
+      <div class="expand" data-cwb="expand-panels view-switch" data-variant="bold">
+        <div class="expand__track">
+        <button class="expand__panel" data-video="assets/video/clip-a.mp4" data-poster="assets/video/clip-a.jpg" data-title="Clip A">
+          <span class="expand__inner"><span class="expand__media"><img src="assets/video/clip-a.jpg" alt="Placeholder clip A (bold)" width="480" height="640"><video muted loop playsinline preload="none" poster="assets/video/clip-a.jpg" width="480" height="640"></video></span></span>
+        </button>
+        <button class="expand__panel" data-video="assets/video/clip-b.mp4" data-poster="assets/video/clip-b.jpg" data-title="Clip B">
+          <span class="expand__inner"><span class="expand__media"><img src="assets/video/clip-b.jpg" alt="Placeholder clip B (bold)" width="480" height="640"><video muted loop playsinline preload="none" poster="assets/video/clip-b.jpg" width="480" height="640"></video></span></span>
+        </button>
+        <button class="expand__panel" data-video="assets/video/clip-c.mp4" data-poster="assets/video/clip-c.jpg" data-title="Clip C">
+          <span class="expand__inner"><span class="expand__media"><img src="assets/video/clip-c.jpg" alt="Placeholder clip C (bold)" width="480" height="640"><video muted loop playsinline preload="none" poster="assets/video/clip-c.jpg" width="480" height="640"></video></span></span>
+        </button>
+        <button class="expand__panel" data-video="assets/video/clip-d.mp4" data-poster="assets/video/clip-d.jpg" data-title="Clip D">
+          <span class="expand__inner"><span class="expand__media"><img src="assets/video/clip-d.jpg" alt="Placeholder clip D (bold)" width="480" height="640"><video muted loop playsinline preload="none" poster="assets/video/clip-d.jpg" width="480" height="640"></video></span></span>
+        </button>
+        <button class="expand__panel" data-video="assets/video/clip-e.mp4" data-poster="assets/video/clip-e.jpg" data-title="Clip E">
+          <span class="expand__inner"><span class="expand__media"><img src="assets/video/clip-e.jpg" alt="Placeholder clip E (bold)" width="480" height="640"><video muted loop playsinline preload="none" poster="assets/video/clip-e.jpg" width="480" height="640"></video></span></span>
+        </button>
+        </div>
+        <div class="expand__titles">
+          <div class="expand__rest"><p class="expand__kicker">Expanding video panels</p><h2 class="expand__name">Hover a panel</h2></div>
+      <div class="expand__caption" hidden aria-hidden="true"><p class="expand__kicker">Panel</p><h3 class="expand__name">Clip A</h3><p class="expand__lede">Placeholder loop A.</p></div>
+      <div class="expand__caption" hidden aria-hidden="true"><p class="expand__kicker">Panel</p><h3 class="expand__name">Clip B</h3><p class="expand__lede">Placeholder loop B.</p></div>
+      <div class="expand__caption" hidden aria-hidden="true"><p class="expand__kicker">Panel</p><h3 class="expand__name">Clip C</h3><p class="expand__lede">Placeholder loop C.</p></div>
+      <div class="expand__caption" hidden aria-hidden="true"><p class="expand__kicker">Panel</p><h3 class="expand__name">Clip D</h3><p class="expand__lede">Placeholder loop D.</p></div>
+      <div class="expand__caption" hidden aria-hidden="true"><p class="expand__kicker">Panel</p><h3 class="expand__name">Clip E</h3><p class="expand__lede">Placeholder loop E.</p></div>
+        </div>
+        <div class="vswitch" role="group" aria-label="View mode">
+          <button class="vswitch__btn" data-view="gallery" aria-pressed="true" aria-label="Gallery view"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="1" y="1" width="3" height="12"/><rect x="5.5" y="1" width="3" height="12"/><rect x="10" y="1" width="3" height="12"/></svg></button>
+          <button class="vswitch__btn" data-view="explore" aria-pressed="false" aria-label="Explore view"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="1" y="2" width="12" height="10"/></svg></button>
+        </div>
+        <div class="expand__explore" hidden>
+          <div class="expand__explore-frame"><img src="assets/video/clip-a.jpg" alt="" width="480" height="640"><video muted loop playsinline preload="none"></video>
+            <div class="expand__explore-nav"><button type="button" data-explore-prev>Prev</button><p data-explore-title class="expand__kicker">Clip A</p><button type="button" data-explore-next>Next</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="expand-gentle" aria-label="Expanding panels, gentle">
+      <div class="expand" data-cwb="expand-panels" data-variant="gentle">
+        <div class="expand__track">
+        <button class="expand__panel" data-video="assets/video/clip-a.mp4" data-poster="assets/video/clip-a.jpg" data-title="Clip A">
+          <span class="expand__inner"><span class="expand__media"><img src="assets/video/clip-a.jpg" alt="Placeholder clip A (gentle)" width="480" height="640"><video muted loop playsinline preload="none" poster="assets/video/clip-a.jpg" width="480" height="640"></video></span></span>
+        </button>
+        <button class="expand__panel" data-video="assets/video/clip-b.mp4" data-poster="assets/video/clip-b.jpg" data-title="Clip B">
+          <span class="expand__inner"><span class="expand__media"><img src="assets/video/clip-b.jpg" alt="Placeholder clip B (gentle)" width="480" height="640"><video muted loop playsinline preload="none" poster="assets/video/clip-b.jpg" width="480" height="640"></video></span></span>
+        </button>
+        <button class="expand__panel" data-video="assets/video/clip-c.mp4" data-poster="assets/video/clip-c.jpg" data-title="Clip C">
+          <span class="expand__inner"><span class="expand__media"><img src="assets/video/clip-c.jpg" alt="Placeholder clip C (gentle)" width="480" height="640"><video muted loop playsinline preload="none" poster="assets/video/clip-c.jpg" width="480" height="640"></video></span></span>
+        </button>
+        <button class="expand__panel" data-video="assets/video/clip-d.mp4" data-poster="assets/video/clip-d.jpg" data-title="Clip D">
+          <span class="expand__inner"><span class="expand__media"><img src="assets/video/clip-d.jpg" alt="Placeholder clip D (gentle)" width="480" height="640"><video muted loop playsinline preload="none" poster="assets/video/clip-d.jpg" width="480" height="640"></video></span></span>
+        </button>
+        </div>
+        <div class="expand__titles">
+          <div class="expand__rest"><p class="expand__kicker">Gentle variant</p><h2 class="expand__name">Posters only, 1.4×</h2></div>
+      <div class="expand__caption" hidden aria-hidden="true"><p class="expand__kicker">Panel</p><h3 class="expand__name">Clip A</h3><p class="expand__lede">Placeholder loop A.</p></div>
+      <div class="expand__caption" hidden aria-hidden="true"><p class="expand__kicker">Panel</p><h3 class="expand__name">Clip B</h3><p class="expand__lede">Placeholder loop B.</p></div>
+      <div class="expand__caption" hidden aria-hidden="true"><p class="expand__kicker">Panel</p><h3 class="expand__name">Clip C</h3><p class="expand__lede">Placeholder loop C.</p></div>
+      <div class="expand__caption" hidden aria-hidden="true"><p class="expand__kicker">Panel</p><h3 class="expand__name">Clip D</h3><p class="expand__lede">Placeholder loop D.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <div data-cwb="video-chapters" id="chapters">
+      <section class="scene" data-vchapter aria-labelledby="vch-b">
+        <div class="vchap__media"><video muted loop playsinline preload="none" poster="assets/video/clip-b.jpg" data-src="assets/video/clip-b.mp4" width="480" height="640"></video></div>
+        <div class="vchap__scrim" aria-hidden="true"></div>
+        <div class="wrap"><h2 id="vch-b">Chapter 1: one video at a time</h2><p>This copy is HTML, so crawlers read it. The loop behind it loads only when this chapter is the most visible one.</p></div>
+      </section>
+      <section class="scene" data-vchapter aria-labelledby="vch-c">
+        <div class="vchap__media"><video muted loop playsinline preload="none" poster="assets/video/clip-c.jpg" data-src="assets/video/clip-c.mp4" width="480" height="640"></video></div>
+        <div class="vchap__scrim" aria-hidden="true"></div>
+        <div class="wrap"><h2 id="vch-c">Chapter 2: one video at a time</h2><p>This copy is HTML, so crawlers read it. The loop behind it loads only when this chapter is the most visible one.</p></div>
+      </section>
+      <section class="scene" data-vchapter aria-labelledby="vch-d">
+        <div class="vchap__media"><video muted loop playsinline preload="none" poster="assets/video/clip-d.jpg" data-src="assets/video/clip-d.mp4" width="480" height="640"></video></div>
+        <div class="vchap__scrim" aria-hidden="true"></div>
+        <div class="wrap"><h2 id="vch-d">Chapter 3: one video at a time</h2><p>This copy is HTML, so crawlers read it. The loop behind it loads only when this chapter is the most visible one.</p></div>
+      </section>
+    </div>
+    <button class="vchap__toggle" type="button" data-vchap-toggle aria-pressed="false"><span data-vchap-label>Pause motion</span></button>
+
+    <section class="section" id="type" data-section="type">
+      <div class="wrap stack">
+        <p class="eyebrow">42 · jumbo-fit + custom-type (CSS)</p>
+        <h2>Jumbo type, kept as real text</h2>
+      </div>
+      <div class="jumbo-box" style="padding-inline: var(--gutter)">
+        <p class="t-jumbo t-jumbo--bleed" data-cwb="jumbo-fit" data-jumbo="scrub" style="--jumbo-chars: 9">Signature</p>
+      </div>
+      <div class="ctype-demo" data-ctype="behind" data-parallax>
+        <p class="ctype__word t-jumbo t-jumbo--bleed" style="--jumbo-chars: 4">CODE</p>
+        <img class="ctype__subject" src="assets/subject-cutout.webp" alt="" width="600" height="700" loading="lazy">
+      </div>
+      <div class="wrap">
+        <p class="ctype__echo t-jumbo" data-ctype="mixed" style="font-size: min(var(--t-jumbo), 14vw)">
+          <span class="ctype__script">Paleta de</span>
+          <span class="ctype__heavy">CORES</span>
+          <span aria-hidden="true">CORES</span>
+          <span aria-hidden="true">CORES</span>
+        </p>
+      </div>
+      <div class="wrap" data-ctype="ring" data-spin style="aspect-ratio: 1; max-width: 22rem">
+        <svg class="ctype__ring" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="ring-path" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"/></defs><text><textPath href="#ring-path">Graphic design · Graphic design · Graphic design ·</textPath></text></svg>
+        <p class="ctype__ring-label">Graphic design studio</p>
+      </div>
+      <div class="jumbo-box" style="padding-inline: var(--gutter); margin-top: var(--space-xl)">
+        <p class="t-jumbo t-jumbo--bleed" data-ctype="fill" style="--ctype-texture: url(assets/video/clip-c.jpg); font-weight: 800; --jumbo-chars: 6; --jumbo-advance: 0.72">MODERN</p>
+      </div>
+    </section>
     <section class="section" id="ambient">
       <div class="marquee" data-cwb="marquee" data-speed="70">
         <div class="marquee__inner"><ul class="marquee__track"><li>Strategy</li><li>Identity</li><li>Motion</li><li>Web</li><li>Film</li></ul></div>
@@ -230,5 +345,17 @@
   </nav>
 
   <!-- @cwb:js -->
+  <script>
+    /* motion-picker review screen: gallery.dist.html?focus=<module> scrolls to that module's live demo */
+    (function () {
+      var m = new URLSearchParams(location.search).get('focus'); if (!m) return;
+      addEventListener('load', function () {
+        var el = null;
+        if (/^css-/.test(m)) el = document.querySelector('[data-ctype], [data-jumbo], [data-nzoom]');
+        else [].some.call(document.querySelectorAll('[data-cwb]'), function (n) { if (n.getAttribute('data-cwb').split(/\s+/).indexOf(m) > -1) { el = n; return true; } return false; });
+        if (el) el.scrollIntoView({ block: 'center' });
+      });
+    })();
+  </script>
 </body>
 </html>

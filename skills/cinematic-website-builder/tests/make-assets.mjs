@@ -24,3 +24,20 @@ for (let f = 1; f <= 48; f++) {
 <text x="40" y="680" font-family="monospace" font-size="28" fill="#fff">frame ${f}/48</text></svg>`);
 }
 console.log('assets written to', dir);
+
+/* v3.3: tiny labelled placeholder loops for expand-panels + video-chapters.
+   Needs ffmpeg; the committed files under assets/video/ are used when it is absent. */
+import { execFileSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
+const vdir = join(dir, 'video');
+mkdirSync(vdir, { recursive: true });
+const clips = [['a', 'orange'], ['b', 'teal'], ['c', 'purple'], ['d', 'olive'], ['e', 'navy']];
+let ff = true; try { execFileSync('ffmpeg', ['-version'], { stdio: 'ignore' }); } catch { ff = false; }
+for (const [name, color] of clips) {
+  const mp4 = join(vdir, `clip-${name}.mp4`), jpg = join(vdir, `clip-${name}.jpg`);
+  if (!ff) { if (!existsSync(mp4)) console.warn('ffmpeg missing and', mp4, 'absent'); continue; }
+  const src = `color=c=${color}:s=480x640:d=2,drawbox=x='mod(t*200,480)':y=0:w=60:h=640:color=white@0.35:t=fill`;
+  execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'lavfi', '-i', src, '-vf', `drawtext=text='CLIP ${name.toUpperCase()}':fontcolor=white:fontsize=48:x=40:y=560`, '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '34', '-movflags', '+faststart', '-an', mp4]);
+  execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', mp4, '-frames:v', '1', '-q:v', '6', jpg]);
+}
+console.log('video placeholders in', vdir);

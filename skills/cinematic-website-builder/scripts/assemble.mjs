@@ -9,7 +9,7 @@
  *   <!-- @cwb:js -->    (end of <body>)     → CDN tags for only the GSAP plugins used
  *                                            + runtime + only the JS blocks used
  * Modules are detected from data-cwb="…" values, [data-reveal], [data-nreveal],
- * .scroll-progress, and --with (e.g. --with page-transition). --all ships everything
+ * [data-nzoom], .scroll-progress, and --with (e.g. --with page-transition). --all ships everything
  * (used by the test gallery). Output has zero build-step requirements.
  */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -48,7 +48,8 @@ const used = new Set(extra);
 if (all) { JS.forEach((_, k) => used.add(k)); CSS.forEach((_, k) => used.add(k)); }
 for (const m of page.matchAll(/data-cwb="([^"]+)"/g)) m[1].split(/\s+/).forEach((n) => used.add(n));
 if (/data-reveal[\s>=]/.test(page)) used.add('reveal');
-if (/data-nreveal|class="[^"]*scroll-progress/.test(page)) used.add('native-reveal');
+if (/data-nreveal|data-nzoom|class="[^"]*scroll-progress/.test(page)) used.add('native-reveal');
+if (/data-ctype=|data-jumbo="(?:scrub|scrub-gentle|axis)"/.test(page)) used.add('custom-type');
 
 const unknown = [...used].filter((n) => !JS.has(n) && !CSS.has(n));
 if (unknown.length) { console.error('assemble: unknown module(s): ' + unknown.join(', ')); process.exit(1); }
@@ -82,7 +83,7 @@ const jsOut = [
 ].filter(Boolean).join('\n');
 
 /* Function replacers: a string replacement would expand `$'` / `$&` inside the JS (e.g. api.$('…')). */
-page = page.replace('<!-- @cwb:css -->', () => `<style>\n${css}\n</style>`).replace('<!-- @cwb:js -->', () => jsOut);
+page = page.replace('<!-- @cwb:css -->', () => `<style data-cwb-runtime>\n${css}\n</style>`).replace('<!-- @cwb:js -->', () => jsOut);
 mkdirSync(dirname(resolve(out)), { recursive: true });
 writeFileSync(out, page);
 const kb = (Buffer.byteLength(page) / 1024).toFixed(1);

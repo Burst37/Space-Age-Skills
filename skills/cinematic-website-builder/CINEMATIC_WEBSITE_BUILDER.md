@@ -1,4 +1,4 @@
-# Cinematic Website Builder v3
+# Cinematic Website Builder v3.4
 ### Space Age AI Solutions — Production Web Experience Layer
 
 You are the director and the engineer. The job is a site a senior creative director would put in
@@ -6,54 +6,95 @@ a portfolio **and** a performance engineer would sign off: distinctive, fast, ac
 Cinema is composition + rhythm + hierarchy + type + media + *restrained* motion. It is never
 "more effects".
 
-v2 → v3 was a forensic rebuild: 19 systemic and 31 per-module defects fixed, including modules
-that crashed when combined, content invisible to reduced-motion users, and seven references to
-skills that don't exist. Full report: `references/forensic-audit-v2.md`.
+v3.3 automates the way Chuma hand-built Astonishing Touch (Next.js on Vercel), and does it better. It adds
+**one hand-off folder** as the single source of truth, a **grey-box wireframe approval**, a **motion picker**
+and a **type picker** (both visual, both feeding his taste profile), his two signatures as defaults
+(**video-per-section** and **jumbo custom type**), a fluid **spacing system**, a numbered **build chain**,
+a **launch gate**, and a stricter `verify.mjs`. v3.4 adds **goldfish reviews** (from Google's Elephant-Goldfish Model):
+fresh-context reviewers with no conversation history check the brief, the design-spec and the built site at three points, and
+Chuma answers only what they cannot (`references/goldfish-review.md`). History: `CHANGELOG.md`; v2→v3 audit:
+`references/forensic-audit-v2.md`; SEO/AEO protocol (v3.2): `references/seo-aeo-gate.md`.
 
 ## 0. What ships in this skill
 
 | Path | Purpose |
 |---|---|
-| `runtime/cwb-runtime.js` | Kernel: module isolation, env gating, fail-open, lifecycle, refresh |
-| `runtime/cwb-base.css` | Tokens (OKLCH color, fluid type, 4 durations/4 curves) + base + a11y parallels |
-| `runtime/cwb-modules.{js,css}` | 36 modules, one `@module` block each |
-| `SKILL.md` | Loader stub (the filename every skill loader requires) — points here |
-| `templates/starter.html` | Page skeleton: SEO head, fail-open gate, island nav, hero |
-| `templates/direction-brief.yaml` | P0 output: answers, analyzed references, synthesis, proposed tokens |
-| `references/direction-intake.md` | P0 questionnaire (uploads: images, links, videos) + reference-analysis protocol |
-| `references/web-research-agent-reach.md` | P0 web research: read reference links (sites, YouTube, X, Reddit, Instagram) and scan competitors with `agent-reach` |
-| `templates/build-manifest.yaml` | Per-build plan: tier, modules, budgets, assets, gate status |
+| `runtime/cwb-runtime.js` | Kernel: module isolation, env gating, fail-open, lifecycle, `CWB.mount/unmount` for SPA routes, soft Lenis |
+| `runtime/cwb-base.css` | Tokens: OKLCH colour, fluid type + **jumbo** (`--t-jumbo`), **spacing scale** (`--space-3xs…4xl`), section rhythm (`--section-y-*`), container (`--gutter`, `--max-content`, `--max-page`), motion |
+| `runtime/cwb-modules.{js,css}` | 42 JS modules + CSS-only recipes (`native-reveal`, `custom-type`), one `@module` block each |
+| `templates/handoff/` | **The hand-off folder** templates: `brief.md`, `design-spec.md`, `page-text.md`, `wireframe.yaml`, `motion-plan.yaml`, `type-inputs.yaml` |
+| `templates/starter.html` | Page skeleton: SEO head, favicon/theme-color, fail-open gate, island nav, jumbo hero |
+| `templates/robots.txt` · `llms.txt` · `sitemap.xml` · `localbusiness.jsonld` | Ship-time SEO/AEO files |
+| `scripts/greybox.mjs` | `wireframe.yaml` → greyscale page per sitemap URL + PNGs at 1440/390 + lint (the wireframe hard stop) |
+| `scripts/motion-pick.mjs` | Motion picker → `motion-plan.yaml` + one-screen review with live demos |
+| `scripts/type-specimens.mjs` | Type picker → 3 specimen cards (PNG), `type-pick.yaml`, `type-tokens.css`, custom-type style ranking |
+| `scripts/letter-check.mjs` | OCR spell-check for AI-rendered lettering (build rejects misspelled renders) |
+| `scripts/type-refs-index.mjs` | Copies Chuma's custom-type references, builds `references/type-refs/INDEX.png` + `INDEX.md` |
 | `scripts/assemble.mjs` | Inline only the modules + GSAP plugins the page uses → one file |
-| `scripts/verify.mjs` | 5-pass Chromium QA → `qa/REPORT.md`, exit 1 on blockers |
-| `references/modules.md` | Catalog: markup contracts, cost, degradation, recipes |
-| `references/storyboard-to-video.md` | **On deck:** storyboard generator (identity sheet → storyboard sheet → Seedance handoff), pulled in only when a hero or section video needs several shots or a story |
-| `references/prompt-tokens.md` | Meta + cinematography token library and shot recipes for every image/video prompt |
-| `references/asset-pipeline.md` | Media tiers, model roster (Higgsfield + OpenArt), prompt contract, ffmpeg encodes |
-| `references/qa-gate.md` | Stage 4 gate, rubric, manual checks, delivery package |
-| `references/ai-font-packs.md` | SA AI display-type packs, accessible patterns |
-| `tests/gallery.html` + `proof/` | Every module on one page + its passing QA evidence |
+| `scripts/verify.mjs` | Up to 8-pass Chromium QA (desktop, tablet, mobile, reduced, offline, 1920, 2560, 320) + axe + motion/type/spacing/jumbo checks + section diff + AEO |
+| `scripts/goldfish.mjs` | **v3.4** `pack` one fresh-reviewer packet per lens (doc + rules + sources, no conversation); `lint` the merged report and the elephant's decisions |
+| `scripts/launch-check.mjs` | Launch gate on the live URL (robots, noindex, canonical/sitemap/llms hosts, favicon) |
+| `references/goldfish-review.md` + `goldfish-lenses.yaml` | **v3.4** GR1/GR2/GR3 protocol and 9 website lenses (naive client, conversion, search & answers, trust & tone, accessibility, motion & performance, brand & type, zoom-out, drift) |
+| `references/handoff-folder.md` | What lives in the hand-off folder and who writes each file |
+| `references/motion-picker.md` + `motion-catalog.yaml` | 34 effects: plain name, technique, module, cost, gentle/bold, sector fit |
+| `references/type-picker.md` + `type-pairings.yaml` | 37 curated pairings (Fontshare/Bunny, licences verified), jumbo support, banned lists |
+| `references/custom-typography.md` + `type-refs/` | 26 custom-type styles (type behind subject, AI material letters, glyph kits…), prompts, sector table |
+| `references/spacing-system.md` | Fluid spacing scale, section rhythm, container rules, verify checks |
+| `references/video-per-section.md` | Chuma's signature style: one distinct clip per section, one plays at a time |
+| `references/subtle-cinematic.md` | Profile for home care / law / medical / SaaS + home-care compliance, AI disclosure, LocalBusiness schema |
+| `references/multi-page.md` | Astro / Next.js path, service-page template, no-design pages |
+| `references/build-chain.md` | Numbered build prompts P0–P15, commit + clear context after each |
+| `references/launch-gate.md` | Preview-vs-production checklist, launch-check, Cloudflare Workers free host |
+| `references/clean-room.md` | Rebuilding an effect you saw: observed behaviour only (`replica-skill-sa` + `reanimate`) |
+| `references/examples/astonishing/` | Worked example: brief, design-spec (both revised after goldfish review), wireframe.yaml, type-inputs.yaml, findings, `reviews/`, `EVAL.md` (baseline vs goldfish test) |
+| `references/examples/menken-clean-room.md` | Observed-behaviour spec behind `expand-panels` / `view-switch` |
+| `references/modules.md` · `asset-pipeline.md` · `prompt-tokens.md` · `storyboard-to-video.md` · `qa-gate.md` · `seo-aeo-gate.md` · `direction-intake.md` · `web-research-agent-reach.md` · `ai-font-packs.md` | Unchanged roles from v3.2 (updated where noted in the CHANGELOG) |
+| `taste-profile.yaml` | Chuma's defaults; both pickers read it and write back to it |
+| `tests/gallery.html` · `tests/run-all.sh` · `tests/fixtures/` | Every module on one page + the full regression (positive and negative fixtures) |
 
-Load reference files when their phase starts — not all up front.
+Load reference files when their phase starts, not all up front.
 
-## 1. Pipeline position and routing
+## 1. Gate order
 
 ```
-P0 DIRECTION INTAKE (this skill, always first) ◄── uploads: images · links · videos
-   pre-filled by: lead-to-brief · brand-extractor · ui-ux-designer handoff (if they exist)
-   → Direction Brief → P1–P4 BUILD (this skill) → P5 QA GATE (this skill)
-   → S5 sa-deploy-operator → S6 voice → S7 outreach → S8 log
+G0  INTAKE ─ direction-intake.md + "The website will…" highlight (auto) ─────────► handoff/brief.md (confirmed)
+G1  TOP-3 COMPETITOR TEARDOWN + SEO/AEO BLUEPRINT (seo-aeo-optimizer) ────────────► design-spec.md §SEO/AEO
+ ↳ GR1 GOLDFISH REVIEW of brief + blueprint (fresh reviewers, no chat history) ────► reviews/GR1-brief.md (asks ride with G2)
+G2  MUSE MOODBOARD — design + motion references ─────────── HARD STOP ──────────► moodboard_approved
+G3  MOTION PICKER (motion-pick.mjs) + TYPE PICKER (type-specimens.mjs) ── review ─► motion_approved, type_approved
+G4  GREY-BOX WIREFRAMES (greybox.mjs, every sitemap URL, spacing tokens) ─ HARD STOP ► wireframe_approved
+G5  DESIGN-SPEC + PAGE-TEXT locked in handoff/ (tokens, type, spacing, motion score, SEO/AEO, budgets)
+ ↳ GR2 GOLDFISH REVIEW of design-spec + page-text + motion plan ─────────────────► reviews/GR2-design-spec.md
+G6  MOTION SCORE + ASSETS (asset-pipeline.md, video-per-section.md, custom-typography.md, letter-check)
+G7  NUMBERED BUILD CHAIN (build-chain.md: P0 setup → tokens → chrome → one prompt per section → pages → wide → a11y → SEO/AEO)
+G8  QA — verify.mjs (+ --motion-plan --type --sections --letters) exit 0, then the visual loop (qa-gate.md)
+ ↳ GR3 DRIFT CHECK — one fresh reviewer: built preview vs design-spec + page-text ──► reviews/GR3-drift.md
+G9  LAUNCH GATE — launch-check.mjs on the live domain (launch-gate.md)
+G10 SHIP — deploy, sitemap, IndexNow, live aeo-check, log
 ```
+No code, assets or assemble before G2 and G4 approvals. Goldfish reviews add **no new approval stop**: their `ask` items
+are shown with the next approval Chuma already gives (GR1 → moodboard, GR2 → one message before assets are generated, only if there are asks, GR3 → launch). Max 2 rounds each. The gates live in `handoff/brief.md` front
+matter (`confirmed`, `moodboard_approved`, `motion_approved`, `type_approved`, `wireframe_approved`).
+**Review mode** (default) shows Chuma one screen per picker and waits. **Full-auto mode** decides from
+the taste profile, sector, moodboard and budget, records *why* in the plan, and still stops at G2 and G4.
+
+### Routing
 
 Route each concern to the skill that owns it. Pull on demand; never restate their content here.
 
 | Concern | Owner (verified to exist) | When to load |
 |---|---|---|
-| Reading reference links + competitor / voice-of-customer research (web, YouTube, X, Reddit, Instagram, GitHub) | `agent-reach` — protocol in `references/web-research-agent-reach.md` | P0 intake |
+| Reading reference links + design / voice-of-customer research (web, YouTube, X, Reddit, Instagram) | `agent-reach` — protocol in `references/web-research-agent-reach.md` | P0 intake |
+| Top-3 competitor teardown (Google, Map Pack, AI answers) + SEO/AEO blueprint | `seo-aeo-optimizer` — gates in `references/seo-aeo-gate.md`. Run `scripts/teardown.py --aeo`. Do not duplicate that skill here. | After the brief, before the moodboard |
 | Analyzing uploaded references (images, sites, videos, Figma) | `brand-extractor`, `extract-design-system`, `defuddle`, `firecrawl-mcp`, `sa-watch`, `sa-video-skill-extractor`, `sa-youtube-cli`, `mobbin-operator`, Figma MCP, Higgsfield `video_analysis_create` | P0 intake |
 | Brief from a lead row | `lead-to-brief` | pipeline builds |
 | Client brand tokens from a URL | `brand-extractor` / `extract-design-system` | client has a site |
 | Creative strategy, references, Site DNA | `spaceage-savo-creative-director-os` | new brand / no direction |
-| Moodboard, palette, type pairing, sections | `ui-ux-designer` + `ui-ux-pro-max` | direction not locked |
+| Moodboard (design + motion references) | Muse + `design-reference-moodboard` | G2; approval is a hard stop before any code |
+| Type pairing | **type picker** (`references/type-picker.md`); `type-as-brand` for identity-led type | G3 |
+| Motion selection | **motion picker** (`references/motion-picker.md`); effect names from `animation-vocabulary` / `site-reverse-engineer` | G3 |
+| Rebuilding an effect seen on another site | `replica-skill-sa` (observed behaviour) + `reanimate` frame compare — `references/clean-room.md`; `rea-sa` only for software Chuma owns | G3/G6 |
+| Wireframes, page text, numbered build prompts | Fadel workflow (adapted here: `build-chain.md`, `handoff-folder.md`) | G4–G7 |
 | Anti-slop taste, banned fonts, 3 dials | `design-taste-frontend` / `taste-pro` / `frontend-design` | every build (direction check) |
 | Motion *why* (hierarchy, vocabulary) | `design-motion-principles` | writing the motion score |
 | Motion *how* beyond the modules | `gsap-supercharged`, `gsap-core`, `gsap-scrolltrigger`, `gsap-timeline` | custom choreography |
@@ -67,8 +108,9 @@ Route each concern to the skill that owns it. Pull on demand; never restate thei
 | Image/video prompts | `cinematic-prompt-director`, `banana-pro-director-30`, `cinema-director-v3`, `seedance-2-5-prompting`, `character-builder` | asset phase |
 | Image/video generation | Higgsfield MCP (default) or OpenArt. Images: ChatGPT Images 2.5 (default) · Nano Banana Pro · Grok Imagine 1.5. Video: MiniMax H3 (hero loop) · Seedance 2.5 · Seedance 2.0 — roster in `references/asset-pipeline.md` §3 | asset phase |
 | Copy that doesn't read as AI | `stop-slop-pro` | every build |
-| Local SEO + GEO schema | `sa-local-seo-geo` | every public site |
+| Local SEO + GEO schema | `seo-aeo-optimizer` (plan + templates) and `sa-local-seo-geo` (implementation helper) | every public site; plan is done in P0c |
 | Design critique loop | `design-review-pro`, `design-loop` | QA pass 3 / Flagship |
+| Fresh-eyes doc review (elephant/goldfish) | **goldfish review** (`references/goldfish-review.md`, `scripts/goldfish.mjs`); upstream EGM plugin in Space-Age-Skills `skills/egm-elephant-goldfish/` | GR1 after G1, GR2 after G5, GR3 after G8 |
 | Factory, platforms (Wix/Framer/Webflow/Shopify/WP), voice agent, evidence package | `cinematic-website-director` | multi-site, non-code platform, or director-level gate |
 | Shopify theme | `shopify-cinematic-builder` | Shopify target |
 | Deploy | `sa-deploy-operator` | after the gate passes |
@@ -80,47 +122,86 @@ Route each concern to the skill that owns it. Pull on demand; never restate thei
 
 | Conflict | Ruling |
 |---|---|
-| Color / type / moodboard values | Locked Handoff Package > `brand-extractor` BTP > `ui-ux-designer` defaults > v3 starter tokens |
+| Color / type / moodboard values | Locked Handoff Package > `brand-extractor` BTP > approved Muse moodboard > `ui-ux-designer` defaults > v3 starter tokens |
+| Sitemap / page types / schema / answer capsules | Confirmed `seo-aeo-optimizer` blueprint wins over recipe defaults |
+| Liquid glass / 3D goo typography | Banned on law, SaaS, medical and home-healthcare sites — no Flagship or Premium exception |
 | Font allowed? | `design-taste-frontend` banned list wins (Inter, Poppins, Lato, Fraunces, Instrument Serif out unless the client's brand already uses them) |
 | Font provider | One provider per page: Fontshare / Bunny (Google-compatible API, GDPR-safe) by default; self-host WOFF2 on Premium |
 | VL-01 indigo glass (`#6366f1`) | Space Age's **own** properties only. Client builds use client tokens |
-| Smooth scroll | Native by default. Lenis only with a documented reason, never on touch/RM (`design-motion-principles` Lenis rules apply when enabled) |
+| Smooth scroll | Native by default. **Soft Lenis** (`<html data-cwb-smooth="soft">`, lerp 0.14) is Chuma's taste default and may be on without further justification, desktop fine pointer only; **never on touch or reduced motion**. Other Lenis settings need a documented reason |
+| Signature defaults | `video-per-section` and jumbo custom type (style 1, type behind subject) come from `taste-profile.yaml`; the brief can opt out; regulated sectors get their calm forms |
+| Conflicting docs | `handoff/design-spec.md` wins; its decisions-on-conflicts log records every override |
 | Asset timing | Assets before build (this skill + director agree; v2-synced was wrong) |
 | Module code vs `gsap-supercharged` snippets | Modules here are the production versions (isolated, tested); use gsap-supercharged for patterns not in the catalog |
 
-## 2. Workflow — seven phases, each with an exit condition
+## 2. Workflow — gates, each with an exit condition
 
-**P0 — Direction Intake (always first, every build).** Run the questionnaire in
-`references/direction-intake.md` in two rounds: business, proof, personality and practical details
-first; then visual, motion and content references. The person answers and **uploads references —
-images, website links, videos/screen recordings** — each with a note on what they like or want avoided.
-Analyze every reference with the protocol in that file (palette, type, layout, motion inventory
-mapped to catalog modules); read pasted links and run the competitor scan with `agent-reach`
-(`references/web-research-agent-reach.md`), then compile `templates/direction-brief.yaml` and show a one-screen
-summary. Existing lead briefs, Brand Token Packages or Handoff Packages pre-fill answers; they
-shorten the intake, never replace it. *Exit: Direction Brief `confirmed: true`.*
+**G0 — Intake.** Run `references/direction-intake.md` (two rounds; uploads: images, links, videos). Then
+write the **"The website will…" highlight** automatically: 5–8 lines, each starting "The website will…",
+covering outcome, audience, proof, the main CTA and the feeling (Fadel's brief highlight). Show it with the
+one-screen summary. *Exit: `handoff/brief.md` with `confirmed: true`.*
 
-**P1 — Direction lock.** From the confirmed Direction Brief, write the Design Read (taste-pro §0): audience, promise, three dials
-(VARIANCE / MOTION / DENSITY), moodboard letter, tokens, banned-list check. Confidence < 0.7 on
-any line → ask one batched question. *Exit: tokens filled into `:root`.*
+**G1 — Teardown + SEO/AEO blueprint.** `seo-aeo-optimizer` §1, `scripts/teardown.py --aeo`. Borrow
+structure and patterns only. The blueprint (sitemap, page types, schema, question H2s + 40–60 word
+capsules, entity/NAP, robots/llms/sitemap/IndexNow) goes into `design-spec.md` §SEO/AEO.
+*Exit: blueprint filled.*
 
-**P2 — Score.** Pick the tier (§3). Choose a narrative recipe (PRODUCT_REVEAL, LOCAL_BUSINESS,
-STUDIO_AGENCY… — director §7). Write the beat sheet (Hook → Problem → Proof → Offer → CTA) and the
-motion score table (section · element · module · trigger · duration · ease · mobile · RM). Name
-the **signature moment**. Sum module costs ≤ tier budget. *Exit: `build-manifest.yaml` filled.*
+**GR1 — Goldfish review of the brief (v3.4).** `node scripts/goldfish.mjs pack GR1 --handoff handoff --source <existing site or GBP URL>`
+→ one packet per lens (naive-client, search-and-answers, trust-and-tone, zoom-out). Launch one **fresh** subagent per packet whose
+whole task is "Read <packet>/PROMPT.md and follow it." Merge into `handoff/reviews/GR1-brief.md`, decide each blocker/should (fix ·
+contest with evidence · ask · accept-risk), `goldfish.mjs lint … --resolved` exit 0. Round 2 only if a blocker was fixed.
+Missing client facts become **ask** items, never inventions. `references/goldfish-review.md`. *Exit: `review_gr1: done`.*
 
-**P3 — Assets.** Follow `references/asset-pipeline.md`: manifest → anchor frames → generate →
-QC → encode → re-host. *Exit: every slot `hosted`, real dimensions known.*
+**G2 — Muse moodboard (hard stop).** Design references **and** motion references (screen recordings or
+URLs; name each effect with `animation-vocabulary`; for live sites the motion inventory comes from
+`site-reverse-engineer`, observed behaviour only). Write the Design Read (taste-pro §0). Tag any custom-type
+styles Chuma points at in `references/type-refs/INDEX.png`. *Exit: `moodboard_approved: true`.*
 
-**P4 — Build.** Copy `templates/starter.html` → `site/index.src.html`. Compose sections from
-`references/modules.md`. Copy through `stop-slop-pro`; schema from `sa-local-seo-geo`. Then
-`node scripts/assemble.mjs site/index.src.html -o site/index.html`. *Exit: assembled file, cost
-within budget (assemble prints `motionCost`).*
+**G3 — Pickers.**
+`node scripts/motion-pick.mjs handoff/wireframe.yaml --moodboard handoff/moodboard.yaml --taste taste-profile.yaml`
+→ `handoff/motion-plan.yaml` + `motion-review.html` (one screen, live demos, alternates).
+`node scripts/type-specimens.mjs handoff/type-inputs.yaml --taste taste-profile.yaml --spec handoff/design-spec.md`
+→ 3 specimen cards (headline, H2, body, button, jumbo word at 1440/390) + custom-type style ranking.
+Approve or swap (`--swap page/section=effect`, `--choose pairing-id`); picks feed the taste profile.
+*Exit: `motion_approved`, `type_approved`.*
 
-**P5 — Verify.** `node scripts/verify.mjs site/index.html` → fix → re-run until exit 0; then the
-three-pass visual loop and rubric in `references/qa-gate.md`. *Exit: gate passed with evidence.*
+**G4 — Grey-box wireframes (hard stop).** `node scripts/greybox.mjs handoff/wireframe.yaml --sitemap handoff/sitemap.xml`
+→ one greyscale page per sitemap URL (templates expand with `use:` + `each:`), screenshots at 1440 and
+390, contact sheet, `sections.md`. Spacing is approved here because the greybox renders with the real
+spacing tokens. Lint fails on: a sitemap URL with no wireframe, a page without exactly one H1, a service
+page without a question H2 + capsule slot. *Exit: `wireframe_approved: true`.*
 
-**P6 — Ship.** `sa-deploy-operator` → live URL; log to Drive SESSION_MEMORY. *Exit: URL verified.*
+**G5 — Design-spec + page-text.** Fill `handoff/design-spec.md` (tokens ~8 colours primitives→roles,
+optional dark; type block from the picker; spacing; grid 744/1200, max 2400; motion score from the plan;
+SEO/AEO plan; perf budgets; decisions log) and `handoff/page-text.md` (every word on every page, through
+`stop-slop-pro`). Section reference PNGs go to `handoff/sections/` (approved greybox or design frames).
+*Exit: both files have no TODOs.*
+
+**GR2 — Goldfish review of the spec (v3.4).** Same loop with `pack GR2` (brand-and-type, accessibility, motion-and-performance,
+conversion) on `design-spec.md`, `page-text.md`, `motion-plan.yaml`, `wireframe.yaml`. This is the check that catches a spec that would
+fail verify later (e.g. system-font headings vs `--type`), a missing SEO/AEO section, unsourced claims and contrast pairs.
+*Exit: `review_gr2: done`, no open blocker.*
+
+**G6 — Motion score + assets.** `references/asset-pipeline.md`; video-per-section clips planned per section
+(distinct subject, camera move, pacing) in `references/video-per-section.md`; custom-type renders in
+`references/custom-typography.md`, each AI word through `scripts/letter-check.mjs`. *Exit: every slot hosted,
+sized, budgeted; `ai-letters.yaml` all pass/confirmed.*
+
+**G7 — Numbered build chain.** `references/build-chain.md`: P0 setup → P1 tokens → P2 chrome → one prompt
+per section → pages → responsive + wide → a11y → SEO/AEO. Commit after each prompt and clear context.
+Single file: `assemble.mjs`. Multi-page: `references/multi-page.md` (Astro or Next.js). *Exit: build runs.*
+
+**G8 — QA.** `node scripts/verify.mjs site/index.html [more pages] --motion-plan handoff/motion-plan.yaml --type handoff/type/type-pick.yaml --sections handoff/sections --letters handoff/type/ai-letters.yaml`
+→ fix → re-run until exit 0. Then the visual loop in `references/qa-gate.md`. *Exit: `qa/REPORT.md` PASS.*
+
+**GR3 — Drift check (v3.4).** `pack GR3 --source <preview URL> --source qa/report.json` → one fresh drift reviewer lists only where the
+build differs from `design-spec.md` / `page-text.md`. Elephant decides per drift: fix the build or update the spec (with a §11 log line).
+*Exit: `review_gr3: done`.* Factory tier skips GR3.
+
+**G9 — Launch gate.** `node scripts/launch-check.mjs https://domain --pages /,/services/x` on the live domain
+(preview with `--preview`). `references/launch-gate.md`. *Exit: PASS.*
+
+**G10 — Ship.** Sitemap submitted, IndexNow pinged, live `aeo-check.py`, log to Drive SESSION_MEMORY.
 
 ## 3. Tier router
 
@@ -180,11 +261,18 @@ GSAP is fully free since 3.13 — use the real plugins; don't hand-roll weaker c
 12. **One H1, semantic landmarks, skip link, visible focus, alt text that describes.**
 13. **Assets are hosted, sized and budgeted:** `width`/`height` on media, AVIF/WebP, poster on video, no presigned URLs.
 14. **No claims without evidence** — see `references/qa-gate.md`.
+15. **Crawlers see the same copy humans do.** All copy, headings, NAP, prices, FAQs and JSON-LD live in the server-rendered initial HTML. Animations enhance content; they never hide it. No text that exists only in canvas or WebGL — `frame-scrub` and 3D scenes keep a poster plus the real caption in HTML.
+16. **Service pages use question-shaped H2s** with a 40–60 word answer in the first 1–2 sentences.
+17. **Core Web Vitals budgets (field, mobile, 75th):** LCP < 2.5 s, INP < 200 ms, CLS < 0.1. Lazy-load heavy assets; every video has a poster; reserve space for media.
+18. **Ship `robots.txt` that allows retrieval AI bots**, an XML sitemap, IndexNow on deploy, and optional `llms.txt`. Templates are in `templates/`.
 
 ## 7. Design laws (taste)
 
 - Pass `design-taste-frontend`'s ban list and 35-point pre-flight. Signature AI tells to kill on sight: purple-to-blue gradients on white, emoji icons, three equal feature cards, centered everything, glass on every surface, `Inter` + `rounded-2xl` + drop-shadow defaults, lorem, "Unlock the power of…".
-- Type: jumbo fluid display (`--t-hero`), tight display tracking (−0.02 to −0.04 em), body 1.5–1.6 line-height, ≤ 3 levels, measure ≤ 70ch, `text-wrap: balance` on headings.
+- **No liquid-glass or 3D goo typography on law, SaaS, medical or home-healthcare sites.** No Flagship or Premium exception.
+- Type: from the type picker only (max 2 families, ≤ 4 files). **Jumbo display is the signature**: `--t-jumbo`, tracking −0.04 to −0.06em, leading 0.85–0.95, `text-wrap: balance`, fitted with `cqi` + `jumbo-fit` so nothing overflows at 320–2560; the jumbo word is always real HTML text. Body 1.5–1.6 line-height, measure ≤ 70ch.
+- Spacing: `references/spacing-system.md`. Fluid `--space-*` scale tied to the type scale; gaps between sections > gaps within; one dominant element per viewport; real negative space; side padding never < 16px; tap targets ≥ 44px.
+- Custom type: `references/custom-typography.md`. Regulated sectors get styles 1 and 5 in calm form only.
 - Color: OKLCH tokens; ≤ 3 accents; body contrast ≥ 4.5:1 checked on the busiest background state.
 - Composition: asymmetric grids, real negative space, section transitions designed (not just padding), one dominant element per viewport.
 - Media: art-directed crops with text-safe zones; film grain over gradients to kill banding.
@@ -199,37 +287,54 @@ GSAP is fully free since 3.13 — use the real plugins; don't hand-roll weaker c
 | Parallax (03) | 12 % × depth | 30 % of that | none | none |
 | Pointer effects (10, 13, 15, 16, 23) | on | off (content intact) | off | off |
 | Line/word reveals (01, 31) | on | on | static | static |
-| Smooth scroll | only if justified | off | never | off |
+| Smooth scroll | soft Lenis (taste default) | off | never | off |
+| Video-per-section | one chapter plays | one chapter plays (posters on save-data) | posters | posters |
+| Jumbo / custom type | fitted, scrub/parallax | fitted, gentle | static | CSS-fitted (cqi) |
 | Carousel (21) | 3D tilt | 3D tilt (CSS) | flat snap | flat snap |
 | Nav (22) | condenses on scroll | tap menu | instant | static header |
 
 ## 9. Build commands
 
 ```bash
-SKILL=~/.claude/skills/cinematic-website-builder     # or the repo path
+SKILL=/home/box/agent-data/workflows/cinematic-website-builder      # or ~/.claude/skills/…
+export CWB_NODE_MODULES=/workspace/cwb-tools/node_modules           # playwright, axe-core, pngjs, pixelmatch, js-yaml, tesseract.js
+cp -r $SKILL/templates/handoff handoff                               # G0: the hand-off folder
+node $SKILL/scripts/motion-pick.mjs handoff/wireframe.yaml --taste $SKILL/taste-profile.yaml         # G3
+node $SKILL/scripts/type-specimens.mjs handoff/type-inputs.yaml --taste $SKILL/taste-profile.yaml --spec handoff/design-spec.md
+node $SKILL/scripts/greybox.mjs handoff/wireframe.yaml --sitemap handoff/sitemap.xml                  # G4
+node $SKILL/scripts/goldfish.mjs pack GR1 --handoff handoff --source https://client-site/              # GR1 (GR2 after G5, GR3 after G8)
+node $SKILL/scripts/goldfish.mjs lint handoff/reviews/GR1-brief.md --resolved
+node $SKILL/scripts/letter-check.mjs handoff/type/ai-letters.yaml                                    # G6
 cp $SKILL/templates/starter.html site/index.src.html
-cp $SKILL/templates/build-manifest.yaml site/
-# … author sections using references/modules.md …
-node $SKILL/scripts/assemble.mjs site/index.src.html -o site/index.html [--with page-transition]
-node $SKILL/scripts/verify.mjs site/index.html --out site/qa --budget-kb 900
+node $SKILL/scripts/assemble.mjs site/index.src.html -o site/index.html                              # G7
+node $SKILL/scripts/verify.mjs site/index.html --motion-plan handoff/motion-plan.yaml --type handoff/type/type-pick.yaml --sections handoff/sections --letters handoff/type/ai-letters.yaml   # G8
+node $SKILL/scripts/launch-check.mjs https://example.com --pages /,/services/x                       # G9
 ```
-Requirements: Node ≥ 20; Playwright + Chromium for verify (`npm i -g playwright && npx playwright install chromium`).
-Regression-test the runtime itself: `node tests/make-assets.mjs && node scripts/assemble.mjs tests/gallery.html -o tests/gallery.dist.html --with page-transition && node scripts/verify.mjs tests/gallery.dist.html --out tests/qa`.
+Requirements: Node ≥ 20; Playwright + Chromium; `axe-core`, `pngjs`, `pixelmatch`, `tesseract.js`
+(`npm i -D playwright axe-core pngjs pixelmatch js-yaml tesseract.js && npx playwright install chromium`, or point
+`CWB_NODE_MODULES` at an existing install); Python 3 and `seo-aeo-optimizer` for the AEO gate (`SEO_AEO_SKILL`).
+Skill regression (must pass before any release): `tests/run-all.sh`.
 
 ## 10. Output standards (the assembled file)
 
 1. `<!DOCTYPE html>`, `lang`, viewport, title (≤ 60 ch), meta description (150–160 ch), canonical, OG/Twitter, theme-color.
-2. Valid JSON-LD from `sa-local-seo-geo`; NAP identical to the Google Business Profile.
+2. Valid JSON-LD (LocalBusiness / vertical subtype + Service where relevant) from the SEO/AEO blueprint; NAP identical to the Google Business Profile; all of it in the initial HTML.
+2b. `robots.txt` allows retrieval AI bots; XML sitemap of indexable URLs; IndexNow on deploy; optional `llms.txt`.
 3. Fail-open head snippet, then assembled CSS (base + used modules).
 4. GSAP 3.15.0 + only the plugins used, from cdnjs, `defer`; runtime + used modules inline.
 5. LCP media preloaded with `fetchpriority="high"` and real dimensions; everything else lazy.
 6. Total transfer (desktop, first load) within the tier budget: Factory ≤ 900 KB, Enhanced ≤ 1.5 MB, Cinematic ≤ 3 MB, Flagship by manifest.
-7. `verify.mjs` exit 0 and `qa/REPORT.md` alongside the file.
+7. `verify.mjs` exit 0, `qa/REPORT.md` and `qa/aeo.json` alongside the file; `launch-check.mjs` PASS on the live domain.
 
 ## 11. Inputs read
 
 ```yaml
 direction_brief (P0, primary)                 → everything below is pre-fill for it
+direction_brief.confirmed                     → required before P0b
+direction_brief.seo_aeo                       → P0b/P0c teardown + blueprint; required before P1 code
+direction_brief.moodboard_approved            → required before G3
+handoff/brief.md gates                        → confirmed · moodboard_approved · motion_approved · type_approved · wireframe_approved
+handoff/brief.md reviews (v3.4)               → review_gr1 · review_gr2 · review_gr3 (pending | done | skipped — reason)
 direction_brief.references[].findings         → P1 tokens, P2 layout + motion plan
 direction_brief.synthesis.hard_bans           → never ship these
 
@@ -243,10 +348,18 @@ build_brief (lead-to-brief)                   → business facts, category, city
 
 ## 12. Never
 
+- Code, generate assets or assemble before teardown, the SEO/AEO blueprint, moodboard approval and wireframe approval.
+- Ship an AI-rendered word that has not passed `letter-check.mjs`, or a custom-type moment without real HTML text.
+- Use Grok's video model; video goes through Seedance 2.5/2.0 (Dreamina), Kling 4.0 or MiniMax H3 on subscriptions.
+- Cite or reuse anything derived from another site's JS bundles (clean-room: observed behaviour only).
+- Copy competitor text, images, design or code; or hide copy in JS, canvas or WebGL.
+- Use liquid-glass or 3D goo typography on law, SaaS, medical or home-healthcare sites.
 - Ship a module outside the runtime, or combine v2 module snippets on one page.
 - Put a curtain, gate or scramble over the first-viewport LCP element.
 - Pin on phones, hijack scroll, autoplay carousels without controls, or loop flashing content.
 - Hard-code brand colors in modules, or reuse another client's (or Space Age's) copy, numbers or colors.
 - Generate hero video text-to-video without an approved anchor frame.
 - Ship presigned media URLs, unfilled `{{placeholders}}`, or invented proof.
-- Report a build as done without a passing `verify.mjs` report and the visual loop.
+- Call a same-context self-check a goldfish review, or pass the conversation, parent summary, notes or memory to a goldfish.
+- Fill a missing client fact (licence, service area, reviews, years) to close a goldfish finding; it becomes an `ask`.
+- Report a build as done without a passing `verify.mjs` report (including SEO/AEO hard gates) and the visual loop.

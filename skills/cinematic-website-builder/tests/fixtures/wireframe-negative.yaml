@@ -1,0 +1,18 @@
+# greybox negative: service page without a question H2 / capsule, a page with two H1s, a page with no sections
+site: { name: Negative Co, sector: law }
+templates:
+  service:
+    page_type: service
+    sections:
+      - { id: intro, kind: hero-compact, h1: "{name}" }
+      - { id: body, kind: text, h2: "About {lower}" }
+pages:
+  - path: /
+    sections:
+      - { id: hero, kind: hero, h1: One }
+      - { id: two, kind: text, h1: Two }
+  - path: /empty
+    sections: []
+  - path: "/services/{slug}"
+    use: service
+    each: [{ slug: wills, name: Wills }]
