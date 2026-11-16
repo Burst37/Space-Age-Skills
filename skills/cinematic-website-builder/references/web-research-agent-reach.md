@@ -24,7 +24,7 @@ sent no links and no competitor research is needed.
    if the backend is missing, ask for an upload or screenshot instead of guessing.
 4. Bulk crawling of a whole site (sitemap, every page) is `firecrawl-mcp` or `scrapegraph-ai`, not Agent Reach.
 5. Cap research at what changes the build: max 5 competitor sites and 1 social sweep per platform.
-   Record sources in `direction-brief.yaml → references[].source`.
+   Record sources in the references table of `handoff/brief.md`.
 6. No unvetted installs mid-build. If `agent-reach` is not installed, fall back to Jina reads
    (`r.jina.ai`), `defuddle` and `firecrawl-mcp`, and note it in the brief.
 
@@ -40,3 +40,11 @@ research:
   voice_of_customer: []   # exact phrases from reviews / Reddit / X
   sources: []             # every URL read, with the backend used
 ```
+
+## Relation to the SEO/AEO teardown
+
+This file is the **design and voice-of-customer** research layer for P0 intake.
+Ranking-competitor work (Google, Map Pack, AI answers) is owned by `seo-aeo-optimizer`
+and runs in **P0b** per `references/seo-aeo-gate.md`. Do not treat an Agent Reach
+scan of five marketing sites as a substitute for `scripts/teardown.py --aeo`.
+The two outputs can share URLs; they answer different questions.

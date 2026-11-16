@@ -1,0 +1,144 @@
+# Worked example: Astonishing Touch (Chuma's hand-built Next.js site), reverse-extracted
+# 15 Nov 2026. Machine form of wireframe.md. Run:
+#   node scripts/greybox.mjs references/examples/astonishing/wireframe.yaml --out /tmp/greybox
+site:
+  name: Astonishing Touch
+  base_url: https://www.astonishingtouchhealthcare.org
+  sector: home-healthcare
+  max_width: 2400
+  type: { display: "Georgia, 'Times New Roman', serif", body: "Arial, Helvetica, sans-serif" }
+
+chrome:
+  skip_link: true
+  header:
+    logo: Astonishing Touch
+    nav: [Services, About, Care questions, Contact]
+    cta: "(314) 479-5673"
+  footer:
+    lines:
+      - Astonishing Touch Home Health & Senior Services L.L.C.
+      - 10880 Baur Blvd., Suite 103, Creve Coeur, MO 63132
+      - "Mon–Fri 9:00 a.m.–5:00 p.m. · After hours (314) 276-4607"
+    links: [Privacy, Back to top]
+  extras:
+    - "Ask Brittany launcher (AI receptionist — disclosed)"
+
+templates:
+  service:
+    title: "{name} in Creve Coeur"
+    page_type: service
+    sections:
+      - { id: kicker, kind: breadcrumbs, text: "Services / {name}" }
+      - { id: intro, kind: hero-compact, eyebrow: "Care at home · Creve Coeur office", h1: "{name} in Creve Coeur", lede: "One-sentence definition of {name}.", media: still }
+      - { id: capsule, kind: capsule, h2: "What does {lower} include?", words: "40-60" }
+      - { id: planning, kind: text, h2: Planning support around you, lede: Short how-it-works block. }
+      - { id: faq, kind: faq, h2: Your questions, items: ["How do we start {lower}?", "Is {lower} medical care?"], words: "40-60" }
+      - { id: related, kind: grid, h2: Other services, items: 3 }
+      - { id: cta, kind: cta, h2: Talk with our Creve Coeur office, cta: Call (314) 479-5673 }
+
+pages:
+  - path: /
+    slug: home
+    title: Home
+    page_type: home
+    sections:
+      - id: hero
+        kind: hero
+        eyebrow: Nonmedical home care · Creve Coeur, MO
+        h1: Care that feels like home.
+        lede: Companion care. Personal care. Everyday support.
+        cta: Find care for your loved one
+        media: film
+        jumbo: Home                  # custom type style 1 (calm): the jumbo word sits behind the caregiver cut-out
+        notes: Pause/Play control bottom-right. CTA inside the first 390×844 viewport.
+      - id: about
+        kind: split-30-70
+        h2: About Astonishing Touch
+        lede: Mission + 2018 founder story.
+        media: film
+      - id: services
+        kind: stacked-chapters
+        h2: Small moments. Real support.
+        items: [Respite care, Friendly companionship, Personal care, Hygiene assistance, Meal planning and preparation, Light housekeeping, Laundry assistance, Medication reminders, Assistance running errands]
+        media: film
+        notes: Video-per-section. Each chapter loop is distinct; only the in-view loop loads and plays.
+      - id: team
+        kind: split-50-50
+        h2: Good people. A personal touch.
+        media: still
+      - id: gallery
+        kind: gallery
+        h2: Life happens. Let's be part of it.
+        items: 5
+        notes: Illustrative moments — label generated media.
+      - id: steps
+        kind: steps
+        h2: It starts with a conversation.
+        items: [Tell us, Explore, Make it personal]
+        cta: Start the conversation
+      - id: questions
+        kind: faq
+        h2: Questions families ask
+        items: [What is nonmedical home care?, Is an inquiry an appointment?, Do you give medication?, Where do you provide care?, Who is Ask Brittany?]
+        words: "40-60"
+      - id: contact
+        kind: nap
+        h2: Let's make home feel like home.
+        cta: Call (314) 479-5673
+  - path: /services
+    slug: services
+    title: Services
+    page_type: service-index
+    sections:
+      - { id: intro, kind: hero-compact, eyebrow: Our services, h1: Home-care services in Creve Coeur, lede: Nine kinds of everyday, nonmedical support. }
+      - { id: list, kind: list, items: 9, notes: "Name as H2 + one-sentence definition + link" }
+      - { id: closer, kind: cta, h2: Start with the routines that matter., cta: Talk to us }
+  - path: /services/{slug}
+    use: service
+    each:
+      - { slug: respite-care, name: Respite care }
+      - { slug: companionship, name: Friendly companionship }
+      - { slug: personal-care, name: Personal care }
+      - { slug: hygiene-assistance, name: Hygiene assistance }
+      - { slug: meal-preparation, name: Meal planning and preparation }
+      - { slug: housekeeping, name: Light housekeeping }
+      - { slug: laundry, name: Laundry assistance }
+      - { slug: medication-reminders, name: Medication reminders }
+      - { slug: errands, name: Assistance running errands }
+  - path: /about
+    slug: about
+    title: About
+    page_type: about
+    sections:
+      - { id: intro, kind: hero-compact, eyebrow: A heart to serve., h1: About Astonishing Touch, media: still }
+      - { id: origin, kind: text, h2: Our story, lede: Origin paragraphs (founder wording, grammar pass). }
+      - { id: mission, kind: text, h2: Mission }
+      - { id: choices, kind: text, h2: "Your routines. Your choices." }
+      - { id: people, kind: text, h2: Talk with the people behind your care, notes: Includes the Ask Brittany AI disclosure. }
+  - path: /care-questions
+    slug: care-questions
+    title: Care Questions
+    page_type: faq-hub
+    sections:
+      - { id: intro, kind: hero-compact, h1: "Home-care questions, answered." }
+      - { id: index, kind: list, items: 8, notes: Jump index }
+      - { id: answers, kind: faq, h2: Questions and answers, items: 8, words: "40-60" }
+      - { id: bring, kind: text, h2: Questions to bring }
+  - path: /contact
+    slug: contact
+    title: Contact
+    page_type: contact
+    sections:
+      - { id: intro, kind: hero-compact, h1: Contact our Creve Coeur office }
+      - { id: nap, kind: nap, h2: Phone, email and hours }
+      - { id: before, kind: text, h2: Before arranging care, lede: "Inquiry is not an appointment; coverage at a home address must be confirmed." }
+  - path: /privacy
+    slug: privacy
+    title: Privacy
+    page_type: legal
+    sections:
+      - { id: intro, kind: hero-compact, h1: Privacy }
+      - { id: form, kind: text, h2: The inquiry form }
+      - { id: ai, kind: text, h2: The AI receptionist }
+      - { id: voice, kind: text, h2: Voice providers }
+      - { id: delete, kind: text, h2: How to request deletion }

@@ -35,12 +35,43 @@
   --e-in:     cubic-bezier(0.5, 0, 0.75, 0);       /* exits */
   --e-spring: linear(0, 0.36 8%, 0.82 18%, 1.03 27%, 1.08 34%, 1.03 44%, 0.99 55%, 1);
 
-  /* Space + shape */
-  --gutter: clamp(1rem, 0.5rem + 2.5vw, 3rem);
-  --section: clamp(5rem, 3rem + 10vw, 12rem);
+  /* Jumbo display (Chuma's signature default; gentle form in trust sectors) */
+  --t-jumbo:       clamp(4rem, 1rem + 14vw, 18rem);
+  --t-jumbo-bleed: 19vw;            /* edge-to-edge words; always fitted (cqi / jumbo-fit) */
+  --track-jumbo:   -0.05em;         /* -0.04 … -0.06em */
+  --lh-jumbo:      0.9;             /* 0.85 … 0.95 */
+
+  /* Space — Utopia-style fluid scale (320 → 1440px), steps tied to the body size */
+  --space-3xs: clamp(0.25rem, 0.23rem + 0.11vw, 0.3125rem);
+  --space-2xs: clamp(0.5rem, 0.48rem + 0.11vw, 0.5625rem);
+  --space-xs:  clamp(0.75rem, 0.71rem + 0.18vw, 0.875rem);
+  --space-s:   clamp(1rem, 0.96rem + 0.22vw, 1.125rem);
+  --space-m:   clamp(1.5rem, 1.43rem + 0.33vw, 1.6875rem);
+  --space-l:   clamp(2rem, 1.91rem + 0.45vw, 2.25rem);
+  --space-xl:  clamp(3rem, 2.87rem + 0.67vw, 3.375rem);
+  --space-2xl: clamp(4rem, 3.82rem + 0.89vw, 4.5rem);
+  --space-3xl: clamp(6rem, 5.73rem + 1.34vw, 6.75rem);
+  --space-4xl: clamp(8rem, 7.64rem + 1.79vw, 9rem);
+  /* one-up pairs: grow faster between phone and desktop */
+  --space-s-l:   clamp(1rem, 0.64rem + 1.79vw, 2.25rem);
+  --space-m-xl:  clamp(1.5rem, 0.96rem + 2.68vw, 3.375rem);
+  --space-l-2xl: clamp(2rem, 1.29rem + 3.57vw, 4.5rem);
+  /* Rhythm: gaps BETWEEN sections > gaps WITHIN them (proximity grouping) */
+  --section-y-gentle:    clamp(4rem, 2.6rem + 7vw, 9rem);
+  --section-y-standard:  clamp(5rem, 2.9rem + 10.5vw, 11rem);
+  --section-y-cinematic: clamp(6rem, 12vw, 12rem);
+  --section-y: var(--section-y-standard);
+  --section: var(--section-y);      /* v3.2 alias */
+  --stack: var(--space-m);          /* default gap inside a group */
+  /* Container */
+  --gutter: clamp(1rem, 0.43rem + 2.86vw, 4rem);   /* never < 16px */
+  --max-content: 1520px;            /* reading/layout width (1440–1600) */
+  --max-page: 2400px;               /* full-bleed cap; nothing grows past it */
+  --max: var(--max-content);        /* v3.2 alias */
+  --measure: 66ch;
+  /* Shape */
   --radius: 18px;
   --radius-sm: 10px;
-  --max: 1320px;
 }
 
 /* ---------- Base ---------- */
@@ -63,8 +94,23 @@ button { font: inherit; color: inherit; }
 .sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .skip-link { position: absolute; left: 1rem; top: -4rem; z-index: 10000; padding: .75rem 1rem; background: var(--c-fg); color: var(--c-bg); border-radius: var(--radius-sm); }
 .skip-link:focus { top: 1rem; }
-.wrap { width: min(100% - 2 * var(--gutter), var(--max)); margin-inline: auto; }
-.section { padding-block: var(--section); }
+.wrap { width: min(100% - 2 * var(--gutter), var(--max-content)); margin-inline: auto; }
+.wrap--page { width: min(100%, var(--max-page)); margin-inline: auto; }
+.section { padding-block: var(--section-y); }
+.section--gentle { --section-y: var(--section-y-gentle); }
+.section--cinematic { --section-y: var(--section-y-cinematic); }
+.stack > * + * { margin-top: var(--stack); }
+.measure { max-width: var(--measure); }
+/* Jumbo display — real HTML text, fitted, balanced. Wrap in .jumbo-box (container) to size by cqi. */
+.jumbo-box { container-type: inline-size; max-width: var(--max-page); margin-inline: auto; }
+.t-jumbo { font-family: var(--f-display); font-size: var(--t-jumbo); line-height: var(--lh-jumbo); letter-spacing: var(--track-jumbo); text-wrap: balance; margin: 0; overflow-wrap: normal; }
+.jumbo-box > .t-jumbo { font-size: min(var(--t-jumbo), var(--jumbo-cqi, 18cqi)); }
+/* Bleed words: set --jumbo-chars (letters in the word) so CSS alone fits it before any JS runs;
+   --jumbo-advance ≈ average glyph width in em (0.5 condensed … 0.7 wide; measured by type-specimens.mjs). */
+.t-jumbo--bleed { --jumbo-fitcalc: calc(94vw / (var(--jumbo-chars, 6) * var(--jumbo-advance, 0.62))); font-size: min(var(--t-jumbo-bleed), var(--jumbo-cqi, var(--jumbo-fitcalc))); white-space: nowrap; text-align: center; }
+.jumbo-box > .t-jumbo--bleed { --jumbo-fitcalc: calc(96cqi / (var(--jumbo-chars, 6) * var(--jumbo-advance, 0.62))); font-size: var(--jumbo-cqi, var(--jumbo-fitcalc)); }
+.t-jumbo em, .t-jumbo i { font-style: italic; font-weight: 300; }
+.t-jumbo--outline { color: transparent; -webkit-text-stroke: max(1px, 0.012em) var(--c-fg); paint-order: stroke fill; } /* decorative echo rows only — the readable line stays solid */
 .eyebrow { font: 500 var(--t-small)/1 var(--f-mono); letter-spacing: .18em; text-transform: uppercase; color: var(--c-fg-muted); }
 .btn {
   display: inline-flex; align-items: center; gap: .6em; padding: 1em 1.6em;

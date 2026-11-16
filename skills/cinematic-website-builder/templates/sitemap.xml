@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fill with every indexable 200 URL only. Accurate lastmod. Submit to GSC + Bing, ping IndexNow on deploy. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://{{domain}}/</loc>
+    <lastmod>{{YYYY-MM-DD}}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

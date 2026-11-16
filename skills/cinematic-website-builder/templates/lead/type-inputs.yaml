@@ -1,0 +1,15 @@
+# Lead-mode type picker inputs (v3.5). Auto mode: the picker chooses and logs why.
+client: {{name_q}}
+sector: {{sector}}
+mode: auto
+dials: {{dials}}
+brand_fonts: {}
+reference_fonts: []
+custom_type_refs: []
+copy:
+  eyebrow: {{category_q}}
+  jumbo: {{jumbo}}
+  headline: "Outcome headline for {{loc}}"
+  h2: "What should I know before I call?"
+  body: "Two or three plain sentences about what the business does and where, taken from the listing. This line is a specimen only and is replaced by page-text.md."
+  button: {{cta_q}}

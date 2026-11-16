@@ -1,5 +1,8 @@
 # AI Font Packs — Space Age proprietary display type
 
+> v3.3: the full custom-type system (26 styles, prompt templates, letter-check, glyph kits, number sets,
+> sector table) lives in `references/custom-typography.md`. This file covers delivering a pack as PNG / OTF / SVG.
+
 Use when `handoff_package.design_system.display_font_type` is `ai-png-letters`, `ai-otf`, or `ai-svg`.
 A pack is a **display asset, not a type system**: one moment per page, hero or wordmark, 1–4 words.
 Everything else uses the locked web fonts.

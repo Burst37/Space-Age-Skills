@@ -1,0 +1,442 @@
+# CWB type picker — curated pairing library (v3.3.0). Read by scripts/type-specimens.mjs.
+# Every family here was checked to resolve on its provider's CSS API on 2026-11-15.
+# dials: 0..1  warmth (0 technical → 1 warm) · classic (0 modern → 1 classic) · loud (0 calm → 1 loud)
+# providers: fontshare (ITF Free Font License: free for personal + commercial use, self-host allowed)
+#            bunny (Google-compatible, GDPR-safe; families below are SIL OFL 1.1)
+# One provider per page: every pairing below uses ONE provider.
+# weights = the files you load (max 2 families, ≤ 4 files total).
+banned: [Inter, Poppins, Lato, Fraunces, Instrument Serif]      # unless the client's brand guide already uses them
+overused: [Montserrat, Roboto, Open Sans, Playfair Display, Space Grotesk, DM Sans]   # allowed, scored down
+banned_display_styles_trust_sectors: [liquid-glass, 3d-goo, chrome-blob]   # law, SaaS, medical, home-healthcare
+
+pairings:
+  - id: care-editorial
+    display: { family: Newsreader, weights: [500] }
+    text: { family: Figtree, weights: [400, 600] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: true
+    dials: { warmth: 0.85, classic: 0.7, loud: 0.2 }
+    mood: [warm, editorial, calm, trustworthy]
+    sectors: [home-healthcare, senior-care, wellness, nonprofit, law]
+    variant: gentle
+    jumbo: { ok: true, advance: 0.6 }
+    notes: Book-serif headlines with a friendly geometric text face. The direct fix for Georgia + Arial.
+  - id: care-modern-serif
+    display: { family: Erode, weights: [500] }
+    text: { family: Satoshi, weights: [400, 700] }
+    provider: fontshare
+    licence: ITF-FFL
+    variable: true
+    dials: { warmth: 0.75, classic: 0.55, loud: 0.3 }
+    mood: [warm, modern, confident]
+    sectors: [home-healthcare, wellness, hospitality, real-estate]
+    variant: gentle
+    jumbo: { ok: true, advance: 0.6 }
+    notes: Keeps Satoshi (already in Chuma's builds) but loads the regular cut for body, and gives it a serif partner.
+  - id: care-accessible
+    display: { family: Literata, weights: [600] }
+    text: { family: Atkinson Hyperlegible, weights: [400, 700] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: true
+    dials: { warmth: 0.7, classic: 0.65, loud: 0.15 }
+    mood: [legible, calm, reassuring]
+    sectors: [home-healthcare, senior-care, medical, public-sector, education]
+    variant: gentle
+    jumbo: { ok: false, advance: 0.6 }
+    notes: Atkinson was drawn for low-vision readers. Best when the audience skews 65+.
+  - id: clinic-clean
+    display: { family: Source Serif 4, weights: [600] }
+    text: { family: Source Sans 3, weights: [400, 600] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: true
+    dials: { warmth: 0.5, classic: 0.6, loud: 0.15 }
+    mood: [clinical, clear, credible]
+    sectors: [medical, dental, therapy, pharmacy]
+    variant: gentle
+    jumbo: { ok: false, advance: 0.6 }
+  - id: medical-modern
+    display: { family: Plus Jakarta Sans, weights: [700] }
+    text: { family: Atkinson Hyperlegible, weights: [400, 700] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: false
+    dials: { warmth: 0.55, classic: 0.25, loud: 0.3 }
+    mood: [modern, friendly, clear]
+    sectors: [medical, dental, saas, telehealth]
+    variant: gentle
+    jumbo: { ok: true, advance: 0.6 }
+  - id: law-classic
+    display: { family: Libre Caslon Display, weights: [400] }
+    text: { family: Public Sans, weights: [400, 600] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: false
+    dials: { warmth: 0.45, classic: 0.95, loud: 0.2 }
+    mood: [authoritative, classic, restrained]
+    sectors: [law, finance, accounting, insurance]
+    variant: gentle
+    jumbo: { ok: true, advance: 0.6 }
+  - id: law-modern
+    display: { family: Gambetta, weights: [600] }
+    text: { family: Switzer, weights: [400, 600] }
+    provider: fontshare
+    licence: ITF-FFL
+    variable: true
+    dials: { warmth: 0.4, classic: 0.75, loud: 0.3 }
+    mood: [sharp, modern-classic, confident]
+    sectors: [law, finance, consulting, real-estate]
+    variant: gentle
+    jumbo: { ok: true, advance: 0.6 }
+  - id: saas-precise
+    display: { family: Geist, weights: [600] }
+    text: { family: Geist, weights: [400] }
+    mono: { family: Geist Mono, weights: [400] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: true
+    dials: { warmth: 0.15, classic: 0.1, loud: 0.3 }
+    mood: [technical, precise, neutral]
+    sectors: [saas, devtools, ai, fintech]
+    variant: gentle
+    jumbo: { ok: true, advance: 0.6 }
+  - id: saas-plex
+    display: { family: IBM Plex Sans, weights: [600] }
+    text: { family: IBM Plex Sans, weights: [400] }
+    mono: { family: IBM Plex Mono, weights: [400] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: false
+    dials: { warmth: 0.3, classic: 0.35, loud: 0.2 }
+    mood: [engineered, honest, enterprise]
+    sectors: [saas, b2b, logistics, manufacturing]
+    variant: gentle
+    jumbo: { ok: false, advance: 0.6 }
+  - id: fintech-calm
+    display: { family: Manrope, weights: [700] }
+    text: { family: Manrope, weights: [400] }
+    mono: { family: JetBrains Mono, weights: [400] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: true
+    dials: { warmth: 0.35, classic: 0.15, loud: 0.25 }
+    mood: [calm, numeric, modern]
+    sectors: [fintech, saas, insurance]
+    variant: gentle
+    jumbo: { ok: true, advance: 0.6 }
+  - id: studio-loud
+    display: { family: Clash Display, weights: [600] }
+    text: { family: Satoshi, weights: [400, 500] }
+    provider: fontshare
+    licence: ITF-FFL
+    variable: true
+    dials: { warmth: 0.4, classic: 0.1, loud: 0.85 }
+    mood: [bold, contemporary, confident]
+    sectors: [studio, agency, music, events, fashion, travel]
+    variant: bold
+    jumbo: { ok: true, advance: 0.56 }
+    notes: CWB house default for bold builds.
+  - id: studio-grotesk
+    display: { family: Cabinet Grotesk, weights: [800] }
+    text: { family: General Sans, weights: [400, 500] }
+    provider: fontshare
+    licence: ITF-FFL
+    variable: true
+    dials: { warmth: 0.45, classic: 0.15, loud: 0.8 }
+    mood: [punchy, editorial, graphic]
+    sectors: [studio, agency, retail, food]
+    variant: bold
+    jumbo: { ok: true, advance: 0.6 }
+  - id: fashion-contrast
+    display: { family: Bodoni Moda, weights: [500] }
+    text: { family: Hanken Grotesk, weights: [400, 600] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: true
+    dials: { warmth: 0.5, classic: 0.85, loud: 0.7 }
+    mood: [luxury, high-contrast, couture]
+    sectors: [fashion, beauty, jewellery, hospitality]
+    variant: bold
+    jumbo: { ok: true, advance: 0.56 }
+  - id: fashion-editorial
+    display: { family: Boska, weights: [500] }
+    text: { family: General Sans, weights: [400, 500] }
+    provider: fontshare
+    licence: ITF-FFL
+    variable: true
+    dials: { warmth: 0.6, classic: 0.7, loud: 0.6 }
+    mood: [editorial, fashion, sensual]
+    sectors: [fashion, beauty, hospitality, art]
+    variant: bold
+    jumbo: { ok: true, advance: 0.6 }
+  - id: hospitality-warm
+    display: { family: Zodiak, weights: [500] }
+    text: { family: Satoshi, weights: [400, 700] }
+    provider: fontshare
+    licence: ITF-FFL
+    variable: true
+    dials: { warmth: 0.8, classic: 0.6, loud: 0.5 }
+    mood: [warm, inviting, crafted]
+    sectors: [hospitality, restaurant, travel, wellness]
+    variant: bold
+    jumbo: { ok: true, advance: 0.6 }
+  - id: travel-adventure
+    display: { family: Cabinet Grotesk, weights: [800] }
+    text: { family: Sentient, weights: [400, 500] }
+    provider: fontshare
+    licence: ITF-FFL
+    variable: true
+    dials: { warmth: 0.65, classic: 0.4, loud: 0.75 }
+    mood: [adventurous, editorial, energetic]
+    sectors: [travel, outdoor, tourism, magazine]
+    variant: bold
+    jumbo: { ok: true, advance: 0.6 }
+  - id: music-poster
+    display: { family: Tanker, weights: [400] }
+    text: { family: General Sans, weights: [400, 500] }
+    provider: fontshare
+    licence: ITF-FFL
+    variable: false
+    dials: { warmth: 0.4, classic: 0.2, loud: 1.0 }
+    mood: [loud, poster, raw]
+    sectors: [music, events, nightlife, sport]
+    variant: bold
+    jumbo: { ok: true, advance: 0.45 }
+    notes: Display only at hero size; never for sub-heads.
+  - id: restaurant-friendly
+    display: { family: Young Serif, weights: [400] }
+    text: { family: Instrument Sans, weights: [400, 600] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: false
+    dials: { warmth: 0.9, classic: 0.6, loud: 0.45 }
+    mood: [hearty, friendly, crafted]
+    sectors: [restaurant, cafe, bakery, food]
+    variant: bold
+    jumbo: { ok: true, advance: 0.6 }
+  - id: spa-calm
+    display: { family: Cormorant Garamond, weights: [500] }
+    text: { family: Figtree, weights: [400, 500] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: false
+    dials: { warmth: 0.75, classic: 0.9, loud: 0.1 }
+    mood: [serene, luxurious, soft]
+    sectors: [wellness, spa, beauty, wedding]
+    variant: gentle
+    jumbo: { ok: true, advance: 0.5 }
+    notes: Cormorant is thin at small sizes — display ≥ 32px only.
+  - id: realestate-gallery
+    display: { family: Gloock, weights: [400] }
+    text: { family: Onest, weights: [400, 500] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: false
+    dials: { warmth: 0.55, classic: 0.75, loud: 0.45 }
+    mood: [architectural, premium, quiet]
+    sectors: [real-estate, architecture, interiors]
+    variant: gentle
+    jumbo: { ok: true, advance: 0.6 }
+  - id: trades-sturdy
+    display: { family: Archivo, weights: [800] }
+    text: { family: Archivo, weights: [400, 600] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: true
+    dials: { warmth: 0.45, classic: 0.3, loud: 0.65 }
+    mood: [sturdy, direct, local]
+    sectors: [trades, plumbing, hvac, roofing, construction, automotive]
+    variant: bold
+    jumbo: { ok: true, advance: 0.62 }
+  - id: trades-friendly
+    display: { family: Bricolage Grotesque, weights: [700] }
+    text: { family: Public Sans, weights: [400, 600] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: true
+    dials: { warmth: 0.7, classic: 0.25, loud: 0.55 }
+    mood: [approachable, characterful, local]
+    sectors: [trades, cleaning, landscaping, pet, local-service]
+    variant: gentle
+    jumbo: { ok: true, advance: 0.6 }
+  - id: tech-futurist
+    display: { family: Unbounded, weights: [700] }
+    text: { family: Onest, weights: [400, 500] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: true
+    dials: { warmth: 0.25, classic: 0.0, loud: 0.9 }
+    mood: [futurist, wide, energetic]
+    sectors: [ai, web3, gaming, events, studio]
+    variant: bold
+    jumbo: { ok: true, advance: 0.8 }
+  - id: creative-quirky
+    display: { family: Syne, weights: [700] }
+    text: { family: Hanken Grotesk, weights: [400, 500] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: true
+    dials: { warmth: 0.5, classic: 0.1, loud: 0.8 }
+    mood: [experimental, art-school, quirky]
+    sectors: [studio, art, gallery, music]
+    variant: bold
+    jumbo: { ok: true, advance: 0.66 }
+  - id: nonprofit-literary
+    display: { family: Spectral, weights: [600] }
+    text: { family: Schibsted Grotesk, weights: [400, 600] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: false
+    dials: { warmth: 0.7, classic: 0.8, loud: 0.2 }
+    mood: [literary, sincere, informative]
+    sectors: [nonprofit, education, publishing, church]
+    variant: gentle
+    jumbo: { ok: false, advance: 0.6 }
+  - id: luxury-serif
+    display: { family: Bespoke Serif, weights: [500] }
+    text: { family: Satoshi, weights: [400, 500] }
+    provider: fontshare
+    licence: ITF-FFL
+    variable: true
+    dials: { warmth: 0.6, classic: 0.8, loud: 0.5 }
+    mood: [luxury, refined, contemporary]
+    sectors: [hospitality, fashion, real-estate, jewellery]
+    variant: bold
+    jumbo: { ok: true, advance: 0.6 }
+  - id: beauty-drama
+    display: { family: Melodrama, weights: [500] }
+    text: { family: General Sans, weights: [400, 500] }
+    provider: fontshare
+    licence: ITF-FFL
+    variable: true
+    dials: { warmth: 0.7, classic: 0.75, loud: 0.65 }
+    mood: [dramatic, feminine, editorial]
+    sectors: [beauty, salon, fashion, wedding]
+    variant: bold
+    jumbo: { ok: true, advance: 0.48 }
+  - id: minimal-architect
+    display: { family: Supreme, weights: [500] }
+    text: { family: Supreme, weights: [400] }
+    provider: fontshare
+    licence: ITF-FFL
+    variable: true
+    dials: { warmth: 0.25, classic: 0.2, loud: 0.25 }
+    mood: [minimal, Swiss, quiet]
+    sectors: [architecture, interiors, product, studio]
+    variant: gentle
+    jumbo: { ok: true, advance: 0.6 }
+  - id: sport-wide
+    display: { family: Panchang, weights: [700] }
+    text: { family: Switzer, weights: [400, 600] }
+    provider: fontshare
+    licence: ITF-FFL
+    variable: true
+    dials: { warmth: 0.3, classic: 0.05, loud: 0.95 }
+    mood: [fast, wide, athletic]
+    sectors: [sport, automotive, fitness, events]
+    variant: bold
+    jumbo: { ok: true, advance: 0.85 }
+  - id: playful-rounded
+    display: { family: Fredoka, weights: [600] }
+    text: { family: Nunito, weights: [400, 700] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: true
+    dials: { warmth: 0.95, classic: 0.1, loud: 0.6 }
+    mood: [playful, soft, family]
+    sectors: [kids, childcare, pet, education, food]
+    variant: bold
+    jumbo: { ok: true, advance: 0.62 }
+  - id: modern-neutral
+    display: { family: General Sans, weights: [600] }
+    text: { family: Switzer, weights: [400] }
+    provider: fontshare
+    licence: ITF-FFL
+    variable: true
+    dials: { warmth: 0.4, classic: 0.2, loud: 0.35 }
+    mood: [clean, versatile, modern]
+    sectors: [saas, consulting, local-service, agency]
+    variant: gentle
+    jumbo: { ok: true, advance: 0.6 }
+  - id: grotesk-editorial
+    display: { family: Clash Grotesk, weights: [500] }
+    text: { family: Satoshi, weights: [400, 500] }
+    provider: fontshare
+    licence: ITF-FFL
+    variable: true
+    dials: { warmth: 0.35, classic: 0.15, loud: 0.6 }
+    mood: [editorial, tech-forward, crisp]
+    sectors: [saas, studio, ai, product]
+    variant: bold
+    jumbo: { ok: true, advance: 0.6 }
+  # ---- jumbo display pairings (v3.3: Chuma's jumbo-type signature) ----
+  - id: jumbo-condensed-poster
+    display: { family: Anton, weights: [400] }
+    text: { family: Figtree, weights: [400, 600] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: false
+    dials: { warmth: 0.4, classic: 0.35, loud: 0.95 }
+    mood: [loud, poster, condensed, energetic]
+    sectors: [fitness, sport, events, music, streetwear, restaurant]
+    variant: bold
+    jumbo: { ok: true, advance: 0.42 }
+    notes: Condensed poster caps fill the width edge to edge (style 1 behind a cut-out, style 5 under a script word).
+  - id: jumbo-calm-serif
+    display: { family: DM Serif Display, weights: [400] }
+    text: { family: Figtree, weights: [400, 600] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: false
+    dials: { warmth: 0.8, classic: 0.75, loud: 0.45 }
+    mood: [warm, calm, editorial, confident]
+    sectors: [home-healthcare, senior-care, law, wellness, hospitality, real-estate]
+    variant: gentle
+    jumbo: { ok: true, advance: 0.55 }
+    notes: The regulated-sector jumbo, a calm high-contrast serif. Use it for style 1 (gentle parallax) or style 5 (heavy over light); no distortion.
+  - id: jumbo-sport-condensed
+    display: { family: Big Shoulders Display, weights: [800] }
+    text: { family: Archivo, weights: [400, 600] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: true
+    dials: { warmth: 0.35, classic: 0.3, loud: 0.9 }
+    mood: [athletic, industrial, loud]
+    sectors: [sport, fitness, trades, automotive, events]
+    variant: bold
+    jumbo: { ok: true, advance: 0.44 }
+    notes: Tall condensed caps. Bleed words read well even at 320px.
+  - id: jumbo-variable-axis
+    display: { family: Bricolage Grotesque, weights: [200, 800] }
+    text: { family: Figtree, weights: [400] }
+    provider: bunny
+    licence: OFL-1.1
+    variable: true
+    dials: { warmth: 0.6, classic: 0.3, loud: 0.75 }
+    mood: [playful, modern, expressive]
+    sectors: [agency, creative, cafe, retail, events]
+    variant: bold
+    jumbo: { ok: true, advance: 0.6, axis: wght }
+    notes: Variable wght 200–800 for the variable-axis motion option (data-jumbo=axis). Load the variable file, not two statics.
+  - id: jumbo-satoshi-black
+    display: { family: Satoshi, weights: [900] }
+    text: { family: Satoshi, weights: [400] }
+    provider: fontshare
+    licence: ITF-FFL
+    variable: true
+    dials: { warmth: 0.5, classic: 0.4, loud: 0.7 }
+    mood: [modern, clean, confident]
+    sectors: [saas, agency, home-services, retail, tech]
+    variant: gentle
+    jumbo: { ok: true, advance: 0.58 }
+    notes: One family (Chuma's usual Satoshi) with a black jumbo weight. Two files total.
+
+# Optional source: Chuma's UI8 library (Drive: "UI8 Extracted Assets - Batch 2"; inventory
+# /workspace/ui8-inventory.csv — 20 font zips, e.g. Fenoura, Velorina, Qirvalen, Nevanta, Gotkin,
+# Northern Sans, Forge Sans, Boldet/Rantaro/Rowsky Display). These are NOT in the scored library:
+# each zip's licence file must be read first (UI8 licences differ: personal vs commercial vs
+# web-embedding). Only a font whose licence allows commercial web embedding may be self-hosted
+# (WOFF2), and only as display (hero/wordmark, one moment per page). Record licence + source in
+# design-spec.md → Type → licence. Never upload a UI8 font file to a public repo or CDN.

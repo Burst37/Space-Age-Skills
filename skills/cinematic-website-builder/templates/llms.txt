@@ -1,0 +1,20 @@
+# {{Brand}}
+> {{Brand}} is a {{category}} serving {{city/area}}. Licensed #{{license}}. Founded {{year}}. Phone {{phone}}.
+
+## Services
+- [{{Service 1}}](https://{{domain}}/{{service-slug}}/): {{one-line fact}}
+- [{{Service 2}}](https://{{domain}}/{{service-slug-2}}/): {{one-line fact}}
+
+## Service areas
+- [{{City}}](https://{{domain}}/{{city-slug}}/)
+
+## Company
+- [About](https://{{domain}}/about/)
+- [Reviews](https://{{domain}}/reviews/)
+- [Contact](https://{{domain}}/contact/)
+
+# Every URL must be on the production domain (launch-check fails on preview/old hosts).
+# Regulated sectors: plain facts only. Home care says "nonmedical", no medical claims, no outcome or price promises,
+# licence line exactly as issued. See references/subtle-cinematic.md.
+# Optional. Unproven for AI search (Google ignores it). Never a substitute for
+# real HTML content. Replace every {{placeholder}} or do not ship this file.

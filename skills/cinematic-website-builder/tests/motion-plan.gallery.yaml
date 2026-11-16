@@ -1,0 +1,9 @@
+# Regression fixture: what the gallery's motion plan promises. verify.mjs must find all of it running.
+style: video-per-section
+libraries: { gsap: true, scrolltrigger: true, splittext: true, lenis: false }
+min_scrolltriggers: 5
+sections:
+  - { id: hero, effect: masked-headline-reveal, technique: "GSAP SplitText mask:'lines'", module: line-reveal }
+  - { id: scroll, effect: scroll-reveal, technique: "CSS animation-timeline: view()", module: css-view-reveal }
+  - { id: expand, effect: expanding-video-panels, technique: "GSAP tween, inner width 2x + neighbour shift", module: expand-panels }
+  - { id: chapters, effect: video-per-section, technique: "IntersectionObserver, one video at a time", module: video-chapters }

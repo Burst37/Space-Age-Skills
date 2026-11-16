@@ -1,0 +1,7 @@
+# G2 moodboard → motion picker input. One entry per approved reference.
+# effects: plain phrases or catalog ids (references/motion-catalog.yaml `says`), from animation-vocabulary / site-reverse-engineer.
+references:
+  - url: "{{https://reference-site.example}}"
+    liked: [layout, type]
+    effects: [video behind each section, text behind person]
+    custom_type_styles: [1]        # numbers from references/type-refs/INDEX.png

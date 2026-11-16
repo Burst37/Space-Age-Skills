@@ -1,0 +1,37 @@
+# CWB v3 — copy to the site root on ship. Retrieval AI bots MUST be allowed.
+# Training bots (GPTBot, ClaudeBot, Google-Extended, CCBot, …) are the client's
+# call; blocking them does not remove the site from AI search. See
+# references/seo-aeo-gate.md and seo-aeo-optimizer §7.1.
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: *
+Allow: /
+
+# Sitemap: {{https://domain/sitemap.xml}}
+Sitemap: https://{{domain}}/sitemap.xml

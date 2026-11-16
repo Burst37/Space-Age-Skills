@@ -1,0 +1,87 @@
+{
+  "slot": "hero-loop",
+  "mode": "i2v",
+  "intent": "Calm competence: the viewer notices the finished lawn first, then the headline.",
+  "model": {
+    "id": "minimax_h3",
+    "name": "",
+    "platform": "higgsfield",
+    "roster_checked": "2026-11-16",
+    "why": "start + end keyframes, 21:9, newest in its family on the roster that day"
+  },
+  "source": {
+    "start_frame": "assets/hero-anchor.png",
+    "end_frame": "assets/hero-anchor.png",
+    "invariants": [
+      "house geometry and roofline",
+      "lawn edge lines",
+      "sun direction from camera left",
+      "no people enter frame"
+    ]
+  },
+  "duration_s": 6,
+  "aspect_ratio": "21:9",
+  "resolution": "1080p",
+  "loop": true,
+  "audio": "none",
+  "shot": {
+    "size": "wide establishing",
+    "angle": "low eye level, 1.2 m",
+    "composition": "house on the right third, lawn leading lines from bottom left, sky and open lawn on the left"
+  },
+  "camera": {
+    "body": "Blackmagic URSA Cine 17K 65",
+    "move": "slow push-in",
+    "support": "dolly on track",
+    "speed": "about 10 cm per second",
+    "path": {
+      "start": "wide with the full facade and front lawn",
+      "end": "the same framing 60 cm closer, horizon unchanged"
+    }
+  },
+  "lens": {
+    "focal_length_mm": 32,
+    "family": "Panavision Primo 65",
+    "aperture": "T4",
+    "focus": "deep focus held on the facade"
+  },
+  "lighting": {
+    "key": "low golden-hour sun from camera left, long soft shadows across the lawn",
+    "fill": "open sky bounce",
+    "evolution": "none"
+  },
+  "motion": {
+    "subject": "none",
+    "secondary": "grass tips and one tree branch move in a light breeze",
+    "environment": "thin sprinkler mist drifts left to right in the far background",
+    "parallax": "foreground grass blades pass faster than the facade"
+  },
+  "color": {
+    "pipeline": "Blackmagic RAW to Rec.709",
+    "grade": "warm highlights, neutral greens, soft contrast; matches --c-accent"
+  },
+  "meta_tokens": {
+    "tier_a": [
+      "BLACKMAGIC_URSA_CINE_17K_65.BRAW"
+    ],
+    "tier_b": [
+      "commercial_hero_frame"
+    ]
+  },
+  "negatives": [
+    "no new objects",
+    "no camera shake",
+    "no focal-length jump",
+    "no geometry warping on the roofline",
+    "no text or logos appear",
+    "no people"
+  ],
+  "web": {
+    "text_safe_zone": "the left 45% of the frame",
+    "poster": "first frame",
+    "crop_safe": [
+      "16:9",
+      "9:16 centred on the house"
+    ]
+  }
+}

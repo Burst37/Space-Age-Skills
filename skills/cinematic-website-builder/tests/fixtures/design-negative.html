@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Design negative fixture — must FAIL</title>
+<meta name="description" content="Negative fixture: jumbo overflow, image-only custom type, cramped padding, tiny tap target, unchecked AI lettering.">
+<meta name="theme-color" content="#111111"><link rel="icon" href="../assets/favicon.svg"><link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<style>
+  body { margin: 0; font: 16px/1.5 Arial, sans-serif; background: #fff; color: #111; }
+  section { padding: 80px 8px; }               /* cramped side padding + hard-coded px */
+  .t-jumbo { font-size: 30vw; white-space: nowrap; margin: 0; }   /* overflows at every width */
+  .tiny { font-size: 12px; padding: 2px 6px; }
+</style></head>
+<body><main>
+  <section><h1>Negative fixture</h1><p>Body copy that sits 8px from the screen edge on phones.</p>
+    <button class="btn tiny" type="button">Go</button></section>
+  <section><p class="t-jumbo">OVERFLOWING</p></section>
+  <section><h2 data-ctype="material"><img src="../assets/subject-cutout.png" alt="" aria-hidden="true" width="600" height="700" data-ai-word="HOPE"></h2></section>
+</main></body></html>

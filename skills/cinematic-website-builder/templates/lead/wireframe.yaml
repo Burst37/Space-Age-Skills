@@ -1,0 +1,57 @@
+# Lead-mode one-page wireframe (v3.5). Generated per lead; edit sections to fit what the listing actually shows.
+site:
+  name: {{name_q}}
+  base_url: https://preview.invalid
+  sector: {{sector}}
+  max_width: 2400
+
+chrome:
+  skip_link: true
+  header:
+    logo: {{name_q}}
+    nav: [Services, Questions, Contact]
+    cta: {{cta_q}}
+  footer:
+    lines:
+      - {{name_q}}
+      - {{loc_q}}
+    links: [Back to top]
+  extras:
+    - "Preview notice (data-cwb-spec): concept site built by Space Age, not yet published by the business"
+
+pages:
+  - path: /
+    slug: home
+    title: Home
+    page_type: home
+    sections:
+      - id: hero
+        kind: hero
+        eyebrow: {{category_q}}
+        h1: "Outcome headline for {{loc}} (write it; not the business name)"
+        lede: One sentence. What they do, where, for whom.
+        cta: {{cta_q}}
+        media: film
+        jumbo: {{jumbo}}
+        notes: Phone CTA inside the first 390x844 viewport. Rating + review count next to it only if known.
+      - id: services
+        kind: stacked-chapters
+        h2: What we do
+        items: 3
+        media: film
+        notes: Video-per-section. Only services named on the listing or the old site. Fewer is fine.
+      - id: steps
+        kind: steps
+        h2: How it works
+        items: [Call or message, We confirm the job, Done right]
+        cta: {{cta_q}}
+      - id: questions
+        kind: faq
+        h2: "What should I know before I call?"
+        items: 4
+        words: "40-60"
+        notes: Question-shaped, answered in the first sentence. Skip any answer that would need an invented fact.
+      - id: contact
+        kind: nap
+        h2: Call {{name_q}}
+        cta: {{cta_q}}

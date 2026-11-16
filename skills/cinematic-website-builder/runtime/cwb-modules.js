@@ -87,8 +87,12 @@ CWB.define('parallax', {
 CWB.define('horizontal-pan', {
   init: function (el, api) {
     /* Phones + reduced motion keep the native swipe/scroll-snap row (CSS default). */
-    if (!api.cond.desktop || api.cond.reduce) return;
+    /* Native row = a scrollable region: keyboard users need it focusable (axe scrollable-region-focusable).
+       Markup ships tabindex="0"; the pinned (transform) mode is not scrollable, so drop it there. */
     var track = api.$('.hpan__track');
+    if (!api.cond.desktop || api.cond.reduce) { if (track) track.setAttribute('tabindex', '0'); return; }
+    track.removeAttribute('tabindex');
+    api.onDispose(function () { track.setAttribute('tabindex', '0'); });
     el.classList.add('is-pinned');
     function dist() { return Math.max(0, track.scrollWidth - el.clientWidth); }
     var tween = gsap.to(track, {
@@ -931,3 +935,264 @@ CWB.define('voice-agent', {
   }
 });
 /* @end voice-agent */
+
+/* @module expand-panels | id: 39 | plugins: — | cost: 6 */
+/* Expanding video panels. Clean-room build from observed public behaviour
+   (references/examples/menken-clean-room.md); no reference code, art or copy.
+   data-variant="bold" (default): 12vh bar → 2× inner, neighbours shift ±½ bar,
+   0.6s in, 0.1s hold + 0.4s out, power3.out (our ease), one video at a time.
+   data-variant="gentle" (trust sectors): 1.4× inner from centre, neighbours still,
+   0.45s power2.out, posters only — no video playback. */
+CWB.define('expand-panels', {
+  init: function (el, api) {
+    var panels = api.$$('.expand__panel');
+    var inners = api.$$('.expand__inner');
+    var medias = api.$$('.expand__media');
+    var captions = api.$$('.expand__caption');
+    var rest = api.$('.expand__rest');
+    var reduce = api.cond.reduce;
+    var gentle = el.getAttribute('data-variant') === 'gentle';
+    var mobileQ = window.matchMedia('(max-width: 699.98px)');
+    var mobile = mobileQ.matches;
+    var fine = api.cond.fine && !mobile;
+    var active = -1, outCall = null;
+    var GROW = gentle ? 1.4 : 2, EASE = gentle ? 'power2.out' : 'power3.out';
+    var DUR_IN = gentle ? 0.45 : 0.6, DUR_OUT = gentle ? 0.35 : 0.4, HOLD = 0.1;
+    var playVideo = !gentle && !reduce && !api.env.saveData;
+    var bar = function () { return panels[0] ? panels[0].getBoundingClientRect().width : 0; };
+
+    function setVideo(i, on) {
+      var p = panels[i], vid = p && p.querySelector('video');
+      if (!vid) return;
+      if (on && playVideo) {
+        var src = p.getAttribute('data-video');
+        if (src && vid.getAttribute('data-loaded') !== '1') { vid.src = src; vid.setAttribute('data-loaded', '1'); }
+        var pr = vid.play(); if (pr && pr.catch) pr.catch(function () {});
+        gsap.to(vid, { opacity: 1, duration: 0.3, ease: 'none', overwrite: 'auto' });
+      } else {
+        gsap.to(vid, { opacity: 0, duration: reduce ? 0 : 0.3, ease: 'none', delay: reduce ? 0 : HOLD, overwrite: 'auto',
+          onComplete: function () { try { vid.pause(); } catch (e) {} } });
+      }
+    }
+    function layout(index, instant) {
+      var w = bar(), dur = instant || reduce ? 0 : (index === -1 ? DUR_OUT : DUR_IN);
+      var grow = w * (GROW - 1), half = grow / 2;
+      inners.forEach(function (inner, i) {
+        var tw = w, x = 0, xp = -25;
+        if (index !== -1) {
+          if (i === index) { tw = w * GROW; x = -half; xp = 0; }
+          else if (!gentle) x = i < index ? -half : half;
+        }
+        if (mobile) { tw = inner.parentElement.clientWidth; x = 0; xp = 0; }
+        gsap.to(inner, { width: tw, x: x, duration: dur, ease: EASE, overwrite: 'auto' });
+        if (medias[i]) gsap.to(medias[i], { xPercent: xp, duration: dur, ease: EASE, overwrite: 'auto' });
+      });
+    }
+    function setCaption(index) {
+      captions.forEach(function (c, i) {
+        var on = i === index;
+        c.classList.toggle('is-on', on);
+        c.setAttribute('aria-hidden', on ? 'false' : 'true');
+        if (on) c.removeAttribute('hidden'); else c.setAttribute('hidden', '');
+      });
+      if (rest) { rest.classList.toggle('is-off', index !== -1); rest.setAttribute('aria-hidden', index !== -1 ? 'true' : 'false'); }
+    }
+    function activate(index, instant) {
+      if (index === active) return;
+      if (outCall) { outCall.kill(); outCall = null; }
+      if (active !== -1) { panels[active].classList.remove('is-active'); panels[active].setAttribute('aria-expanded', 'false'); setVideo(active, false); }
+      active = index;
+      el.setAttribute('data-active', String(index));
+      if (index === -1) {
+        var go = function () { layout(-1, instant); setCaption(-1); };
+        if (instant || reduce) go(); else outCall = gsap.delayedCall(HOLD, go);
+        return;
+      }
+      panels[index].classList.add('is-active');
+      panels[index].setAttribute('aria-expanded', 'true');
+      panels[index].style.zIndex = String(20 + index);
+      layout(index, instant); setCaption(index); setVideo(index, true);
+    }
+    panels.forEach(function (p, i) {
+      p.setAttribute('aria-expanded', 'false');
+      if (!p.hasAttribute('type')) p.setAttribute('type', 'button');
+      api.on(p, 'click', function () {
+        if (fine && active === i && p.getAttribute('data-link')) { window.location.hash = p.getAttribute('data-link'); return; }
+        activate(active === i ? -1 : i, reduce);
+      }, false);
+      api.on(p, 'focus', function () { if (fine) activate(i, reduce); });
+      if (fine) {
+        api.on(p, 'pointerenter', function () { activate(i, false); });
+        api.on(p, 'pointerleave', function (ev) {
+          var nxt = ev.relatedTarget && ev.relatedTarget.closest && ev.relatedTarget.closest('.expand__panel');
+          if (nxt && el.contains(nxt)) return;
+          if (active === i) activate(-1, false);
+        });
+      }
+    });
+    api.on(el, 'keydown', function (ev) {
+      if (ev.key === 'Escape') { activate(-1, reduce); return; }
+      if (ev.key !== 'ArrowRight' && ev.key !== 'ArrowLeft') return;
+      ev.preventDefault();
+      var next = active < 0 ? 0 : active + (ev.key === 'ArrowRight' ? 1 : -1);
+      next = Math.max(0, Math.min(panels.length - 1, next));
+      panels[next].focus(); activate(next, reduce);
+    }, false);
+    api.on(window, 'resize', function () { mobile = mobileQ.matches; layout(active, true); });
+    /* Offscreen = collapsed and silent (one video at a time across the page). */
+    var io = new IntersectionObserver(function (e) { if (!e[0].isIntersecting && active !== -1) activate(-1, true); }, { threshold: 0 });
+    io.observe(el);
+    layout(-1, true);
+    return function () { io.disconnect(); if (outCall) outCall.kill(); panels.forEach(function (p, i) { setVideo(i, false); }); };
+  }
+});
+/* @end expand-panels */
+
+/* @module view-switch | id: 40 | plugins: — | cost: 3 */
+/* Optional companion to expand-panels: two buttons swap data-view="gallery|explore".
+   View Transitions when available and motion is allowed; instant swap otherwise. */
+CWB.define('view-switch', {
+  init: function (el, api) {
+    var root = el.closest('.expand') || el;
+    var btns = [].slice.call(root.querySelectorAll('.vswitch__btn'));
+    var explore = root.querySelector('.expand__explore'), frame = root.querySelector('.expand__explore-frame');
+    var label = root.querySelector('[data-explore-title]');
+    var prev = root.querySelector('[data-explore-prev]'), next = root.querySelector('[data-explore-next]');
+    var panels = [].slice.call(root.querySelectorAll('.expand__panel'));
+    var idx = 0, reduce = api.cond.reduce, vt = !!document.startViewTransition && !reduce;
+    function title(i) { var p = panels[(i + panels.length) % panels.length]; return (p && p.getAttribute('data-title')) || ''; }
+    function paint() {
+      var p = panels[idx]; if (!p || !frame) return;
+      var img = frame.querySelector('img'), vid = frame.querySelector('video');
+      var poster = p.getAttribute('data-poster'), src = p.getAttribute('data-video');
+      if (img && poster) img.src = poster;
+      var exploring = root.getAttribute('data-view') === 'explore';
+      if (vid) {
+        if (!exploring || reduce || api.env.saveData || !src) { vid.pause(); vid.style.opacity = '0'; }
+        else { if (vid.getAttribute('data-src-now') !== src) { vid.src = src; vid.setAttribute('data-src-now', src); } vid.style.opacity = '1'; var pr = vid.play(); if (pr && pr.catch) pr.catch(function () {}); }
+      }
+      if (label) label.textContent = title(idx);
+      if (prev) prev.textContent = '← ' + title(idx - 1);
+      if (next) next.textContent = title(idx + 1) + ' →';
+      var view = root.getAttribute('data-view') || 'gallery';
+      btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-view') === view)); });
+    }
+    function setView(name) {
+      var apply = function () {
+        root.setAttribute('data-view', name);
+        if (explore) { if (name === 'explore') explore.removeAttribute('hidden'); else { explore.setAttribute('hidden', ''); var v = explore.querySelector('video'); if (v) v.pause(); } }
+        paint();
+      };
+      if (vt) document.startViewTransition(apply); else apply();
+    }
+    btns.forEach(function (b) { api.on(b, 'click', function () { setView(b.getAttribute('data-view') || 'gallery'); }, false); });
+    if (prev) api.on(prev, 'click', function () { idx = (idx - 1 + panels.length) % panels.length; paint(); }, false);
+    if (next) api.on(next, 'click', function () { idx = (idx + 1) % panels.length; paint(); }, false);
+    root.setAttribute('data-view', 'gallery');
+    paint();
+  }
+});
+/* @end view-switch */
+
+/* @module video-chapters | id: 41 | plugins: — | cost: 4 */
+/* Video-per-section (Chuma's signature style). Put data-cwb="video-chapters" on <main>
+   (or any wrapper). Each chapter <video> ships muted/loop/playsinline, preload="none",
+   a poster, width/height and data-src — no src — so first load costs posters only.
+   Rules: at most ONE chapter video loaded+playing at a time (the most-visible one);
+   src is attached only when its chapter is chosen; offscreen = paused; reduced motion /
+   save-data = posters only; one pause/play control ([data-vchap-toggle]) for all.
+   Copy lives in the HTML next to each video, never in it. */
+CWB.define('video-chapters', {
+  init: function (el, api) {
+    var vids = api.$$('video[data-src]');
+    if (!vids.length) return;
+    var toggles = [].slice.call(document.querySelectorAll('[data-vchap-toggle]'));
+    var KEY = 'cwb-vchap-paused', userPaused = false;
+    try { userPaused = sessionStorage.getItem(KEY) === '1'; } catch (e) {}
+    var still = api.cond.reduce || api.env.saveData;
+    var ratios = vids.map(function () { return 0; }), active = -1;
+    function setToggle() {
+      var paused = still || userPaused;
+      toggles.forEach(function (b) {
+        /* Visible text IS the accessible name (WCAG 2.5.3) — no aria-label. */
+        b.setAttribute('aria-pressed', String(paused));
+        var t = b.querySelector('[data-vchap-label]'); if (t) t.textContent = paused ? 'Play motion' : 'Pause motion';
+      });
+      el.classList.toggle('vchap-paused', paused);
+    }
+    function play(i) {
+      var v = vids[i]; if (!v) return;
+      if (v.getAttribute('data-loaded') !== '1') { v.src = v.getAttribute('data-src'); v.setAttribute('data-loaded', '1'); }
+      var p = v.play(); if (p && p.catch) p.catch(function () {});
+      v.closest('[data-vchapter]') && v.closest('[data-vchapter]').classList.add('is-playing');
+    }
+    function stop(i) {
+      var v = vids[i]; if (!v) return;
+      try { v.pause(); } catch (e) {}
+      v.closest('[data-vchapter]') && v.closest('[data-vchapter]').classList.remove('is-playing');
+    }
+    function choose() {
+      var best = -1, bestR = 0.2;
+      ratios.forEach(function (r, i) { if (r > bestR) { bestR = r; best = i; } });
+      if (best !== active) { if (active !== -1) stop(active); active = best; el.setAttribute('data-vchap-active', String(best)); }
+      if (active !== -1 && !still && !userPaused) play(active);
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { ratios[vids.indexOf(e.target)] = e.isIntersecting ? e.intersectionRatio : 0; });
+      choose();
+    }, { threshold: [0, 0.2, 0.4, 0.6, 0.8, 1] });
+    vids.forEach(function (v) { io.observe(v); });
+    toggles.forEach(function (b) {
+      api.on(b, 'click', function () {
+        if (still) return;
+        userPaused = !userPaused;
+        try { sessionStorage.setItem(KEY, userPaused ? '1' : '0'); } catch (e) {}
+        if (userPaused && active !== -1) stop(active); else choose();
+        setToggle();
+      }, false);
+    });
+    api.on(document, 'visibilitychange', function () { if (document.hidden && active !== -1) stop(active); else choose(); });
+    setToggle();
+    return function () { io.disconnect(); vids.forEach(function (v, i) { stop(i); }); };
+  }
+});
+/* @end video-chapters */
+
+/* @module jumbo-fit | id: 42 | plugins: — | cost: 1 */
+/* Fit a jumbo headline to its box (edge-to-edge words) with no overflow at 320–2560px.
+   CSS does the first pass (.jumbo-box container + cqi size, so there is no layout jump and no
+   CLS); this module only fine-tunes --jumbo-cqi after document.fonts.ready and on resize.
+   Markup: div.jumbo-box > (heading).t-jumbo.t-jumbo--bleed[data-cwb="jumbo-fit"] containing the word
+   Options: data-fit-max="0.98" (share of the box width), data-fit-min="40" (px floor).
+   The word stays real HTML text. Works without GSAP-dependent features (no tweens). */
+CWB.define('jumbo-fit', {
+  init: function (el, api) {
+    var box = el.parentElement, share = api.data('fit-max', 0.98), floor = api.data('fit-min', 40), raf = 0;
+    function fit() {
+      raf = 0;
+      var bs = getComputedStyle(box);
+      var W = box.clientWidth - parseFloat(bs.paddingLeft) - parseFloat(bs.paddingRight); if (!(W > 0)) return; /* content box, not padding box */
+      /* measure the END state: pause scroll-scrub animations (scale / tracking) for this synchronous read */
+      var anim = el.style.animation; el.style.animation = 'none';
+      el.style.setProperty('--jumbo-cqi', '100px');
+      var probe = document.createRange(); probe.selectNodeContents(el);
+      var w = probe.getBoundingClientRect().width || el.scrollWidth;
+      if (!w) { el.style.animation = anim; return; }
+      /* measured at 100px: size scales linearly with width (single-line bleed words) */
+      var px = Math.max(floor, Math.floor(100 * (W * share) / w));
+      el.style.setProperty('--jumbo-cqi', px + 'px');
+      /* guard: never exceed the box */
+      var r = document.createRange(); r.selectNodeContents(el);
+      var over = r.getBoundingClientRect().width - W;
+      if (over > 0.5) el.style.setProperty('--jumbo-cqi', Math.floor(px * W / (W + over + 2)) + 'px');
+      el.style.animation = anim;
+    }
+    function schedule() { if (!raf) raf = requestAnimationFrame(fit); }
+    (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(fit);
+    var ro = new ResizeObserver(schedule); ro.observe(box);
+    /* web fonts can arrive after fonts.ready resolved (lazy font loading) — refit when any font finishes */
+    if (document.fonts && document.fonts.addEventListener) api.on(document.fonts, 'loadingdone', schedule);
+    return function () { ro.disconnect(); if (raf) cancelAnimationFrame(raf); el.style.removeProperty('--jumbo-cqi'); };
+  }
+});
+/* @end jumbo-fit */

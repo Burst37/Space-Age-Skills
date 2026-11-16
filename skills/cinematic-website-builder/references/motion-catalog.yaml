@@ -1,0 +1,407 @@
+# CWB motion picker — effect catalog (v3.3.0). Read by scripts/motion-pick.mjs.
+# plain:   what Chuma would say when he sees it (he picks by eye, not by name)
+# says:    phrases from briefs / moodboard teardowns that map here (animation-vocabulary + site-reverse-engineer terms)
+# technique: the exact implementation the build must use — verify.mjs --motion-plan checks it is running
+# demo:    live demo in tests/gallery.dist.html (?focus=<module> scrolls to it); clip = optional recorded loop
+# profile: gentle = trust sectors allowed (home care, law, medical, SaaS) · bold = bold sectors only · both
+# fits:    wireframe section kinds it suits · signature: can carry the page's one signature moment
+effects:
+  - id: video-per-section
+    plain: Every section has its own short film playing behind it; only the one you're looking at plays
+    technical: Video-per-section chapters (lazy src on intersection, single active <video>)
+    technique: "IntersectionObserver, one active video, posters + pause control; CSS scrim"
+    module: video-chapters
+    libs: []
+    cost: 4
+    profile: both
+    gentle: "Slower, calmer loops; one autoplay in the first viewport; stills on reduced motion / save-data"
+    bold: "Faster cuts, stronger camera moves; still one video at a time"
+    fits: [stacked-chapters, hero, split-30-70, split-50-50]
+    signature: true
+    says: [video for each section, video behind each section, chapter films, background video sections, scrolling films]
+  - id: expanding-video-panels
+    plain: A row of tall panels; the one you point at opens wide and its video plays
+    technical: Hover-expand accordion (inner 2×, neighbours shift ½ bar)
+    technique: "GSAP tween width/x, power3.out 0.6s in, 0.1s hold + 0.4s out; tap-to-expand stack on phones"
+    module: expand-panels
+    libs: [gsap]
+    cost: 6
+    profile: both
+    gentle: "data-variant=gentle: 1.4×, neighbours still, 0.45s power2.out, posters only"
+    bold: "data-variant=bold: 2×, neighbours shift, one video at a time"
+    fits: [gallery, services-index, hero, portfolio]
+    signature: true
+    says: [expanding panels, panels expand on hover, hover accordion, video panels, accordion gallery with video]
+  - id: masked-headline-reveal
+    plain: The headline slides up into place one line at a time, like it's coming out from behind a mask
+    technical: Masked line reveal
+    technique: "GSAP SplitText {type:'lines', mask:'lines', autoSplit:true, aria:'auto'} + yPercent 100→0 stagger"
+    module: line-reveal
+    libs: [gsap, splittext]
+    cost: 3
+    profile: both
+    gentle: "0.9s, power2.out, small stagger"
+    bold: "1.1s, expo.out, word-level"
+    fits: [hero, hero-compact, cta, text]
+    signature: false
+    says: [words slide up, text slides up line by line, masked reveal, line reveal, split text]
+  - id: scroll-reveal
+    plain: Things fade and rise gently into place as you scroll to them
+    technical: Scroll reveal on a CSS view() timeline
+    technique: "CSS animation-timeline: view(); animation-range: entry 0% cover 30% ([data-nreveal])"
+    module: css-view-reveal
+    libs: []
+    cost: 0
+    profile: both
+    gentle: "opacity + 16px rise"
+    bold: "opacity + 40px rise + slight scale"
+    fits: [text, steps, list, faq, grid, nap, services-index, capsule]
+    signature: false
+    says: [fade in on scroll, appears as you scroll, scroll reveal, fade up]
+  - id: soft-lenis
+    plain: The whole page scrolls a little smoother and heavier, like it has momentum
+    technical: Smooth scroll (Lenis) synced to the GSAP ticker
+    technique: "Lenis 1.3.x via <html data-cwb-smooth=soft> (lerp 0.14), desktop fine pointer only, off on touch/RM"
+    module: lenis
+    libs: [lenis]
+    cost: 0
+    profile: both
+    gentle: "soft (lerp 0.14)"
+    bold: "standard (lerp 0.1)"
+    fits: [page]
+    signature: false
+    says: [smooth scroll, buttery scroll, inertia scroll, lenis]
+  - id: word-brighten
+    plain: The words of a big sentence light up one by one as you scroll past
+    technical: Scroll-scrubbed text fill
+    technique: "GSAP SplitText words + ScrollTrigger scrub opacity"
+    module: text-fill
+    libs: [gsap, scrolltrigger, splittext]
+    cost: 3
+    profile: both
+    fits: [text, split-30-70, statement]
+    signature: false
+    says: [text lights up as you scroll, words fill in, scroll text highlight]
+  - id: pinned-story
+    plain: One picture stays put while the text beside it changes step by step
+    technical: Sticky narrative (pinned visual, stepped states)
+    technique: "position: sticky visual + ScrollTrigger onToggle per step"
+    module: sticky-narrative
+    libs: [gsap, scrolltrigger]
+    cost: 8
+    profile: both
+    gentle: "cross-fade states, no pin on phones"
+    fits: [steps, split-50-50, process]
+    signature: true
+    says: [image stays while text scrolls, sticky section, pinned section, scrollytelling steps]
+  - id: parallax-depth
+    plain: The background moves slower than the page, so it feels deep
+    technical: Parallax layers
+    technique: "ScrollTrigger scrub yPercent per [data-depth] layer"
+    module: parallax
+    libs: [gsap, scrolltrigger]
+    cost: 5
+    profile: both
+    gentle: "≤ 6% travel"
+    bold: "12% × depth"
+    fits: [hero, split-50-50, gallery, cta]
+    signature: false
+    says: [parallax, background moves slower, depth on scroll]
+  - id: image-zoom-scroll
+    plain: The picture slowly zooms out (or in) as you scroll through it
+    technical: Scroll-scrubbed scale
+    technique: "CSS animation-timeline: view(); scale 1.15→1 (css-view-zoom), GSAP scrub fallback"
+    module: css-view-zoom
+    libs: []
+    cost: 1
+    profile: both
+    fits: [hero, split-30-70, split-50-50, gallery]
+    signature: false
+    says: [picture zooms as I scroll, image zoom on scroll, scale on scroll]
+  - id: sideways-gallery
+    plain: You scroll down but the gallery slides sideways
+    technical: Pinned horizontal pan
+    technique: "ScrollTrigger pin + scrub x on the track, containerAnimation for inner reveals; native swipe on phones"
+    module: horizontal-pan
+    libs: [gsap, scrolltrigger]
+    cost: 10
+    profile: bold
+    fits: [gallery, portfolio, services-index]
+    signature: true
+    says: [horizontal scroll, scroll sideways, horizontal gallery, pinned horizontal]
+  - id: stacked-cards
+    plain: Cards pile up on top of each other as you scroll
+    technical: Sticky card stack with scale-back
+    technique: "position: sticky cards + ScrollTrigger scrub scale"
+    module: card-stack
+    libs: [gsap, scrolltrigger]
+    cost: 4
+    profile: both
+    fits: [steps, grid, services-index]
+    signature: false
+    says: [cards stack, stacking cards, cards pile up]
+  - id: line-draw
+    plain: A line draws itself as you scroll
+    technical: SVG stroke draw
+    technique: "DrawSVGPlugin scrub 0→100%"
+    module: svg-draw
+    libs: [gsap, scrolltrigger]
+    cost: 3
+    profile: both
+    fits: [steps, process, hero]
+    signature: false
+    says: [line draws itself, path animation, draw on scroll]
+  - id: curtain-open
+    plain: Two panels slide apart like stage curtains to show the section
+    technical: Curtain wipe
+    technique: "ScrollTrigger scrub xPercent on two panels"
+    module: curtain
+    libs: [gsap, scrolltrigger]
+    cost: 5
+    profile: bold
+    fits: [cta, statement, hero]
+    signature: true
+    says: [curtain, panels slide apart, reveal wipe]
+  - id: split-columns
+    plain: Two columns of pictures scroll in opposite directions
+    technical: Split scroll (counter-scrolling columns)
+    technique: "ScrollTrigger pin + opposite y scrub per column"
+    module: split-scroll
+    libs: [gsap, scrolltrigger]
+    cost: 8
+    profile: bold
+    fits: [gallery, portfolio]
+    signature: true
+    says: [columns scroll opposite, split scroll, counter scroll]
+  - id: colour-scenes
+    plain: The whole background colour changes as you move into a new section
+    technical: Scroll colour shift
+    technique: "ScrollTrigger toggles registered @property colours"
+    module: color-shift
+    libs: [gsap, scrolltrigger]
+    cost: 3
+    profile: both
+    fits: [stacked-chapters, statement]
+    signature: false
+    says: [background color changes, colour shift on scroll, theme changes per section]
+  - id: frame-scrub
+    plain: The picture plays like a flipbook as you scroll — scroll down, it moves forward
+    technical: Scroll-scrubbed image sequence
+    technique: "ScrollTrigger pin + scrub over a canvas frame sequence; poster + HTML caption"
+    module: frame-scrub
+    libs: [gsap, scrolltrigger]
+    cost: 20
+    profile: bold
+    fits: [hero, product]
+    signature: true
+    says: [video scrubbing, scroll controls the video, apple style product scroll, image sequence]
+  - id: hover-accordion
+    plain: Pictures side by side; the one you point at gets wider
+    technical: Flex accordion gallery
+    technique: "CSS flex-grow transition, button-driven"
+    module: accordion-gallery
+    libs: []
+    cost: 3
+    profile: both
+    fits: [gallery, services-index]
+    signature: false
+    says: [accordion gallery, images widen on hover]
+  - id: before-after
+    plain: Drag a handle to compare before and after
+    technical: Comparison slider
+    technique: "input[type=range] drives clip-path"
+    module: compare
+    libs: []
+    cost: 2
+    profile: both
+    fits: [proof, gallery, split-50-50]
+    signature: false
+    says: [before and after slider, comparison slider]
+  - id: count-up
+    plain: The numbers count up when you reach them
+    technical: Counter
+    technique: "ScrollTrigger once + tween textContent; real value in HTML"
+    module: counter
+    libs: [gsap, scrolltrigger]
+    cost: 2
+    profile: both
+    fits: [proof, stats]
+    signature: false
+    says: [numbers count up, counter, stats animate]
+  - id: coverflow
+    plain: A swipeable carousel where the side cards tilt away
+    technical: 3D coverflow carousel on scroll-snap
+    technique: "CSS scroll-snap + view(inline) tilt"
+    module: coverflow
+    libs: []
+    cost: 4
+    profile: bold
+    fits: [gallery, testimonials, portfolio]
+    signature: false
+    says: [carousel, cover flow, swipe cards]
+  - id: condensing-nav
+    plain: The menu shrinks into a small pill when you scroll down
+    technical: Island nav (condense on scroll)
+    technique: "ScrollTrigger toggleClass on the header"
+    module: island-nav
+    libs: [gsap, scrolltrigger]
+    cost: 3
+    profile: both
+    fits: [page]
+    signature: false
+    says: [header shrinks, sticky nav pill, dynamic island nav]
+  - id: magnetic-button
+    plain: Buttons lean toward your cursor
+    technical: Magnetic hover
+    technique: "gsap.quickTo x/y on pointermove (fine pointer only)"
+    module: magnetic
+    libs: [gsap]
+    cost: 1
+    profile: bold
+    fits: [cta, hero]
+    signature: false
+    says: [magnetic button, button follows cursor]
+  - id: image-trail
+    plain: Pictures pop out and trail behind your mouse
+    technical: Cursor image trail
+    technique: "pointermove spawns pooled images, gsap fade"
+    module: image-trail
+    libs: [gsap]
+    cost: 5
+    profile: bold
+    fits: [hero, gallery, portfolio]
+    signature: true
+    says: [images follow the mouse, cursor trail]
+  - id: ticker
+    plain: A line of words keeps sliding across the screen
+    technical: Marquee
+    technique: "gsap ticker loop, paused offscreen; static list on RM"
+    module: marquee
+    libs: [gsap, scrolltrigger]
+    cost: 4
+    profile: bold
+    fits: [statement, proof, logos]
+    signature: false
+    says: [scrolling text banner, marquee, ticker]
+  - id: hero-film
+    plain: A full-screen film plays behind the opening headline, with a pause button
+    technical: Background hero video
+    technique: "<video autoplay muted loop playsinline poster> + pause control, poster on RM/save-data"
+    module: video-hero
+    libs: []
+    cost: 4
+    profile: both
+    fits: [hero]
+    signature: true
+    says: [hero video, background video, full screen video header]
+  - id: page-fade
+    plain: Going to another page fades smoothly instead of flashing
+    technical: Cross-document view transition
+    technique: "@view-transition { navigation: auto } (assemble --with page-transition)"
+    module: page-transition
+    libs: []
+    cost: 0
+    profile: both
+    fits: [page]
+    signature: false
+    says: [page transition, smooth page change]
+  # ---- jumbo + custom type (references/custom-typography.md) ----
+  - id: depth-parallax
+    plain: A giant word sits behind a person or product, and as you scroll the word and the cut-out drift at different speeds
+    technical: Type-behind-subject depth parallax (custom-type style 1)
+    technique: "data-ctype=behind + data-parallax: CSS view() timeline, word ±12% / subject ±4% (gentle: word ±4%, subject still)"
+    module: css-depth-parallax
+    libs: []
+    cost: 2
+    profile: both
+    gentle: "data-parallax=gentle: word moves ±4%, subject still"
+    bold: "word ±12%, subject ±4%; optional alpha-video subject"
+    fits: [hero, hero-compact, split-50-50]
+    signature: true
+    says: [text behind person, type behind subject, word behind product, depth text, cut-out over headline, layered hero text]
+  - id: jumbo-scrub
+    plain: The giant headline tightens up and settles to full size as it scrolls into view
+    technical: Scroll-scrubbed scale + letter-spacing on a jumbo word
+    technique: "data-jumbo=scrub: CSS view() timeline, scale .88→1 and tracking (−0.04em tighter)→--track-jumbo (never wider than the fitted end state)"
+    module: css-jumbo-scrub
+    libs: []
+    cost: 1
+    profile: both
+    gentle: "data-jumbo=scrub-gentle: tracking only, no scale"
+    bold: "scale + tracking"
+    fits: [hero, cta, text, hero-compact]
+    signature: false
+    says: [big type scales on scroll, letter spacing animates, giant headline grows, scroll scaling text]
+  - id: jumbo-line-reveal
+    plain: The giant headline rises line by line out of a mask
+    technical: Masked line reveal on a jumbo headline
+    technique: "line-reveal on .t-jumbo (SplitText lines, mask, aria auto); jumbo-fit runs first"
+    module: line-reveal
+    libs: [gsap, splittext, scrolltrigger]
+    cost: 3
+    profile: both
+    gentle: "0.9s power2.out, small stagger"
+    bold: "1.1s power4.out, bigger stagger"
+    fits: [hero, cta, hero-compact]
+    signature: false
+    says: [jumbo text reveal, giant headline reveal, huge type slides up]
+  - id: variable-axis
+    plain: The giant word gets bolder as you scroll
+    technical: Variable-font weight axis scrubbed on scroll
+    technique: "data-jumbo=axis: CSS view() timeline animating font-variation-settings wght 200→800 (variable display face required)"
+    module: css-variable-axis
+    libs: []
+    cost: 1
+    profile: bold
+    bold: "wght 200→800"
+    fits: [hero, text, cta]
+    signature: false
+    says: [font weight animates, variable font scroll, text gets bolder]
+  - id: ring-spin
+    plain: A ring of words circles the photo and turns slowly as you scroll
+    technical: SVG textPath ring, scroll-linked rotation
+    technique: "data-ctype=ring + data-spin: CSS view() timeline rotate 0→0.5turn; container clips the rotating square"
+    module: css-ring-spin
+    libs: []
+    cost: 1
+    profile: bold
+    bold: "half turn per pass"
+    fits: [hero, split-50-50, gallery]
+    signature: false
+    says: [circular text, rotating text badge, text ring, wrapped text around image]
+  - id: glass-refraction
+    plain: Glassy bubbles or a glass pill float over the words and bend them like real glass
+    technical: Live refraction over HTML text
+    technique: "SVG feTurbulence+feDisplacementMap as backdrop-filter (Chromium) with blur fallback, or WebGL (flagship) / alpha video layer"
+    module: css-glass-refraction
+    libs: []
+    cost: 6
+    profile: bold
+    bold: "refraction blobs drift slowly; static under reduced motion"
+    fits: [hero]
+    signature: true
+    says: [liquid glass, glass blobs over text, refraction, glass pill]
+  - id: material-loop
+    plain: The 3D letters move a little — they puff, wobble, drip or their fur moves in a breeze
+    technical: Image-to-video loop of AI material letters (bubble wobble, cloud drift, water splash, fur, drip)
+    technique: "Seedance/Kling/MiniMax loop as a video-chapters chapter (lazy, poster = still, pause control); letter-check on first/mid/last frames"
+    module: video-chapters
+    libs: []
+    cost: 4
+    profile: bold
+    bold: "4–6s seamless loop; one at a time"
+    fits: [hero, cta, split-50-50]
+    signature: true
+    says: [bubble wobble, cloud drift, water splash, fur blowing, dripping letters, inflating letters]
+  - id: element-scrub
+    plain: The letters crumble into sand (or ivy grows over them) as you scroll
+    technical: Scroll-scrubbed frame sequence of an AI material clip (sand dissolve, ivy growing)
+    technique: "frame-scrub module: 60–90 WebP frames from the clip, ≤1.2MB, lazy after first load; final still under reduced motion; real H2 underneath"
+    module: frame-scrub
+    libs: [gsap, scrolltrigger]
+    cost: 7
+    profile: bold
+    bold: "pinned 150vh"
+    fits: [hero, stacked-chapters]
+    signature: true
+    says: [sand dissolve, text crumbles, ivy grows over text, particles blow away]

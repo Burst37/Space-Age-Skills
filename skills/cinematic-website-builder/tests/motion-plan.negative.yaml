@@ -1,0 +1,4 @@
+# Negative fixture: promises Lenis + a module the gallery does not have. verify.mjs MUST fail on it.
+libraries: { gsap: true, scrolltrigger: true, lenis: true }
+sections:
+  - { id: hero, effect: pinned-video-scrub, technique: "ScrollTrigger pin + scrub", module: frame-scrub-missing }
