@@ -31,6 +31,9 @@ and which are the original author's work.
 | [`replica-skill-sa`](./replica-skill-sa/SKILL.md) | Jakeschincariol/replica-skill (MIT) | 11 skills merged into one router + per-stage references (-88% always-loaded tokens), deploy parity gate (`--gate`), 4 config/input bug fixes with regression tests, uniform verify-and-status close-out. See [`IMPROVEMENTS.md`](./replica-skill-sa/IMPROVEMENTS.md) |
 | [`rea-sa`](./rea-sa/SKILL.md) | morluto/rea (MIT) | Lean entry point for the REA reverse-engineering MCP: 23.5k-char skill body cut to 6.9k (-70%) with verbatim on-demand references, an authorization gate, a clean-room build handoff, a finding-ledger template, and fidelity tests. See [`IMPROVEMENTS.md`](./rea-sa/IMPROVEMENTS.md) |
 | [`animation-studio-director`](./animation-studio-director/SKILL.md) | Movez (@0xMovez) Picsart course PDF | 13-step AI animated-series studio distilled into one skill: render-last rules, 7-subagent crew, studio folder + two laws, bible/passport/shot-card templates, fresh-reviewer gate, 480p-draft/1080p-final, 16-frame QA, breakdown-reel prompt. Unverified claims kept as VERIFY |
+| [`addy-osmani-skills`](./addy-osmani-skills/SKILL.md) | addyosmani/agent-skills (MIT) | Replaced earlier stub with the full vendored set: 25 lifecycle skills, 4 reviewer agents, 7 checklists, 9 command definitions, plus a router table |
+| [`egm`](./egm/SKILL.md) | google/elephant-goldfish-model (Apache-2.0) | Full plugin layout vendored (7 skills, 10 reviewer agents, document standards) behind a router: elephant drafts, fresh-context goldfish reviewers critique |
+| [`videohub`](./videohub/SKILL.md) | VideoHub (MIT) | Agent skill + review rule for the VideoHub local review studio/render queue; app not vendored, see `UPSTREAM.md` |
 
 ## Reference repos used as inspiration
 
