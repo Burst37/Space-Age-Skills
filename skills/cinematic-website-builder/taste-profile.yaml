@@ -1,0 +1,31 @@
+# Chuma's taste profile — skill-level defaults read by scripts/motion-pick.mjs and
+# scripts/type-specimens.mjs. A build may copy this to handoff/taste-profile.yaml and override.
+# The pickers append to it after every approved pick ("picks feed back"), so it gets sharper per build.
+owner: Chuma Black (Space Age AI Solutions)
+signature_style: video-per-section     # his niche: a distinct short loop behind each section, one plays at a time
+motion:
+  always: [video-chapters]             # signature style, every build unless the brief opts out
+  liked: [masked-headline-reveal, soft-lenis, expanding-video-panels, scroll-reveal, depth-parallax, jumbo-line-reveal, jumbo-scrub]
+  disliked: []                         # effects he swapped out in review mode get added here
+  smooth_scroll: soft                  # soft Lenis on desktop fine pointers; never on touch or reduced motion
+  intensity: 0.55                      # 0 calm … 1 loud; sector rules can lower it
+type:
+  signature: jumbo                     # JUMBO custom display type is his signature (cwb-base.css --t-jumbo, custom-typography.md)
+  jumbo: { tracking: -0.05em, leading: 0.9, bleed: true }
+  custom_type_default: behind-subject  # style 1 (type behind subject, depth) — his favourite (CODE, ROAD, WATCHING); auto-pick #1 outside regulated sectors
+  custom_type_liked: [behind-subject, mixed, material, inflated, textile, giant-object, glyph-kit]
+  regulated_custom_type: [behind-subject, mixed]   # calm form only; no fur/candy/grunge/neon/chrome/glass/goo
+  liked_pairings: []
+  liked_families: [Satoshi]            # used in his builds to date
+  disliked_pairings: []
+  passed_over: []
+spacing:
+  section_y: cinematic                 # --section-y-cinematic on bold builds; gentle on regulated
+  negative_space: generous             # one dominant element per viewport
+models:                                # v3.5: roles, not fixed names. references/model-roster.md reads the live roster each build.
+  prefer_families: { still: [gpt_image, nano_banana, flux], loop: [minimax, kling, seedance], clip: [seedance, kling, minimax], narrative: [seedance, kling] }
+  avoid: [grok_video]                  # standing preference for site clips
+  last_used: {}                        # role → model_id, written after each approved build; a different pick triggers the question in client mode
+notes:
+  - Recognises effects by seeing them, not by name — always show demo clips / gallery links in review mode.
+  - "Home care, law, medical and SaaS stay gentle: no liquid-glass or 3D goo type."

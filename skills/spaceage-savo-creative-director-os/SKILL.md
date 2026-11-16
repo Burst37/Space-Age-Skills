@@ -458,7 +458,7 @@ conversion_system:
     - calendar_booking
     - phone_click
     - SMS
-    - Vapi_voice_agent
+    - voice_agent
     - GoHighLevel_pipeline
   friction_reduction:
     - fewer_fields
@@ -555,7 +555,7 @@ industry_matrix:
     visual_route: VL_01_dark_glass_or_cinematic_SaaS
     motion_level: high
     hero: video_first_dashboard_or_automation_theater
-    recommended: [dashboard_expansion, pinned_process, proof_dashboard, case_studies, Vapi_booking]
+    recommended: [dashboard_expansion, pinned_process, proof_dashboard, case_studies, voice_booking]
     avoid: [generic_SaaS_blobs, fake_AI_metrics, weak_headline]
   music_artist:
     priority: maximum_attention

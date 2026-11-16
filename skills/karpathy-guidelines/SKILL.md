@@ -122,7 +122,7 @@ For multi-step tasks, state a brief plan before executing:
 | Debugging a broken scroll animation | Think Before Coding → state which browser/device/viewport first |
 | Adapting a demo site for a new lead | Simplicity First → clone and edit, don't abstract into a template system |
 
-### Voice Agent (Vapi / Gemini Flash TTS)
+### Voice Agent (Gemini Live)
 | Scenario | Principle Priority |
 |----------|--------------------|
 | Adding a new conversation branch | Think Before Coding → map the full decision tree before writing JSON |

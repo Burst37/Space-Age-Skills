@@ -67,7 +67,7 @@ Or Claude detects:
 | Normal Mode | Caveman Mode |
 |---|---|
 | "Here's the updated script. I've made the following changes to fix the webhook timeout issue..." | `[file.js updated — timeout 5000→30000]` |
-| "The error you're seeing is caused by X. To fix it, you need to Y and Z..." | `Error: missing env var. Add VAPI_KEY to .env` |
+| "The error you're seeing is caused by X. To fix it, you need to Y and Z..." | `Error: missing env var. Add GEMINI_API_KEY to .env` |
 | "I'll now run the scraper on the first 10 rows to test..." | `running scraper — 10 rows` |
 | "The build completed successfully. The HTML file is at..." | `✅ /outputs/plumber-dallas.html` |
 
@@ -85,7 +85,7 @@ Or Claude detects:
 ### Outreach Batch Status
 ```
 📧 [n] emails queued
-📞 [n] Vapi calls deployed
+📞 [n] voice calls deployed
 ❌ [n] failed — [reason]
 ```
 
@@ -175,5 +175,5 @@ Continue in caveman until handoff?
 ## Boundary — Never Applies to Client-Facing Output
 
 Caveman compresses Claude's *own* working communication with Mr. Black during execution — it
-never compresses generated deliverables (site copy, email copy, Vapi scripts, client-facing
+never compresses generated deliverables (site copy, email copy, voice scripts, client-facing
 reports). Those keep their normal full-detail standards regardless of caveman state.

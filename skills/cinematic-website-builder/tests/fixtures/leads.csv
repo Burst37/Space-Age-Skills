@@ -1,0 +1,7 @@
+title,category,address,phone,website,review_rating,review_count,link
+"Green Valley Landscaping","Landscaper","1842 Example Blvd, Mesquite, TX 75150","(972) 555-0182","",4.8,64,https://maps.example/green-valley
+"Tony's Barber Shop","Barber shop","12 Main St, Garland, TX 75040","(972) 555-0111","https://www.facebook.com/tonysbarber",4.6,31,https://maps.example/tonys
+"Apex Roofing: Storm & Repair","Roofing contractor","9 Oak Ave, Dallas, TX 75201","(214) 555-0199","https://apexroofing.example",4.9,120,https://maps.example/apex
+"Green Valley Landscaping","Landscaper","1842 Example Blvd, Mesquite, TX 75150","972-555-0182","",4.8,64,https://maps.example/green-valley-dup
+"No Phone Cleaning","House cleaning service","3 Elm St, Plano, TX 75023","","",5.0,12,https://maps.example/nophone
+"New Shop Nails","Nail salon","44 Pine Rd, Irving, TX 75038","(469) 555-0144","https://newshopnails.wixsite.com/home",,,https://maps.example/nails

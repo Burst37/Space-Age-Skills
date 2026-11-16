@@ -1,0 +1,15 @@
+# TEMPLATE (Astonishing worked example). Replace client, sector, dials, reference fonts and the real copy.
+client: Astonishing Touch
+sector: home-healthcare
+mode: review
+dials: { warmth: 0.85, classic: 0.65, loud: 0.2 }   # from the brief: warm, editorial, calm
+brand_fonts: {}                                       # no brand guide fonts
+reference_fonts: [Georgia, Satoshi]                   # what the moodboard / current build used
+custom_type_refs: []              # style numbers Chuma picked from references/type-refs/INDEX.png
+copy:
+  eyebrow: Nonmedical home care · Creve Coeur, MO
+  jumbo: Home                     # the one jumbo word (style 1: behind the caregiver cut-out, gentle parallax)
+  headline: Care that feels like home.
+  h2: What does respite care include?
+  body: Respite care gives family caregivers a planned break. A trained caregiver keeps the routines your loved one already knows, from meals and companionship to medication reminders, while you rest, work or travel. We plan the visits with you first, and nothing here is medical care.
+  button: Find care for your loved one

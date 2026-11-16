@@ -1,0 +1,6 @@
+# letter-check fixture: HOPE passes, the misspelled HOPF render must FAIL (exit 1)
+letters:
+  - file: letters-hope.png
+    word: HOPE
+  - file: letters-hopf.png
+    word: HOPE

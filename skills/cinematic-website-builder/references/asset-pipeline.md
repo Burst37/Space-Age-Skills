@@ -43,70 +43,61 @@ slots:
     status: pending          # pending → generated → qc_pass → encoded → hosted
 ```
 
-## 3. Generate — the Space Age model roster
+## 3. Generate — live roster, role-based (v3.5)
 
-**Platforms:** Higgsfield (default — scripted through the Higgsfield MCP, fully automatable) and
-OpenArt (web app — for models Higgsfield doesn't carry, or when the client's work already lives there).
-Either way, every output is downloaded and re-hosted under `/assets/` (§7).
+Model names age in weeks. **This file names no default model.** Before the first generation of every build, run
+`references/model-roster.md`: read the live roster, pick per role, and in client mode ask when the pick changed.
+Record `model`, `model_id`, `platform` and `roster_checked` per slot in `assets.yaml` so a rebuild regenerates with
+the same model, and so `shot-lint.mjs` can reject a clip planned against a stale roster.
 
-### Image models
+Roles this pipeline needs (the roster doc maps each to today's candidates):
 
-| Model | Higgsfield id | Use it for | Why |
-|---|---|---|---|
-| **ChatGPT Images 2.5** (default — gold standard) | `gpt_image_2_5` | hero anchor stills, product, editorial, people, text-in-image, editing/compositing the client's real photos, OG images, UI mockups | best overall quality and instruction-following, strongest edits, reference images, 4K, odd aspects (21:9, 27:16, 16:27) |
-| **Nano Banana Pro** | `nano_banana_pro` | second opinion on photoreal heroes, dense diagrams/infographics, fast variant batches | strong photoreal and text rendering, 4K, unlimited-plan eligible |
-| **Grok Imagine 1.5** | OpenArt (not on Higgsfield; nearest there: `grok_image_2_0`) | bold, expressive, high-contrast art direction — brand, AI-services and creative sites | a looser, more graphic look than the other two |
-
-### Video models
-
-| Model | Higgsfield id | Use it for | Why |
-|---|---|---|---|
-| **MiniMax H3** (default) | `minimax_h3` (`minimax_h3_max` for fast drafts) | the house-standard **hero loop** | start + end keyframes: pass the anchor still as *both* → seamless loop; 2K; 21:9 |
-| **Seedance 2.5** | `seedance_2_5` | narrative heroes, T3 scroll-film shots, extending a clip for a longer scrub, editing a generated clip | text-to-video + omni-reference, video extension and video edit, up to 1080p |
-| **Seedance 2.0** | `seedance_2_0` | product and people who must stay identical across shots (multi-SKU, founders, artists), 4K masters | identity consistency, 4K, native audio if ever needed |
-
-Routing rules:
-- **Image → video, never text → video for a hero.** Anchor still (ChatGPT Images 2.5) → approve → animate (MiniMax H3).
-- **Continuity across shots** (scroll film, sticky narrative): Seedance 2.5 with the previous shot's last frame as the next start frame.
-- **Same product/person in several shots:** Seedance 2.0 with the approved stills as `image_references`.
-- **Many variants:** `generate_image_batch` / `generate_video_batch` → `jobs_wait` → `show_generation_by_ids`.
-- **Upscale / reframe / extend canvas:** `upscale_image`, `upscale_video`, `reframe`, `outpaint_image`.
-- If a named model is ever missing, `mcp__Higgsfield__models_explore { action: "search", query: "<model name>" }` finds its current id — don't silently swap to a different model.
-
-| Need | Model | Prompt skill (SA) |
+| Role | Needs | Used for |
 |---|---|---|
-| Hero still, product, editorial, client photo edits, graphics, OG | ChatGPT Images 2.5 | `cinematic-prompt-director` |
-| Photoreal alternate / infographic / fast variants | Nano Banana Pro | `cinematic-prompt-director`, `banana-pro-director-30` |
-| Bold brand/AI-services art direction | Grok Imagine 1.5 (OpenArt) | `cinematic-prompt-director` |
-| Recurring person / artist / founder | character sheet → Seedance 2.0 | `character-builder` |
-| Hero loop (every site) | MiniMax H3, start = end frame | `cinema-director-v3` |
-| Narrative hero / scroll-film shots | Seedance 2.5 (start/end frames, extension) | `cinema-director-v3`, `seedance-2-5-prompting`, `scroll-world` |
+| **Anchor still** | best instruction-following, reference images, 2K–4K, 21:9 | hero anchor frame, section stills, OG image, edits of the client's real photos |
+| **Photoreal alternate** | different model family from the anchor | second opinion on a hero, fast variant batches |
+| **Graphic / vector** | SVG or flat output, exact text | icons, marks, diagrams |
+| **Hero loop** | image-to-video with **start + end frame** | the house hero loop: anchor still as both frames → seamless loop |
+| **Section clip** | image-to-video, 5–8 s, good physics | video-per-section chapters |
+| **Narrative / multi-shot** | reference images, extension or ordered keyframes | hero films, scroll films, storyboard hand-offs |
+| **Identity-consistent** | image references held across shots | recurring person or product |
+| **Finish** | upscale, reframe, outpaint, deflicker | masters, mobile crops |
 
-Record the choice per slot in `assets.yaml` (`model:` and `platform:`) so a rebuild regenerates with the same model.
+Routing rules (unchanged, model-independent):
+- **Image → video, never text → video for a hero.** Anchor still → approve (client mode) → animate.
+- **Continuity across shots:** previous shot's last frame is the next start frame.
+- **Many variants:** batch tools (`generate_image_batch` / `generate_video_batch` → `jobs_wait` → `show_generation_by_ids`).
+- Every output is downloaded and re-hosted under `/assets/` (§7). No presigned URLs ship.
+- A model named in an old `assets.yaml` that is gone from the roster: stop and ask (client mode) or pick the same
+  role's current candidate and log it (lead mode). Never swap silently.
 
-**Storyboard generator (on deck):** when a video slot needs several shots or a story (a hero film, a
-product reveal, a T3 scroll film), pull in `references/storyboard-to-video.md` — identity sheet →
-storyboard sheet (ChatGPT Images 2.5) → Seedance handoff. Single-shot loops skip it.
+**Storyboard generator (on deck):** when a video slot needs several shots or a story, pull in
+`references/storyboard-to-video.md`. Single-shot loops skip it.
 
-Always generate the **anchor still first**, approve it, then animate from it (image-to-video).
-Text-to-video for a hero produces identity/geometry drift you can't fix in CSS.
+### Prompt contract (v3.5: direction first, tokens second)
 
-### Prompt contract (Space Age standing rule — non-negotiable)
+Cinematography comes from **`space-age-cinematic-director`** (v4.1, in this repo as
+`skills/space-age-cinematic-director-v3/`; the single-file edition is `references/consolidated-v4.1.md` there).
+Load it at G6. Its rules win over anything older in this skill, in particular:
 
-Every image/video prompt is **≥ 150 words**, takes its camera, lens, lighting, grade, movement,
-style and meta tokens from **`references/prompt-tokens.md`** (token library + shot recipes per web slot),
-and contains all of:
+- **Intent before gear** (its §2). Pick the camera move, lens and light because of what the viewer must feel and
+  read, not because it sounds cinematic.
+- **One body, one lens family, one grade per site**; **one primary camera move per shot**.
+- **Meta tokens are tiered** (its §13): tier A (real camera, lens, colour pipeline names) and tier B (stylistic
+  shorthand) support a complete physical description; tier C filename-style anchors are optional flavour, never the
+  default. At most 5 tokens. The vocabulary lists in `references/prompt-tokens.md` are the menu, not a quota.
+- **Stills** follow its master order: subject → action → location → shot size/angle → composition → camera/format →
+  lens/DOF → lighting geometry → material → atmosphere → colour → constraints. Complete, in natural sentences for
+  the current image models; no comma-token dumps. Web additions: the text-safe zone from the manifest, crop-safe
+  subject placement.
+- **Video is written as a JSON shot spec first** (`references/video-json-prompting.md`), linted with
+  `scripts/shot-lint.mjs`, then sent as JSON or compiled to prose for the chosen model. For image-to-video the
+  prompt describes **what changes over time**, not the frame the model can already see.
+- **Model syntax is never guessed** (its model-version rule): read the model's parameters from the live roster;
+  unsupported flags are left out, not invented.
 
-- **Subject** — for people: height, build, eye color, hair, facial features, expression, wardrobe; for products: material, finish, scale cues
-- **Camera** — exact body (e.g. ARRI Alexa 35, Sony Venice 2, Blackmagic URSA Cine 17K) + lens (e.g. ZEISS Supreme Prime 50mm T1.5) + aperture
-- **Lighting** — named fixtures (ARRI SkyPanel S60, Aputure 600D), modifiers (216 diffusion, 4×4 floppy), placement (camera left, 45°, key height)
-- **Style** — director + cinematographer reference (e.g. Denis Villeneuve / Roger Deakins)
-- **Meta tokens** — 3–5 (e.g. `commercial_hero_frame`, `IMG_9854.CR2`, `studio_shot`)
-- **Environment** — setting, atmosphere, time of day, weather/haze
-- **Technical** — camera movement, color grade (named to the brand palette), aspect ratio, **the text-safe zone** from the manifest
-- **Web additions** — "seamlessly loopable, slow subtle motion, no faces" for background loops; "subject framed right third, clean negative space left" when copy sits on top
-
-Under 150 words or missing an item → rewrite with more detail, not less.
+The old "every prompt ≥ 150 words with 3–5 meta tokens" rule is retired: it produced token soup on stills and
+wasted the prompt budget on image-to-video.
 
 ## 4. QC gate (before encoding)
 

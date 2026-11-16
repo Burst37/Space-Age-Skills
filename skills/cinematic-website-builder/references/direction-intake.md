@@ -3,7 +3,7 @@
 Replaces the old Google Stitch step. The client (or Mr. Black) answers a structured
 questionnaire and **attaches references — images, links, videos — as the design and UI/UX
 direction.** Claude analyzes every reference, extracts what is actually liked about it, and
-compiles one **Direction Brief** (`templates/direction-brief.yaml`) that P1 locks into tokens.
+compiles the hand-off **brief** (`handoff/brief.md`, template in `templates/handoff/`); its synthesis and proposed tokens go straight into `handoff/design-spec.md` (v3.3: one source of truth, no separate direction-brief.yaml).
 
 **This is always the first step of every build — nothing is designed, generated or coded before it.**
 If a lead brief, Brand Token Package or `ui-ux-designer` Handoff Package already exists, use it to
@@ -105,7 +105,7 @@ Run for every reference before writing the Direction Brief. Record findings per 
 
 ## Output — the Direction Brief
 
-Fill `templates/direction-brief.yaml`, then show the person a **one-screen summary** before building:
+Fill `handoff/brief.md` (facts, references table, "The website will…" highlight) and the Direction + colour sections of `handoff/design-spec.md`, then show the person a **one-screen summary** before building:
 
 > **Direction:** calm, expensive, precise — "Aesop meets a Swiss watch boutique".
 > **Look:** warm off-black, bone text, one brass accent; editorial serif display + quiet grotesk.
@@ -114,4 +114,11 @@ Fill `templates/direction-brief.yaml`, then show the person a **one-screen summa
 > **Avoid:** glass cards, neon, autoplay sound, stock photos (refs 7, 9).
 > **Open questions:** 1) Are the review numbers verifiable? 2) Booking via Square or Calendly?
 
-Proceed to P1 only after the person confirms or corrects the summary (one round).
+Proceed only after the person confirms or corrects the summary (one round) —
+set `confirmed: true`. That is the brief. It is not permission to code.
+
+**Next, before P1 / any moodboard or code:** run the Top-3 Competitor Teardown and
+the SEO/AEO blueprint in `references/seo-aeo-gate.md` (`seo-aeo-optimizer` §1,
+`scripts/teardown.py --aeo`). Then Muse moodboard approval
+(`moodboard_approved: true`). Gate order is brief → teardown → blueprint →
+moodboard approval → code. Do not skip or reorder.

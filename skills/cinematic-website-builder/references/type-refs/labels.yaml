@@ -1,0 +1,375 @@
+# Chuma's custom-typography references: label each by style number (custom-typography.md).
+# scripts/type-refs-index.mjs copies them from the attachments folder and builds INDEX.png + INDEX.md.
+# `styles` = the batch's candidate styles until someone looks at the image and sets `label` (e.g. "1", or "1,5") and `title`.
+source: /home/box/agent-data/agents/05352dc4-dd9d-47cc-93ed-33c9299ff5c5/attachments
+refs:
+  - prefix: "3f2a77e5"
+    batch: 1
+    styles: "1-6"
+    label: ""
+    title: ""
+  - prefix: "dc6c3622"
+    batch: 1
+    styles: "1-6"
+    label: ""
+    title: ""
+  - prefix: "904609e0"
+    batch: 1
+    styles: "1-6"
+    label: ""
+    title: ""
+  - prefix: "7094524b"
+    batch: 1
+    styles: "1-6"
+    label: ""
+    title: ""
+  - prefix: "0f69a412"
+    batch: 1
+    styles: "1-6"
+    label: ""
+    title: ""
+  - prefix: "7f9c25c0"
+    batch: 1
+    styles: "1-6"
+    label: ""
+    title: ""
+  - prefix: "465d7a56"
+    batch: 1
+    styles: "1-6"
+    label: ""
+    title: ""
+  - prefix: "1011babe"
+    batch: 1
+    styles: "1-6"
+    label: ""
+    title: ""
+  - prefix: "163ade5c"
+    batch: 1
+    styles: "1-6"
+    label: ""
+    title: ""
+  - prefix: "dc109e66"
+    batch: 1
+    styles: "1-6"
+    label: ""
+    title: ""
+  - prefix: "9d73ad55"
+    batch: 1
+    styles: "1-6"
+    label: ""
+    title: ""
+  - prefix: "04a192cb"
+    batch: 1
+    styles: "1-6"
+    label: ""
+    title: ""
+  - prefix: "6af4b2fd"
+    batch: 1
+    styles: "1-6"
+    label: ""
+    title: ""
+  - prefix: "6c8857ff"
+    batch: 1
+    styles: "1-6"
+    label: ""
+    title: ""
+  - prefix: "e46d0eda"
+    batch: 1
+    styles: "1-6"
+    label: ""
+    title: ""
+  - prefix: "199e5295"
+    batch: 2
+    styles: "7-12"
+    label: ""
+    title: ""
+  - prefix: "d8c7e669"
+    batch: 2
+    styles: "7-12"
+    label: ""
+    title: ""
+  - prefix: "c855fb26"
+    batch: 2
+    styles: "7-12"
+    label: ""
+    title: ""
+  - prefix: "06845827"
+    batch: 2
+    styles: "7-12"
+    label: ""
+    title: ""
+  - prefix: "74e6e2ad"
+    batch: 2
+    styles: "7-12"
+    label: ""
+    title: ""
+  - prefix: "81f40abc"
+    batch: 2
+    styles: "7-12"
+    label: ""
+    title: ""
+  - prefix: "88040d8c"
+    batch: 2
+    styles: "7-12"
+    label: ""
+    title: ""
+  - prefix: "5bb95ddb"
+    batch: 2
+    styles: "7-12"
+    label: ""
+    title: ""
+  - prefix: "2de6a304"
+    batch: 2
+    styles: "7-12"
+    label: ""
+    title: ""
+  - prefix: "561c51ad"
+    batch: 2
+    styles: "7-12"
+    label: ""
+    title: ""
+  - prefix: "f7e0464"
+    batch: 2
+    styles: "7-12"
+    label: ""
+    title: ""
+  - prefix: "8f3a6fe5"
+    batch: 2
+    styles: "7-12"
+    label: ""
+    title: ""
+  - prefix: "c5f86258"
+    batch: 2
+    styles: "7-12"
+    label: ""
+    title: ""
+  - prefix: "fede56f4"
+    batch: 2
+    styles: "7-12"
+    label: ""
+    title: ""
+  - prefix: "6aec60a0"
+    batch: 2
+    styles: "7-12"
+    label: ""
+    title: ""
+  - prefix: "5929e647"
+    batch: 2
+    styles: "7-12"
+    label: ""
+    title: ""
+  - prefix: "15ed8347"
+    batch: 2
+    styles: "7-12"
+    label: ""
+    title: ""
+  - prefix: "ea1242fb"
+    batch: 2
+    styles: "7-12"
+    label: ""
+    title: ""
+  - prefix: "5952f9ba"
+    batch: 2
+    styles: "7-12"
+    label: ""
+    title: ""
+  - prefix: "3f0b1867"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "75e8bc03"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "2a7292a6"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "3ad4bbe7"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "98296f15"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "2dbb747d"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "df577462"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "30b8ab25"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "ae3527d9"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "b4ab8139"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "b8f6e5ac"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "32473180"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "a170be93"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "ab94ba03"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "5f2b7a2c"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "da2d3324"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "f38c97f0"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "78e4f1a5"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "6e62306d"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "b01320229"
+    batch: 3
+    styles: "13-20"
+    label: ""
+    title: ""
+  - prefix: "2af20807"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""
+  - prefix: "6a636869"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""
+  - prefix: "a122d792"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""
+  - prefix: "590c4d2f"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""
+  - prefix: "5ae8f1de"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""
+  - prefix: "50fce29c"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""
+  - prefix: "898bd986"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""
+  - prefix: "02eb1f1d"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""
+  - prefix: "ce817fa7"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""
+  - prefix: "e59c3562"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""
+  - prefix: "cfe04fa4"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""
+  - prefix: "a62202b1"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""
+  - prefix: "197b49d5"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""
+  - prefix: "069becb3"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""
+  - prefix: "6379cd8d"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""
+  - prefix: "063af011"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""
+  - prefix: "c77402f8"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""
+  - prefix: "eaff274a"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""
+  - prefix: "5129a0e1"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""
+  - prefix: "a3e6563a"
+    batch: 4
+    styles: "21-26"
+    label: ""
+    title: ""

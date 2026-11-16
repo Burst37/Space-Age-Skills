@@ -445,7 +445,7 @@ console.log(`✓ ${qualifiedLeads.length} qualified leads → ${csvPath}`);
 | `category` | Input parameter | lead-to-brief, Hermes routing |
 | `address` | Maps detail panel | lead-to-brief, NAP |
 | `city` / `state` | Input parameter | lead-to-brief, proxy geo |
-| `phone` | Maps detail panel | outreach-copywriter, vapi-orchestrator |
+| `phone` | Maps detail panel | outreach-copywriter, sa-voice-agent-builder |
 | `existing_website` | Maps detail panel | cinematic-website-builder (audit) |
 | `google_rating` | Maps card | quality gate, outreach angle |
 | `review_count` | Maps card | quality gate, social proof copy |
@@ -735,7 +735,7 @@ cinematic-prompt-director → SA-higgsfield-operator
         ↓
 Hermes → Lane A/B/C/D
         ↓
-outreach-copywriter → vapi-orchestrator
+outreach-copywriter → sa-voice-agent-builder
         ↓
 GitHub → Vercel Deploy
 ```

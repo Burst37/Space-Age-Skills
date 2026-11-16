@@ -182,3 +182,7 @@ Verify manufacturer sources before adding future gear.
 
 ## Source philosophy
 Synthesizes the supplied Master Cinematography Director skill, the March 2026 cinematography meta-token database, Melies' broad cinematic-technique taxonomy, and manufacturer-verified 2026 equipment updates. v3 deliberately upgrades token concatenation into a physical cinematography compiler. Tokens are subordinate to shot design.
+
+## Single-file edition and web builds
+- `references/consolidated-v4.1.md` is the full consolidated edition (Melies technique engine, camera and lens character profiles, image-to-video master protocol, website-loop mode, model compiler, failure matrix, 12-point gauntlet). Load it when a shot needs more than the summary above.
+- Website clips (`cinematic-website-builder` G6) are written as JSON shot specs: schema in `cinematic-website-builder/references/video-json-prompting.md`, checked by its `scripts/shot-lint.mjs`. This skill supplies every cinematography value in that JSON.

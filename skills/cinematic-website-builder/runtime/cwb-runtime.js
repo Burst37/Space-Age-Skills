@@ -22,7 +22,7 @@
   'use strict';
   var root = document.documentElement;
   var registry = {};
-  var CWB = (window.CWB = { version: '3.0.0', registry: registry, instances: [] });
+  var CWB = (window.CWB = { version: '3.3.0', registry: registry, instances: [] });
 
   var Q = {
     motion: '(prefers-reduced-motion: no-preference)',
@@ -98,9 +98,30 @@
     root.classList.add('cwb-ready');
     initSmoothScroll();
 
-    var nodes = document.querySelectorAll('[data-cwb]');
+    mount(document);
+
+    function refresh() { if (window.ScrollTrigger) ScrollTrigger.refresh(); }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(refresh);
+    if (document.readyState === 'complete') refresh(); else window.addEventListener('load', refresh, { once: true });
+    root.classList.add('cwb-booted');
+    document.dispatchEvent(new CustomEvent('cwb:ready'));
+  }
+
+  /* mount(scope): boot every [data-cwb] inside scope that is not booted yet.
+     unmount(scope): revert those instances (listeners, loops, tweens, triggers).
+     Multi-page apps (Next.js App Router, Astro view transitions) call
+     CWB.unmount(container) before a client-side route swap and CWB.mount(container)
+     after it; static pages never need to. Each booted element gets
+     data-cwb-live="<names>" so verify.mjs can prove the planned modules ran. */
+  function mount(scope) {
+    var nodes = (scope || document).querySelectorAll('[data-cwb]');
+    if (scope && scope.nodeType === 1 && scope.hasAttribute('data-cwb')) nodes = [scope].concat(Array.prototype.slice.call(nodes));
     Array.prototype.forEach.call(nodes, function (el) {
+      if (el.__cwbMounted) return;
+      el.__cwbMounted = true;
+      var live = [];
       el.getAttribute('data-cwb').split(/\s+/).forEach(function (name) {
+        if (!name) return;
         var def = registry[name];
         if (!def) { console.warn('CWB: unknown module "' + name + '"'); return; }
         var mm = gsap.matchMedia();
@@ -113,24 +134,35 @@
             return function () { api._dispose(); if (typeof cleanup === 'function') cleanup(); };
           }, el);
         CWB.instances.push({ name: name, el: el, mm: mm });
+        live.push(name);
       });
+      el.setAttribute('data-cwb-live', live.join(' '));
     });
-
-    function refresh() { if (window.ScrollTrigger) ScrollTrigger.refresh(); }
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(refresh);
-    if (document.readyState === 'complete') refresh(); else window.addEventListener('load', refresh, { once: true });
-    root.classList.add('cwb-booted');
-    document.dispatchEvent(new CustomEvent('cwb:ready'));
+    if (window.ScrollTrigger && scope && scope !== document) ScrollTrigger.refresh();
   }
+  function unmount(scope) {
+    CWB.instances = CWB.instances.filter(function (inst) {
+      var inside = !scope || scope === document || scope === inst.el || (scope.contains && scope.contains(inst.el));
+      if (!inside) return true;
+      try { inst.mm.revert(); } catch (e) {}
+      inst.el.__cwbMounted = false;
+      inst.el.removeAttribute('data-cwb-live');
+      return false;
+    });
+  }
+  CWB.mount = function (scope) { if (root.classList.contains('cwb-booted')) mount(scope); };
+  CWB.unmount = unmount;
 
   /* Smooth scroll is OPT-IN (<html data-cwb-smooth>) and never instantiated
      for reduced motion or coarse pointers. Native scroll is the default. */
   function initSmoothScroll() {
     if (!root.hasAttribute('data-cwb-smooth') || !window.Lenis) return;
     if (CWB.env.reducedMotion || !CWB.env.finePointer) return;
-    var lenis = new Lenis({ lerp: 0.1, anchors: true });
+    /* data-cwb-smooth="soft" = the gentle profile (trust sectors): heavier damping. */
+    var soft = root.getAttribute('data-cwb-smooth') === 'soft';
+    var lenis = new Lenis({ lerp: soft ? 0.14 : 0.1, wheelMultiplier: soft ? 0.9 : 1, anchors: true });
     CWB.lenis = lenis;
-    lenis.on('scroll', ScrollTrigger.update);
+    if (window.ScrollTrigger) lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
     gsap.ticker.lagSmoothing(0);
   }
@@ -142,6 +174,7 @@
   }, 2500);
 
   function start() {
+    if (root.classList.contains('cwb-booted')) return;
     try { boot(); } catch (err) {
       console.error(err);
       root.classList.remove('cwb-ready', 'cwb-js');

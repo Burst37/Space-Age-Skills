@@ -108,9 +108,9 @@ Issue 2 [HITL]: Visual archetype approved for target vertical
 Issue 3 [AFK]: lead-to-brief converts CSV row → build brief JSON  
 Issue 4 [AFK]: cinematic-website-builder generates HTML from brief  
 Issue 5 [HITL]: Sample site reviewed + approved for batch deployment  
-Issue 6 [AFK]: outreach-copywriter generates email + Vapi script per lead  
+Issue 6 [AFK]: outreach-copywriter generates email + voice script per lead  
 Issue 7 [HITL]: Outreach copy reviewed + approved for send  
-Issue 8 [AFK]: Vapi agent deployed + first outbound call queued  
+Issue 8 [AFK]: Voice agent deployed + first outbound call queued  
 ```  
   
 ### New SA Sub-Brand Issue Set  
@@ -164,7 +164,7 @@ can execute autonomously:
 - issue-3: node lead-to-brief.js --input leads.csv --output briefs/  
 - issue-4: node build-sites.js --input briefs/ --output sites/  
 - issue-6: node generate-outreach.js --input briefs/ --output outreach/  
-- issue-8: node deploy-vapi.js --input outreach/ --leads 25  
+- issue-8: node deploy-voice.js --input outreach/ --leads 25  
 ```  
   
 Mr. Black comes back to results, not work-in-progress.  

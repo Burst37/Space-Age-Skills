@@ -6,6 +6,12 @@ expects, and how it degrades. Activate a module with `data-cwb="name"` on its ro
 (space-separate to stack: `data-cwb="magnetic burst"`). `scripts/assemble.mjs` ships only the
 blocks and GSAP plugins a page uses.
 
+The SEO/AEO gate is not a motion module. Every build still follows
+`references/seo-aeo-gate.md`: teardown and blueprint before the moodboard, then
+server-rendered copy (no text only in canvas/WebGL — `frame-scrub` keeps a poster
+plus caption in HTML), question-shaped H2s on service pages, and `aeo-check.py`
+inside `verify.mjs`.
+
 Legend — **Cost**: motion-budget points (CINEMATIC_WEBSITE_BUILDER.md §4). **Fine**: needs a mouse/trackpad; on touch it
 stays inert and the content still works. **RM**: what reduced-motion users get.
 
@@ -51,6 +57,14 @@ stays inert and the content still works. **RM**: what reduced-motion users get.
 | 30 | `stroke-text` | Ambient | 1 | — | static outline | — |
 | 35 | `intro-gate` | Load | 3 | — | skipped | — |
 | 36 | page transition (`--with page-transition`) | Nav · CSS-only | 0 | — | off | none |
+| 37 | `video-hero` | Load · media | 4 | — | poster + visible pause | — |
+| 38 | `voice-agent` | Click (widget, no vendor SDK) | 0 | — | works | — |
+| 43 | `voice-gemini` | Voice adapter (Gemini Live) | 0 | — | works | — |
+| 39 | `expand-panels` (`data-variant="gentle\|bold"`) | Pointer / keys / tap | 6 | — (tap stack < 700px) | instant layout, posters | GSAP core |
+| 40 | `view-switch` | Click (View Transitions) | 3 | — | instant swap | — |
+| 41 | `video-chapters` (video-per-section) | Scroll · media | 4 | — | posters, no autoplay | — |
+| 42 | `jumbo-fit` | Layout (fonts/resize) | 1 | — | fitted (CSS cqi first) | — |
+| 43 | custom type `[data-ctype]`, `[data-jumbo]`, `[data-nzoom]` | Scroll · CSS-only | 0–2 | — | static | none |
 
 **External modules — route, don't reimplement:**
 
@@ -288,6 +302,46 @@ Progressive frame fill (every 8th frame first) so scrubbing works before the set
 First element in `<body>`. Hard cap (default 1.8 s), once per session, skipped for RM. **Flagship tier only.**
 
 ---
+
+### 37 · video-hero
+`<section data-cwb="video-hero" class="vhero"><video class="vhero__video" autoplay muted loop playsinline poster width height>…</video><button class="vhero__toggle">Pause</button>…</section>`.
+The HTML autoplays (works without JS). JS adds reduced-motion/save-data → poster, offscreen pause, and the visible pause control.
+
+### 38 · voice-agent
+```html
+<div class="voice" data-cwb="voice-agent" data-ready="true">
+  <p class="voice__status" role="status" aria-live="polite"></p>
+  <button class="voice__btn" type="button" aria-pressed="false"><span class="voice__orb" aria-hidden="true"></span><span class="voice__label">Talk to us</span></button>
+  <a class="voice__fallback" href="tel:+1…" hidden>Call us instead</a>
+</div>
+```
+No vendor SDK. Click fires `cwb:voice-start` / `cwb:voice-stop`; an adapter calls `e.detail.state('live'|'idle')`, `say(text)`, `fail(msg)`. No `data-ready="true"` → fallback link only. Default adapter: `voice-gemini` (43).
+
+### 43 · voice-gemini
+`<div class="voice" data-cwb="voice-agent voice-gemini" data-ready="true" data-token-url="/api/voice-token"> … same inner markup as 38 … </div>`
+Gemini Live over a raw WebSocket (no SDK in the page). Needs the token endpoint: copy `templates/api/voice-token.mjs` to the site's `api/`, `npm i @google/genai`, set env `GEMINI_API_KEY`, `GEMINI_LIVE_MODEL`, `VOICE_SYSTEM_PROMPT` (client script), `ALLOWED_ORIGIN`, optional `GEMINI_VOICE`. Token is one-use, 60 s to start, 15 min call cap; model/voice/script locked server-side. Mic denied, token down or socket error → fallback link. One live test call per site before launch.
+The SDK loads only on click. Only PUBLIC keys go in client code. The `tel:` fallback is always visible.
+
+### 39 · expand-panels (clean-room, `examples/menken-clean-room.md`)
+`<div data-cwb="expand-panels" data-variant="bold|gentle"><button class="expand__panel" aria-expanded="false"><img class="expand__poster" …><video data-src … muted loop playsinline></video><span class="expand__caption">Title</span></button>…</div>`.
+Bold: 2× grow, neighbours shift ± half a bar, `power3.out` 0.6s in, 0.1s hold, 0.4s out (timings observed; easing is our choice), 20px gaps, stagger 3.33vh/7.22vh, one video at a time.
+Gentle: 1.4×, neighbours still, `power2.out` 0.45/0.35s, posters only. Below 700px: stacked, tap toggles. Keys: arrows, Escape. Collapses offscreen.
+
+### 40 · view-switch
+`<div data-cwb="view-switch" data-view="gallery"><button class="vswitch__btn" aria-pressed>…</button>…<div class="vswitch__explore"><video data-src …></video></div></div>`.
+View Transitions when available and motion allowed. The explore video plays only in the explore view. Buttons are 44px.
+
+### 41 · video-chapters (video-per-section)
+See `references/video-per-section.md`. `<main data-cwb="video-chapters">` + `[data-vchapter]` sections with `video.vchap__media[data-src][poster]`
+and a fixed `[data-vchap-toggle]` (text label = accessible name). One chapter plays at a time.
+
+### 42 · jumbo-fit
+`<div class="jumbo-box"><h1 class="t-jumbo t-jumbo--bleed" data-cwb="jumbo-fit" style="--jumbo-chars:4">Road</h1></div>`.
+CSS sizes the word first (`cqi` ÷ characters × `--jumbo-advance`). JS refits after fonts load or on resize, measuring the end state of any scrub.
+
+### 43 · custom type (CSS-only)
+`data-ctype="behind|material|alt|fill|fill-video|mixed|ring"`, `data-parallax[="gentle"]`, `data-spin`, `data-jumbo="scrub|scrub-gentle|axis"`, `data-nzoom`.
+Patterns and rules: `references/custom-typography.md`. Every moment keeps real HTML text (verify checks).
 
 ## Composition recipes
 

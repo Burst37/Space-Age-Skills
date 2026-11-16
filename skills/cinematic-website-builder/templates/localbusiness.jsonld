@@ -1,0 +1,30 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "LocalBusiness",
+      "@id": "https://{{domain}}/#business",
+      "name": "{{Business name exactly as on GBP}}",
+      "description": "{{Nonmedical home care}} in {{City, ST}}: {{one factual sentence}}.",
+      "url": "https://{{domain}}/",
+      "telephone": "+1-{{XXX-XXX-XXXX}}",
+      "image": "https://{{domain}}/assets/og.jpg",
+      "logo": "https://{{domain}}/assets/logo.svg",
+      "priceRange": "{{$$ or omit}}",
+      "address": { "@type": "PostalAddress", "streetAddress": "{{street}}", "addressLocality": "{{city}}", "addressRegion": "{{ST}}", "postalCode": "{{zip}}", "addressCountry": "US" },
+      "geo": { "@type": "GeoCoordinates", "latitude": {{lat}}, "longitude": {{lng}} },
+      "areaServed": [ { "@type": "City", "name": "{{City}}" }, { "@type": "City", "name": "{{Nearby city}}" } ],
+      "openingHoursSpecification": [ { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "17:00" } ],
+      "sameAs": [ "{{https://g.page/… (Google Business Profile)}}", "{{https://www.facebook.com/…}}", "{{https://www.yelp.com/biz/…}}" ]
+    },
+    {
+      "@type": "Service",
+      "@id": "https://{{domain}}/services/{{slug}}/#service",
+      "name": "{{Service name}}",
+      "serviceType": "{{Nonmedical home care service}}",
+      "provider": { "@id": "https://{{domain}}/#business" },
+      "areaServed": { "@type": "City", "name": "{{City}}" },
+      "url": "https://{{domain}}/services/{{slug}}/"
+    }
+  ]
+}

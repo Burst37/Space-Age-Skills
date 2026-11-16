@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<!-- Add data-cwb-smooth to <html> ONLY with a documented reason (Lenis). Native scroll is the default. -->
+<!-- Smooth scroll: native by default. data-cwb-smooth="soft" (Chuma's taste default: soft Lenis, lerp 0.14) is allowed;
+     it never runs on touch or reduced motion. Other Lenis settings need a documented reason. -->
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -18,6 +19,8 @@
   <meta property="og:image" content="{{https://domain/assets/og.jpg}}">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png"><!-- 180×180 PNG; launch-check + verify require the favicon set -->
 
   <!-- Fonts: one provider, ≤ 2 families, ≤ 4 files. Fontshare/Bunny are drop-in; self-host for Premium. -->
   <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
@@ -37,9 +40,11 @@
 
   <!-- @cwb:css -->
 
-  <!-- Structured data: generate with sa-local-seo-geo (LocalBusiness/Organization + FAQPage). Must validate. -->
+  <!-- Structured data: LocalBusiness (+ vertical subtype) and Service from the
+       seo-aeo-optimizer §6 templates / sa-local-seo-geo. Must match visible NAP
+       and sit in this initial HTML — never injected only after JS. Must validate. -->
   <script type="application/ld+json">
-  { "@context": "https://schema.org", "@type": "{{LocalBusiness subtype}}", "name": "{{Business}}", "url": "{{https://domain/}}" }
+  { "@context": "https://schema.org", "@type": "{{LocalBusiness subtype}}", "name": "{{Business}}", "url": "{{https://domain/}}", "@id": "{{https://domain/}}#business" }
   </script>
 </head>
 <body data-cwb="reveal">
@@ -74,11 +79,23 @@
       </div>
     </section>
 
-    <!-- Compose sections from references/modules.md. Budget: see SKILL.md §Motion budget. -->
+    <!-- Compose sections from references/modules.md. Budget: see the playbook §4.
+         All copy, headings and JSON-LD must exist in this HTML (seo-aeo-gate.md).
+         Animations enhance; they never hide text. No text only in canvas/WebGL.
+         Service pages: question-shaped H2s with a 40–60 word answer in the first
+         1–2 sentences. Every <video> needs a poster; lazy-load non-LCP media. -->
+    <!--
+    <section class="section" id="services" aria-labelledby="svc-title">
+      <div class="wrap">
+        <h2 id="svc-title">{{How much does {{service}} cost in {{city}}?}}</h2>
+        <p>{{40–60 word direct answer: who, what, where, price range, how fast. Then detail.}}</p>
+      </div>
+    </section>
+    -->
   </main>
 
   <footer class="section">
-    <div class="wrap"><!-- NAP must match GBP exactly (sa-local-seo-geo) --></div>
+    <div class="wrap"><!-- NAP must match GBP exactly (seo-aeo-gate.md / sa-local-seo-geo) --></div>
   </footer>
 
   <!-- @cwb:js -->

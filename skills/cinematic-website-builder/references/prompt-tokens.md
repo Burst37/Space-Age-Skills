@@ -6,6 +6,11 @@ prompt this skill writes pulls its camera, lens, lighting, grade, movement and s
 this file.** It fills the slots of the prompt contract (`asset-pipeline.md` §3, ≥ 150 words); it
 does not replace the subject, environment or text-safe-zone detail.
 
+> **v3.5:** this file is the token *vocabulary*. Direction (which camera, lens, move and light, and why) comes from
+> `space-age-cinematic-director` v4.1; token tiers and the 5-token cap come from its §13; video prompts are JSON
+> shot specs (`video-json-prompting.md`). Model names in §3–§4 below are from Aug–Oct 2025/2026 and are **examples
+> of roles**, not the roster: the roster is read live (`model-roster.md`).
+
 ## 1. How to use it
 
 1. Pick the **shot recipe** (§4) for the slot in `assets.yaml` — it names the model and a token set.
