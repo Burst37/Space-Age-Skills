@@ -58,7 +58,8 @@ stays inert and the content still works. **RM**: what reduced-motion users get.
 | 35 | `intro-gate` | Load | 3 | — | skipped | — |
 | 36 | page transition (`--with page-transition`) | Nav · CSS-only | 0 | — | off | none |
 | 37 | `video-hero` | Load · media | 4 | — | poster + visible pause | — |
-| 38 | `voice-agent` | Click (SDK on demand) | 0 | — | works | provider SDK on click |
+| 38 | `voice-agent` | Click (widget, no vendor SDK) | 0 | — | works | — |
+| 43 | `voice-gemini` | Voice adapter (Gemini Live) | 0 | — | works | — |
 | 39 | `expand-panels` (`data-variant="gentle\|bold"`) | Pointer / keys / tap | 6 | — (tap stack < 700px) | instant layout, posters | GSAP core |
 | 40 | `view-switch` | Click (View Transitions) | 3 | — | instant swap | — |
 | 41 | `video-chapters` (video-per-section) | Scroll · media | 4 | — | posters, no autoplay | — |
@@ -307,7 +308,18 @@ First element in `<body>`. Hard cap (default 1.8 s), once per session, skipped f
 The HTML autoplays (works without JS). JS adds reduced-motion/save-data → poster, offscreen pause, and the visible pause control.
 
 ### 38 · voice-agent
-`<div data-cwb="voice-agent" data-provider="vapi|retell|elevenlabs" data-public-key="…"><button class="voice__btn">Talk to us</button><p class="voice__status" aria-live="polite"></p><a class="voice__fallback" href="tel:…">Call</a></div>`.
+```html
+<div class="voice" data-cwb="voice-agent" data-ready="true">
+  <p class="voice__status" role="status" aria-live="polite"></p>
+  <button class="voice__btn" type="button" aria-pressed="false"><span class="voice__orb" aria-hidden="true"></span><span class="voice__label">Talk to us</span></button>
+  <a class="voice__fallback" href="tel:+1…" hidden>Call us instead</a>
+</div>
+```
+No vendor SDK. Click fires `cwb:voice-start` / `cwb:voice-stop`; an adapter calls `e.detail.state('live'|'idle')`, `say(text)`, `fail(msg)`. No `data-ready="true"` → fallback link only. Default adapter: `voice-gemini` (43).
+
+### 43 · voice-gemini
+`<div class="voice" data-cwb="voice-agent voice-gemini" data-ready="true" data-token-url="/api/voice-token"> … same inner markup as 38 … </div>`
+Gemini Live over a raw WebSocket (no SDK in the page). Needs the token endpoint: copy `templates/api/voice-token.mjs` to the site's `api/`, `npm i @google/genai`, set env `GEMINI_API_KEY`, `GEMINI_LIVE_MODEL`, `VOICE_SYSTEM_PROMPT` (client script), `ALLOWED_ORIGIN`, optional `GEMINI_VOICE`. Token is one-use, 60 s to start, 15 min call cap; model/voice/script locked server-side. Mic denied, token down or socket error → fallback link. One live test call per site before launch.
 The SDK loads only on click. Only PUBLIC keys go in client code. The `tel:` fallback is always visible.
 
 ### 39 · expand-panels (clean-room, `examples/menken-clean-room.md`)

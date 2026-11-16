@@ -4,7 +4,7 @@ version: 3.5.0
 description: >-
   Use this to build cinematic, production-grade websites (one self-contained HTML file, or multi-page
   Astro/Next.js) and to run the Google Maps lead → spec site → pitch pipeline across several agent harnesses at
-  once. Runtime kernel + 42 motion modules (GSAP 3.15 + CSS scroll timelines), hand-off folder, motion and type
+  once. Runtime kernel + 43 modules (GSAP 3.15 + CSS scroll timelines), hand-off folder, motion and type
   pickers, grey-box wireframes, goldfish reviews, 8-pass verify, launch gate. v3.5: lead mode (score leads with no
   or weak websites, one job folder per site, atomic claiming, done-gate), live image/video model roster picked by
   role (asks when the pick changed), JSON shot specs for video directed by space-age-cinematic-director v4.1, a

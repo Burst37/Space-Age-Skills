@@ -22,7 +22,7 @@ What each version added is in `CHANGELOG.md`; which earlier steps were restored 
 |---|---|
 | `runtime/cwb-runtime.js` | Kernel: module isolation, env gating, fail-open, lifecycle, `CWB.mount/unmount` for SPA routes, soft Lenis |
 | `runtime/cwb-base.css` | Tokens: OKLCH colour, fluid type + **jumbo** (`--t-jumbo`), **spacing scale** (`--space-3xs…4xl`), section rhythm (`--section-y-*`), container (`--gutter`, `--max-content`, `--max-page`), motion |
-| `runtime/cwb-modules.{js,css}` | 42 JS modules + CSS-only recipes (`native-reveal`, `custom-type`), one `@module` block each |
+| `runtime/cwb-modules.{js,css}` | 43 JS modules + CSS-only recipes (`native-reveal`, `custom-type`), one `@module` block each |
 | `templates/handoff/` | **The hand-off folder** templates: `brief.md`, `design-spec.md`, `page-text.md`, `wireframe.yaml`, `motion-plan.yaml`, `type-inputs.yaml` |
 | `templates/starter.html` | Page skeleton: SEO head, favicon/theme-color, fail-open gate, island nav, jumbo hero |
 | `templates/robots.txt` · `llms.txt` · `sitemap.xml` · `localbusiness.jsonld` | Ship-time SEO/AEO files |
@@ -77,7 +77,7 @@ G8  QA — verify.mjs (+ --motion-plan --type --sections --letters) exit 0, then
  ↳ GR3 DRIFT CHECK — one fresh reviewer: built preview vs design-spec + page-text ──► reviews/GR3-drift.md
 G9  LAUNCH GATE — launch-check.mjs on the live domain (launch-gate.md)
 G10 SHIP — deploy (sa-deploy-operator), sitemap, IndexNow, live aeo-check
-G11 VOICE — only when sold: voice-agent module #38 + sa-voice-agent-builder / vapi-orchestrator, AI disclosure on the page
+G11 VOICE — only when sold: voice-agent #38 + voice-gemini #43 (Gemini Live; sa-voice-agent-builder), AI disclosure on the page
 G12 OUTREACH + LOG — outreach-copywriter (lead mode: after batch review); Drive SESSION_MEMORY log
 ```
 Lead mode maps onto the same gates (table in `references/lead-pipeline.md`): G2/G3/G4 are decided automatically
@@ -100,8 +100,8 @@ Route each concern to the skill that owns it. Pull on demand; never restate thei
 | Lead scrape (Google Maps) | `spaceage-geofusion-x`; any Maps export works (`scripts/lead-jobs.mjs` column aliases) | lead mode L0 |
 | Lead scoring, job queue, claiming | `scripts/lead-jobs.mjs` — `references/lead-pipeline.md`, `multi-harness.md` | lead mode L1–L4 |
 | Brief from a lead row | `templates/lead/brief.md` (facts). `lead-to-brief` only for its outreach fields | lead mode |
-| Outreach after a build | `outreach-copywriter`; calls: `vapi-orchestrator` | G12 / lead L6 |
-| Voice agent on the site | `sa-voice-agent-builder` / `vapi-orchestrator` + module #38 | G11, when sold |
+| Outreach after a build | `outreach-copywriter` (email / SMS) | G12 / lead L6 |
+| Voice agent on the site | modules #38 `voice-agent` + #43 `voice-gemini` (Gemini Live, `templates/api/voice-token.mjs`); `sa-voice-agent-builder` for the script. No Vapi | G11, when sold |
 | Client brand tokens from a URL | `brand-extractor` / `extract-design-system` | client has a site |
 | Creative strategy, references, Site DNA | `spaceage-savo-creative-director-os` | new brand / no direction |
 | Moodboard (design + motion references) | Muse + `design-reference-moodboard`; when those are not installed: `ui-ux-designer` + `ui-ux-pro-max` | G2; approval is a hard stop before any code |
@@ -227,7 +227,7 @@ build differs from `design-spec.md` / `page-text.md`. Elephant decides per drift
 
 **G10 — Ship.** `sa-deploy-operator`; sitemap submitted, IndexNow pinged, live `aeo-check.py`.
 
-**G11 — Voice (only when sold).** Module #38 `voice-agent` + `sa-voice-agent-builder` / `vapi-orchestrator`; the AI
+**G11 — Voice (only when sold).** Modules #38 `voice-agent` + #43 `voice-gemini` (Gemini Live, token endpoint from `templates/api/voice-token.mjs`); the AI
 disclosure line is on the page. *Exit: a test call completes.*
 
 **G12 — Outreach + log.** `outreach-copywriter` with the preview or live URL and the evidence (lead mode: the
@@ -388,6 +388,7 @@ build_brief (lead-to-brief)                   → business facts, category, city
 - Name an image or video model from memory or an old doc: read the live roster (`model-roster.md`). Standing preference: not Grok's video model for site clips.
 - Generate a clip without a JSON shot spec that passes `shot-lint.mjs`, or stack camera moves, cameras or filename tokens to sound cinematic.
 - Lead mode: invent a fact, present generated imagery as the business's own, publish a spec demo without `noindex` + the preview notice, or send outreach before the batch review.
+- Use Vapi (Chuma has no Vapi account): voice is Gemini Live through `voice-gemini`.
 - Skip a step because its owner skill is not installed: use the stand-in in `pipeline-coverage.md` and report it.
 - Cite or reuse anything derived from another site's JS bundles (clean-room: observed behaviour only).
 - Copy competitor text, images, design or code; or hide copy in JS, canvas or WebGL.

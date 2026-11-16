@@ -36,7 +36,7 @@ current image/video models and exact video prompts, without dropping steps the e
   shot-lint positive + negative, AEO built-in negative (shell page, blocked bots).
 - **`SKILL.md` is now the router** (mode → what to read → which script gates it) instead of a stub that says "read
   everything".
-- Removed nothing.
+- **Vapi removed** (again: it was taken out on 2026-10-20 in PR #90, then came back with the v3.4 rebuild, which started from an older copy). `voice-agent` (#38) is vendor-free; **`voice-gemini` (#43)** is the Gemini Live adapter with `templates/api/voice-token.mjs`. No Vapi SDK, key or routing remains.
 
 ## 3.4.0 — 2026-11-15
 Goal: add Google's Elephant-Goldfish Model (EGM, Apache-2.0, `google/elephant-goldfish-model` @ e4747323) as a lean review process.

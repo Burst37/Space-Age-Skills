@@ -12,7 +12,7 @@ L3 BUILD      one harness per job (multi-harness.md): facts → auto pickers →
               → assets (live roster, JSON shots) → build → verify exit 0                         → site/ + qa/REPORT.md
 L4 PREVIEW    sa-deploy-operator → preview URL (noindex, preview notice)  → lead-jobs.mjs done   → status: done
 L5 BATCH REVIEW   Chuma looks at the contact sheet of previews (the one human stop)              → approved list
-L6 PITCH      outreach-copywriter (email/SMS) · vapi-orchestrator (call), with the preview URL and the L1 evidence
+L6 PITCH      outreach-copywriter (email/SMS), with the preview URL and the L1 evidence
 L7 CONVERT    business says yes → switch the job to client mode: real intake (G0), remove noindex + notice,
               launch gate (G9), their domain. Voice agent if sold (sa-voice-agent-builder).
 L8 LOG        Drive SESSION_MEMORY: leads scored, jobs done/failed, previews, pitches sent
