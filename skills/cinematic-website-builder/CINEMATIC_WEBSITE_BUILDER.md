@@ -101,7 +101,7 @@ Route each concern to the skill that owns it. Pull on demand; never restate thei
 | Lead scoring, job queue, claiming | `scripts/lead-jobs.mjs` — `references/lead-pipeline.md`, `multi-harness.md` | lead mode L1–L4 |
 | Brief from a lead row | `templates/lead/brief.md` (facts). `lead-to-brief` only for its outreach fields | lead mode |
 | Outreach after a build | `outreach-copywriter` (email / SMS) | G12 / lead L6 |
-| Voice agent on the site | modules #38 `voice-agent` + #43 `voice-gemini` (Gemini Live, `templates/api/voice-token.mjs`); `sa-voice-agent-builder` for the script. No Vapi | G11, when sold |
+| Voice agent on the site | modules #38 `voice-agent` + #43 `voice-gemini` (Gemini Live, `templates/api/voice-token.mjs`); `sa-voice-agent-builder` for the script | G11, when sold |
 | Client brand tokens from a URL | `brand-extractor` / `extract-design-system` | client has a site |
 | Creative strategy, references, Site DNA | `spaceage-savo-creative-director-os` | new brand / no direction |
 | Moodboard (design + motion references) | Muse + `design-reference-moodboard`; when those are not installed: `ui-ux-designer` + `ui-ux-pro-max` | G2; approval is a hard stop before any code |
@@ -388,7 +388,7 @@ build_brief (lead-to-brief)                   → business facts, category, city
 - Name an image or video model from memory or an old doc: read the live roster (`model-roster.md`). Standing preference: not Grok's video model for site clips.
 - Generate a clip without a JSON shot spec that passes `shot-lint.mjs`, or stack camera moves, cameras or filename tokens to sound cinematic.
 - Lead mode: invent a fact, present generated imagery as the business's own, publish a spec demo without `noindex` + the preview notice, or send outreach before the batch review.
-- Use Vapi (Chuma has no Vapi account): voice is Gemini Live through `voice-gemini`.
+- Add a third-party voice vendor SDK: voice is Gemini Live through `voice-gemini`.
 - Skip a step because its owner skill is not installed: use the stand-in in `pipeline-coverage.md` and report it.
 - Cite or reuse anything derived from another site's JS bundles (clean-room: observed behaviour only).
 - Copy competitor text, images, design or code; or hide copy in JS, canvas or WebGL.

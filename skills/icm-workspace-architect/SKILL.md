@@ -180,8 +180,8 @@ lead-gen-pipeline/
     ├── 02-score-and-rank/      ← CSV → scored + ranked lead list
     ├── 03-brief-generation/    ← Lead row → build_brief JSON (lead-to-brief skill)
     ├── 04-site-build/          ← build_brief → cinematic HTML site (5-agent swarm)
-    ├── 05-outreach-copy/       ← build_brief → email + Vapi script (outreach-copywriter skill)
-    └── 06-deploy-and-call/     ← HTML → VPS deploy + Vapi agent queued (vapi-orchestrator skill)
+    ├── 05-outreach-copy/       ← build_brief → email + voice script (outreach-copywriter skill)
+    └── 06-deploy-and-call/     ← HTML → VPS deploy + voice agent queued (sa-voice-agent-builder skill)
 ```
 
 **Context budget:** Each stage: ~3k–6k tokens. vs. monolithic load: ~42k+.
@@ -335,8 +335,8 @@ ICM is the **architectural layer** that sits above existing SA skills. Each skil
 | SA Skill | ICM Stage Role |
 |---|---|
 | lead-to-brief | Stage 03 executor — reads scored CSV, writes build_brief JSON |
-| outreach-copywriter | Stage 05 executor — reads build_brief, writes email + Vapi script |
-| vapi-orchestrator | Stage 06 executor — reads Vapi script, deploys call |
+| outreach-copywriter | Stage 05 executor — reads build_brief, writes email + voice script |
+| sa-voice-agent-builder | Stage 06 executor — reads voice script, deploys call |
 | cinematic-website-builder | Stage 04 executor — reads build_brief, writes HTML file |
 | local-business-seo | Stage 04 sub-module — injected into cinematic builder stage context |
 | credit-repair | All stages of credit-repair workspace |

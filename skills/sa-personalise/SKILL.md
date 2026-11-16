@@ -69,7 +69,7 @@ Apply ALL of these when assessing any input:
   
 ### Pipeline Fit  
 Does it slot into an existing pipeline stage?  
-- Lead gen: Google Maps scraper → lead-to-brief → cinematic-website-builder → outreach-copywriter → vapi-orchestrator  
+- Lead gen: Google Maps scraper → lead-to-brief → cinematic-website-builder → outreach-copywriter → sa-voice-agent-builder  
 - Media: cinematic-prompt-director → sa-higgsfield-operator → music-visualizer / record-exec-in-a-box  
 - Client work: brand-extractor → ui-ux-designer → google-stitch → cinematic-website-builder / shopify-cinematic-builder  
 - Credit: credit-repair skill (Accelerated Pressure Protocol Mode 3)  
@@ -108,7 +108,7 @@ Match placement and tone to the correct brand:
 | Sub-Brand | Stack | Tone |  
 |---|---|---|  
 | Space Age AI Solutions (parent) | Full pipeline | Professional, cinematic |  
-| Record Exec in a Box | Higgsfield, Vapi, content calendar | Artist-forward, creative |  
+| Record Exec in a Box | Higgsfield, voice agent, content calendar | Artist-forward, creative |  
 | Space Age Credit Solutions | Credit-repair skill, legal templates | Formal, Accelerated Pressure Protocol |  
 | TheOtherLevelOnline | Shopify | Product-focused |  
 | WYSIWYG Eyewear | Shopify + configurator | Luxury, playful (rainbow gradient cursive) |  
@@ -125,7 +125,7 @@ If overlap found: recommend UPDATING the existing skill, not creating a new one.
 ### Cost Gate  
 Flag any input that triggers:  
 - Paid model API calls beyond Higgsfield subscription  
-- Outbound voice calls (Vapi)  
+- Outbound voice calls (Gemini Live)  
 - External data writes (n8n, webhooks)  
 - Telegram bot actions on VPS  
   

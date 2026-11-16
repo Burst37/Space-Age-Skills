@@ -69,8 +69,7 @@ SITE BUILD LAYER
  /outputs/[lead-id].html  
   
 OUTREACH LAYER  
- SA outreach-copywriter skill → email + Vapi script  
- SA vapi-orchestrator skill → Vapi API → deployed call  
+ SA outreach-copywriter skill → email + voice script  
  SA voice agent (Gemini Flash 3.1 TTS + Firecrawl rapport profiles)  
  ↓  
  Google Calendar booking  

@@ -4,7 +4,7 @@ description: >
  Disciplined debugging skill for Space Age AI Solutions pipeline, VPS systems, and  
  automation infrastructure. Use IMMEDIATELY when: any script throws an error, the  
  Hermes agent stops responding, n8n/Make workflow breaks, Playwright scraper fails,  
- Vapi call doesn't fire, Telegram webhook goes silent, Shopify Buy Button breaks,  
+ voice agent call doesn't fire, Telegram webhook goes silent, Shopify Buy Button breaks,  
  API returns unexpected response, or any pipeline step produces wrong output.  
  Trigger on: "it's broken", "this isn't working", "getting an error", "the bot stopped",  
  "the workflow failed", "something's wrong with", "why is X doing Y", "debug this",  
@@ -16,7 +16,7 @@ allowed-tools: Bash, Read
 # SA-Diagnose — Space Age Debugging Loop  
   
 Adapted from Matt Pocock's `/diagnose` skill. Upgraded with Space Age infrastructure  
-context: DO VPS, n8n, Vapi, Playwright, Telegram webhooks, Shopify, Hermes agent.  
+context: DO VPS, n8n, Gemini Live voice agent, Playwright, Telegram webhooks, Shopify, Hermes agent.  
   
 ---  
   
@@ -46,8 +46,8 @@ free -h && df -h && uptime
 # Re-trigger the webhook manually with curl  
 # For Playwright scraper:  
 node scraper.js --debug 2>&1 | head -50  
-# For Vapi:  
-# Check dashboard → Calls log for the failed call UUID  
+# For the voice agent:  
+# Check the token endpoint and bridge logs for the failed call  
 ```  
   
 **Checkpoint:** If you can't reproduce it, it's not a bug yet. Collect logs, timestamps,  
@@ -68,7 +68,7 @@ Rules:
 SA Pipeline Isolation Checklist:  
 - Is it the scraper? Test with 1 URL instead of the CSV batch  
 - Is it the n8n webhook? Test the trigger node in isolation  
-- Is it the Vapi call? Test with the simplest possible assistant config  
+- Is it the voice call? Test with the simplest possible system instruction  
 - Is it the Hermes agent? Test with a single Telegram command  
 - Is it the site build? Test with a single module instead of all 30  
   
@@ -91,7 +91,7 @@ SA Infrastructure Common Causes:
 | DO VPS | Memory ceiling hit, cron not running, env vars not exported, port blocked |  
 | n8n | Credential expired, webhook URL changed, node version incompatibility |  
 | Playwright | Selector changed on target site, headless timeout, proxy blocked |  
-| Vapi | Phone number not assigned, assistant config missing field, TTS quota |  
+| Voice agent (Gemini Live) | Token endpoint failing, model id retired, mic permission denied, audio quota |  
 | Telegram bot | Token revoked, webhook not set, ngrok tunnel expired |  
 | Shopify | Theme liquid syntax error, CORS block, CDN cache stale |  
 | Claude API | Max tokens hit, context window exceeded, model string wrong |  
@@ -175,13 +175,13 @@ node scraper.js --url "https://maps.google.com/..." --debug
 await page.screenshot({ path: 'debug.png' })  
 ```  
   
-### Vapi Call Not Firing  
+### Voice Agent Call Not Firing  
 ```  
-1. Check assistant UUID is correct  
-2. Check phone number is assigned to the assistant  
-3. Verify VAPI_API_KEY env var is set correctly  
-4. Check call logs in Vapi dashboard for the attempt  
-5. If number not provisioned, provision first via POST /phone-numbers  
+1. Verify GEMINI_API_KEY is set on the server (never in client code)  
+2. Check the token endpoint returns 200 with a fresh ephemeral token  
+3. Check GEMINI_LIVE_MODEL is a current Live model id  
+4. Read the browser console for the WebSocket close code  
+5. Confirm microphone permission was granted  
 ```  
   
 ### n8n Webhook Silent  

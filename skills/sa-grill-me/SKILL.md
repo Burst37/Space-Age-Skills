@@ -79,7 +79,7 @@ For every question category, apply Space Age pipeline awareness:
 | Visual direction | Archetype: luxury/clinical/bold/cinematic/playful? |  
 | Copy tone | Professional/street/aspirational/authoritative? |  
 | CTA | Book call / buy now / get quote / contact? |  
-| Tech stack | HTML single-file / Shopify / n8n / Vapi / Telegram? |  
+| Tech stack | HTML single-file / Shopify / n8n / Gemini Live voice / Telegram? |  
 | Domain | Do they have one? Does it need buying? |  
 | SEO | Local? National? Schema needed? |  
 | Budget | Who's paying — pipeline lead or paying client? |  
@@ -127,7 +127,7 @@ Next Skill: [→ which SA skill fires next]
 | Lead gen site | → `lead-to-brief` → `cinematic-website-builder` |  
 | Client site | → `ui-ux-designer` → `cinematic-website-builder` |  
 | Outreach campaign | → `outreach-copywriter` |  
-| Voice agent setup | → `vapi-orchestrator` |  
+| Voice agent setup | → `sa-voice-agent-builder` |  
 | Shopify store | → `shopify-cinematic-builder` |  
 | Social content | → `social-media-designer` |  
 | Music/artist | → `record-exec-in-a-box` |  

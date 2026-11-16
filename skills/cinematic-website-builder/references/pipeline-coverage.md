@@ -21,7 +21,7 @@ box/Grok-bot rebuild: gates G0–G10, pickers, greybox, goldfish). v3.5 is the u
 | QA gate | Stage 4 (3 devices) | P5 verify (5 passes) | G8 verify (8 passes) + GR3 | G8 |
 | Launch gate | — | — | G9 | G9 |
 | Deploy | Stage 5 `sa-deploy-operator` | P6 | G10 | G10 |
-| **Voice agent** | Stage 6 (`sa-voice-agent-builder` / `vapi-orchestrator`) | module only (WIP) | **no step** (module #38 exists) | **G11**, when sold: Gemini Live (`voice-gemini`), no Vapi |
+| **Voice agent** | Stage 6 (`sa-voice-agent-builder`) | module only (WIP) | **no step** (module #38 exists) | **G11**, when sold: Gemini Live (`voice-gemini`) |
 | **Outreach** | Stage 7 `outreach-copywriter` | — | **no step** | **G12** / lead L6, after batch review |
 | Vault / memory log | Stage 8 | P6 | G10 | G12 close |
 | Parallel production | — | — | — | `multi-harness.md` |

@@ -107,7 +107,6 @@ echo "*.env" >> .gitignore
 # OpenRouter → rotate at: openrouter.ai/keys  
 # Gemini → rotate at: console.cloud.google.com  
 # Higgsfield → rotate at: higgsfield.ai/settings  
-# Vapi → rotate at: vapi.ai/dashboard  
   
 # Environment variable validation script  
 python3 -c "  

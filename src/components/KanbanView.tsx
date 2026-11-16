@@ -5,7 +5,7 @@ const COLUMNS = ["Backlog","In Progress","Review","Done"];
 const INIT_CARDS: Record<string, { id: string; title: string; tag: string; color: string }[]> = {
   "Backlog":     [
     { id:"k1", title:"WYSIWYG Eyewear brand identity", tag:"Brand", color:"var(--purple)" },
-    { id:"k2", title:"Voice agent Vapi deploy", tag:"Pipeline", color:"var(--orange)" },
+    { id:"k2", title:"Voice agent deploy", tag:"Pipeline", color:"var(--orange)" },
   ],
   "In Progress": [
     { id:"k3", title:"Agent OS Dashboard build", tag:"Dev", color:"var(--cyan)" },
