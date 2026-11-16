@@ -34,6 +34,7 @@ and which are the original author's work.
 | [`addy-osmani-skills`](./addy-osmani-skills/SKILL.md) | addyosmani/agent-skills (MIT) | Replaced earlier stub with the full vendored set: 25 lifecycle skills, 4 reviewer agents, 7 checklists, 9 command definitions, plus a router table |
 | [`egm`](./egm/SKILL.md) | google/elephant-goldfish-model (Apache-2.0) | Full plugin layout vendored (7 skills, 10 reviewer agents, document standards) behind a router: elephant drafts, fresh-context goldfish reviewers critique |
 | [`videohub`](./videohub/SKILL.md) | VideoHub (MIT) | Agent skill + review rule for the VideoHub local review studio/render queue; app not vendored, see `UPSTREAM.md` |
+| [`awesome-design-md`](./awesome-design-md/SKILL.md) | VoltAgent/awesome-design-md + ant-design/ant-design DESIGN.md (MIT) | 85 brand DESIGN.md design-system files vendored verbatim (READMEs dropped) behind a router with usage, guardrails and an index |
 
 ## Reference repos used as inspiration
 
