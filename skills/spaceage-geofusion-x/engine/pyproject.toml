@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "spaceage-geofusion-x"
+version = "0.5.0"
+description = "Modular geospatial and social business intelligence engine"
+requires-python = ">=3.10"
+dependencies = []
+[project.optional-dependencies]
+scrapling = ["scrapling"]
+firecrawl = ["firecrawl-py"]
+full = ["playwright==1.56.0", "openpyxl==3.1.5"]
+[project.scripts]
+geofusion = "geofusion.cli:run"
+[tool.setuptools.packages.find]
+include = ["geofusion*"]
