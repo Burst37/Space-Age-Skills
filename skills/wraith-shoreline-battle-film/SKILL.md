@@ -1,6 +1,6 @@
 ---
 name: wraith-shoreline-battle-film
-description: "Builds a ~50s, 16:9 photoreal dark-fantasy battle film prompt as 4 chained 12-13s shots (heroine vs. supernatural boss) with locked characters, location, grade, camera language and a full cinema-trailer sound brief. Fills a proven template (from the Viniai 'wraith on the shoreline' video) so every shot keeps the same cast, place and look. Use whenever the user wants an AI-video fight scene, boss battle, creature vs. warrior, samurai/katana duel, dark-fantasy or game-cinematic trailer, multi-shot action sequence, or a prompt with chained shots that must stay consistent, even if they never say 'dark fantasy'. Also use to replicate the same structure with a different hero, monster, or location."
+description: "Builds a ~50s, 16:9 photoreal dark-fantasy battle film prompt as 4 chained 12-13s shots (heroine vs. supernatural boss) with locked characters, location, grade, camera language and a full cinema-trailer sound brief. Fills a proven template, with an optional full cinematography pass (DP sheet, lighting rig, meta tokens) (from the Viniai 'wraith on the shoreline' video) so every shot keeps the same cast, place and look. Use whenever the user wants an AI-video fight scene, boss battle, creature vs. warrior, samurai/katana duel, dark-fantasy or game-cinematic trailer, multi-shot action sequence, or a prompt with chained shots that must stay consistent, even if they never say 'dark fantasy'. Also use to replicate the same structure with a different hero, monster, or location."
 ---
 
 # Wraith Shoreline Battle Film
@@ -17,8 +17,9 @@ One prompt, four shots, one escalating fight. Works because it locks **who / whe
 ## Workflow
 1. Fill `references/prompt-template.md` in order: **format line → CHARACTERS → LOCATION → LOOK → SHOT 1-4 → SOUND**.
 2. Keep every shot self-contained enough to run alone: restate hero + wraith nouns, don't write "she" without an antecedent when generating shots separately.
-3. Run `python scripts/check_shots.py <prompt.md>` - confirms 4 shots, contiguous timing, ~50s total, and that no shot is longer than 13s.
-4. For separate generations: feed the last frame of shot N as the first-frame reference of shot N+1, repeat the CHARACTERS/LOCATION/LOOK block each time.
+3. **Cinematography pass (default for 'breathtaking' / max quality):** apply `references/cinematography-pass.md` - the House Package (URSA Cine 17K 65 A-cam + ALEXA LF B-cam, anamorphic glass, matched ACES 2.0 / Kodak 500T grade), a named lighting rig, per-shot DP sheet with Bold camera picks, and Seedance 2.5 compiled shots drawn from the director skill's Meta Token Database. Lint each shot with `multi-platform-cinematography-prompt-director/scripts/lint_prompt.py --platform seedance-2.5`. Generate as 2 passes (shots 1-2, then 3-4, pass 2 timecodes re-based) because Seedance 2.5 caps at 30s.
+4. Run `python scripts/check_shots.py <prompt.md>` - confirms 4 shots, contiguous timing, ~50s total, and that no shot is longer than 13s.
+5. For separate generations: feed the last frame of shot N as the first-frame reference of shot N+1, repeat the CHARACTERS/LOCATION/LOOK block each time.
 
 ## The escalation arc (don't reorder)
 | Shot | Beat | Signature moves |

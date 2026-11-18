@@ -1,0 +1,45 @@
+# Cinematography Pass (Director's Package for the wraith battle)
+
+Applies `multi-platform-cinematography-prompt-director` (House Package, Meta Token DB v3, Master Formula v3, lighting playbook) to the 4-shot template. Use this in place of the plain SHOT lines when the user wants maximum visual quality. Target: **Seedance 2.5** (30s per pass, so generate as **2 passes: shots 1-2 = 0-26s, shots 3-4 = 26-50s**, ending frame of pass 1 = first-frame ref of pass 2; **re-base pass 2 timecodes to 0-13s / 13-24s** so each pass is <=30s). Re-route per the director skill's routing table for other models; for narrative-first models tokens stay as prose (never raw lists).
+
+## Look anchor (inherited by every shot)
+- **Visual thesis:** a small calm figure against an enormous, burning, drowned world; the only warmth in frame is the monster's heart.
+- **Director:** Denis Villeneuve (epic scale, minimalist grade, brutalist architecture) + Ridley Scott (atmospheric smoke, backlit silhouettes, industrial texture).
+- **DP:** Greig Fraser (chiaroscuro, HDR highlights, subtle grade) + Hoyte van Hoytema (textured darkness, handheld large format).
+- **Stock/grade:** Kodak Vision3 500T 5219 emulation, soft halation on the ember highlights, ACES 2.0, one **matched A/B grade** on both cameras. Desaturated teal-grey, crushed blacks; orange only from the ribcage, red only when enraged.
+- **House Package:** A-cam **Blackmagic URSA Cine 17K 65** on **Hawk65 Anamorphic 1.3x** (wides, hero, environment, VFX-heavy frames); B-cam **ARRI ALEXA LF** on **ZEISS Horizon Anamorphic 2x FF** (faces, close action). One camera per shot. Filtration both: Tiffen Black Pro-Mist 1/8 (highlight bloom).
+- **Overrides (with reasons):** water explosion + slow-mo grip use **Phantom VEO 4K** (ultra-slow droplet/splash physics the House Package can't give); low chase over water uses **Cinelifter FPV with RED KOMODO-X** (global shutter, no skew at speed).
+
+## Lighting rig (same direction every shot - continuity lock)
+- **Ambient key:** overcast sky as one giant soft overhead source, 7000K, faked by a 20x20 Ultrabounce/silk with ARRI SkyPanel X overhead; ratio 8:1 to the shadow side.
+- **Backlight (the "sun rays behind"):** hard sun through breaking cloud, 5600K, Aputure STORM Parallel Beam 70 / ARRI M90 HMI from camera-right-rear at 150° through sea-mist haze -> visible volumetric shafts and rim light on the cloak, spray and ash.
+- **Practical key (monster):** ribcage ember glow, 1900K, as an in-frame practical (Astera Titan Tube equivalent) casting flickering orange onto wet cloak and water, 16:1 against ambient. Enraged eyes add a red 2-stop hit (red mist backlit).
+- **Negative fill:** black floppies camera-left to keep the blacks crushed. Source-bound atmosphere: sea mist (haze), ash (from the wraith), spray (from impacts), splinters (from wood hits).
+
+## DP sheet per shot
+| Shot | Cam / lens | Angle + move (with endpoint) | fps | Bold pick |
+|---|---|---|---|---|
+| 1 | A-cam Hawk65 1.3x 35mm T2.8; Laowa 24mm Probe (on A-cam) for the ECU | Camera 15cm above waterline, wide low angle, handheld Steadicam drift; ends in a fast push-in finishing inside the ribcage at the blade tip | 24 (ramp to 48 on the stab) | Through-object-in: push into the ribcage |
+| 2 | B-cam Horizon 2x 75mm T1.5 (face); FPV KOMODO-X 14mm (charge) | Front close-up locked on sticks at eye height, then FPV drone with a 14mm lens races 20cm over the water behind her, ending at the clash | 24; 48 on skid | Super dolly (FPV low race) |
+| 3 | A-cam Hawk65 28mm (explosion); Phantom VEO 4K 100mm (grip close-up) | Wide, then slow-motion close-up locked-off; whip to a 14mm lens as the skull lunges at camera | 24 / 240 slow-mo / 24 | Dolly zoom on the skull lunge |
+| 4 | A-cam Hawk65 18mm; handheld ALEXA LF 35mm for the melee | Overhead crane-down tracking her slam, handheld chaos, worm's-eye 15cm over water as the giant charges, camera pulling back on a Russian Arm at matched speed, hard cut to black | 24 (ramp to 60) | Crane over the head into the slam |
+
+## Compiled prompts (Seedance 2.5; swap braces, keep structure)
+
+**Header (repeat in each pass; pass 1 = 26s, pass 2 = 24s):**
+Format: {26|24}s, 16:9, 24fps, anamorphic 2.39-feel framing, photoreal AAA game-cinematic, no on-screen text. References: @Image1 = HEROINE face/hair/cloak/nodachi, fully preserve. @Image2 = WRAITH skeleton/ribcage/chains, fully preserve. @Image3 = shoreline plate (palisade, wrecked ship, pagoda), preserve architecture and palette. Look: shot on a Blackmagic URSA Cine 17K 65 in Blackmagic RAW with Hawk65 anamorphic lenses (oval bokeh, horizontal streak flares off the ember glow, edge falloff) and, for faces, an ARRI ALEXA LF with ZEISS Horizon anamorphics and ARRI's gentle highlight roll-off; graded like Kodak Vision3 500T with soft halation around the ember highlights through an ACES 2.0 pipeline; Villeneuve scale and Scott smoke, Fraser chiaroscuro, van Hoytema textured darkness. Desaturated teal-grey, crushed blacks, warm orange only from the ribcage, red only when its eyes burn.
+
+**SHOT 1 (0-13s) [A-cam only]:** Blackmagic URSA Cine 17K 65 with a Hawk65 35mm at T2.8, wide low angle, lens 15cm above the grey waterline, Steadicam drift: HEROINE kneels ankle-deep in the water, nodachi drawn, wet cloak dragging, fringe of black hair plastered to pale skin. Lit by an ARRI SkyPanel X through a 20x20 Ultrabounce for the 7000K overcast ambience at 8:1, with 5600K sun from an ARRI M90 HMI at camera-right-rear cutting shafts through sea mist behind the wrecked ship. The WRAITH detonates out of rolling black smoke, ember ribcage throwing 1900K orange flicker across the wet wood. She rolls left; it slams through the palisade, planks exploding into spinning splinters that catch the rim light. Chains whip, steel rings against bone, sparks and spray. Camera whips left, then a fast push-in through the ribs on a Laowa 24mm Probe at T14, stopping inside the glow as the blade tip enters, embers blasting past the lens. Hard cut.
+
+**SHOT 2 (13-26s) [B-cam ALEXA LF face; FPV KOMODO-X charge]:** The WRAITH screams, arms spread; a shockwave flattens the water and blasts her back. She skids on her boots in a fan of spray at 48fps, stopping crouched, palm flat on the surface; black ink spirals out from her hand in a perfect circle. Front close-up on sticks, 75mm T1.5, short lighting, a Chimera medium bank as soft key at 7000K with an Aputure STORM Parallel Beam 70 sun kicker camera-right-rear, her expression emotionless, one drop running down her cheek, ember glow a faint orange edge on her jaw. She charges; an FPV drone with a 14mm lens races 20cm over the water behind her at full speed, spray streaking the lens. Mid-air clash: the wraith bursts into black ash and re-forms behind her in a cloud of drifting cinders.
+
+**SHOT 3 [pass 2, 0-13s] [A-cam / Phantom]:** Hawk65 28mm at T2.8 for the wide; the same backlight rig (ARRI M90 HMI through haze, SkyPanel X ambience) and 1900K ember practical; The WRAITH hurls a giant sphere of spiky black smoke; it hits the water beside her and a white column of seawater erupts, shot at 240fps, every droplet lit by the backlight shafts. She stays kneeling, unmoved, cloak snapping in the blast. Slow-motion locked close-up on a Phantom VEO 4K with a 100mm macro lens at T4: her gloved hands tightening on the grip over her shoulder, water beading and sliding off the steel. She leaps out of the spray and slashes, cutting a bright arc through the mist; the wraith spins into a vortex of black smoke. Its skull lunges at the camera on a dolly zoom, red eyes igniting a 2-stop red hit on the ash, red mist boiling behind it.
+
+**SHOT 4 [pass 2, 13-24s] [A-cam Hawk65 18mm T4 / handheld B-cam ALEXA LF 35mm T2]:** Same rig, with the burning debris as 2000K practical sources; She leaps high, sword raised, silhouetted against the breaking clouds; overhead crane-down follows her slam into the water, a ring-shaped splash. Handheld chaos, 35mm, black smoke whipping across the lens, sparks and chains. From the wreckage the WRAITH rises and swells into a hulking skeletal demon draped in rags and chains, burning debris glowing orange behind it. Its eyes flare red. It charges the camera through the water, arms spread, chains swinging, worm's-eye 15cm over the surface while a Russian Arm pulls the camera back at matched speed. Hard cut to black.
+
+**Audio (add to header or footer):** captured as a Dolby Atmos bed: taiko and low brass score with a huge hit at every clash; steel swings and rings; bone and chain clatter; deep sub-bass water impacts; wood cracking; distorted demonic scream with a long reverb tail; wind and ash hiss; wide stereo, punchy transients, no dialogue.
+
+**Continuity locks:** identical cloak/hair/nodachi and wraith descriptors in every shot; backlight always camera-right-rear; screen direction heroine frame-left facing right, wraith frame-right; grade identical across A/B cameras.
+
+## QA
+Run `python3 ../multi-platform-cinematography-prompt-director/scripts/lint_prompt.py --platform seedance-2.5 <shot.txt>` on each compiled shot (>=150 words each; fix every FAIL).
