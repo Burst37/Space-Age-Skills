@@ -1,5 +1,5 @@
 ---
-name: kinetic-type-character-trailer
+name: ao-kinetic-reveal-trailer
 description: "Builds a 13-cut, 24fps, 16:9 motion-graphics character-reveal trailer prompt (80% kinetic typography and flat graphic design, 20% character action) for AI video models. Takes a character + name + palette and fills a locked cut-by-cut template with timecodes, then lints the timeline. Use whenever the user wants a character reveal trailer, title sequence, streetwear/campaign film, kinetic typography promo, split-screen or stroboscopic action edit, 'AAA motion graphics' intro, or a prompt that makes graphic design (giant type, shards, barcodes, halftone, speed lines) the star with a character moving through it. Also use when the user shares a viral motion-graphics reveal (e.g. the Nexoxh AO trailer) and wants it replicated for another character, brand, or product."
 ---
 
