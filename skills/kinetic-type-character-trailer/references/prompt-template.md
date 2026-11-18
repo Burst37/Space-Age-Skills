@@ -4,7 +4,9 @@
 
 2) CUT 01 | 0.00-1.00s - ...  (paste from cut-library.md, cuts 01-06)
 
-3) CUT 07 | 6.00-7.00s - ...  (cuts 07-13)
+3) CUT 07 | 6.00-7.00s - ...  (cuts 07-13; CUT 12 = 11.10-13.00, CUT 13 = 13.00-15.00)
+
+4) Editing / BGM-SFX / quality tail: paste the three closing blocks from cut-library.md, swapping 'her' for the character's pronoun and the sneaker/jacket nouns for their gear.
 
 Notes
 - Split into 3 numbered blocks as above if the model's prompt box is small; the numbers are only chunk markers.

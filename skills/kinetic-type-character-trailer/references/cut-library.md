@@ -1,7 +1,7 @@
 # Cut Library — the 13-cut arc
 
 Format per cut: **job** (why it exists) · **graphic** · **character** · **snap** · swap-ins.
-Source timings are verbatim for 01-11. 12-13 `[reconstructed]`.
+All cuts and timings verbatim from the author's prompt (parts 1 and 2). Total 15.00s.
 
 | # | Time | Job |
 |---|------|-----|
@@ -16,8 +16,8 @@ Source timings are verbatim for 01-11. 12-13 `[reconstructed]`.
 | 09 | 8.00-9.00 | 3D wireframe grid wall-run → freeze → target-lock stamp |
 | 10 | 9.00-10.10 | Freeze releases; dive through shattering panes revealing bigger letters; sneaker wipe |
 | 11 | 10.10-11.10 | 4-poster montage 01-04 (flip, slide, land, hands-in-pockets) |
-| 12 | 11.10-12.00 `[reconstructed]` | Hero stance: character frozen center, all type converges / flat-color field detonates |
-| 13 | 12.00-13.00 `[reconstructed]` | Title lockup: wordmark + tagline + barcode/UI ticks, last shutter flash, hold |
+| 12 | 11.10-13.00 | PEAK. Hero landing on white cyc, shockwave, freeze, overexpose to white |
+| 13 | 13.00-15.00 | Final identity card, ice-blue pulse, frost-ring flash |
 
 ## Cut recipes (copy, swap nouns)
 
@@ -43,6 +43,14 @@ Source timings are verbatim for 01-11. 12-13 `[reconstructed]`.
 
 **11** Rapid-fire poster montage: four full-screen graphic posters of her in different action poses (mid-flip, sliding, landing, hands-in-pockets) snap past with hard cuts, each with different bold layout, oversized numbers 01-04, barcodes and slashes.
 
-**12 [reconstructed]** She lands center frame in a still, confident stance; every word from the film (FULL SPEED, JUMP, FLIP, COOL, FAST, CLEAN, BLUE) flies in from the frame edges and stacks into a tight halftone wall behind her; a final {accent} circle expands to fill the frame and cuts to {light}.
+**12** Hero moment on a clean white cyclorama: she lands a final backflip dead center in slow motion, straightens with hands in pockets, and a shockwave of concentric {accent} rings, wind streaks and shattered typography blasts outward from her landing; brief iconic freeze with her faint confident smile, overexpose to white.
 
-**13 [reconstructed]** Clean lockup on {light} field: giant {WORDMARK} centered, she sits or leans on the baseline of the letters, small tagline + barcode strip + UI ticks fade in on the beat; one last shutter flash, then hold still for the final 0.5s.
+**13** Final identity card: enormous black {WORDMARK} dominates a pale white field with translucent {light-accent} rings, technical arcs, halftone and a rough black circular emblem containing a ghosted {snow-crystal/barcode} motif; she stands relaxed overlapping the letters, wind rippling her jacket; one last {light-accent} pulse sweeps through the typography and a frost-ring flash punctuates the end.
+
+## Closing blocks (append after cut 13, verbatim structure)
+
+**Editing:** extremely aggressive rhythm - hard cuts on every beat, graphic matches, whip pans, snap zooms, stroboscopic freezes, foreground wipes, RGB splits, shutter flashes, impact shakes and speed ramps; every cut must feel compositionally different; typography is always fully readable before the character overlaps it. No weapons, no combat, no fire; all energy comes from motion design, wind, frost, glass and her parkour-style athleticism.
+
+**BGM/SFX:** hard-hitting electronic / drum-heavy future bass with aggressive drops, risers, sub hits and glitch fills locked to every cut; sneaker impacts, whooshes, glass shatters and typography slams are rhythmic sound-design elements. Peak at CUT 12 and end with a cold electronic logo stinger.
+
+**Quality tail:** Premium AAA quality, anime-inspired cinematic rendering, stylish and explosive, strong graphic-design identity, consistent character design, exactly 13 cuts.
