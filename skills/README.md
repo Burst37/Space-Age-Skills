@@ -34,6 +34,10 @@ and which are the original author's work.
 | [`addy-osmani-skills`](./addy-osmani-skills/SKILL.md) | addyosmani/agent-skills (MIT) | Replaced earlier stub with the full vendored set: 25 lifecycle skills, 4 reviewer agents, 7 checklists, 9 command definitions, plus a router table |
 | [`egm`](./egm/SKILL.md) | google/elephant-goldfish-model (Apache-2.0) | Full plugin layout vendored (7 skills, 10 reviewer agents, document standards) behind a router: elephant drafts, fresh-context goldfish reviewers critique |
 | [`videohub`](./videohub/SKILL.md) | VideoHub (MIT) | Agent skill + review rule for the VideoHub local review studio/render queue; app not vendored, see `UPSTREAM.md` |
+| [`open-seo`](./open-seo/SKILL.md) | every-app/open-seo (MIT) | OpenSEO plugin vendored verbatim (12 SEO workflow skills + hosted MCP manifest) behind a router; app not vendored, see `UPSTREAM.md` |
+| [`open-higgsfield`](./open-higgsfield/SKILL.md) | OpenHiggsfield AI (no license file) | Self-hosted Next.js studio for 38 image/video models, source vendored in `app/`; see `UPSTREAM.md` for the licence caveat |
+| [`desktop-commander-remote`](./desktop-commander-remote/SKILL.md) | wonderwhy-er/DesktopCommanderMCP | Windows `.cmd` launcher + skill for attaching the user's PC to a cloud session |
+| [`astonishing-touch-motion-prompts`](./astonishing-touch-motion-prompts/SKILL.md) | Client brief | Hero + 11 service-film image-to-video prompts with casting and QA rules |
 | [`awesome-design-md`](./awesome-design-md/SKILL.md) | VoltAgent/awesome-design-md + ant-design/ant-design DESIGN.md (MIT) | 85 brand DESIGN.md design-system files vendored verbatim (READMEs dropped) behind a router with usage, guardrails and an index |
 
 ## Reference repos used as inspiration
