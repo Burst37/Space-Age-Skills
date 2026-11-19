@@ -1,0 +1,90 @@
+{
+  "name": "jev-compaction-plus",
+  "version": "0.1.0",
+  "description": "Claude Code compaction in half a second: Jev keeps what's still needed word for word, and moves the rest to a drawer file instead of deleting it.",
+  "author": {
+    "name": "cth9191",
+    "url": "https://github.com/cth9191"
+  },
+  "homepage": "https://github.com/cth9191/jev-compaction-plus",
+  "license": "MIT",
+  "userConfig": {
+    "apiKey": {
+      "type": "string",
+      "title": "Jev API key",
+      "description": "A TypeSafe key, or an OpenRouter key (sk-or-...). Leave unset to use TYPESAFE_API_KEY.",
+      "sensitive": true
+    },
+    "keepThreshold": {
+      "type": "number",
+      "title": "Keep threshold",
+      "description": "Minimum Jev probability that a tool call or tool result is still needed; below it the item is removed.",
+      "default": 0.5
+    },
+    "preserveRecentMessages": {
+      "type": "number",
+      "title": "Recent messages to preserve",
+      "description": "Number of newest messages pinned from compaction.",
+      "default": 6
+    },
+    "compactAtPercent": {
+      "type": "number",
+      "title": "Compaction percentage",
+      "description": "Context percentage at which turn.complete requests compaction.",
+      "default": 60
+    },
+    "minReductionRatio": {
+      "type": "number",
+      "title": "Minimum reduction ratio",
+      "description": "Minimum estimated character reduction required to replace history.",
+      "default": 0.25
+    },
+    "maxStateTokens": {
+      "type": "number",
+      "title": "Maximum Jev state tokens",
+      "description": "Estimated token budget for the conversation state sent with every Jev request.",
+      "default": 14000
+    },
+    "maxRequestTokens": {
+      "type": "number",
+      "title": "Maximum Jev request tokens",
+      "description": "Estimated token budget for state plus questions in one Jev request.",
+      "default": 30000
+    },
+    "truncateHeadChars": {
+      "type": "number",
+      "title": "Truncated tool result head",
+      "description": "Only used when drawerDir is empty: characters of a dropped tool result kept in place, plus a note.",
+      "default": 300
+    },
+    "model": {
+      "type": "string",
+      "title": "Jev model",
+      "description": "Jev model name. With an OpenRouter key, jev-latest is sent as typesafe/jev-1.13.",
+      "default": "jev-latest"
+    },
+    "baseUrl": {
+      "type": "string",
+      "title": "Jev endpoint",
+      "description": "Optional. Unset: TypeSafe's API, or OpenRouter's decisions API when the key starts with sk-or-."
+    },
+    "previewChars": {
+      "type": "number",
+      "title": "Preview characters",
+      "description": "Characters of each tool result (start and end) Jev sees when deciding whether to keep it.",
+      "default": 600
+    },
+    "minDropChars": {
+      "type": "number",
+      "title": "Always keep below",
+      "description": "Tool results shorter than this many characters are always kept: dropping them saves almost nothing.",
+      "default": 1500
+    },
+    "drawerDir": {
+      "type": "string",
+      "title": "Drawer folder",
+      "description": "Folder (relative to the project) where dropped results are saved, so Claude can read them back. Empty: delete them like fast-jev-compaction does.",
+      "default": ".jev-drawer"
+    }
+  }
+}

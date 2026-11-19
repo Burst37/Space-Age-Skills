@@ -1,0 +1,63 @@
+{
+  "name": "token-saving-mods",
+  "owner": {
+    "name": "Ben AI"
+  },
+  "description": "Seven Claude Code mods that cut token cost, plus a /mods switchboard and a /savings pane",
+  "plugins": [
+    {
+      "name": "input-router",
+      "source": "./plugins/input-router",
+      "description": "Big files and connector results are read by Haiku first; Claude gets short notes and a path to the full thing. A side pane shows each hand-off to Haiku live. /input-router full lets the next one through whole",
+      "version": "0.3.1"
+    },
+    {
+      "name": "effort-optimizer",
+      "source": "./plugins/effort-optimizer",
+      "description": "Reads each prompt, picks the effort level it needs with Ben's four-question framework, and offers Switch to that level, or sets it by itself in auto mode",
+      "version": "0.1.0"
+    },
+    {
+      "name": "model-router",
+      "source": "./plugins/model-router",
+      "description": "BenAI copy of claude-code-templates' Jev Model Router (MIT), changed to use Haiku in place of Jev. Haiku reads each subagent task at agent.spawn and answers in JSON with a tier and a confidence from 0 to 1; a task moves to a cheaper model only when that confidence is at least minDowngradeConfidence. Logs every pick, the model it replaced and the estimated cost difference to ~/.claude/mods-logs/savings.jsonl. No API key and no network call of its own. Never changes the main chat's model; main-chat effort routing is off by default.",
+      "version": "0.6.0"
+    },
+    {
+      "name": "cache-clock",
+      "source": "./plugins/cache-clock",
+      "description": "Counts down until the chat's prompt cache goes cold, above the prompt. When a big chat goes cold, offers a handoff to a fresh chat. Keep warm pings the cache in the background so it does not go cold",
+      "version": "0.3.0"
+    },
+    {
+      "name": "handoff",
+      "source": "./plugins/handoff",
+      "description": "At 250k tokens, offers Refresh: writes a handoff of the whole chat, shows the steps with progress bars, then copies it or starts a new chat with it. Logs every run to ~/.claude/handoffs/handoff.log and saves a draft first",
+      "version": "0.1.0"
+    },
+    {
+      "name": "research-router",
+      "source": "./plugins/research-router",
+      "description": "Keeps web research out of the main chat: Haiku shortens Claude's own big search results, and /research-router has a cheap worker or subagents read real pages and give Claude a short brief with sources",
+      "version": "0.3.0"
+    },
+    {
+      "name": "efficient-browser-use",
+      "source": "./plugins/efficient-browser-use",
+      "description": "Cheaper browser tasks: shrinks every screenshot Claude takes while it drives a browser, or has Haiku describe it in words. /efficient-browser full lets one full-size screenshot through",
+      "version": "0.2.0"
+    },
+    {
+      "name": "mods",
+      "source": "./plugins/mods",
+      "description": "A Mods pane that finds every mod on this computer by itself, turns each one on or off in every chat, and opens the side-pane ones",
+      "version": "0.2.0"
+    },
+    {
+      "name": "savings-proof",
+      "source": "./plugins/savings-proof",
+      "description": "/savings opens the Savings Proof pane: every token the other mods saved, with today's and this chat's totals",
+      "version": "0.2.0"
+    }
+  ]
+}

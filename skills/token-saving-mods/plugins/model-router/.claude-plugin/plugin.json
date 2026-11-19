@@ -1,0 +1,74 @@
+{
+  "name": "model-router",
+  "version": "0.6.0",
+  "description": "BenAI copy of claude-code-templates' Jev Model Router (MIT), changed to use Haiku in place of Jev. Haiku reads each subagent task at agent.spawn and answers in JSON with a tier and a confidence from 0 to 1; a task moves to a cheaper model only when that confidence is at least minDowngradeConfidence. Logs every pick, the model it replaced and the estimated cost difference to ~/.claude/mods-logs/savings.jsonl. No API key and no network call of its own. Never changes the main chat's model; main-chat effort routing is off by default.",
+  "author": {
+    "name": "claude-code-templates, changes by BenAI",
+    "url": "https://www.aitmpl.com"
+  },
+  "repository": "https://github.com/davila7/claude-code-templates",
+  "license": "MIT",
+  "keywords": [
+    "mod",
+    "function-hooks",
+    "productivity",
+    "routing"
+  ],
+  "userConfig": {
+    "fastModel": {
+      "type": "string",
+      "title": "Fast tier",
+      "description": "Model alias or id for mechanical, local tasks",
+      "default": "claude-haiku-5-5"
+    },
+    "balancedModel": {
+      "type": "string",
+      "title": "Balanced tier",
+      "description": "Model alias or id for ordinary engineering work",
+      "default": "claude-sonnet-5-5"
+    },
+    "deepModel": {
+      "type": "string",
+      "title": "Deep tier",
+      "description": "Model alias or id for hard or high-stakes work",
+      "default": "claude-opus-5-5"
+    },
+    "minUpgradeConfidence": {
+      "type": "number",
+      "title": "Confidence to spend more",
+      "description": "How sure Haiku must be to raise the model or the effort; being wrong here costs money, so the bar is low",
+      "default": 0.3
+    },
+    "minDowngradeConfidence": {
+      "type": "number",
+      "title": "Confidence to spend less",
+      "description": "How sure Haiku must be to lower the model or the effort; being wrong here means a task gets too little, so the bar is high. A missing or unreadable confidence never lowers anything",
+      "default": 0.6
+    },
+    "routeSubagentModel": {
+      "type": "boolean",
+      "title": "Route subagent models",
+      "description": "Pick the model of each subagent at agent.spawn (the Agent tool takes no effort)",
+      "default": true
+    },
+    "routeMainEffort": {
+      "type": "boolean",
+      "title": "Route the main loop's effort",
+      "description": "Raise or lower the reasoning effort of the main conversation. Off by default: a mid-chat effort change can throw the message cache away. Left alone while Stably is on for the turn",
+      "default": false
+    },
+    "timeoutMs": {
+      "type": "number",
+      "title": "Judge time limit (ms)",
+      "description": "How long to wait for Haiku's answer before letting the request through unchanged. Haiku takes about 1.3 s, so keep this well above that",
+      "default": 8000
+    },
+    "logDecisions": {
+      "type": "boolean",
+      "title": "Log decisions",
+      "description": "Also show each routing decision in the session log (the file log and the ledger are always written)",
+      "default": true
+    }
+  },
+  "types": "./types/index.d.ts"
+}

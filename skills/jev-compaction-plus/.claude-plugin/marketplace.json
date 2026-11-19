@@ -1,0 +1,16 @@
+{
+  "name": "jev-compaction-plus",
+  "owner": {
+    "name": "cth9191",
+    "url": "https://github.com/cth9191"
+  },
+  "plugins": [
+    {
+      "name": "jev-compaction-plus",
+      "source": "./",
+      "description": "Claude Code compaction in half a second: Jev keeps what's still needed word for word, and moves the rest to a drawer file instead of deleting it.",
+      "version": "0.1.0",
+      "license": "MIT"
+    }
+  ]
+}

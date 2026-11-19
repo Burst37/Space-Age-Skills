@@ -1,0 +1,48 @@
+<!-- split-film.html: the Level 2 scroll film framed on the right, captions on the left.
+     Captions rise in word by word; the film never sits under text. Needs runtime/engine.js.
+     Replace FRAME_COUNT with the number of files in frames/ (film_chain.sh prints it). -->
+<style>
+#film{position:relative;height:340vh}
+#film .stage{position:sticky;top:0;height:100vh;display:grid;grid-template-columns:minmax(300px,.8fr) 1.4fr;gap:56px;align-items:center;max-width:1320px;margin:0 auto;padding:0 40px}
+#film .screen{position:relative;aspect-ratio:16/10;border-radius:22px;overflow:hidden;box-shadow:0 40px 110px -40px rgba(0,0,0,.5)}
+#film canvas{position:absolute;inset:0;width:100%;height:100%}
+#film .copy{position:relative;height:300px}
+#film .cap{position:absolute;inset:0}
+#film .cap h2{font-weight:600;font-size:clamp(40px,4.2vw,64px);line-height:1.02;letter-spacing:-.035em;margin:14px 0 16px}
+#film .cap .w{display:inline-block;opacity:0;transform:translateY(22px);filter:blur(8px);transition:opacity .7s cubic-bezier(.33,1,.68,1),transform .9s cubic-bezier(.16,1,.3,1),filter .7s cubic-bezier(.33,1,.68,1)}
+#film .cap.on .w{opacity:1;transform:none;filter:blur(0)}
+#film .cap:not(.on) .w{transition-delay:0s!important;transform:translateY(-14px)}
+#film .cap p{opacity:0;transition:opacity .6s .2s}#film .cap.on p{opacity:1}
+#film .steps{position:absolute;left:0;bottom:0;display:flex;gap:8px}
+#film .steps i{width:44px;height:3px;border-radius:3px;background:rgba(127,127,127,.25);overflow:hidden;position:relative}
+#film .steps b{position:absolute;inset:0;width:0;background:currentColor}
+@media (max-width:860px){#film .stage{grid-template-columns:1fr;gap:20px;align-content:center;padding:0 20px}#film .copy{height:200px}}
+</style>
+<div id="film">
+  <div class="stage">
+    <div class="copy">
+      <div class="cap"><h2>First beat, four words.</h2><p>One short line.</p></div>
+      <div class="cap"><h2>Second beat here.</h2><p>One short line.</p></div>
+      <div class="cap"><h2>Third beat lands it.</h2><p>One short line.</p></div>
+      <div class="steps"><i><b></b></i><i><b></b></i><i><b></b></i></div>
+    </div>
+    <div class="screen"><canvas id="filmc"></canvas></div>
+  </div>
+</div>
+<script>
+(() => {
+  let k = 0;
+  document.querySelectorAll('#film .cap h2').forEach(h => { k = 0; h.innerHTML = h.textContent.split(' ').map(w => `<span class="w" style="transition-delay:${(k++ * .06).toFixed(2)}s">${w}</span>`).join(' '); });
+  const caps = [...document.querySelectorAll('#film .cap')], bars = [...document.querySelectorAll('#film .steps b')], n = caps.length;
+  MotionEngine.Scrub({
+    blend: true, lerp: 0.09, cover: true, dpr: 2, fps: 24,
+    canvas: document.getElementById('filmc'), driver: document.getElementById('film'), count: FRAME_COUNT,
+    src: (i) => `frames/f_${String(i + 1).padStart(4, '0')}.jpg`,
+    onProgress(p) {
+      const c = Math.min(n - 1, Math.floor(p * n));
+      caps.forEach((el, i) => el.classList.toggle('on', i === c));
+      bars.forEach((b, i) => b.style.width = (Math.max(0, Math.min(1, (p - i / n) * n)) * 100) + '%');
+    }
+  });
+})();
+</script>

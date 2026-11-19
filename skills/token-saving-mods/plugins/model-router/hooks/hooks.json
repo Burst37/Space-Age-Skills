@@ -1,0 +1,6 @@
+{
+  "description": "Picks each subagent's model with a Haiku judge (JSON tier and confidence) at agent.spawn, in both directions; prompt.submit + turn.step can also route the main loop's effort (off by default).",
+  "modules": [
+    "./model-router.ts"
+  ]
+}

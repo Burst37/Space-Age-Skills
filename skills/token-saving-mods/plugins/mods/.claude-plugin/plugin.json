@@ -1,0 +1,9 @@
+{
+  "name": "mods",
+  "version": "0.2.0",
+  "description": "A Mods pane that finds every mod on this computer by itself, turns each one on or off in every chat, and opens the side-pane ones",
+  "types": "./types/index.d.ts",
+  "author": {
+    "name": "Ben AI"
+  }
+}

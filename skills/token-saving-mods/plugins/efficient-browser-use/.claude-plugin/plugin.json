@@ -1,0 +1,10 @@
+{
+  "name": "efficient-browser-use",
+  "version": "0.2.0",
+  "description": "Cheaper browser tasks: shrinks every screenshot Claude takes while it drives a browser, or has Haiku describe it in words. /efficient-browser full lets one full-size screenshot through",
+  "author": {
+    "name": "Ben AI",
+    "url": "https://www.benai.co"
+  },
+  "types": "./types/index.d.ts"
+}

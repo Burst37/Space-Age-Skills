@@ -1,0 +1,12 @@
+{
+  "name": "motion-site-studio-scripts",
+  "version": "3.0.0",
+  "private": true,
+  "description": "Browser helpers for the Motion Site Studio skill (capture.js, shots.js, shot.js, verify.js). Run `npm install` once.",
+  "scripts": {
+    "postinstall": "node -e \"console.log('motion-site-studio: ready. Chrome/Chromium must be installed, or set CHROME_PATH.')\""
+  },
+  "dependencies": {
+    "puppeteer-core": "^23.0.0"
+  }
+}

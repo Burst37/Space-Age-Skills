@@ -1,0 +1,15 @@
+{
+  "name": "input-router",
+  "version": "0.3.1",
+  "description": "Big files and connector results are read by Haiku first; Claude gets short notes and a path to the full thing. A side pane shows each hand-off to Haiku live. /input-router full lets the next one through whole",
+  "author": {
+    "name": "Ben AI",
+    "url": "https://www.benai.co"
+  },
+  "keywords": [
+    "mod",
+    "function-hooks",
+    "productivity"
+  ],
+  "types": "./types/index.d.ts"
+}
