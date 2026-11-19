@@ -1,0 +1,10 @@
+{
+  "name": "research-router",
+  "version": "0.3.0",
+  "description": "Keeps web research out of the main chat: Haiku shortens Claude's own big search results, and /research-router has a cheap worker or subagents read real pages and give Claude a short brief with sources",
+  "author": {
+    "name": "Ben AI",
+    "url": "https://www.benai.co"
+  },
+  "types": "./types/index.d.ts"
+}

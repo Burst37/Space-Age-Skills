@@ -1,0 +1,10 @@
+{
+  "name": "effort-optimizer",
+  "version": "0.1.0",
+  "description": "Reads each prompt, picks the effort level it needs with Ben's four-question framework, and offers Switch to that level, or sets it by itself in auto mode",
+  "author": {
+    "name": "Ben AI",
+    "url": "https://www.benai.co"
+  },
+  "types": "./types/index.d.ts"
+}
