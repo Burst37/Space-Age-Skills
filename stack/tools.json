@@ -1,0 +1,404 @@
+{
+  "tools": [
+    {
+      "name": "Claude Code",
+      "cat": "Agents",
+      "via": "cli",
+      "url": "https://claude.ai/code",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "Codex",
+      "cat": "Agents",
+      "via": "cli",
+      "url": "",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "Gemini",
+      "cat": "Agents",
+      "via": "cli",
+      "url": "",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "OpenClaw",
+      "cat": "Agents",
+      "via": "cli",
+      "url": "",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "DeepSeek Harness (dsh)",
+      "cat": "Agents",
+      "via": "cli",
+      "url": "",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "Jev / OpenRouter",
+      "cat": "Agents",
+      "via": "api",
+      "url": "https://openrouter.ai",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "Hugging Face",
+      "cat": "Agents",
+      "via": "mcp",
+      "url": "https://huggingface.co",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Higgsfield",
+      "cat": "Media",
+      "via": "mcp",
+      "url": "https://higgsfield.ai",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Adobe Creative Cloud",
+      "cat": "Media",
+      "via": "mcp",
+      "url": "https://adobe.com",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Canva",
+      "cat": "Media",
+      "via": "mcp",
+      "url": "https://canva.com",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Figma",
+      "cat": "Design",
+      "via": "mcp",
+      "url": "https://figma.com",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Gamma",
+      "cat": "Design",
+      "via": "mcp",
+      "url": "https://gamma.app",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Mobbin",
+      "cat": "Design",
+      "via": "mcp",
+      "url": "https://mobbin.com",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Splice",
+      "cat": "Media",
+      "via": "mcp",
+      "url": "https://splice.com",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Three.js Viewer",
+      "cat": "Design",
+      "via": "mcp",
+      "url": "",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Vercel",
+      "cat": "Build",
+      "via": "mcp",
+      "url": "https://vercel.com",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Supabase",
+      "cat": "Build",
+      "via": "mcp",
+      "url": "https://supabase.com",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "GitHub",
+      "cat": "Build",
+      "via": "mcp",
+      "url": "https://github.com/Burst37",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Webflow",
+      "cat": "Build",
+      "via": "mcp",
+      "url": "https://webflow.com",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "GoDaddy",
+      "cat": "Build",
+      "via": "mcp",
+      "url": "https://godaddy.com",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "DigitalOcean VPS 146.190.78.120",
+      "cat": "Build",
+      "via": "cli",
+      "url": "https://cloud.digitalocean.com",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "Zapier",
+      "cat": "Automation",
+      "via": "mcp",
+      "url": "https://zapier.com",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Make",
+      "cat": "Automation",
+      "via": "mcp",
+      "url": "https://make.com",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Coupler.io",
+      "cat": "Automation",
+      "via": "mcp",
+      "url": "https://coupler.io",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Airtable",
+      "cat": "Data",
+      "via": "mcp",
+      "url": "https://airtable.com",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Notion",
+      "cat": "Data",
+      "via": "mcp",
+      "url": "https://notion.so",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Google Drive",
+      "cat": "Data",
+      "via": "mcp",
+      "url": "https://drive.google.com",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Obsidian",
+      "cat": "Data",
+      "via": "cli",
+      "url": "",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "Jotform",
+      "cat": "Data",
+      "via": "mcp",
+      "url": "https://jotform.com",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Apollo.io",
+      "cat": "Sales",
+      "via": "mcp",
+      "url": "https://apollo.io",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Gmail",
+      "cat": "Comms",
+      "via": "mcp",
+      "url": "https://mail.google.com",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Google Calendar",
+      "cat": "Comms",
+      "via": "mcp",
+      "url": "https://calendar.google.com",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Zoom",
+      "cat": "Comms",
+      "via": "mcp",
+      "url": "https://zoom.us",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Granola",
+      "cat": "Comms",
+      "via": "mcp",
+      "url": "https://granola.ai",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Docusign",
+      "cat": "Ops",
+      "via": "mcp",
+      "url": "https://docusign.com",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Carta",
+      "cat": "Ops",
+      "via": "mcp",
+      "url": "https://carta.com",
+      "cost": null,
+      "status": "connected"
+    },
+    {
+      "name": "Claude",
+      "cat": "LLMs",
+      "via": "web",
+      "url": "https://claude.ai",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "ChatGPT",
+      "cat": "LLMs",
+      "via": "web",
+      "url": "https://chatgpt.com",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "MiniMax",
+      "cat": "LLMs",
+      "via": "web",
+      "url": "https://www.minimax.io",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "Gemini (app)",
+      "cat": "LLMs",
+      "via": "web",
+      "url": "https://gemini.google.com",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "DeepSeek",
+      "cat": "LLMs",
+      "via": "web",
+      "url": "https://chat.deepseek.com",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "GLM (Z.ai)",
+      "cat": "LLMs",
+      "via": "web",
+      "url": "https://chat.z.ai",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "Kimi",
+      "cat": "LLMs",
+      "via": "web",
+      "url": "https://www.kimi.com",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "Hermes Agent (DigitalOcean)",
+      "cat": "Agents",
+      "via": "cli",
+      "url": "http://146.190.78.120:3000",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "OpenArt",
+      "cat": "Media",
+      "via": "web",
+      "url": "https://openart.ai",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "LoveArt.ai",
+      "cat": "Media",
+      "via": "web",
+      "url": "https://loveart.ai",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "CapCut",
+      "cat": "Media",
+      "via": "web",
+      "url": "https://www.capcut.com",
+      "cost": null,
+      "status": "manual"
+    },
+    {
+      "name": "ElevenLabs",
+      "cat": "Audio",
+      "via": "web",
+      "url": "https://elevenlabs.io",
+      "cost": null,
+      "status": "manual"
+    }
+  ],
+  "routines": [
+    {
+      "name": "Brand watch",
+      "kind": "passive",
+      "schedule": "weekly",
+      "capUsdWeek": null,
+      "note": "ping only on hit"
+    },
+    {
+      "name": "Inbox digest",
+      "kind": "active",
+      "schedule": "daily",
+      "capUsdWeek": null,
+      "note": ""
+    }
+  ]
+}

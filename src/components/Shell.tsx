@@ -5,6 +5,7 @@ import { useEffect, useState, useCallback } from "react";
 
 const NAV = [
   { href: "/",          label: "Mission Control", icon: "⊞" },
+  { href: "/stack",    label: "Stack",            icon: "⌘" },
   { href: "/claude",    label: "Claude",           icon: "◈", agent: "claude" },
   { href: "/codex",     label: "Codex",            icon: "⬡", agent: "codex" },
   { href: "/gemini",    label: "Gemini",           icon: "◆", agent: "gemini" },
