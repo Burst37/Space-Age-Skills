@@ -7,14 +7,14 @@ if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
 fi
 
 # Emit additionalContext JSON FIRST before any blocking operations
-TODAY=$(date +%Y-%m-%d)
+# NOTE: keep this text static (no date/time) so the prompt-cache prefix is stable across sessions.
 
-CONTEXT="=== SPACE AGE SESSION INIT — $TODAY ===
+CONTEXT="=== SPACE AGE SESSION INIT ===
 
 RULE #1: You are operating under the Space Age AI Solutions SESSION_INIT protocol.
 Before doing ANYTHING else, you must:
 1. Read today's session memory from Google Drive:
-   - Search parentId = '1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU' for title = '${TODAY}.md'
+   - Search parentId = '1uimIv6Uou7Ug0bYabz_P4YLr2LhVLiIU' for title = '<today YYYY-MM-DD>.md' (use today's date from your environment)
    - Read it with mcp__Google_Drive__read_file_content
    - If not found, get the most recent file in that folder and read it
 2. Load Tier 0 skills: SpaceAge_Orchestrator_v2, karpathy-guidelines, icm-workspace-architect, sa-obsidian-vault-ops
