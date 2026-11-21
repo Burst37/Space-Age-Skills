@@ -67,3 +67,6 @@ Folder named after the song with: `production-bible.md` (summary, mode, venue, p
 
 ## 9. Final check
 ≤30 s segments covering the song · bar-line timestamps relative to file · no lyrics or negatives in prompts · identical GLOBAL/SINGER/LOOK text · ≤4 shots per one-take clip · face shots only in clean windows · interior clips end on a wide, final clip ends on the sung last note · joins covered · 16:9, no brands/celebrities.
+
+## 10. Cinematic enhancement (Space Age)
+For Identity Kit stills, storyboards, STORY-pass clips, cutaways and hero-still QC, load `references/cinematic-enhancement.md` (Space Age Cinematic Director + Meta Token Cinematography Director). The canonical concert block stays verbatim; the enhancement never touches it.

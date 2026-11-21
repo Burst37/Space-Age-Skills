@@ -199,3 +199,5 @@ Rerun discipline: change one variable per re-run (prompt wording, one reference,
 - Only "No subtitles." / "No background music." (or "No dialogue.") as negatives; everything else positive.
 - Dialogue lines are quoted, in the target language, with speaker descriptors.
 - Settings line present; no feature that hasn't shipped.
+## 12. Cinematic enhancement (Space Age)
+For any prompt beyond a quick test, load `references/cinematic-enhancement.md`. It applies the Space Age Cinematic Director (camera physics, lens, light) and the Meta Token Cinematography Director (House Package A/B cameras, token-to-prose, lint gate). Sections 2, 4, 6 and 10 of this skill win on any conflict.
