@@ -1,15 +1,15 @@
 ---
-name: "kling-skill"
-description: "Use when the user says \"kling skill\" or /kling-skill (or asks for Kling 4.0 video prompts) with a subject, description or idea; with no subject, offer 10 Hollywood-style subjects."
+name: "kling4-prompt-studio"
+description: "Use when the user says \"kling4 prompt studio\" (alias \"kling skill\") or /kling4-prompt-studio (or asks for Kling 4.0 video prompts) with a subject, description or idea; with no subject, offer 10 Hollywood-style subjects."
 ---
 
-# Kling Skill (Kling 4.0)
+# Kling 4 Prompt Studio (Kling 4.0)
 
 Turns any subject, description or idea into production-grade Kling 4.0 prompts. Built from Kling's official 4.0 User Guide (Oct 14, 2026), launch research, and creator-tested prompts as of Oct 21, 2026. The goal is prompts that use what 4.0 is actually good at: long single takes, timed beats, reference-locked identity, keyframe control, stereo audio and dialogue.
 
 ## 1. Trigger and flow
 
-Activate on "kling skill", `/kling-skill`, or a request for Kling 4.0 prompts. Everything after the trigger is the subject.
+Activate on "kling4 prompt studio", the alias "kling skill", `/kling4-prompt-studio`, or a request for Kling 4.0 prompts. Everything after the trigger is the subject.
 
 1. **Subject given** (a line, a paragraph, a character, a product, a scene, an idea): build the prompt right away. Do not ask clarifying questions; use the defaults below and state the assumptions in the settings line. After delivering, end with one line offering 10 Hollywood-style subjects (see section 8).
 2. **No subject given**: ask one question with AskUserQuestion, two options: (a) "I'll give you a subject" (b) "Give me 10 Hollywood-style subjects to pick from". If the question can't be asked (unattended run), go straight to the 10 subjects.

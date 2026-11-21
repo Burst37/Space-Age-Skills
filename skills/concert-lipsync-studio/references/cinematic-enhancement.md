@@ -1,6 +1,6 @@
 # Cinematic enhancement (Space Age)
 
-Layers two Space Age skills onto `concert-video`:
+Layers two Space Age skills onto `concert-lipsync-studio`:
 
 - `space-age-cinematic-director-v3`: decides the shot (intent, blocking, camera physics, lens, light).
 - `multi-platform-cinematography-prompt-director`: House Package, meta-token database, lighting playbook, Seedance 2.5 protocol, `lint_prompt.py`.
@@ -39,7 +39,7 @@ Enhance everything around it:
 | Volumetric haze | "Light haze in the air, so the backlight cuts visible beams through it." |
 
 ## Rules that still win
-Only the named singer sings. 16:9. No lyrics in prompts. Positive phrasing only. Mic and hand rules. No real brands, logos or celebrities. The director skills' director and cinematographer signature tokens and licensed-IP tokens are not used here (the concert-video fixed rules forbid real people and brands). If generating for Encore, the Encore logo sits on the upper-left chest.
+Only the named singer sings. 16:9. No lyrics in prompts. Positive phrasing only. Mic and hand rules. No real brands, logos or celebrities. The director skills' director and cinematographer signature tokens and licensed-IP tokens are not used here (the concert-lipsync-studio fixed rules forbid real people and brands). If generating for Encore, the Encore logo sits on the upper-left chest.
 
 ## QA
 STORY pass and Precision face-clip prompts:

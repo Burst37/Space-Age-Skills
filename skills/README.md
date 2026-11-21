@@ -40,8 +40,8 @@ and which are the original author's work.
 
 | Skill | What it is |
 |-------|-----------|
-| [`kling-skill`](./kling-skill/SKILL.md) | Kling 4.0 prompt builder: modes, timed sequence skeleton, reference roles, audio design, 10 Hollywood-style subject ideas. Trigger: "kling skill" |
-| [`concert-video`](./concert-video/SKILL.md) | Song + character image to a 16:9 live-concert lip-sync package for Seedance 2.5 (timing map, segment audio, prompts, edit plan, thumbnail brief). Includes `scripts/measure_offset.py` for free per-clip lip-sync drift measurement. From Eric Palazzolo / MetricsMule. Trigger: "concert video" |
+| [`kling4-prompt-studio`](./kling4-prompt-studio/SKILL.md) | Kling 4.0 prompt builder: modes, timed sequence skeleton, reference roles, audio design, 10 Hollywood-style subject ideas. Trigger: "kling4 prompt studio" (alias "kling skill") |
+| [`concert-lipsync-studio`](./concert-lipsync-studio/SKILL.md) | Song + character image to a 16:9 live-concert lip-sync package for Seedance 2.5 (timing map, segment audio, prompts, edit plan, thumbnail brief). Includes `scripts/measure_offset.py` for free per-clip lip-sync drift measurement. From Eric Palazzolo / MetricsMule. Trigger: "concert lipsync studio" (alias "concert video") |
 
 ## Reference repos used as inspiration
 

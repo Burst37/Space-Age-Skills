@@ -1,6 +1,6 @@
 # Cinematic enhancement (Space Age)
 
-Layers two Space Age skills onto `kling-skill`. Kling's own rules (section 2 facts, section 4 skeleton, section 6 craft rules, section 10 safety) win on any conflict. These add the camera, lens, light and token decisions.
+Layers two Space Age skills onto `kling4-prompt-studio`. Kling's own rules (section 2 facts, section 4 skeleton, section 6 craft rules, section 10 safety) win on any conflict. These add the camera, lens, light and token decisions.
 
 - `space-age-cinematic-director-v3`: decides the shot (intent, blocking, camera physics, lens, light).
 - `multi-platform-cinematography-prompt-director`: House Package, meta-token database, `lint_prompt.py`.

@@ -1,11 +1,11 @@
 ---
-name: concert-video
+name: concert-lipsync-studio
 description: >-
-  Use when the user says "concert video" or /concert-video with a song (and a
+  Use when the user says "concert lipsync studio" (alias "concert video") or /concert-lipsync-studio with a song (and a
   character ref image) to build a live-broadcast concert lip-sync video package
   for Seedance 2.5, optionally blended with music-video story sections.
 ---
-# Concert Video (Seedance 2.5, live broadcast concert, optional MV blend)
+# Concert Lipsync Studio (Seedance 2.5, live broadcast concert, optional MV blend)
 
 Turns a song + a character reference image into a 16:9 live-concert lip-sync production package: timing map, segment audio, prompts, edit plan, hero stills and a thumbnail brief. Built from real Sunkiss stadium concert renders. The canonical prompt wording lives in `concert-video-system-prompt.md` §4 (included in this folder) (keep it verbatim; only fill the slots).
 

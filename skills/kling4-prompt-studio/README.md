@@ -1,11 +1,11 @@
-# Kling Skill (Kling 4.0 prompt builder)
+# Kling 4 Prompt Studio (Kling 4.0 prompt builder)
 
 Turns any subject, idea or reference image into production-grade Kling 4.0 video prompts.
 All the instructions live in `SKILL.md`.
 
 ## How to use it
 
-**Claude (claude.ai / Claude Code):** upload this zip as a skill (Settings → Capabilities → Skills), or drop the `kling-skill` folder into your skills directory. Trigger it with "kling skill" or `/kling-skill`.
+**Claude (claude.ai / Claude Code):** upload this zip as a skill (Settings → Capabilities → Skills), or drop the `kling4-prompt-studio` folder into your skills directory. Trigger it with "kling skill" or `/kling4-prompt-studio`.
 
 **ChatGPT (Custom GPT or Project):** paste the body of `SKILL.md` (everything below the `---` frontmatter) into the Instructions field, or upload `SKILL.md` as a knowledge file and add the instruction: "Follow SKILL.md whenever I say 'kling skill'."
 
@@ -13,8 +13,8 @@ All the instructions live in `SKILL.md`.
 
 ## Usage
 
-- `kling skill [subject]` → full Kling 4.0 prompt(s)
-- `kling skill` with no subject → offers 10 original Hollywood-style subjects
+- `kling4 prompt studio [subject]` (alias `kling skill`) → full Kling 4.0 prompt(s)
+- `kling4 prompt studio` with no subject → offers 10 original Hollywood-style subjects
 - Attach a reference image with your request to build an Omni Reference or image-to-video prompt
 
 ## Notes for non-Claude tools
