@@ -36,6 +36,13 @@ and which are the original author's work.
 | [`videohub`](./videohub/SKILL.md) | VideoHub (MIT) | Agent skill + review rule for the VideoHub local review studio/render queue; app not vendored, see `UPSTREAM.md` |
 | [`awesome-design-md`](./awesome-design-md/SKILL.md) | VoltAgent/awesome-design-md + ant-design/ant-design DESIGN.md (MIT) | 85 brand DESIGN.md design-system files vendored verbatim (READMEs dropped) behind a router with usage, guardrails and an index |
 
+## Video prompt skills
+
+| Skill | What it is |
+|-------|-----------|
+| [`kling-skill`](./kling-skill/SKILL.md) | Kling 4.0 prompt builder: modes, timed sequence skeleton, reference roles, audio design, 10 Hollywood-style subject ideas. Trigger: "kling skill" |
+| [`concert-video`](./concert-video/SKILL.md) | Song + character image to a 16:9 live-concert lip-sync package for Seedance 2.5 (timing map, segment audio, prompts, edit plan, thumbnail brief). Includes `scripts/measure_offset.py` for free per-clip lip-sync drift measurement. From Eric Palazzolo / MetricsMule. Trigger: "concert video" |
+
 ## Reference repos used as inspiration
 
 - `multica-ai/andrej-karpathy-skills` — behavioral guidelines for LLM coding (think-before-coding, simplicity, surgical changes, goal-driven execution)
