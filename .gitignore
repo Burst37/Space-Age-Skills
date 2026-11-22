@@ -6,6 +6,9 @@ node_modules/
 *.key
 out/
 dist/
+graphify-out/cache/
+graphify-out/graph.json
+graphify-out/graph.html
 __pycache__/
 *.pyc
 .pytest_cache/
