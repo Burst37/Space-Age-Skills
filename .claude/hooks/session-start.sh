@@ -56,6 +56,15 @@ if [ -d "$SKILLS_SRC" ]; then
   done
 fi
 
+# Also install the main skills/ library so every skill is a /slash command.
+# .claude/skills wins on name clashes (copied above).
+for skill_dir in "$CLAUDE_PROJECT_DIR"/skills/*/; do
+  skill_name=$(basename "$skill_dir")
+  [ -f "$skill_dir/SKILL.md" ] || continue
+  [ -e "$SKILLS_DST/$skill_name" ] && continue
+  cp -r "$skill_dir" "$SKILLS_DST/$skill_name"
+done
+
 # npm install last — slow on cold cache, runs after context already injected
 cd "$CLAUDE_PROJECT_DIR"
 npm install --silent 2>/dev/null || true
