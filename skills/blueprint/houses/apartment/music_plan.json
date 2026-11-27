@@ -1,0 +1,12 @@
+{
+  "positive_global_styles": ["modern cinematic electronic", "warm premium interior design film", "soft house groove", "118 bpm", "warm felt piano chords", "glassy plucks", "round deep bass", "airy pads", "instrumental", "constant energy"],
+  "negative_global_styles": ["silence", "pauses", "stops", "fade out", "outro", "ending", "vocals", "lo-fi hiss", "aggressive", "dark", "horror", "dubstep"],
+  "sections": [
+    {"section_name": "The sheet", "positive_local_styles": ["soft felt piano and a ticking hi-hat from the very first beat", "plucky glassy arpeggio", "anticipation"], "negative_local_styles": ["silence", "fade in", "pause"], "duration_ms": 3000, "lines": []},
+    {"section_name": "Building", "positive_local_styles": ["kick enters", "driving groove building steadily", "fast glittering arpeggios", "percussive clicks and ticks", "rising energy", "wide pads swelling"], "negative_local_styles": ["pause", "silence", "drop out", "breakdown"], "duration_ms": 8000, "lines": []},
+    {"section_name": "The dollhouse", "positive_local_styles": ["full groove", "bright uplifting chords", "confident and warm", "short riser at the end"], "negative_local_styles": ["pause", "silence", "fade out"], "duration_ms": 3000, "lines": []},
+    {"section_name": "The dive", "positive_local_styles": ["filter sweep down", "airy whoosh", "tension riser", "drums pull back for a moment"], "negative_local_styles": ["silence", "stop"], "duration_ms": 3000, "lines": []},
+    {"section_name": "Walking home", "positive_local_styles": ["warm soft house groove lands", "felt piano chords", "gentle plucks", "relaxed and cozy", "steady kick", "sunlit and calm"], "negative_local_styles": ["pause", "silence", "fade out", "ending"], "duration_ms": 12000, "lines": []},
+    {"section_name": "Keep going", "positive_local_styles": ["same warm groove continues", "steady drums", "full energy"], "negative_local_styles": ["pause", "silence", "ending", "fade out"], "duration_ms": 12000, "lines": []}
+  ]
+}
