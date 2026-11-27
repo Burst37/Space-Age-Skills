@@ -1,0 +1,11 @@
+{
+  "positive_global_styles": ["cinematic deep house", "warm mediterranean sunset", "luxury real estate film", "120 bpm", "warm rhodes chords", "glassy plucks", "deep round bass", "airy pads", "soft percussion", "instrumental", "constant energy"],
+  "negative_global_styles": ["silence", "pauses", "stops", "fade out", "outro", "ending", "vocals", "lo-fi hiss", "aggressive", "dark", "horror", "dubstep", "EDM drops with screeching"],
+  "sections": [
+    {"section_name": "Sunset approach", "positive_local_styles": ["airy pads and a soft pulsing pluck from the very first beat", "sea breeze texture", "anticipation"], "negative_local_styles": ["silence", "fade in", "pause"], "duration_ms": 3000, "lines": []},
+    {"section_name": "Building", "positive_local_styles": ["kick enters", "steady rising groove", "fast glittering plucks", "percussive clicks", "energy building", "riser in the last bar"], "negative_local_styles": ["pause", "silence", "breakdown"], "duration_ms": 7500, "lines": []},
+    {"section_name": "Lights on", "positive_local_styles": ["the drop lands", "full warm deep house groove", "lush chords", "bright and confident"], "negative_local_styles": ["pause", "silence", "fade out"], "duration_ms": 3000, "lines": []},
+    {"section_name": "The dive", "positive_local_styles": ["filter sweep", "airy whoosh", "drums pull back for a moment", "tension"], "negative_local_styles": ["silence", "stop"], "duration_ms": 3000, "lines": []},
+    {"section_name": "Golden hour", "positive_local_styles": ["warm groove returns", "rhodes chords", "relaxed and luxurious", "steady kick", "sunlit and calm"], "negative_local_styles": ["pause", "silence", "fade out", "ending"], "duration_ms": 10000, "lines": []}
+  ]
+}
