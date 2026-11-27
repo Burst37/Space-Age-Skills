@@ -1,0 +1,5 @@
+blueprint-out/
+__pycache__/
+*.pyc
+*.blend1
+.env
