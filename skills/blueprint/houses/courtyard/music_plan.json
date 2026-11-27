@@ -1,0 +1,10 @@
+{
+  "positive_global_styles": ["cinematic ambient with a gentle pulse", "japanese koto and felt piano", "warm string pads", "soft wooden percussion", "90 bpm", "modern architecture film", "elegant and calm", "instrumental", "constant energy"],
+  "negative_global_styles": ["silence", "pauses", "stops", "fade out", "outro", "ending", "vocals", "lo-fi hiss", "aggressive", "dark", "horror", "edm drop", "dubstep", "cheesy oriental cliche"],
+  "sections": [
+    {"section_name": "The sketch", "positive_local_styles": ["a single koto motif and felt piano from the very first beat", "soft pad underneath", "quiet anticipation", "paper texture"], "negative_local_styles": ["silence", "fade in", "pause"], "duration_ms": 3600, "lines": []},
+    {"section_name": "Assembly", "positive_local_styles": ["wooden percussion enters", "steady rising pulse", "fast plucked koto arpeggios", "marimba clicks", "energy building bar by bar", "riser in the last bar"], "negative_local_styles": ["pause", "silence", "breakdown"], "duration_ms": 9800, "lines": []},
+    {"section_name": "It comes alive", "positive_local_styles": ["the swell lands", "full warm strings and deep soft bass", "shimmering bells", "rain atmosphere", "open and emotional"], "negative_local_styles": ["pause", "silence", "fade out"], "duration_ms": 4400, "lines": []},
+    {"section_name": "Into the house", "positive_local_styles": ["calm warm groove continues", "koto melody over strings", "gentle and intimate", "steady soft pulse"], "negative_local_styles": ["pause", "silence", "fade out", "ending"], "duration_ms": 9600, "lines": []}
+  ]
+}
