@@ -35,6 +35,7 @@ and which are the original author's work.
 | [`egm`](./egm/SKILL.md) | google/elephant-goldfish-model (Apache-2.0) | Full plugin layout vendored (7 skills, 10 reviewer agents, document standards) behind a router: elephant drafts, fresh-context goldfish reviewers critique |
 | [`videohub`](./videohub/SKILL.md) | VideoHub (MIT) | Agent skill + review rule for the VideoHub local review studio/render queue; app not vendored, see `UPSTREAM.md` |
 | [`awesome-design-md`](./awesome-design-md/SKILL.md) | VoltAgent/awesome-design-md + ant-design/ant-design DESIGN.md (MIT) | 85 brand DESIGN.md design-system files vendored verbatim (READMEs dropped) behind a router with usage, guardrails and an index |
+| [`blueprint`](./blueprint/SKILL.md) | [Nyxera0x/blueprint](https://github.com/Nyxera0x/blueprint) (MIT) | Vendored as published: turn a floor plan, pen sketch, or reference images into a photoreal 3D house in Blender (every part its own object) and a film of it building itself. See [`SOURCE.md`](./blueprint/SOURCE.md) |
 
 ## Reference repos used as inspiration
 
